@@ -18,6 +18,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @PostMapping("/test")
+    public void Test(@RequestBody UserSignupDto dto) throws Exception {
+        System.out.println(dto);
+        userService.test(dto);
+        System.out.println("성공");
+    }
+
     @PostMapping("")
     public ResponseEntity<HttpResponseBody<?>> user(@RequestBody Map<String, Object> body) throws MyException {
         String sign = (String) body.get("sign");
@@ -35,12 +42,13 @@ public class UserController {
                     String userNickname = (String) body.get("userNickname");
 
                     UserSignupDto userSignupDto = new UserSignupDto(userId, userBirthday, userName, userPassword, userPhonenumber, userEmail, userNickname);
-
+                    System.out.println(userSignupDto);
                     try {
                         userService.signup(userSignupDto);
                     } catch (Exception e) {
                         // throw new MyException("회원가입 실패", HttpStatus.BAD_REQUEST);
                         HttpResponseBody<String> responseBody = new HttpResponseBody<>("Fail", "회원 가입 실패!!!");
+                        System.out.println(e);
                         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
                     }
 
