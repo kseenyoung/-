@@ -2,10 +2,7 @@ package com.ssafy.backend.board.service;
 
 import com.ssafy.backend.board.domain.Board;
 import com.ssafy.backend.board.domain.Tag;
-import com.ssafy.backend.board.dto.BoardCreateRequestDto;
-import com.ssafy.backend.board.dto.BoardDeleteRequestDto;
-import com.ssafy.backend.board.dto.BoardDto;
-import com.ssafy.backend.board.dto.BoardModifyRequestDto;
+import com.ssafy.backend.board.dto.*;
 import com.ssafy.backend.board.repository.BoardRepository;
 import com.ssafy.backend.board.repository.TagRepository;
 import com.ssafy.backend.common.exception.MyException;
@@ -14,14 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BoardServiceImpl implements BoardService{

@@ -1,4 +1,4 @@
-package com.ssafy.backend.board.service;
+package com.ssafy.backend.board.dto;
 
 import com.ssafy.backend.board.dto.BoardDto;
 import lombok.Builder;
