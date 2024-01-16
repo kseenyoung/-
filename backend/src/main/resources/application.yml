@@ -1,4 +1,7 @@
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   dagak:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,3 +22,5 @@ mybatis:
 server:
   servlet:
     context-path: /dagak
+
+
