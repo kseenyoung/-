@@ -1,5 +1,7 @@
 package com.ssafy.backend.board.domain;
 
+import com.ssafy.backend.board.dto.CommentCreateRequestDto;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -34,4 +36,13 @@ public class Comment {
     public Board getBoardId() {
         return boardId;
     }
+
+    @Builder
+    public Comment(Board boardId, String userId, String comment) {
+        this.boardId = boardId;
+        this.userId = userId;
+        this.comment = comment;
+    }
+
+
 }

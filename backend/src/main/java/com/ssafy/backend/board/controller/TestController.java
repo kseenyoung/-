@@ -1,10 +1,8 @@
 package com.ssafy.backend.board.controller;
 
-import com.ssafy.backend.board.dto.BoardCreateRequestDto;
-import com.ssafy.backend.board.dto.BoardDeleteRequestDto;
-import com.ssafy.backend.board.dto.BoardModifyRequestDto;
-import com.ssafy.backend.board.dto.TagCreateRequestDto;
+import com.ssafy.backend.board.dto.*;
 import com.ssafy.backend.board.service.BoardService;
+import com.ssafy.backend.board.service.CommentService;
 import com.ssafy.backend.board.service.TagService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +17,7 @@ public class TestController {
 
     private final BoardService boardService;
     private final TagService tagService;
+    private final CommentService commentService;
 
     @PostMapping("/tagCreate")
     public ResponseEntity<HttpResponseBody<?>> Tagcreate(@RequestBody  TagCreateRequestDto dto){
@@ -27,6 +26,7 @@ public class TestController {
         //then
         int idx = tagService.tagCreate(dto);
         HttpResponseBody<String> responseBody = new HttpResponseBody<>("OK",""+idx);
+
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
@@ -55,5 +55,12 @@ public class TestController {
     {
         boardService.getList(page, keyword);
         return new ResponseEntity<>(new HttpResponseBody<>("OK", boardService.getList(page, keyword)), HttpStatus.OK);
+    }
+
+    @PostMapping("/commentCreate")
+    public ResponseEntity<HttpResponseBody<?>> commentCreate(@RequestBody CommentCreateRequestDto dto) {
+        long id = commentService.commentCreate(dto, "test1");
+
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", "" + id), HttpStatus.OK);
     }
 }
