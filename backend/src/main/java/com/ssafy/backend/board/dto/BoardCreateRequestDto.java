@@ -4,6 +4,7 @@ package com.ssafy.backend.board.dto;
 import com.ssafy.backend.board.domain.Board;
 import com.ssafy.backend.board.domain.Tag;
 import com.ssafy.backend.common.utils.BoardValidator;
+import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import com.ssafy.backend.common.exception.MyException;
 
@@ -48,5 +49,16 @@ public class BoardCreateRequestDto {
                 .boardTitle(boardTitle)
                 .tagId(tag)
                 .userId(userId).build();
+    }
+
+    public BoardCreateRequestDto(){
+
+    }
+    @Builder
+    public BoardCreateRequestDto(String boardTitle,String boardContent,int tagId){
+        setBoardTitle(boardTitle);
+        setBoardContent(boardContent);
+        setTagId(tagId);
+
     }
 }
