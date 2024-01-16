@@ -24,10 +24,10 @@ public class RoomController {
     @Autowired
     RoomService roomService;
 
-    @Value("${OPENVIDU_URL}")
+    @Value("${openvidu.url}")
     private String OPENVIDU_URL;
 
-    @Value("${OPENVIDU_SECRET}")
+    @Value("${openvidu.secret}")
     private String OPENVIDU_SECRET;
 
     private OpenVidu openvidu;
