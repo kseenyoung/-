@@ -39,17 +39,28 @@ public class RoomController {
     @PostMapping("")
     public ResponseEntity<HttpResponseBody<?>> room(@RequestBody Map<String, Object> body) throws Exception {
         String sign = (String) body.get("sign");
+        ResponseEntity<HttpResponseBody<?>> response = null;
+
         switch (sign){
             case "randomRoomEnter": // 랜덤 방 입장
                 System.out.println("call randomRoomEnter");
-                String sessionName = (String) body.get("sessionName");
-                String videoCodec = (String) body.get("videoCodec");
+                String randomSessionName = (String) body.get("sessionName");
+                String randomVideoCodec = (String) body.get("videoCodec");
 
-                RoomJoinDto roomJoinDto = new RoomJoinDto(sessionName, videoCodec);
-                String token = roomService.randomRoomEnter(roomJoinDto);
+                RoomJoinDto randomRoomJoinDto = new RoomJoinDto(randomSessionName, randomVideoCodec);
+                String randomRoomToken = roomService.randomRoomEnter(randomRoomJoinDto);
 
-                HttpResponseBody<String> httpResponseBody = new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token);
-                return new ResponseEntity<>(httpResponseBody,HttpStatus.OK);
+                return new ResponseEntity<>(new HttpResponseBody<>(randomSessionName+"방 토큰을 발급합니다.", randomRoomToken),HttpStatus.OK);
+            case "moccojiRoomEnter": // 모꼬지(길드) 방 입장
+                System.out.println("call moccojiRoomEnter");
+                String moccojiSessionName = (String) body.get("sessionName");
+                String moccojiVideoCodec = (String) body.get("videoCodec");
+
+                RoomJoinDto moccojiRoomJoinDto = new RoomJoinDto(moccojiSessionName, moccojiVideoCodec);
+                String moccojiRoomToken = roomService.moccojiRoomEnter(moccojiRoomJoinDto);
+
+                return new ResponseEntity<>(new HttpResponseBody<>(moccojiSessionName+"방 토큰을 발급합니다.", moccojiRoomToken),HttpStatus.OK);
+
         }
         return null;
     }
