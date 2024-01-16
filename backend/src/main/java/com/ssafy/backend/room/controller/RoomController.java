@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -38,32 +37,18 @@ public class RoomController {
     }
 
     @PostMapping("")
-    public ResponseEntity<HttpResponseBody<?>> room(@RequestBody Map<String, Object> body) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<HttpResponseBody<?>> room(@RequestBody Map<String, Object> body) throws Exception {
         String sign = (String) body.get("sign");
         switch (sign){
             case "randomRoomEnter": // 랜덤 방 입장
                 System.out.println("call randomRoomEnter");
                 String sessionName = (String) body.get("sessionName");
                 String videoCodec = (String) body.get("videoCodec");
-                Session session;
 
-                // 세션에 해당하는 방이 존재하는지 확인
-                session = openvidu.getActiveSession(sessionName);
-                if(session == null){
-                    // 방이 없다면 하나 생성하라
-                    System.out.println("기존에"+sessionName+"방이 없으므로 새롭게 생성합니다.");
-                    SessionProperties properties = SessionProperties.fromJson(body).build();
-                    session = openvidu.createSession(properties);
-                }
-                if(session != null){
-                    System.out.println("기존에"+sessionName+"방이 있으므로 기존 방에 입장합니다.");
-                    // 방이 있다면 기존방의 갯수 / 인원수를 확인하고 해당 방에 입장한다
+                RoomJoinDto roomJoinDto = new RoomJoinDto(sessionName, videoCodec);
+                String token = roomService.randomRoomEnter(roomJoinDto);
 
-                }
-
-                ConnectionProperties properties = new ConnectionProperties.Builder().build();
-                Connection connection = session.createConnection(properties);
-                HttpResponseBody httpResponseBody = new HttpResponseBody<>("방 토큰을 발급합니다.", connection.getToken());
+                HttpResponseBody<String> httpResponseBody = new HttpResponseBody<>("방 토큰을 발급합니다.", token);
                 return new ResponseEntity<>(httpResponseBody,HttpStatus.OK);
         }
         return null;

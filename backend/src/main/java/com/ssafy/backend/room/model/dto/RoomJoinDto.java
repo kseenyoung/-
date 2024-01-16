@@ -1,5 +1,7 @@
 package com.ssafy.backend.room.model.dto;
 
+import java.util.HashMap;
+
 public class RoomJoinDto {
     private String sessionName;
     private String videoCodec;
@@ -23,5 +25,12 @@ public class RoomJoinDto {
 
     public String getVideoCodec() {
         return videoCodec;
+    }
+
+    public HashMap<String,String> toSessionPropertyDto(){
+        HashMap<String,String> SessionPropertyJson = new HashMap<>();
+        SessionPropertyJson.put("customSessionId",this.sessionName);
+        SessionPropertyJson.put("forcedVideoCodec",this.videoCodec);
+        return SessionPropertyJson;
     }
 }
