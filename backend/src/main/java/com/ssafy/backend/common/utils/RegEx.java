@@ -1,6 +1,6 @@
-package com.ssafy.backend.utils;
+package com.ssafy.backend.common.utils;
 
-import com.ssafy.backend.exception.MyException;
+import com.ssafy.backend.common.exception.MyException;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
 

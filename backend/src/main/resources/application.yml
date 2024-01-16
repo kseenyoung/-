@@ -12,7 +12,10 @@ spring:
     password: ssafy
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
 mybatis:
   mapper-locations: classpath:mybatis/mappers/**/*.xml
+server:
+  servlet:
+    context-path: /dagak
