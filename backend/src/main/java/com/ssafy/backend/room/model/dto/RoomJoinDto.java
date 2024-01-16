@@ -27,7 +27,7 @@ public class RoomJoinDto {
         return videoCodec;
     }
 
-    public HashMap<String,String> toSessionPropertyDto(){
+    public HashMap<String,String> toSessionPropertyJson(){
         HashMap<String,String> SessionPropertyJson = new HashMap<>();
         SessionPropertyJson.put("customSessionId",this.sessionName);
         SessionPropertyJson.put("forcedVideoCodec",this.videoCodec);

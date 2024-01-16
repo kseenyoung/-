@@ -37,23 +37,19 @@ public class RoomServiceImpl implements RoomService {
         roomJoinDto.setSessionName(sessionName);
         session = openvidu.getActiveSession(sessionName);
 
-        System.out.println("session.getActiveConnections()"+session.getActiveConnections().toString());
-
         if(session == null){
             // 방이 존재하지 않다면 생성하라
-            System.out.println("기존에"+sessionName+"방이 없으므로 새롭게 생성합니다.");
-            HashMap<String,String> SessionPropertyJson = roomJoinDto.toSessionPropertyDto();
+            HashMap<String,String> SessionPropertyJson = roomJoinDto.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             session = openvidu.createSession(properties);
         } else if (session.getActiveConnections().size() > 20) {
             System.out.println(sessionName+"방에 총 20명이 넘습니다");
-        } else {
-            System.out.println("기존에"+sessionName+"방이 있으므로 기존 방에 입장합니다.");
-            // 방이 있다면 기존방의 갯수 / 인원수를 확인하고 해당 방에 입장한다
         }
 
+        System.out.println("기존에"+sessionName+"방이 있으므로 기존 방에 입장합니다.");
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
         Connection connection = session.createConnection(properties);
+        System.out.println("방에 입장할 수 있는 토큰을 발급합니다."+connection.getToken());
         return connection.getToken();
     }
 

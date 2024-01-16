@@ -48,7 +48,7 @@ public class RoomController {
                 RoomJoinDto roomJoinDto = new RoomJoinDto(sessionName, videoCodec);
                 String token = roomService.randomRoomEnter(roomJoinDto);
 
-                HttpResponseBody<String> httpResponseBody = new HttpResponseBody<>("방 토큰을 발급합니다.", token);
+                HttpResponseBody<String> httpResponseBody = new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token);
                 return new ResponseEntity<>(httpResponseBody,HttpStatus.OK);
         }
         return null;
