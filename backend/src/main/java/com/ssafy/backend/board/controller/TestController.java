@@ -1,6 +1,8 @@
 package com.ssafy.backend.board.controller;
 
 import com.ssafy.backend.board.dto.BoardCreateRequestDto;
+import com.ssafy.backend.board.dto.BoardDeleteRequestDto;
+import com.ssafy.backend.board.dto.BoardModifyRequestDto;
 import com.ssafy.backend.board.dto.TagCreateRequestDto;
 import com.ssafy.backend.board.service.BoardService;
 import com.ssafy.backend.board.service.TagService;
@@ -36,5 +38,17 @@ public class TestController {
         boardService.boardCreate(dto,"test1");
         HttpResponseBody<String> responseBody = new HttpResponseBody<>("OK","성공");
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+    @PostMapping("/boardDelete")
+    public ResponseEntity<HttpResponseBody<?>> boardDelete(@RequestBody BoardDeleteRequestDto dto){
+        boardService.delete(dto,"test1");
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", "성공"), HttpStatus.OK);
+    }
+
+    @PostMapping("/boardModify")
+    public ResponseEntity<HttpResponseBody<?>> boardModify(@RequestBody BoardModifyRequestDto dto){
+        boardService.update(dto,"test1");
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", "성공"), HttpStatus.OK);
+
     }
 }

@@ -58,4 +58,10 @@ public class Board extends BaseTime {
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
     }
+
+    public void updateBoard(Tag tagId, String boardTitle, String boardContent) {
+        this.tagId = tagId;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+    }
 }
