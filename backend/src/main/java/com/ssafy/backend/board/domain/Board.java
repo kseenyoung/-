@@ -24,7 +24,7 @@ public class Board extends BaseTime {
     @Column(columnDefinition = "char (40)")
     private String boardTitle;
 
-    @Column(columnDefinition = "char (2000)")
+    @Column(columnDefinition = "char (255)")
     private String boardContent;
 
 
