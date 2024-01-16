@@ -1,5 +1,7 @@
 package com.ssafy.backend.user.model;
 
+import com.ssafy.backend.user.domain.User;
+
 public class UserSignupDto {
     private String userId, userBirthday, userName, userPassword, userPhonenumber, userEmail, userNickname;
 
@@ -15,6 +17,13 @@ public class UserSignupDto {
 
     public String getUserId() {
         return userId;
+    }
+
+    @Override
+    public String toString() {
+        return "UserSignupDto{" +
+                "userId='" + userId + '\'' +
+                '}';
     }
 
     public void setUserId(String userId) {
@@ -67,5 +76,19 @@ public class UserSignupDto {
 
     public void setUserNickname(String userNickname) {
         this.userNickname = userNickname;
+    }
+
+    public User toEntity() {
+        return User.builder().
+                userId(this.userId).
+                userPassword(this.userPassword).
+                userName(this.userName).
+                userEmail(this.userEmail).build();
+    }
+    public UserSignupDto(){
+
+    }
+    public UserSignupDto(String userId) {
+        this.userId = userId;
     }
 }

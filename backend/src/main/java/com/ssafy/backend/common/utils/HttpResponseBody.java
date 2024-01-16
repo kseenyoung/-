@@ -1,4 +1,4 @@
-package com.ssafy.backend.utils;
+package com.ssafy.backend.common.utils;
 
 public class HttpResponseBody<T> {
     private T data;

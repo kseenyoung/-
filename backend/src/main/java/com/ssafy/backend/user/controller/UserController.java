@@ -1,9 +1,10 @@
 package com.ssafy.backend.user.controller;
 
-import com.ssafy.backend.exception.MyException;
+import com.ssafy.backend.common.exception.MyException;
+import com.ssafy.backend.user.domain.User;
 import com.ssafy.backend.user.model.UserSignupDto;
 import com.ssafy.backend.user.model.service.UserService;
-import com.ssafy.backend.utils.HttpResponseBody;
+import com.ssafy.backend.common.utils.HttpResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,14 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @PostMapping("test")
+    public void test(@RequestBody UserSignupDto userSignupDto) throws Exception {
+        System.out.println(userSignupDto.getUserId());
+        UserSignupDto byId = userService.findById(userSignupDto.getUserId());
+
+        System.out.println(byId.getUserId());
+    }
 
     @PostMapping("")
     public ResponseEntity<HttpResponseBody<?>> user(@RequestBody Map<String, Object> body) throws MyException {

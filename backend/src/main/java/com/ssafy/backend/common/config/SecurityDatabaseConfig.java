@@ -1,4 +1,4 @@
-package com.ssafy.backend.config;
+package com.ssafy.backend.common.config;
 
 public class SecurityDatabaseConfig {
 }
