@@ -1,0 +1,24 @@
+server:
+  port: 8080
+  ssl:
+    enabled: false
+spring:
+  dagak:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/dagak
+      username: root
+      password: ssafy
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dagak
+    username: root
+    password: ssafy
+  jpa:
+    hibernate:
+      ddl-auto: create
+mybatis:
+  mapper-locations: classpath:mybatis/mappers/**/*.xml
+openvidu:
+  secret: MY_SECRET
+  url: https://3.143.74.33:4443/
