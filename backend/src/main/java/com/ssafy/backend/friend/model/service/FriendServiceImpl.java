@@ -13,6 +13,8 @@ public class FriendServiceImpl implements FriendService {
     FriendRepository friendRepository;
 
     public void requestFriend(String userId, String userId2) throws MyException {
+        // 존재하는 userId인지 각각 확인 필요
+        
         UserId PK = new UserId(userId, userId2);
 
         friendRepository.save(
@@ -20,6 +22,18 @@ public class FriendServiceImpl implements FriendService {
                         userId(PK).
                         isFriend(0).
                         build());
+    }
+
+    @Override
+    public void accessFriend(String accessUserId, String accessUuserId2) throws MyException {
+        UserId PK = new UserId(accessUuserId2, accessUserId);
+
+        friendRepository.save(
+                Friend.builder()
+                        .userId(PK)
+                        .isFriend(1)
+                        .build()
+        );
     }
 
 }

@@ -40,11 +40,22 @@ public class FriendController {
                     friendService.requestFriend(userId, userId2);
 
                     return ResponseEntity.ok(new HttpResponseBody<String>("성공^^", "성공^^"));
+
+                case "access":
+//                    User user = (User) session.getAttribute("User");
+//                    String userId = user.getUserId();
+                    String accessUserId = "ssafy";  // request session Id
+                    String accessUuserId2 = body.get("userId");
+
+                    friendService.accessFriend(accessUserId, accessUuserId2);
+
+                    return ResponseEntity.ok(new HttpResponseBody<String>(
+                            new StringBuilder().append(accessUserId).append("님이 ").append(accessUuserId2).append("님의 친구요청을 받았습니다.").toString(), "성공^^"));
             }
         } catch (MyException e){
-            return ResponseEntity.ok(new HttpResponseBody<String>("유감..", "유감.."));
+            return ResponseEntity.ok(new HttpResponseBody<String>("[Exception]유감..", "유감.."));
         }
-        return null;
+        return ResponseEntity.ok(new HttpResponseBody<String>("유감..", "유감.."));
     }
 
 
