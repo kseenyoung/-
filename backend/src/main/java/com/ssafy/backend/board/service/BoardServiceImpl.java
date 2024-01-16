@@ -4,14 +4,23 @@ import com.ssafy.backend.board.domain.Board;
 import com.ssafy.backend.board.domain.Tag;
 import com.ssafy.backend.board.dto.BoardCreateRequestDto;
 import com.ssafy.backend.board.dto.BoardDeleteRequestDto;
+import com.ssafy.backend.board.dto.BoardDto;
 import com.ssafy.backend.board.dto.BoardModifyRequestDto;
 import com.ssafy.backend.board.repository.BoardRepository;
 import com.ssafy.backend.board.repository.TagRepository;
 import com.ssafy.backend.common.exception.MyException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,4 +59,23 @@ public class BoardServiceImpl implements BoardService{
         boardRepository.save(board);
 
     }
+
+    @Override
+    public BoardListResponseDto getList(int page, String keyword) {
+        ArrayList<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createdDate"));
+        Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
+        Page<Board> boards = boardRepository.findByBoardTitleContaining(keyword, pageable);
+
+        List<BoardDto> boardDtoList = new ArrayList<>();
+        for (Board board : boards){
+            boardDtoList.add(new BoardDto(board));
+        }
+
+        return BoardListResponseDto.builder()
+                .totalPages(boards.getTotalPages())
+                .boards(boardDtoList)
+                .build();
+    }
+
 }

@@ -10,10 +10,7 @@ import com.ssafy.backend.common.utils.HttpResponseBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/boardTest")
@@ -49,6 +46,14 @@ public class TestController {
     public ResponseEntity<HttpResponseBody<?>> boardModify(@RequestBody BoardModifyRequestDto dto){
         boardService.update(dto,"test1");
         return new ResponseEntity<>(new HttpResponseBody<>("OK", "성공"), HttpStatus.OK);
+    }
 
+    @GetMapping("/getList")
+    public ResponseEntity<HttpResponseBody<?>> boardGetList(
+            @RequestParam(value = "page", defaultValue = "0") int page
+            ,@RequestParam(value = "keyword", defaultValue = "") String keyword)
+    {
+        boardService.getList(page, keyword);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", boardService.getList(page, keyword)), HttpStatus.OK);
     }
 }
