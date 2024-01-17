@@ -9,6 +9,4 @@ public interface UserService {
 
     void test(UserSignupDto userSignupDto) throws Exception;
 
-    UserSignupDto findById(String userId) throws Exception;
-
 }

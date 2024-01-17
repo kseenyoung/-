@@ -1,5 +1,6 @@
 package com.ssafy.backend.user.model.service;
 
+import com.ssafy.backend.common.utils.EncryptUtil;
 import com.ssafy.backend.security.model.SecurityDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.domain.User;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,26 +28,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void signup(UserSignupDto userSignupDto) throws Exception {
+        SecurityDto securityDto = new SecurityDto();
+        String userPassword = userSignupDto.getUserPassword();
+        String salt = UUID.randomUUID().toString();
+        String safePassword = EncryptUtil.getSHA256(userPassword, salt);
+
+        securityDto.setUserId(userSignupDto.getUserId());
+        securityDto.setSalt(salt);
+        userSignupDto.setUserPassword(safePassword);
+
+        securityMapper.insertSalt(securityDto);
         userMapper.signup(userSignupDto);
-        securityMapper.insertSalt(new SecurityDto(userSignupDto.getUserId(), "ㅋㅋ"));
     }
 
     @Override
     public void test(UserSignupDto userSignupDto) throws Exception {
         userRepository.save(userSignupDto.toEntity());
     }
-
-    @Override
-    public UserSignupDto findById(String userId) throws Exception {
-        System.out.println(userId);
-
-        Optional<User> byUserId = userRepository.findByUserId(userId);
-        if (byUserId.isPresent()) {
-            return new UserSignupDto(byUserId.get().getUserId());
-        }
-
-        return null;
-    }
-
-
 }
