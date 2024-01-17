@@ -70,4 +70,11 @@ public class TestController {
 
         return new ResponseEntity<>(new HttpResponseBody<>("OK", "" + id), HttpStatus.OK);
     }
+
+    @PostMapping("/commentDelete")
+    public ResponseEntity<HttpResponseBody<?>> commenDelete(@RequestBody CommentDeleteRequestDto dto) {
+        commentService.delete(dto, "test1");
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", new String("게시글 삭제 성공")), HttpStatus.OK);
+    }
+
 }
