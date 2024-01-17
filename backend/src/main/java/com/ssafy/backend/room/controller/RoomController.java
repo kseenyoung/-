@@ -1,6 +1,7 @@
 package com.ssafy.backend.room.controller;
 
-import com.ssafy.backend.room.model.dto.RoomJoinDto;
+import com.ssafy.backend.room.model.dto.QuestionDto;
+import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.model.service.RoomService;
 import com.ssafy.backend.utils.HttpResponseBody;
 import io.openvidu.java.client.*;
@@ -8,16 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
 
 @RestController
 @RequestMapping("room")
+@CrossOrigin(origins = "*")
 public class RoomController {
 
     @Autowired
@@ -47,19 +46,27 @@ public class RoomController {
                 String randomSessionName = (String) body.get("sessionName");
                 String randomVideoCodec = (String) body.get("videoCodec");
 
-                RoomJoinDto randomRoomJoinDto = new RoomJoinDto(randomSessionName, randomVideoCodec);
-                String randomRoomToken = roomService.randomRoomEnter(randomRoomJoinDto);
+                RoomEnterDto randomRoomEnterDto = new RoomEnterDto(randomSessionName, randomVideoCodec);
+                String randomRoomToken = roomService.randomRoomEnter(randomRoomEnterDto);
 
+                System.out.println("randomRoomToken: "+randomRoomToken);
                 return new ResponseEntity<>(new HttpResponseBody<>(randomSessionName+"방 토큰을 발급합니다.", randomRoomToken),HttpStatus.OK);
             case "moccojiRoomEnter": // 모꼬지(길드) 방 입장
                 System.out.println("call moccojiRoomEnter");
                 String moccojiSessionName = (String) body.get("sessionName");
                 String moccojiVideoCodec = (String) body.get("videoCodec");
 
-                RoomJoinDto moccojiRoomJoinDto = new RoomJoinDto(moccojiSessionName, moccojiVideoCodec);
-                String moccojiRoomToken = roomService.moccojiRoomEnter(moccojiRoomJoinDto);
+                RoomEnterDto moccojiRoomEnterDto = new RoomEnterDto(moccojiSessionName, moccojiVideoCodec);
+                String moccojiRoomToken = roomService.moccojiRoomEnter(moccojiRoomEnterDto);
 
                 return new ResponseEntity<>(new HttpResponseBody<>(moccojiSessionName+"방 토큰을 발급합니다.", moccojiRoomToken),HttpStatus.OK);
+            case "questionAsk": // 질문하기
+                System.out.println("call questionAsk");
+                String questionAskSessionName = (String) body.get("sessionName");
+                String questionAskMessage = (String) body.get("message");
+
+                QuestionDto questionDto = new QuestionDto(questionAskSessionName, questionAskMessage);
+                roomService.questionAsk(questionDto);
 
         }
         return null;

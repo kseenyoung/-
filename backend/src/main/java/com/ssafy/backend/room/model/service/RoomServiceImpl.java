@@ -1,10 +1,21 @@
 package com.ssafy.backend.room.model.service;
 
-import com.ssafy.backend.room.model.dto.RoomJoinDto;
+import com.ssafy.backend.exception.MyException;
+import com.ssafy.backend.room.model.dto.QuestionDto;
+import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import io.openvidu.java.client.*;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -25,57 +36,89 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public String randomRoomEnter(RoomJoinDto roomJoinDto) throws Exception {
-        String sessionName = roomJoinDto.getSessionName();
+    public String randomRoomEnter(RoomEnterDto roomEnterDto) throws Exception {
+        String sessionName = roomEnterDto.getSessionName();
         Session session;
 
         // 과목당 3개방(20명씩)
         String[] rooms = new String[]{sessionName+"_1", sessionName+"_2", sessionName+"_3"};
 
         // 세션에 해당하는 방이 존재하는지 확인
-        sessionName = getRandomRoom(sessionName);
-        roomJoinDto.setSessionName(sessionName);
+        sessionName = getRandomroom(sessionName);
+        roomEnterDto.setSessionName(sessionName);
         session = openvidu.getActiveSession(sessionName);
 
         if(session == null){
             // 방이 존재하지 않다면 생성하라
-            HashMap<String,String> SessionPropertyJson = roomJoinDto.toSessionPropertyJson();
+            HashMap<String,String> SessionPropertyJson = roomEnterDto.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             session = openvidu.createSession(properties);
         } else if (session.getActiveConnections().size() > 20) {
-            System.out.println(sessionName+"방에 총 20명이 넘습니다");
         }
 
-        System.out.println("기존에"+sessionName+"방이 있으므로 기존 방에 입장합니다.");
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
         Connection connection = session.createConnection(properties);
-        System.out.println("방에 입장할 수 있는 토큰을 발급합니다."+connection.getToken());
         return connection.getToken();
     }
 
     @Override
-    public String moccojiRoomEnter(RoomJoinDto roomJoinDto) throws Exception {
-        String moccojiSessionName = roomJoinDto.getSessionName();
+    public String moccojiRoomEnter(RoomEnterDto roomEnterDto) throws Exception {
+        String SessionName = roomEnterDto.getSessionName();
         Session session;
-        session = openvidu.getActiveSession(moccojiSessionName);
+        session = openvidu.getActiveSession(SessionName);
 
         if(session == null){
             // 길드방이 존재하지 않다면 생성하라 (길드방에 아무도 없어서 세션이 종료된 상태라면 생성하라)
-            HashMap<String,String> SessionPropertyJson = roomJoinDto.toSessionPropertyJson();
+            HashMap<String,String> SessionPropertyJson = roomEnterDto.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             session = openvidu.createSession(properties);
         }
 
-        System.out.println(moccojiSessionName+"모꼬지 방이 있으므로 기존 방에 입장합니다.");
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
         Connection connection = session.createConnection(properties);
-        System.out.println("모꼬지방에 입장할 수 있는 토큰을 발급합니다."+connection.getToken());
+
         return connection.getToken();
     }
 
-    public String getRandomRoom(String sessionName){
+    @Override
+    public void questionAsk(QuestionDto questionDto) throws Exception {
+        String sessionName = questionDto.getSessionName();
+        Session session;
+        System.out.println(sessionName);
+        System.out.println(openvidu.getActiveSessions().toString());
+        session = openvidu.getActiveSession(sessionName);
+        System.out.println(session);
+        if(session == null){
+            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+        }
+
+        HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
+        String secret = "Basic "+OPENVIDU_SECRET;
+        secret = Base64.getEncoder().encodeToString(secret.getBytes());
+        request.setHeader("Content-Type", "application/json");
+        request.setHeader("Authorization", secret);
+        StringEntity entity = new StringEntity(questionDto.toJsonString(),StandardCharsets.UTF_8);
+        request.setEntity(entity);
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpResponse response = httpClient.execute(request);
+            System.out.println(response);
+            System.out.println("질문 게시에 성공했습니다.");
+        } catch (Exception e){
+            System.out.println(e);
+            throw new MyException("Openvidu서버 통신에 실패했습니다.",HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public String getRandomroom(String sessionName){
         Random random = new Random();
         int roomNumber = random.nextInt( 3) + 1; // 1-3
         return sessionName+roomNumber;
+    }
+
+    public String encodeBase64(){
+        String basicSecret = "Basic "+OPENVIDU_SECRET;
+        byte[] encodedBytes = Base64.getEncoder().encode(basicSecret.getBytes());
+        return new String(encodedBytes);
     }
 }
