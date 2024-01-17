@@ -8,4 +8,8 @@ public class MyException extends Exception{
         super(msg);
         this.status = status;
     }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
 }

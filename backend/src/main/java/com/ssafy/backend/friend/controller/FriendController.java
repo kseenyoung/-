@@ -43,7 +43,7 @@ public class FriendController {
 
                     friendService.requestFriend(userId, userId2);
 
-                    return ResponseEntity.ok(new HttpResponseBody<String>("성공^^", "성공^^"));
+                    return ResponseEntity.ok(new HttpResponseBody<String>("성공", "성공^^"));
 
                 /**
                  * [POST] /friend
@@ -60,11 +60,22 @@ public class FriendController {
 
                     return ResponseEntity.ok(new HttpResponseBody<String>(
                             new StringBuilder().append(accessUserId).append("님이 ").append(accessUserId2).append("님의 친구요청을 받았습니다.").toString(), "성공^^"));
+
+                    case "quitFriend":
+//                    User user = (User) session.getAttribute("User");
+//                    String userId = user.getUserId();
+                    String quitUserId = "ssafy";  // request session Id
+                    String quitUserId2 = body.get("userId");
+
+                    friendService.quitFriend(quitUserId, quitUserId2);
+
+                    return ResponseEntity.ok(new HttpResponseBody<String>("성공", "친구 끊기 성공"));
             }
         } catch (MyException e){
-            return ResponseEntity.ok(new HttpResponseBody<String>("[Exception]유감..", "유감.."));
+
+            return new ResponseEntity(new HttpResponseBody<String>("실패", e.getMessage()), e.getStatus());
         }
-        return ResponseEntity.ok(new HttpResponseBody<String>("유감..", "유감.."));
+        return new ResponseEntity(new HttpResponseBody<String>("실패", "유감.."), HttpStatus.BAD_REQUEST);
     }
 
 
