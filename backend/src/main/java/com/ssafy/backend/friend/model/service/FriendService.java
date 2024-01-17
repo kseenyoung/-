@@ -9,4 +9,6 @@ import org.springframework.stereotype.Service;
 public interface FriendService {
 
     public void requestFriend(String userId, String userId2) throws MyException;
+
+    void accessFriend(String accessUserId, String accessUuserId2) throws MyException;
 }
