@@ -1,9 +1,13 @@
 package com.ssafy.backend.room.model.service;
 
 import com.ssafy.backend.exception.MyException;
+import com.ssafy.backend.room.domain.Answer;
+import com.ssafy.backend.room.model.dto.AnswerDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
+import com.ssafy.backend.room.repository.AnswerRepository;
 import io.openvidu.java.client.*;
+import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -17,9 +21,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
 
     @Value("${openvidu.url}")
@@ -27,6 +34,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Value("${openvidu.secret}")
     private String OPENVIDU_SECRET;
+
+    private final AnswerRepository answerRepository;
 
     private OpenVidu openvidu;
 
@@ -84,10 +93,7 @@ public class RoomServiceImpl implements RoomService {
     public void askQuestion(QuestionDto questionDto) throws Exception {
         String sessionName = questionDto.getSessionName();
         Session session;
-        System.out.println(sessionName);
-        System.out.println(openvidu.getActiveSessions().toString());
         session = openvidu.getActiveSession(sessionName);
-        System.out.println(session);
         if(session == null){
             throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
@@ -102,12 +108,53 @@ public class RoomServiceImpl implements RoomService {
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpResponse response = httpClient.execute(request);
-            System.out.println(response);
-            System.out.println("질문 게시에 성공했습니다.");
+        } catch (Exception e){
+            throw new MyException("Openvidu서버 통신에 실패했습니다.",HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public void answerQuestion(AnswerDto answerDto) throws Exception {
+        String sessionName = answerDto.getSessionName();
+        Session session;
+        session = openvidu.getActiveSession(sessionName);
+        if(session == null){
+            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+        }
+
+        // DB에 대답 저장
+        saveAnswer(answerDto);
+
+        // 답변 문제번호 전송
+        HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
+        String secret = "Basic "+OPENVIDU_SECRET;
+        secret = Base64.getEncoder().encodeToString(secret.getBytes());
+        request.setHeader("Content-Type", "application/json");
+        request.setHeader("Authorization", secret);
+        StringEntity entity = new StringEntity(answerDto.toJsonString(),StandardCharsets.UTF_8);
+        request.setEntity(entity);
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpResponse response = httpClient.execute(request);
         } catch (Exception e){
             System.out.println(e);
             throw new MyException("Openvidu서버 통신에 실패했습니다.",HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public void saveAnswer(AnswerDto answerDto) throws Exception {
+        Answer answer = answerDto.toEntity();
+        answerRepository.save(answer);
+    }
+
+    @Override
+    public List<AnswerDto> findAnswerByQuestionId(int questionId) throws Exception {
+        List<Answer> answers = answerRepository.findAllByQuestionId(questionId);
+        List<AnswerDto> answerDtos = answers.stream()
+                .map(a -> new AnswerDto(a.getSessionName(),a.getAnswer(),a.getQuestionId()))
+                .collect(Collectors.toList());
+        return answerDtos;
     }
 
     public String getRandomroom(String sessionName){
