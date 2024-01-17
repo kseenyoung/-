@@ -1,32 +1,33 @@
 package com.ssafy.backend.board.service;
 
 import com.ssafy.backend.board.domain.Board;
+import com.ssafy.backend.board.domain.Comment;
 import com.ssafy.backend.board.domain.Tag;
 import com.ssafy.backend.board.dto.*;
 import com.ssafy.backend.board.repository.BoardRepository;
+import com.ssafy.backend.board.repository.CommentRepository;
 import com.ssafy.backend.board.repository.TagRepository;
 import com.ssafy.backend.common.exception.MyException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService{
     private final BoardRepository boardRepository;
     private final TagRepository tagRepository;
+    private final CommentRepository commentRepository;
 
-    @Autowired
-    public BoardServiceImpl(BoardRepository boardRepository, TagRepository tagRepository) {
-        this.boardRepository = boardRepository;
-        this.tagRepository = tagRepository;
-    }
+
 
     @Override
     public void boardCreate(BoardCreateRequestDto dto,String userId){
@@ -36,9 +37,12 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
+    @Transactional
     public void delete(BoardDeleteRequestDto dto, String userId) {
         Board board = boardRepository.findByBoardIdAndUserId(dto.getBoardId(),userId)
                 .orElseThrow(() ->new MyException("삭제할 글이 없습니다",HttpStatus.BAD_REQUEST));
+        List<Comment> allByBoardId = commentRepository.findAllByBoardId(board);
+        commentRepository.deleteAll(allByBoardId);
         boardRepository.delete(board);
     }
 
@@ -72,4 +76,19 @@ public class BoardServiceImpl implements BoardService{
                 .build();
     }
 
+    //게시글 확인 후 존재하면 댓글 불러와서 보여주기
+    @Override
+    @Transactional(readOnly = true)
+    public BoardDetailResponseDto getDetail(long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new MyException("게시글이 존재하지 않습니다", HttpStatus.BAD_REQUEST));
+
+        List<CommentDto> comments = new ArrayList<CommentDto>();
+        List<Comment> commentEntities = commentRepository.findAllByBoardIdOrderByCommentIdDesc(board);
+        for(Comment comment : commentEntities){
+            comments.add(new CommentDto(comment));
+        }
+        BoardDto boardDto = new BoardDto(board);
+        return new BoardDetailResponseDto(boardDto, comments);
+    }
 }

@@ -1,6 +1,7 @@
 package com.ssafy.backend.board.domain;
 
 import com.ssafy.backend.board.dto.CommentCreateRequestDto;
+import com.ssafy.backend.common.domain.BaseTime;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
-public class Comment {
+public class Comment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long commentId;
