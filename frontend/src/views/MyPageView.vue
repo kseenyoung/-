@@ -29,7 +29,7 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
   left: -28px;
 }
 .container {
-  margin: 90px auto 0px;
+  margin: 115px auto 0px;
 }
 .mypage-wrapper-router > a {
   border-width: 1px 1px 0px 1px;
@@ -54,7 +54,7 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
 .mypage-wrapper-content {
   border-radius: 5px;
   background-color: #f1f7fb;
-  min-height: 580px;
+  min-height: 686px;
   padding: 0px 50px;
   // box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;

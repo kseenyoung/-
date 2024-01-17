@@ -1,11 +1,11 @@
 <template>
-  <header>
+  <header :class="{ 'header-hidden': headerHidden }">
     <nav>
       <div>
         <RouterLink to="/">다각</RouterLink>
       </div>
-      <div class="d-flex">
-        <!-- 알람창 -->
+      <div class="d-flex align-items-center">
+        <Alarm/>
         <RouterLink to="/store"><span class="underline">상점</span></RouterLink>
         <RouterLink to="/login"><span class="underline">로그인</span></RouterLink>
         <div class="dropdown-toggle common-pointer" data-bs-toggle="dropdown" aria-expanded="false">
@@ -22,14 +22,38 @@
             </div>
           </div>
           <RouterLink to="/mypage" class="dropdown-item"><span class="underline">마이페이지</span></RouterLink>
+          <RouterLink to="/moccoji" class="dropdown-item"><span class="underline">모꼬지</span></RouterLink>
           <li><a href="#" class="logout dropdown-item"><span>로그아웃</span></a></li>
         </ul>
       </div>
     </nav>
   </header>
+  <AlarmModal/>
 </template>
 
 <script setup>
+import Alarm from './Alarm.vue';
+import AlarmModal from './AlarmModal.vue';
+
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
+// 헤더 스크롤
+const headerHidden = ref(false);
+let lastScrollTop = 0;
+
+const handleScroll = () => {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  headerHidden.value = scrollTop > lastScrollTop && scrollTop > 70;
+  lastScrollTop = scrollTop;
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+
 </script>
 
 <style lang="scss" scoped>
@@ -41,6 +65,12 @@ header {
   height: 70px;
   line-height: 70px;
   padding: 0px 80px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.header-hidden {
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
 }
 
 nav {
@@ -91,5 +121,4 @@ nav a:hover {
 .profile-info > div:nth-child(2) > div {
   height: 23px;
 }
-
 </style>

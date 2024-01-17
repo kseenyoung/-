@@ -10,7 +10,16 @@
       <span>10위 | </span>
       <span>10P</span>
     </div>
-    <div>"상태메시지"</div>
+    <div>
+      <span>"상태메시지"</span>
+      <i class="bi bi-pencil-fill common-pointer" data-bs-toggle="collapse" data-bs-target="#statusmsg-accordion" aria-expanded="true" aria-controls="collapseOne"></i>
+      <div id="statusmsg-accordion" class="accordion-collapse collapse" aria-labelledby="headingOne">
+        <div class="accordion-body input-group">
+          <input type="text" id="statusmsg">
+          <button class="btn common-btn">수정</button>
+        </div>
+      </div>
+    </div>
     <div>길드: -</div>
   </div>
 </template>
@@ -39,4 +48,23 @@ img {
   border-radius: 50%;
 }
 
+.accordion-collapse {
+  padding: 0px 10px;
+}
+.accordion-body {
+  display: flex;
+  margin-top: 5px;
+  justify-content: center;
+
+  > input {
+    width: 65%;
+    font-size: 1rem;
+    border: 1px solid rgb(43, 43, 43);
+    border-top-left-radius: var(--bs-border-radius);
+    border-bottom-left-radius: var(--bs-border-radius);
+  }
+  > input:focus {
+    outline:none;
+  }
+}
 </style>

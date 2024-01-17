@@ -1,8 +1,8 @@
 <template>
-  <div class="friend-wrapper">
-    <div class="friend-title">친구 목록</div>
+  <div class="common-mypage-wrapper">
+    <div class="common-mypage-title">친구 목록</div>
     <div class="friend-list-wrapper">
-
+      <div><i class="bi bi-people-fill"></i> 10명</div>
       <div class="friend-list-detail">
         <img src="@/assets/img/기본프로필_갈색.jpg">
         <div>닉네임1</div>
@@ -65,14 +65,6 @@
 </script>
 
 <style lang="scss" scoped>
-.friend-wrapper {
-  padding: 30px 50px;
-}
-.friend-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
 .friend-list-wrapper {
   display: flex;
   flex-direction: column;
@@ -110,7 +102,6 @@
   :nth-child(4) {
     flex-basis: auto;
   }
-
 
   @mixin friend-status {
     border: 1px solid #ccc;
