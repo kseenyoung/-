@@ -10,5 +10,7 @@ public interface FriendService {
 
     public void requestFriend(String userId, String userId2) throws MyException;
 
-    void accessFriend(String accessUserId, String accessUuserId2) throws MyException;
+    public void accessFriend(String accessUserId, String accessUuserId2) throws MyException;
+
+    public void quitFriend(String quitUserId, String quitUserId2) throws MyException;
 }

@@ -1,8 +1,6 @@
 package com.ssafy.backend.friend.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -12,6 +10,8 @@ import javax.persistence.Entity;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
+@Getter
 public class Friend  {
 
     @Column
