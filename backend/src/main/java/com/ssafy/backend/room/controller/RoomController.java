@@ -1,5 +1,6 @@
 package com.ssafy.backend.room.controller;
 
+import com.ssafy.backend.room.model.dto.AnswerDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.model.service.RoomService;
@@ -61,12 +62,18 @@ public class RoomController {
 
                 return new ResponseEntity<>(new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token),HttpStatus.OK);
             case "askQuestion": // 질문하기
-                String questionAskSessionName = (String) body.get("sessionName");
-                String questionAskMessage = (String) body.get("message");
+                sessionName = (String) body.get("sessionName");
+                String question = (String) body.get("question");
 
-                QuestionDto questionDto = new QuestionDto(questionAskSessionName, questionAskMessage);
+                QuestionDto questionDto = new QuestionDto(sessionName, question);
                 roomService.askQuestion(questionDto);
+            case "answerQuestion": // 질문하기
+                sessionName = (String) body.get("sessionName");
+                String answer = (String) body.get("answer");
+                Integer questionNumber = (Integer) body.get("question");
 
+                AnswerDto answerDto = new AnswerDto(sessionName, answer, questionNumber);
+                roomService.answerQuestion(answerDto);
         }
         return null;
     }
