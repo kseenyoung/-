@@ -77,4 +77,10 @@ public class TestController {
         return new ResponseEntity<>(new HttpResponseBody<>("OK", new String("게시글 삭제 성공")), HttpStatus.OK);
     }
 
+    @GetMapping("/detail/{id:[\\d]+}")
+    public ResponseEntity<HttpResponseBody<?>> getDetailBoard(@PathVariable("id") long id) {
+        BoardDetailResponseDto responseDto = boardService.getDetail(id);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", responseDto), HttpStatus.OK);
+    }
+
 }
