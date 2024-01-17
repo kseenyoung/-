@@ -25,6 +25,11 @@ public class BoardController {
     private final BoardService boardService;
     private final CommentService commentService;
 
+    @GetMapping("/detail/{id:[\\d]+}")
+    public ResponseEntity<HttpResponseBody<?>> getDetailBoard(@PathVariable("id") long id) {
+        BoardDetailResponseDto responseDto = boardService.getDetail(id);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", responseDto), HttpStatus.OK);
+    }
     @GetMapping("/list")
     public ResponseEntity<HttpResponseBody<?>> boardGetList(
             @RequestParam(value = "page", defaultValue = "0") int page
@@ -142,6 +147,20 @@ public class BoardController {
                         .comment(comment).build();
                 return new ResponseEntity<>(new HttpResponseBody<>("댓글 수정 성공", responseDto), HttpStatus.OK);
             }
+        } else if ("deleteComment".equals(sign)) {
+            String commentId = (String) body.get("commentId");
+            String boardId =(String) body.get("boardId");
+            if (boardId == null) throw new MyException("boardId NULL", HttpStatus.BAD_REQUEST);
+            if (commentId == null) throw new MyException("commentId NULL", HttpStatus.BAD_REQUEST);
+            if (isNumeric(boardId) && isNumeric(commentId)) {
+                CommentDeleteRequestDto dto = CommentDeleteRequestDto.builder()
+                        .boardId(Long.parseLong(boardId))
+                        .commentId(Long.parseLong(commentId))
+                        .build();
+                commentService.delete(dto, userId);
+                return new ResponseEntity<>(new HttpResponseBody<>("OK", new String("댓글 삭제 성공")), HttpStatus.OK);
+            }
+
         }
 
         throw new MyException("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
