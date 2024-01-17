@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,6 +44,7 @@ public class RoomController {
         String sessionName;
         String videoCodec;
         String token;
+        int questionNumber;
 
         switch (sign){
             case "enterRandomroom": // 랜덤 방 입장
@@ -70,10 +72,14 @@ public class RoomController {
             case "answerQuestion": // 답변하기
                 sessionName = (String) body.get("sessionName");
                 String answer = (String) body.get("answer");
-                Integer questionNumber = (Integer) body.get("question");
+                questionNumber = (int) body.get("questionNumber");
 
                 AnswerDto answerDto = new AnswerDto(sessionName, answer, questionNumber);
                 roomService.answerQuestion(answerDto);
+            case "findAnswer": // 답변 찾기
+                questionNumber = (int) body.get("answer");
+                List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionNumber);
+                return new ResponseEntity<>(new HttpResponseBody<>("답변을 불러옵니다.",answerDtos),HttpStatus.OK);
         }
         return null;
     }

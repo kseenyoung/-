@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -121,8 +123,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // DB에 대답 저장
-
-
+        saveAnswer(answerDto);
 
         // 답변 문제번호 전송
         HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
@@ -139,6 +140,21 @@ public class RoomServiceImpl implements RoomService {
             System.out.println(e);
             throw new MyException("Openvidu서버 통신에 실패했습니다.",HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public void saveAnswer(AnswerDto answerDto) throws Exception {
+        Answer answer = answerDto.toEntity();
+        answerRepository.save(answer);
+    }
+
+    @Override
+    public List<AnswerDto> findAnswerByQuestionId(int questionId) throws Exception {
+        List<Answer> answers = answerRepository.findAllByQuestionId(questionId);
+        List<AnswerDto> answerDtos = answers.stream()
+                .map(a -> new AnswerDto(a.getSessionName(),a.getAnswer(),a.getQuestionId()))
+                .collect(Collectors.toList());
+        return answerDtos;
     }
 
     public String getRandomroom(String sessionName){

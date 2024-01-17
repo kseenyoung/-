@@ -5,6 +5,8 @@ import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface RoomService {
     String enterRandomroom(RoomEnterDto roomEnterDto) throws Exception;
@@ -15,4 +17,5 @@ public interface RoomService {
     void answerQuestion(AnswerDto answerDto) throws Exception;
 
     void saveAnswer(AnswerDto answerDto) throws Exception;
+    List<AnswerDto> findAnswerByQuestionId(int questionId) throws Exception;
 }

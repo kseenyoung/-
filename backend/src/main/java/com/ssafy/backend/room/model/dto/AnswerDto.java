@@ -1,6 +1,7 @@
 package com.ssafy.backend.room.model.dto;
 
 import com.google.gson.JsonObject;
+import com.ssafy.backend.room.domain.Answer;
 
 public class AnswerDto {
     private String sessionName;
@@ -46,5 +47,12 @@ public class AnswerDto {
         jsonObject.addProperty("session", this.sessionName);
         jsonObject.addProperty("data", this.message);
         return jsonObject.toString();
+    }
+
+    public Answer toEntity(){
+        return Answer.builder()
+                .answer(this.message)
+                .questionId(this.question)
+                .build();
     }
 }
