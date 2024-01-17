@@ -19,16 +19,17 @@ import QuestionField from "@/components/room/QuestionField.vue";
 
 <style scoped>
 .QnA{
+  padding: 2px;
   padding-top: 15px;
   padding-bottom: 15px;
-  border-radius: 15px;
-  border: 2px solid black;
-  background-color: beige;
-  height: calc(100%-30px);
+  border: 4px solid black;
+  background-color: white;
+  height: calc(100% - 30px);
   width: 320px;
   position: relative;
   margin-top: 30px;
   margin-bottom: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
 }
 
 .QuestionField {

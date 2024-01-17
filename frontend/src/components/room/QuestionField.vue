@@ -23,14 +23,15 @@ textarea{
 }
 .question{
   border: 1px black dashed;
-  font-family:   'NanumSquareNeo';
+  font-family: 'NanumSquareNeo';
   font-weight: 800;
   font-size: 20px;
   padding: 5px;
+  right: 0;
 
 }
 #message{
-  font-family:   'NanumSquareNeo';
+  font-family: 'NanumSquareNeo';
   font-weight: 600;
   font-size: 15px;
   text-align: left;

@@ -2,21 +2,19 @@
   <div class="room">
     <div class="studyroomheader">
       <div class="flow">
-        <div class="lastname">java 마스터
-          <div class="untilnow">
-            03:40
-          </div>
+        <div class="lastname">
+          <img src="@/assets/arrow.png" alt="">
+          <div>java 마스터<br>
+          3:40
+        </div>
         </div>
         <div class="nowname">
-          Python 마스터
-          <div class="untilnow">
-            ~07:20
-          </div>
+          <div class="nametag">Python 마스터</div>
         </div>
-        <div class="nextname">C++ 마스터
-          <div class="untilnow">
-            ~10:20
-          </div>
+        <div class="nextname">
+          <img src="@/assets/arrow.png" alt="">
+          <div>C++ 마스터<br>
+          ~10:20</div>
         </div>
       </div>
 
@@ -24,58 +22,71 @@
     
     <div class="containers">
       <div class="video-players">
-        <div class="video-player-1">
-          <video class="video" ref="video1">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="video" ref="video2">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="video" ref="video3">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="video" ref="video4">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="video" ref="video5">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="video" ref="video6">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="video" ref="video7">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="video" ref="video8">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-        </div>
-
-        <div class="video-player-2">
-          <video class="video2" ref="video9">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="video2" ref="video10">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="video2" ref="video11">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="video2" ref="video12">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-        </div>
-
         <div class="video-player-3">
           <video class="bigvideo" ref="video13">
             <source src="@/assets/video.mp4" type="video/mp4" />
           </video>
         </div>
+        <div class="video-player-1">
+          <video class="videog1" ref="video1">
+            <source src="@/assets/movie.mp4" type="video/mp4" />
+          </video>
+          <video class="videog1" ref="video2">
+            <source src="@/assets/movie.mp4" type="video/mp4" />
+          </video>
+          <video class="videog1" ref="video3">
+            <source src="@/assets/movie.mp4" type="video/mp4" />
+          </video>
+          <video class="videog1" ref="video4">
+            <source src="@/assets/movie.mp4" type="video/mp4" />
+          </video>
+          <video class="videog1" ref="video5">
+            <source src="@/assets/video.mp4" type="video/mp4" />
+          </video>
+          <video class="videog1" ref="video6">
+            <source src="@/assets/video.mp4" type="video/mp4" />
+          </video>
+          <video class="videog1" ref="video7">
+            <source src="@/assets/video.mp4" type="video/mp4" />
+          </video>
+          <video class="videog1" ref="video8">
+            <source src="@/assets/video.mp4" type="video/mp4" />
+          </video>
+          <video class="videog1" ref="video9">
+            <source src="@/assets/video.mp4" type="video/mp4" />
+          </video>
+        </div>
+<!-- 
+        <div class="video-player-2">
+
+          <video class="videog2" ref="video10">
+            <source src="@/assets/video.mp4" type="video/mp4" />
+          </video>
+          <video class="videog2" ref="video11">
+            <source src="@/assets/video.mp4" type="video/mp4" />
+          </video>
+          <video class="videog2" ref="video12">
+            <source src="@/assets/video.mp4" type="video/mp4" />
+          </video>
+        </div> -->
+
+
       </div>
 
       <div class="achievement">
           <div  class="rate"  v-if="showRate">
-            달성률
+            <p>공부시간</p>
+            <div class="studytime">01:30:32</div>
+            <hr>
+            <p>달성률</p>
+              <div class="dagak">
+              <img src="@/assets/hexagon.png" style="transform:rotate(30deg);" alt="">
+              </div>
+              <div class="ratedetail">
+                java 마스터 --- <b>140%</b><br>
+                Python 마스터 --- <b>75%</b><br>
+                C++ 마스터 --- <b>0%</b>
+              </div>
           </div>
         </div>
       <div class="QnA">
@@ -85,14 +96,19 @@
       </div>
 
       <div class="bar">
-      <button class="ratetoggle" @click="toggleRate">▼</button>
-      <button class="questiontoggle" @click="toggleQuestion">▼</button>
-    </div>
+        <img class= "mute" @click="toggleMute" src="@/assets/mute.png" alt="음소거">
+        <img class= "pause" @click="togglePause" src="@/assets/pause.png" alt="휴식중">
+        <button class="ratetoggle" @click="toggleRate">달성률</button>
+        <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
+      </div>
 
       </div>
 
-  </div>
+<div class="black" v-if=isPause>휴식중
 
+  <img class= "pause" @click="togglePause" src="@/assets/whiteplay.png" alt="다시시작">
+</div>
+  </div>
 
 </template>
 
@@ -142,7 +158,8 @@ export default {
     data() {
         return {
             showRate: true,
-            showQuestion: true
+            showQuestion: true,
+            isPause: false,
         };
     },
     methods: {
@@ -151,8 +168,17 @@ export default {
         },
         toggleQuestion() {
             this.showQuestion = !this.showQuestion;
+        },
+        toggleMute(video) {
+          if (video && video.value instanceof HTMLVideoElement) {
+            video.value.muted = !video.value.muted;
+          }},
+        togglePause(){
+          this.isPause = !this.isPause;
         }
-    },
+          
+        },
+    
 
 
 };
@@ -161,6 +187,17 @@ export default {
 </script>
 
 <style>
+
+.black {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    color: white;
+    font-size: 300px;
+}
 .room {
   flex-direction: column; 
   height: 100%;
@@ -168,7 +205,7 @@ export default {
 }
 .studyroomheader {
   width:calc(100%-320px);
-  background-color: lightgray;
+  background-color: white;
   margin: 80px 0 0 0;
   color: black;
   display: flex;
@@ -180,60 +217,87 @@ export default {
 }
 .lastname{
   text-align: center;
-  font-size: 30px;
-  padding-right: 30px;
-  font-weight: 500;
+}
+.lastname img{
+  width: 30%;
 }
 .nowname {
-  font-size: 40px;
-  font-weight: 700;
+  font-size: 60px;
+  font-weight: 900;
   text-align: center;
-  padding-inline: 30px;
   background-color: white;
+  text-decoration: underline; 
+}
+.nametag{
+  padding: 20px;
+  font-weight: 900;
 }
 .nextname{
   text-align: center;
-  font-size: 30px;
-  padding-left: 30px;
-  font-weight: 500;
 }
-
+.nextname img{
+  width: 30%;
+}
 .untilnow{
   font-size: 20px;
   font-weight: 700;
 }
 
+.nowadjust{
+  display: flex;
+  justify-content: space-evenly;
+  height: 20px;
+}
+
+.mute{
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.pause{
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.space{
+  width: 50px;
+
+
+}
 .containers {
   display: flex;
   justify-content: center; 
   align-items: center;
   background-color: white;
-  width: 60%;
+  width: 80%;
   margin: auto;
 }
 
 .video-players {
   display: flex;
   flex-wrap: wrap;
-  flex:3;
-  border: 10px white solid;
+  border: 10px black solid;
   box-sizing: border-box;
 }
-
+.video-player-1 {
+  flex:3;
+}
 .video-player-2 {
   flex: 1;
 }
 .video-player-3 {
-  flex: 1;
+  flex: 3;
 }
 
-.video {
-  width: 25%;
+.videog1 {
+  width: 33.3%;
   height: auto;
   border: 5px white solid;
   box-sizing: border-box;
 }
-.video2 {
+.videog2 {
   width: 50%;
   height: auto;
   border: 5px white solid;
@@ -250,50 +314,70 @@ export default {
 }
 
 .rate {
-  font-size: 40px;
-  padding: 15px;
-  border-radius: 15px;
-  border: 3px black;
-  box-shadow: 0 40px 40px rgba(0, 0, 0, 0.25);
-  border: 2px solid black;
-  border-radius: 15px;
-  background-color: rgba(255, 255, 204, 0.9);
-  width: 50%;
+  padding: 2px;
+  border: 4px solid black;
+  background-color: white;
+  width: 320px;
+  height: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
 }
+
 .achievement {
   position: fixed;
   right:0;
+  bottom: 5%;
+  height: 60%;
+  justify-content: center;
+  display: flex;
+}
+.dagak {
+  text-align: center;
+  padding: 20px;
+}
+.dagak img{
+  width: 60%;
+  height: auto;
+}
+.studytime {
+  font-size: 30px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.ratedetail {
+  font-size: 15px;
+  text-align: center;
 }
 .QnA {
   position: fixed;
   right:0;
+  bottom: 0%;
 }
 
 .ratetoggle{
   background-color: white;
   position: absolute;
-  right: 0;
-  bottom:0;
-  width: 30px;
+  right:40px;
+  top: 0%;
+  width: 120px;
   height: 30px;
-  border-radius: 15px;
 }
 
 .questiontoggle{
   background-color: white;
   position: absolute;
-  right: 30px;
-  bottom:0;
-  width: 30px;
+  right:160px;
+  width: 120px;
   height: 30px;
-  border-radius: 15px;
 }
+
 .bar{
-  position: absolute;
-  bottom: 5%;
-  left: 35px;
-  width: 100%;
-  height: 15%;
-  /* background-color: blue; */
+  position: fixed;
+  bottom: 0;
+  height: 5%;
+  background-color: white;
+  width:100%;
+
+  border: 4px solid black;
 }
 </style>

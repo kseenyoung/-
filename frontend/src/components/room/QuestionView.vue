@@ -2,7 +2,10 @@
     <div class="questionbox">
     <!-- <p class="questiontitle"># 이건 뭐고 저건 뭔가요?</p> -->
     <div class="questionlabel">문</div>
-    <p class="questiondetail">이건 뭐고 저건 뭔가요? 이것이 궁급합니다</p>
+    <div class="questiondetail">
+    <p><b>dory</b></p>
+    <p >백준 10928번 문제가 dfs로 풀리나요? 시도중인데 잘 안 되네요ㅠㅠ</p>
+    </div>
     </div>
 </template>
 
