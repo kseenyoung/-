@@ -2,11 +2,11 @@ package com.ssafy.backend.room.model.dto;
 
 import java.util.HashMap;
 
-public class RoomJoinDto {
+public class RoomEnterDto {
     private String sessionName;
     private String videoCodec;
 
-    public RoomJoinDto(String sessionName, String videoCodec) {
+    public RoomEnterDto(String sessionName, String videoCodec) {
         this.sessionName = sessionName;
         this.videoCodec = videoCodec;
     }
