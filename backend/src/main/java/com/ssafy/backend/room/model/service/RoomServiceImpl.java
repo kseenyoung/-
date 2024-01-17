@@ -1,10 +1,13 @@
 package com.ssafy.backend.room.model.service;
 
 import com.ssafy.backend.exception.MyException;
+import com.ssafy.backend.room.domain.Answer;
 import com.ssafy.backend.room.model.dto.AnswerDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
+import com.ssafy.backend.room.repository.AnswerRepository;
 import io.openvidu.java.client.*;
+import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -21,6 +24,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
 
     @Value("${openvidu.url}")
@@ -28,6 +32,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Value("${openvidu.secret}")
     private String OPENVIDU_SECRET;
+
+    private final AnswerRepository answerRepository;
 
     private OpenVidu openvidu;
 
@@ -114,6 +120,11 @@ public class RoomServiceImpl implements RoomService {
             throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
 
+        // DB에 대답 저장
+
+
+
+        // 답변 문제번호 전송
         HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
         String secret = "Basic "+OPENVIDU_SECRET;
         secret = Base64.getEncoder().encodeToString(secret.getBytes());

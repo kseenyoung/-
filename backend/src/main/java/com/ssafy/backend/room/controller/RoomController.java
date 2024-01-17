@@ -67,7 +67,7 @@ public class RoomController {
 
                 QuestionDto questionDto = new QuestionDto(sessionName, question);
                 roomService.askQuestion(questionDto);
-            case "answerQuestion": // 질문하기
+            case "answerQuestion": // 답변하기
                 sessionName = (String) body.get("sessionName");
                 String answer = (String) body.get("answer");
                 Integer questionNumber = (Integer) body.get("question");

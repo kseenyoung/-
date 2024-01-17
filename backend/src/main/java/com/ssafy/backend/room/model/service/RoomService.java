@@ -3,7 +3,9 @@ package com.ssafy.backend.room.model.service;
 import com.ssafy.backend.room.model.dto.AnswerDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface RoomService {
     String enterRandomroom(RoomEnterDto roomEnterDto) throws Exception;
     String enterMoccojiroom(RoomEnterDto roomEnterDto) throws Exception;
@@ -11,4 +13,6 @@ public interface RoomService {
     void askQuestion(QuestionDto questionDto) throws Exception;
 
     void answerQuestion(AnswerDto answerDto) throws Exception;
+
+    void saveAnswer(AnswerDto answerDto) throws Exception;
 }
