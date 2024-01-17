@@ -1,5 +1,7 @@
 package com.ssafy.backend.user.model.service;
 
+import com.ssafy.backend.security.model.SecurityDto;
+import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.domain.User;
 import com.ssafy.backend.user.model.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
@@ -16,12 +18,16 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Autowired
+    SecurityMapper securityMapper;
+
+    @Autowired
     UserRepository userRepository;
 
 
     @Override
     public void signup(UserSignupDto userSignupDto) throws Exception {
         userMapper.signup(userSignupDto);
+        securityMapper.insertSalt(new SecurityDto(userSignupDto.getUserId(), "ㅋㅋ"));
     }
 
     @Override

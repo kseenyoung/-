@@ -16,7 +16,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(value = {"com.ssafy.backend.user.model.mapper"})
+@MapperScan(value = {"com.ssafy.backend.user.model.mapper"}, sqlSessionFactoryRef="dagakSqlSessionFactory")
 public class DagakDatabaseConfig {
 
     @Bean(name="dagakDataSource")
@@ -26,23 +26,23 @@ public class DagakDatabaseConfig {
     }
 
     @Bean(name="dagakSqlSessionFactory")
-    public SqlSessionFactory myTripSessionFactory(@Qualifier("dagakDataSource") DataSource db1DataSource, ApplicationContext applicationContext) throws Exception{
+    public SqlSessionFactory dagakSessionFactory(@Qualifier("dagakDataSource") DataSource dagakDataSource, ApplicationContext applicationContext) throws Exception{
         final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(db1DataSource);
+        sessionFactory.setDataSource(dagakDataSource);
         sessionFactory.setMapperLocations(applicationContext.getResources("classpath:mybatis/mappers/*.xml")); //쿼리작성용 mapper.xml위치 설정.
         return sessionFactory.getObject();
     }
 
     //	@Primary
     @Bean(name="dagakSqlSessionTemplate")
-    public SqlSessionTemplate myTripSqlSessionTemplate(@Qualifier("dagakSqlSessionFactory")SqlSessionFactory myTripSqlSessionFactory) throws Exception{
-        return new SqlSessionTemplate(myTripSqlSessionFactory);
+    public SqlSessionTemplate dagakSqlSessionTemplate(@Qualifier("dagakSqlSessionFactory")SqlSessionFactory dagakSqlSessionFactory) throws Exception{
+        return new SqlSessionTemplate(dagakSqlSessionFactory);
     }
 
     //	@Primary
     @Bean(name = "myTriptransactionManager")
-    public PlatformTransactionManager transactionManager(@Qualifier("dagakDataSource") DataSource db1DataSource) {
-        return new DataSourceTransactionManager(db1DataSource);
+    public PlatformTransactionManager transactionManager(@Qualifier("dagakDataSource") DataSource dagakDataSource) {
+        return new DataSourceTransactionManager(dagakDataSource);
     }
 
 
