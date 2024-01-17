@@ -10,6 +10,7 @@ import com.ssafy.backend.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
 
+    @Transactional(rollbackOn = Exception.class)
     @Override
     public void signup(UserSignupDto userSignupDto) throws Exception {
         SecurityDto securityDto = new SecurityDto();
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
 
         securityDto.setUserId(userSignupDto.getUserId());
         securityDto.setSalt(salt);
+
         userSignupDto.setUserPassword(safePassword);
 
         securityMapper.insertSalt(securityDto);
