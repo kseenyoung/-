@@ -19,13 +19,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping("test")
-    public void test(@RequestBody UserSignupDto userSignupDto) throws Exception {
-        System.out.println(userSignupDto.getUserId());
-        UserSignupDto byId = userService.findById(userSignupDto.getUserId());
-
-        System.out.println(byId.getUserId());
-    }
+//    @PostMapping("test")
+//    public void test(@RequestBody UserSignupDto userSignupDto) throws Exception {
+//        System.out.println(userSignupDto.getUserId());
+//        UserSignupDto byId = userService.findById(userSignupDto.getUserId());
+//        userService.test(userSignupDto);
+//        System.out.println(byId.getUserId());
+//    }
 
     @PostMapping("")
     public ResponseEntity<HttpResponseBody<?>> user(@RequestBody Map<String, Object> body) throws MyException {
@@ -34,6 +34,11 @@ public class UserController {
 
         if (sign != null) {
             switch (sign) {
+                /*
+                 * [POST] /user
+                 * 회원가입 처리
+                 */
+                // TODO : 변수값 유효성 검사.
                 case "signup":
                     String userId = (String) body.get("userId");
                     String userBirthday = (String) body.get("userBirthday");
@@ -49,6 +54,7 @@ public class UserController {
                         userService.signup(userSignupDto);
                     } catch (Exception e) {
                         // throw new MyException("회원가입 실패", HttpStatus.BAD_REQUEST);
+                        e.printStackTrace();
                         HttpResponseBody<String> responseBody = new HttpResponseBody<>("Fail", "회원 가입 실패!!!");
                         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
                     }
