@@ -6,6 +6,7 @@ import com.ssafy.backend.board.service.CommentService;
 import com.ssafy.backend.board.service.TagService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,6 @@ public class TestController {
     @PostMapping("/tagCreate")
     public ResponseEntity<HttpResponseBody<?>> Tagcreate(@RequestBody  TagCreateRequestDto dto){
         //when 원래 dto 말고 httpSession에서 관리자인지 체크해야됨
-
         //then
         int idx = tagService.tagCreate(dto);
         HttpResponseBody<String> responseBody = new HttpResponseBody<>("OK",""+idx);
@@ -60,6 +60,13 @@ public class TestController {
     @PostMapping("/commentCreate")
     public ResponseEntity<HttpResponseBody<?>> commentCreate(@RequestBody CommentCreateRequestDto dto) {
         long id = commentService.commentCreate(dto, "test1");
+
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", "" + id), HttpStatus.OK);
+    }
+
+    @PostMapping("/commentEdit")
+    public ResponseEntity<HttpResponseBody<?>> commentEdit(@RequestBody CommentModifyRequestDto dto) {
+        long id = commentService.modify(dto, "test1");
 
         return new ResponseEntity<>(new HttpResponseBody<>("OK", "" + id), HttpStatus.OK);
     }

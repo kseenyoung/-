@@ -2,6 +2,7 @@ package com.ssafy.backend.board.dto;
 
 import com.ssafy.backend.board.domain.Board;
 import com.ssafy.backend.board.domain.Comment;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +19,11 @@ public class CommentCreateRequestDto {
                 .boardId(board)
                 .userId(userId)
                 .build();
+    }
+
+    @Builder
+    public CommentCreateRequestDto(long boardId, String comment) {
+        this.boardId = boardId;
+        this.comment = comment;
     }
 }

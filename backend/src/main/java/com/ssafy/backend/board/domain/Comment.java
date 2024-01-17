@@ -44,5 +44,8 @@ public class Comment {
         this.comment = comment;
     }
 
+    public void modifyComment(String comment){
+        this.comment = comment;
+    }
 
 }
