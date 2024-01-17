@@ -45,7 +45,12 @@ public class FriendController {
 
                     return ResponseEntity.ok(new HttpResponseBody<String>("성공", "성공^^"));
 
-                case "access":
+                /**
+                 * [POST] /friend
+                 * @return ResponseEntity<HttpResponseBody<String>>
+                 * 친구 요청에 대해서 승인
+                 **/
+                case "accessFriend":
 //                    User user = (User) session.getAttribute("User");
 //                    String userId = user.getUserId();
                     String accessUserId = "ssafy";  // request session Id
