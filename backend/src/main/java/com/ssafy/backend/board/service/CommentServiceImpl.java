@@ -3,6 +3,7 @@ package com.ssafy.backend.board.service;
 import com.ssafy.backend.board.domain.Board;
 import com.ssafy.backend.board.domain.Comment;
 import com.ssafy.backend.board.dto.CommentCreateRequestDto;
+import com.ssafy.backend.board.dto.CommentDeleteRequestDto;
 import com.ssafy.backend.board.dto.CommentModifyRequestDto;
 import com.ssafy.backend.board.repository.BoardRepository;
 import com.ssafy.backend.board.repository.CommentRepository;
@@ -37,5 +38,14 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new MyException("존재하지 않는 댓글입니다,", HttpStatus.BAD_REQUEST));
         comment.modifyComment(dto.getComment());
         return commentRepository.save(comment).getCommentId();
+    }
+
+    @Override
+    public void delete(CommentDeleteRequestDto dto, String userId) {
+        Board board = boardRepository.findById(dto.getBoardId())
+                .orElseThrow(() -> new MyException("존재하지 않는 글입니다.", HttpStatus.BAD_REQUEST));
+        Comment comment = commentRepository.findByCommentIdAndUserId(dto.getCommentId(),userId)
+                .orElseThrow(() -> new MyException("이미 삭제된 글입니다,", HttpStatus.BAD_REQUEST));
+         commentRepository.delete(comment);
     }
 }
