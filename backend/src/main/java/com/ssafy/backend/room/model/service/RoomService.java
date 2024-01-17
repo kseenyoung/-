@@ -4,4 +4,6 @@ import com.ssafy.backend.room.model.dto.RoomJoinDto;
 
 public interface RoomService {
     String randomRoomEnter(RoomJoinDto roomJoinDto) throws Exception;
+    String moccojiRoomEnter(RoomJoinDto roomJoinDto) throws Exception;
+
 }

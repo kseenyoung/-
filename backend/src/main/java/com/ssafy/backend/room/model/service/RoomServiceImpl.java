@@ -53,6 +53,26 @@ public class RoomServiceImpl implements RoomService {
         return connection.getToken();
     }
 
+    @Override
+    public String moccojiRoomEnter(RoomJoinDto roomJoinDto) throws Exception {
+        String moccojiSessionName = roomJoinDto.getSessionName();
+        Session session;
+        session = openvidu.getActiveSession(moccojiSessionName);
+
+        if(session == null){
+            // 길드방이 존재하지 않다면 생성하라 (길드방에 아무도 없어서 세션이 종료된 상태라면 생성하라)
+            HashMap<String,String> SessionPropertyJson = roomJoinDto.toSessionPropertyJson();
+            SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
+            session = openvidu.createSession(properties);
+        }
+
+        System.out.println(moccojiSessionName+"모꼬지 방이 있으므로 기존 방에 입장합니다.");
+        ConnectionProperties properties = new ConnectionProperties.Builder().build();
+        Connection connection = session.createConnection(properties);
+        System.out.println("모꼬지방에 입장할 수 있는 토큰을 발급합니다."+connection.getToken());
+        return connection.getToken();
+    }
+
     public String getRandomRoom(String sessionName){
         Random random = new Random();
         int roomNumber = random.nextInt( 3) + 1; // 1-3
