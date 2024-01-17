@@ -41,16 +41,21 @@ public class FriendController {
 
                     return ResponseEntity.ok(new HttpResponseBody<String>("성공^^", "성공^^"));
 
-                case "access":
+                /**
+                 * [POST] /friend
+                 * @return ResponseEntity<HttpResponseBody<String>>
+                 * 친구 요청에 대해서 승인
+                 **/
+                case "accessFriend":
 //                    User user = (User) session.getAttribute("User");
 //                    String userId = user.getUserId();
                     String accessUserId = "ssafy";  // request session Id
-                    String accessUuserId2 = body.get("userId");
+                    String accessUserId2 = body.get("userId");
 
-                    friendService.accessFriend(accessUserId, accessUuserId2);
+                    friendService.accessFriend(accessUserId, accessUserId2);
 
                     return ResponseEntity.ok(new HttpResponseBody<String>(
-                            new StringBuilder().append(accessUserId).append("님이 ").append(accessUuserId2).append("님의 친구요청을 받았습니다.").toString(), "성공^^"));
+                            new StringBuilder().append(accessUserId).append("님이 ").append(accessUserId2).append("님의 친구요청을 받았습니다.").toString(), "성공^^"));
             }
         } catch (MyException e){
             return ResponseEntity.ok(new HttpResponseBody<String>("[Exception]유감..", "유감.."));
