@@ -2,7 +2,7 @@ spring:
   dagak:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/dagak
+      jdbc-url: jdbc:mysql://localhost:3306/dagak
       username: root
       password: ssafy
   datasource:
@@ -14,8 +14,7 @@ spring:
     hibernate:
       ddl-auto: update
 
-mybatis:
-  mapper-locations: classpath:mybatis/mappers/**/*.xml
+
 server:
   servlet:
     context-path: /dagak
