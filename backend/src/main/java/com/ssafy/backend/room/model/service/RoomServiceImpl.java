@@ -36,7 +36,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public String randomRoomEnter(RoomEnterDto roomEnterDto) throws Exception {
+    public String enterRandomroom(RoomEnterDto roomEnterDto) throws Exception {
         String sessionName = roomEnterDto.getSessionName();
         Session session;
 
@@ -62,7 +62,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public String moccojiRoomEnter(RoomEnterDto roomEnterDto) throws Exception {
+    public String enterMoccojiroom(RoomEnterDto roomEnterDto) throws Exception {
         String SessionName = roomEnterDto.getSessionName();
         Session session;
         session = openvidu.getActiveSession(SessionName);
@@ -81,7 +81,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void questionAsk(QuestionDto questionDto) throws Exception {
+    public void askQuestion(QuestionDto questionDto) throws Exception {
         String sessionName = questionDto.getSessionName();
         Session session;
         System.out.println(sessionName);
