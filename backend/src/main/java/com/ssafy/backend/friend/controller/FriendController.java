@@ -65,12 +65,29 @@ public class FriendController {
                     friendService.quitFriend(quitUserId, quitUserId2);
 
                     return ResponseEntity.ok(new HttpResponseBody<String>("성공", "친구 끊기 성공"));
+
+
             }
         } catch (MyException e){
 
             return new ResponseEntity(new HttpResponseBody<String>("실패", e.getMessage()), e.getStatus());
         }
         return new ResponseEntity(new HttpResponseBody<String>("실패", "유감.."), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("count")
+    public ResponseEntity<HttpResponseBody<?>> countFriend(){
+        // User user = (User) session.getAttribute("User");
+        // String userId = user.getUserId();
+        String countUserId = "ssafy";  // request session Id
+        Integer friends = null;
+        try{
+            friends = friendService.countFriend(countUserId);
+        } catch (MyException e){
+            return new ResponseEntity(new HttpResponseBody<String>("실패", e.getMessage()), e.getStatus());
+        }
+
+        return ResponseEntity.ok(new HttpResponseBody<Integer>("성공", friends));
     }
 
 
