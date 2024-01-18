@@ -1,11 +1,12 @@
 package com.ssafy.backend.user.model;
 
+
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.user.domain.User;
 import org.springframework.http.HttpStatus;
 
-// 나중에 유효성 검사 주석 풀어야 함.
+
 public class UserSignupDto {
     private String userId, userBirthday, userName, userPassword, userPhonenumber, userEmail, userNickname;
 
@@ -32,7 +33,7 @@ public class UserSignupDto {
     }
 
     public String getUserBirthday() {
-        return userBirthday;
+        return this.userBirthday;
     }
 
     public void setUserBirthday(String userBirthday) throws MyException {
@@ -43,7 +44,7 @@ public class UserSignupDto {
     }
 
     public String getUserName() {
-        return userName;
+        return this.userName;
     }
 
     public void setUserName(String userName) throws MyException {
@@ -57,17 +58,19 @@ public class UserSignupDto {
         return userPassword;
     }
 
+
     public void setUserPassword(String userPassword) throws MyException {
-//        if (userPassword == null) {
-//            throw new MyException("비밀번호가 없습니다..", HttpStatus.BAD_REQUEST);
-//        }
-//        RegEx.isValidUserPassword(userPassword);
+        if (userPassword == null) {
+            throw new MyException("비밀번호가 없습니다..", HttpStatus.BAD_REQUEST);
+        }
+        RegEx.isValidUserPassword(userPassword);
         this.userPassword = userPassword;
     }
 
     public String getUserPhonenumber() {
-        return userPhonenumber;
+        return this.userPhonenumber;
     }
+
 
     public void setUserPhonenumber(String userPhonenumber) throws MyException {
         if (userPhonenumber == null) {
@@ -80,11 +83,12 @@ public class UserSignupDto {
         return userEmail;
     }
 
+
     public void setUserEmail(String userEmail) throws MyException {
-//        if (userEmail == null) {
-//            throw new MyException("이메일이 없습니다..", HttpStatus.BAD_REQUEST);
-//        }
-//        RegEx.isValidUserEmail(userEmail);
+        if (userEmail == null) {
+            throw new MyException("이메일이 없습니다..", HttpStatus.BAD_REQUEST);
+        }
+        RegEx.isValidUserEmail(userEmail);
         this.userEmail = userEmail;
     }
 
@@ -92,11 +96,12 @@ public class UserSignupDto {
         return userNickname;
     }
 
+
     public void setUserNickname(String userNickname) throws MyException {
-//        if (userNickname == null) {
-//            throw new MyException("닉네임이 없습니다..", HttpStatus.BAD_REQUEST);
-//        }
-//        RegEx.isValidUserNickname(userNickname);
+        if (userNickname == null) {
+            throw new MyException("닉네임이 없습니다..", HttpStatus.BAD_REQUEST);
+        }
+        RegEx.isValidUserNickname(userNickname);
         this.userNickname = userNickname;
     }
 
@@ -107,9 +112,7 @@ public class UserSignupDto {
                 userName(this.userName).
                 userEmail(this.userEmail).build();
     }
-    public UserSignupDto(){
-
-    }
+    public UserSignupDto(){}
     public UserSignupDto(String userId) {
         this.userId = userId;
     }

@@ -12,4 +12,5 @@ public interface UserMapper {
     void signup(UserSignupDto userSignupDto) throws Exception;
 
     String getUserPassword(String loginUserId);
+
 }

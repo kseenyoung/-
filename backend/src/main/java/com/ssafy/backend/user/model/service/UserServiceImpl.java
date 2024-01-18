@@ -1,20 +1,26 @@
 package com.ssafy.backend.user.model.service;
 
+
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
 import com.ssafy.backend.security.model.SecurityDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.domain.User;
 import com.ssafy.backend.user.model.UserLoginDto;
+
 import com.ssafy.backend.user.model.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
+
+import java.util.Optional;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,7 +33,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
-
 
     @Transactional(rollbackOn = Exception.class)
     @Override
@@ -43,12 +48,6 @@ public class UserServiceImpl implements UserService {
         userSignupDto.setUserPassword(safePassword);
 
         securityMapper.insertSalt(securityDto);
-        userMapper.signup(userSignupDto);
-    }
-
-    @Override
-    public void test(UserSignupDto userSignupDto) throws Exception {
-        userRepository.save(userSignupDto.toEntity());
     }
 
     @Override
@@ -67,4 +66,5 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
         return user.checkPassword(encryptedLoginPassword);
     }
+
 }

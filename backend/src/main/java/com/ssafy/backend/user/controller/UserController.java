@@ -1,9 +1,9 @@
 package com.ssafy.backend.user.controller;
 
 import com.ssafy.backend.common.exception.MyException;
-import com.ssafy.backend.common.utils.RegEx;
-import com.ssafy.backend.user.domain.User;
+
 import com.ssafy.backend.user.model.UserLoginDto;
+
 import com.ssafy.backend.user.model.UserSignupDto;
 import com.ssafy.backend.user.model.service.UserService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
@@ -13,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-
-import static com.ssafy.backend.common.utils.RegEx.isValidUserId;
 
 @RestController
 @RequestMapping("user")
@@ -85,9 +83,7 @@ public class UserController {
                         responseBody = new HttpResponseBody<>("Fail", "로그인 실패!!!");
                         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
                     }
-
             }
-
         }
         return response;
     }
