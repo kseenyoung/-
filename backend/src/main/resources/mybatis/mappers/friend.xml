@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.backend.friend.model.mapper.FriendMapper">
+
+    <select id="countFriend" parameterType="String" resultType="Integer">
+        select count(*)
+        from friend
+        where (user_id = #{id} or user_id2 = #{id})
+          and is_friend = 1;
+    </select>
+
+</mapper>

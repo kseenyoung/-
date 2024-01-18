@@ -10,5 +10,4 @@ import java.util.Optional;
 @Repository
 public interface FriendRepository extends JpaRepository<Friend, UserId> {
 
-
 }
