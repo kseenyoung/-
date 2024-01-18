@@ -10,9 +10,11 @@
       <div class="mypage-wrapper-spring">
         <img src="@/assets/img/notespring2.png" class="notespring">
       </div>
-      <div class="mypage-content flex-fill">
+      <transition name="flip" mode="out-in">
+      <div class="mypage-content flex-fill" :key="$route.fullPath">
         <RouterView/>
       </div>
+    </transition>
     </div>
   </div>
 </template>
@@ -22,7 +24,8 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
 </script>
 
 <style lang="scss" scoped>
-.notespring {
+
+.notespring { 
   height: 580px;
   position: relative;
   top: 50px;
