@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
         String loginSalt = securityMapper.getSalt(loginUserId);
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
 
+
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
         return user.checkPassword(encryptedLoginPassword);
