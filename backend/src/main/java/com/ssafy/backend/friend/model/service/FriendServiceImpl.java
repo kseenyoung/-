@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -21,17 +22,21 @@ public class FriendServiceImpl implements FriendService {
     FriendMapper friendMapper;
 
 
+    @Transactional(rollbackOn = Exception.class)
     public void requestFriend(String userId, String userId2) throws MyException {
         // 존재하는 userId인지 각각 확인 필요
         
         UserId PK = new UserId(userId, userId2);
 
+        // 친구 등록 요청
         friendRepository.save(
                 Friend.builder().
                         userId(PK).
                         isFriend(0).
                         build());
-    }
+        // 알림 보내기
+
+        }
 
     @Override
     public void accessFriend(String accessUserId, String accessUserId2) throws MyException {
@@ -77,6 +82,8 @@ public class FriendServiceImpl implements FriendService {
         }
         return true;
     }
+
+
 
 
 }

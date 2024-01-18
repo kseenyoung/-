@@ -28,7 +28,6 @@ public class FriendController {
             return new ResponseEntity<>(new HttpResponseBody<>("실패", "sign 값을 입력하세요"), HttpStatus.BAD_REQUEST);
         }
 
-        try{
             switch (sign){
                 /**
                  * [POST] /friend
@@ -71,13 +70,8 @@ public class FriendController {
 
                     return ResponseEntity.ok(new HttpResponseBody<String>("성공", "친구 끊기 성공"));
 
-
             }
-        } catch (MyException e){
-
-            return new ResponseEntity(new HttpResponseBody<String>("실패", e.getMessage()), e.getStatus());
-        }
-        return new ResponseEntity(new HttpResponseBody<String>("실패", "유감.."), HttpStatus.BAD_REQUEST);
+        throw new MyException("실패", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("count")
@@ -94,6 +88,8 @@ public class FriendController {
 
         return ResponseEntity.ok(new HttpResponseBody<Integer>("성공", friends));
     }
+
+
 
 
 }
