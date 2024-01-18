@@ -6,7 +6,7 @@
     <img src="@/assets/horse1.png">
     <div class="card-body">
       <h5 class="card-title">Lv.1 망아지</h5>
-      <p class="card-text">망아지 설명</p>
+      <p class="card-text">💎100p</p>
       <a href="#" class="btn btn-primary">구매하기</a>
     </div>
   </div>
@@ -14,7 +14,7 @@
     <img src="@/assets/horse1.png">
     <div class="card-body">
       <h5 class="card-title">Lv.2 경주마</h5>
-      <p class="card-text">경주마 설명</p>
+      <p class="card-text">💎150p</p>
       <a href="#" class="btn btn-primary">구매하기</a>
     </div>
   </div>
@@ -22,7 +22,7 @@
     <img src="@/assets/horse1.png">
     <div class="card-body">
       <h5 class="card-title">Lv.3 적토마</h5>
-      <p class="card-text">적토마 설명</p>
+      <p class="card-text">💎400p</p>
       <a href="#" class="btn btn-primary">구매하기</a>
     </div>
   </div>
@@ -30,7 +30,7 @@
     <img src="@/assets/horse1.png">
     <div class="card-body">
       <h5 class="card-title">Lv.4 유니콘</h5>
-      <p class="card-text">유니콘 설명</p>
+      <p class="card-text">💎1500p</p>
       <a href="#" class="btn btn-primary">구매하기</a>
     </div>
   </div>

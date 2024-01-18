@@ -1,6 +1,6 @@
 
   <template>
-<div class="ranking">
+<div class="ranking ">
   <div>
     <p class="title">나의 순위</p>
   </div>
@@ -51,4 +51,7 @@
     line-height: 0.5;
     display: flex;
   }
+
+
+
   </style>

@@ -51,19 +51,73 @@ const navigateToStudyRoom = () => {
   z-index: 20;
   color: black;
 }
-.startbutton {
+
+.title::before {
+  content: attr(data-text); /* 글자 내용을 속성값으로 가져와서 적용 */
   position: absolute;
-  top: 90%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 25px;
-  font-family: 'NanumSquareNeo';
-  font-size: 40px;
-  font-weight: 600;
-  z-index: 100;
-  background-color: black;
-  color: white;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  color: white; /* 흰색으로 설정 */
+  overflow: hidden;
+  clip: rect(0, auto, 0, auto); /* 추가된 텍스트를 숨기기 위해 사용 */
 }
+// .startbutton {
+//   position: absolute;
+//   top: 90%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   padding: 25px;
+//   font-family: 'NanumSquareNeo';
+//   font-size: 40px;
+//   font-weight: 600;
+//   z-index: 100;
+//   background-color: black;
+//   color: white;
+// }
+
+.startbutton {
+  // 기존 스타일 유지
+  background-color: #639B9D; /* 적절한 배경색으로 변경 */
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 24px;
+  cursor: pointer;
+  border-radius: 8px; /* 둥근 모서리 추가 */
+  transition: background-color 0.3s; /* 부드러운 전환 효과 */
+
+  &:hover {
+    background-color: #3E6271; /* 마우스 호버 시 색상 변경 */
+  }
+
+  span {
+    position: relative;
+    z-index: 1;
+  }
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #FF8C00, #FFD700); /* 그라데이션 효과 추가 */
+    z-index: -1;
+    border-radius: 8px; /* 둥근 모서리에 그라데이션도 적용 */
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &:hover:before {
+    opacity: 1;
+  }
+}
+
 .parent {
       overflow: scroll;
       height: 100vh;
@@ -83,7 +137,11 @@ const navigateToStudyRoom = () => {
     .one {
       // background-image: url('https://img.freepik.com/free-vector/abstract-3d-perspective-indoor-wireframe-vector-design_1017-39916.jpg?w=1060&t=st=1705037743~exp=1705038343~hmac=abc423a6b1c37e3cfec62d1e9af305e6f3989f5421e7c351a80a494cad1a4629');
       // background-image: url('https://img.freepik.com/free-vector/detailed-wireframe-terrain-landscape-in-black-and-white_1048-11902.jpg?w=1380&t=st=1705038502~exp=1705039102~hmac=ab8142a255e5fb577d99e6111f45612933a987327ade60ae55e02646d932400a');
-      background-image: url('https://previews.123rf.com/images/roxiller/roxiller1608/roxiller160800030/61554592-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%B6%94%EC%83%81-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%A0%90%EC%9D%B4%EC%9E%88%EB%8A%94-%ED%85%8D%EC%8A%A4%EC%B2%98-%EA%B2%80%EC%9D%80-%ED%8C%A8%ED%84%B4-%EB%B2%A1%ED%84%B0.jpg');
+      // background-image: url('https://previews.123rf.com/images/roxiller/roxiller1608/roxiller160800030/61554592-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%B6%94%EC%83%81-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%A0%90%EC%9D%B4%EC%9E%88%EB%8A%94-%ED%85%8D%EC%8A%A4%EC%B2%98-%EA%B2%80%EC%9D%80-%ED%8C%A8%ED%84%B4-%EB%B2%A1%ED%84%B0.jpg');
+      background-image: url('@/assets/square.png');
+
+      
+
       // filter: invert(100%);
     background-size: cover;
     background-position: center;
@@ -455,16 +513,24 @@ div[id^="bsquare"] {
 }
 
 .two {
-      background-color: gray;
+      // background-color: gray;
       display: flex;
       align-items: center;
     justify-content: space-evenly;
     font-family: 'NanumSquareNeo';
     font-weight: 700;
+    background-image: url('@/assets/navymountain.jpg');
+    background-size: cover;
+    background-position: center;
     }
 
+  
+
     .three {
-      background-color: rgb(195, 195, 195);
+      // background-color: rgb(195, 195, 195);
+      background-image: url('@/assets/sky.jpg');
+    background-size: cover;
+    background-position: center;
     }
     
 

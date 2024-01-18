@@ -1,30 +1,25 @@
 <template>
   <div class="room">
     <div class="studyroomheader">
-      <div class="flow">
-        <div class="lastname">
-          <img src="@/assets/arrow.png" alt="">
-          <div>java 마스터<br>
-          3:40
-        </div>
-        </div>
         <div class="nowname">
           <div class="nametag">Python 마스터</div>
+          <img class= "mute" @click="toggleMute" src="@/assets/mute.png" alt="음소거">
+          <img class= "pause" @click="togglePause" src="@/assets/pause.png" alt="휴식중">
         </div>
-        <div class="nextname">
-          <img src="@/assets/arrow.png" alt="">
-          <div>C++ 마스터<br>
-          ~10:20</div>
-        </div>
+          <div class="lastlater">
+            <div class="lastname">java 마스터 3:40
+            </div>
+            <div class="latername">C++ 마스터 ~10:20
+            </div>
       </div>
-
     </div>
-    
+
     <div class="containers">
       <div class="video-players">
+        <div class="column">
         <div class="video-player-3">
           <video class="bigvideo" ref="video13">
-            <source src="@/assets/video.mp4" type="video/mp4" />
+            <source src="@/assets/movie.mp4" type="video/mp4" />
           </video>
         </div>
         <div class="video-player-1">
@@ -40,73 +35,61 @@
           <video class="videog1" ref="video4">
             <source src="@/assets/movie.mp4" type="video/mp4" />
           </video>
-          <video class="videog1" ref="video5">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="videog1" ref="video6">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="videog1" ref="video7">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="videog1" ref="video8">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="videog1" ref="video9">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
         </div>
-<!-- 
-        <div class="video-player-2">
-
-          <video class="videog2" ref="video10">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video11">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video12">
-            <source src="@/assets/video.mp4" type="video/mp4" />
-          </video>
-        </div> -->
-
-
       </div>
 
-      <div class="achievement">
-          <div  class="rate"  v-if="showRate">
-            <p>공부시간</p>
-            <div class="studytime">01:30:32</div>
-            <hr>
-            <p>달성률</p>
-              <div class="dagak">
-              <img src="@/assets/hexagon.png" style="transform:rotate(30deg);" alt="">
-              </div>
-              <div class="ratedetail">
-                java 마스터 --- <b>140%</b><br>
-                Python 마스터 --- <b>75%</b><br>
-                C++ 마스터 --- <b>0%</b>
-              </div>
+        <div class="video-player-2">
+          <video class="videog2" ref="video5">
+            <source src="@/assets/movie.mp4" type="video/mp4" />
+          </video>
+          <video class="videog2" ref="video6">
+            <source src="@/assets/movie.mp4" type="video/mp4" />
+          </video>
+          <video class="videog2" ref="video7">
+            <source src="@/assets/movie.mp4" type="video/mp4" />
+          </video>
+          <video class="videog2" ref="video8">
+            <source src="@/assets/movie.mp4" type="video/mp4" />
+          </video>
+          <video class="videog2" ref="video9">
+            <source src="@/assets/movie.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+          <div class="bar">
+            <button class="ratetoggle" @click="toggleRate">달성률</button>
+            <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
+           
+      </div>
+      <div class="utility">
+              <div class="achievement">
+                <div  class="rate"  v-if="showRate">
+                  <p class="titletag">공부시간</p>
+                  <div class="studytime">01:30:32</div>
+                  <hr>
+                  <p class="titletag">달성률</p>
+                    <div class="dagak">
+                    <img src="@/assets/hexagon.png" style="transform:rotate(30deg);" alt="">
+                    </div>
+                    <div class="ratedetail">
+                      java 마스터 --- <b>140%</b><br>
+                      Python 마스터 --- <b>75%</b><br>
+                      C++ 마스터 --- <b>0%</b>
+                    </div>
           </div>
         </div>
+      </div>
       <div class="QnA">
         <div  v-if="showQuestion">
           <QnAListView/>
         </div>
       </div>
-
-      <div class="bar">
-        <img class= "mute" @click="toggleMute" src="@/assets/mute.png" alt="음소거">
-        <img class= "pause" @click="togglePause" src="@/assets/pause.png" alt="휴식중">
-        <button class="ratetoggle" @click="toggleRate">달성률</button>
-        <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
       </div>
 
-      </div>
-
-<div class="black" v-if=isPause>휴식중
-
-  <img class= "pause" @click="togglePause" src="@/assets/whiteplay.png" alt="다시시작">
+<div class="black" v-if=isPause>
+  <p class="resttitle">휴식중</p>
+  <p class="resttime">~00:30</p>
+  <img class= "play" @click="togglePause" src="@/assets/whiteplay.png" alt="다시시작">
 </div>
   </div>
 
@@ -117,6 +100,8 @@ import QnAListView from "@/components/room/QnAListView.vue";
 import { ref, onMounted } from "vue";
 
 export default {
+  
+
     name: "VideoPlayer",
     components: { QnAListView},
     setup() {
@@ -175,153 +160,155 @@ export default {
           }},
         togglePause(){
           this.isPause = !this.isPause;
-        }
-          
         },
-    
+        handleScroll() {
+      const header = this.$refs.studyroomheader;
 
-
+     
+        },
+      }
 };
 
 
 </script>
 
 <style>
-
-.black {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    color: white;
-    font-size: 300px;
-}
 .room {
   flex-direction: column; 
   height: 100%;
-  background-color: white;
+}
+.resttitle{
+  font-size: 100px;
+}
+.resttime{
+  font-size: 50px;
+}
+.black {
+    position: fixed;
+    top: 50%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+    transform: translateY(-50%);
+    z-index: 101;
 }
 .studyroomheader {
-  width:calc(100%-320px);
-  background-color: white;
-  margin: 80px 0 0 0;
+  background-color: gainsboro;
   color: black;
-  display: flex;
-  justify-content: center;
-}
-.flow{
-  display: flex;
-  /* flex: 3; */
-}
-.lastname{
-  text-align: center;
-}
-.lastname img{
-  width: 30%;
+  justify-content: space-around;
+  height: 100px;
+  /* border: 2px black dashed; */
+  width: 62.5%;
+  position: relative;
+  top:100px;
 }
 .nowname {
-  font-size: 60px;
-  font-weight: 900;
-  text-align: center;
-  background-color: white;
-  text-decoration: underline; 
+  font-size: 40px;
+  text-align: left;
+  /* background-color: white; */
+  display: flex;
+}
+.lastname {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.latername {
+  border-left: 1px dashed black;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 .nametag{
-  padding: 20px;
   font-weight: 900;
+  margin-right: 40px;
+  margin-left: 10px;
 }
-.nextname{
-  text-align: center;
-}
-.nextname img{
-  width: 30%;
-}
-.untilnow{
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.nowadjust{
+.lastlater {
   display: flex;
-  justify-content: space-evenly;
-  height: 20px;
 }
-
-.mute{
-  width: 20px;
-  height: 20px;
+.play{
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-}
-
-.pause{
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.space{
-  width: 50px;
-
-
 }
 .containers {
+  width: 100%;
   display: flex;
-  justify-content: center; 
-  align-items: center;
-  background-color: white;
-  width: 80%;
-  margin: auto;
+  margin-top: 110px;
 }
-
 .video-players {
   display: flex;
   flex-wrap: wrap;
-  border: 10px black solid;
+  /* border: 10px black solid; */
   box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex: 5;
 }
-.video-player-1 {
-  flex:3;
+.bar {
+  flex : 3;
+  position: relative;
+  /* background-color: black; */
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  transform-origin: left top;
+  transform: rotate(90deg); /* 90도 회전 */
 }
-.video-player-2 {
-  flex: 1;
-}
-.video-player-3 {
-  flex: 3;
+.column{
+  flex:4;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }
 
+.video-player-2 {
+  flex: 1;
+  background-color: white;
+}
+.video-player-3 {
+  flex: 4;
+}
+.video-player-1 {
+  flex: 1;
+  border-top: white solid 5px;
+}
 .videog1 {
-  width: 33.3%;
+  width: 25%;
   height: auto;
   border: 5px white solid;
   box-sizing: border-box;
 }
 .videog2 {
-  width: 50%;
+  width: 100%;
   height: auto;
   border: 5px white solid;
   box-sizing: border-box;
+
 }
 
 .bigvideo {
-  width: 100%;
-  height: auto;
+  height: 100%;
+  width: auto;
   display: flex;
   border: 5px white solid;
   box-sizing: border-box;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .rate {
   padding: 2px;
-  border: 4px solid black;
+  border: 2px solid black;
   background-color: white;
   width: 320px;
   height: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
 }
-
+.QnA {
+  position: fixed;
+  right:0;
+  bottom: 0%;
+}
 .achievement {
   position: fixed;
   right:0;
@@ -329,6 +316,9 @@ export default {
   height: 60%;
   justify-content: center;
   display: flex;
+}
+.titletag {
+  margin:0;
 }
 .dagak {
   text-align: center;
@@ -343,41 +333,51 @@ export default {
   text-align: center;
   font-weight: 700;
 }
-
 .ratedetail {
   font-size: 15px;
   text-align: center;
 }
-.QnA {
-  position: fixed;
-  right:0;
-  bottom: 0%;
-}
 
-.ratetoggle{
-  background-color: white;
-  position: absolute;
-  right:40px;
-  top: 0%;
-  width: 120px;
-  height: 30px;
+.mute{
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  margin-top: 20px;
 }
-
+.pause{
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-left: 20px;
+}
 .questiontoggle{
-  background-color: white;
-  position: absolute;
-  right:160px;
+  background-color: rgb(200, 200, 200);
   width: 120px;
-  height: 30px;
+  height: 40px;
+  border: gainsboro;
+  border-radius: 15px 15px 0 0;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+  top:-40px;
+}
+.ratetoggle{
+  background-color: gainsboro;
+  width: 120px;
+  height: 40px;
+  border: gainsboro;
+  border-radius: 15px 15px 0 0;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  top:-40px;
+  position: relative;
 }
 
-.bar{
-  position: fixed;
-  bottom: 0;
-  height: 5%;
+.questiontoggle:hover, .ratetoggle:hover{
   background-color: white;
-  width:100%;
-
-  border: 4px solid black;
+  /* border-bottom: 2px solid white;*/
 }
+
 </style>

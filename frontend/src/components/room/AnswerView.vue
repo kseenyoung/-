@@ -3,7 +3,7 @@
         <!-- <p class="answertitle"># 이건 뭐고 저건 뭡니다.</p> -->
     <div class="answerlabel">답</div>
     <div class="answerdetail">
-    <p><b>mory</b></p>
+    <p class="nametag"><b>mory</b></p>
     <p >dfs로 풀되 예외 처리를 하나 해 줘야 합니다. 모든 경우의 수를 잘 생각해보세요.</p>
     </div>
     </div>
@@ -21,7 +21,9 @@
     padding-left: 10px;
     padding-right: 10px;
 } */
-
+.nametag{
+    margin: 0;
+}
 .answerlabel{
     font-weight: 800;
     padding: 3px;
