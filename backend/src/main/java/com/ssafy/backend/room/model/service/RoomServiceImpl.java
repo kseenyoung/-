@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -123,7 +122,8 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // DB에 대답 저장
-        saveAnswer(answerDto);
+        Answer answer = saveAnswer(answerDto);
+        answerDto.setAnswerId(answer.getAnswerId());
 
         // 답변 문제번호 전송
         HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
@@ -136,6 +136,7 @@ public class RoomServiceImpl implements RoomService {
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpResponse response = httpClient.execute(request);
+            System.out.println("통신에 성공했습니다.");
         } catch (Exception e){
             System.out.println(e);
             throw new MyException("Openvidu서버 통신에 실패했습니다.",HttpStatus.BAD_REQUEST);
@@ -143,16 +144,17 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void saveAnswer(AnswerDto answerDto) throws Exception {
+    public Answer saveAnswer(AnswerDto answerDto) throws Exception {
         Answer answer = answerDto.toEntity();
-        answerRepository.save(answer);
+        answer = answerRepository.save(answer);
+        return answer;
     }
 
     @Override
     public List<AnswerDto> findAnswerByQuestionId(int questionId) throws Exception {
         List<Answer> answers = answerRepository.findAllByQuestionId(questionId);
         List<AnswerDto> answerDtos = answers.stream()
-                .map(a -> new AnswerDto(a.getSessionName(),a.getAnswer(),a.getQuestionId()))
+                .map(a -> new AnswerDto(a.getAnswerId(),a.getSessionName(),a.getAnswer(),a.getQuestionId()))
                 .collect(Collectors.toList());
         return answerDtos;
     }
