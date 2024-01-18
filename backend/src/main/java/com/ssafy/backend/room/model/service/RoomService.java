@@ -1,5 +1,6 @@
 package com.ssafy.backend.room.model.service;
 
+import com.ssafy.backend.room.domain.Answer;
 import com.ssafy.backend.room.model.dto.AnswerDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
@@ -16,6 +17,6 @@ public interface RoomService {
 
     void answerQuestion(AnswerDto answerDto) throws Exception;
 
-    void saveAnswer(AnswerDto answerDto) throws Exception;
+    Answer saveAnswer(AnswerDto answerDto) throws Exception;
     List<AnswerDto> findAnswerByQuestionId(int questionId) throws Exception;
 }
