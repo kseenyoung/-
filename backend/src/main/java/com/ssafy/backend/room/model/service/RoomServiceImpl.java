@@ -97,9 +97,9 @@ public class RoomServiceImpl implements RoomService {
             throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
          
-	System.out.println("session: "+session.getSessionId());
+	    System.out.println("session: "+session.getSessionId());
         HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
-	System.out.println("URL: "+OPENVIDU_URL+"openvidu/api/signal");
+	    System.out.println("URL: "+OPENVIDU_URL+"openvidu/api/signal");
         String secret = "Basic "+OPENVIDU_SECRET;
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
         request.setHeader("Content-Type", "application/json");
