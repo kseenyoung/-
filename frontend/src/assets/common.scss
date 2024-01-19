@@ -47,8 +47,11 @@ a {
 }
 .common-btn {
   background-color: $vt-c-text-light-1;
-
+  border: none;
+  color: white;
+  
   &:hover {
+    color: white;
     background-color: $vt-c-text-light-2;
   }
 }
@@ -56,3 +59,14 @@ a {
 .common-pointer {
   cursor: pointer;
 }
+
+.common-mypage-wrapper {
+  padding: 30px 50px;
+
+  .common-mypage-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+}
+

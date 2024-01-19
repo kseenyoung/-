@@ -1,26 +1,30 @@
 <template>
-  <div>
-    <div class="calendar-container">
-      <div class="calendar-header">
-        <button @click="prevMonth" class="cal-btn">&lt;</button>
-        <span>{{ currentMonth }}</span>
-        <button @click="nextMonth" class="cal-btn">&gt;</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th v-for="day in daysOfWeek" :key="day">{{ day }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="week in weeks" :key="week">
-            <td v-for="day in week" :key="day.date" @click="selectDate(day)">
-              {{ day.day }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button @click="prevMonth" class="cal-btn"><i class="bi bi-caret-left-square-fill"></i></button>
+      <span class="span-header">{{ currentMonth }}</span>
+      <button @click="nextMonth" class="cal-btn"><i class="bi bi-caret-right-square-fill"></i></button>
+      <button @click="goToToday" class="btn common-btn">Today</button>
     </div>
+    <table>
+      <thead>
+        <tr>
+          <th v-for="day in daysOfWeek" :key="day">{{ day }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="week in weeks" :key="week">
+          <td v-for="day in week" :key="day.date" @click="selectDate(day)">
+            <span class="span-date" :class="{ 'red-text': isToday(day.date) }">{{ day.day }}</span>
+            <div v-if="day.date">
+              <div v-for="todo in todoList[day.date.toDateString()]" :key="todo">
+                {{ todo }}
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -63,17 +67,8 @@ const weeks = computed(() => {
     }
     calendar.push(week);
   }
-
   return calendar;
 });
-
-// 날짜 클릭 시 처리
-const selectDate = (day) => {
-  if (day.date) {
-    console.log('Selected Date:', day.date);
-    // 여기에 선택한 날짜에 대한 추가 로직을 넣을 수 있습니다.
-  }
-};
 
 // 이전 월로 이동
 const prevMonth = () => {
@@ -83,6 +78,48 @@ const prevMonth = () => {
 // 다음 월로 이동
 const nextMonth = () => {
   currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 1);
+};
+
+// 오늘인지 여부를 확인하는 함수
+const isToday = (date) => {
+  const today = new Date();
+  return (
+    date &&
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+};
+
+// 오늘로 이동
+const goToToday = () => {
+  currentDate.value = new Date(); // 현재 날짜로 설정
+};
+
+// 다각 배열
+const todoList = ref({
+  // 'Wed Jan 17 2024': ['일정1']
+});
+
+// 날짜 선택 후 일정 추가
+const selectDate = (day) => {
+  if (day.date) {
+    console.log('Selected Date:', day.date);
+    const newTodo = prompt('Enter Todo:');
+    if (newTodo) {
+      addTodo(day.date, newTodo);
+    }
+    console.log(todoList.value)
+  }
+};
+
+// 배열에 일정 추가
+const addTodo = (date, todo) => {
+  const dateString = date.toDateString();
+  if (!todoList.value[dateString]) {
+    todoList.value[dateString] = [];
+  }
+  todoList.value[dateString].push(todo);
 };
 
 // 초기화
@@ -95,29 +132,18 @@ onMounted(() => {
 .cal-btn {
   border: none;
   background-color: transparent;
-  cursor: pointer;
   font-size: 18px;
   color: #555;
-}
 
-.calendar-container {
-  background-color: #fff;
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  margin: 20px;
+    i {
+      font-size: 1.5rem;
+      color: #ff6347;
+    }
 }
 
 .calendar-header {
   margin-bottom: 20px;
   text-align: center;
-}
-
-.calendar-header button {
-  font-size: 24px;
-  font-weight: bold;
-  color: #555;
 }
 
 table {
@@ -126,31 +152,45 @@ table {
 }
 
 th, td {
-  text-align: center;
   border: 1px solid #ddd;
 }
 
 th {
+  text-align: center;
   background-color: #f5f5f5;
   font-weight: bold;
   color: #555;
-  height: 40px; /* 높이 조절 */
+  height: 30px; 
 }
 
 td {
   cursor: pointer;
-  height: 60px; /* 높이 조절 */
+  height: 85px;
+  text-align: right;
 }
 
 td:hover {
-  background-color: #f0f0f0;
+  background-color: #fcfcfc;
 }
 
-span {
+.span-header {
   font-size: 24px;
   font-weight: bold;
   color: #555;
   margin: 0 15px;
+}
+.span-date {
+  position: relative;
+  top: -27px;
+  left: -2px;
+  padding: 0px 3px;
+}
+.red-text {
+  color: white;
+  background: linear-gradient(to top, #ff6347 8%, transparent 8%);
+  background-color: #ff6347;
+  border-radius: 3px;
+  padding-bottom: 2px;
 }
 
 .divider {

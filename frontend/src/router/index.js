@@ -41,7 +41,7 @@ const router = createRouter({
       component: () => import('@/views/MyPageView.vue'),
       children: [
         {
-          path: 'mypageschedule',
+          path: '',
           name: 'myPageSchedule',
           component: () => import('@/components/mypage/MyPageSchedule.vue'),
         },
@@ -61,6 +61,11 @@ const router = createRouter({
       path: '/studyroom',
       name: 'studyroom',
       component: StudyRoomView
+    },
+    {
+      path: '/moccoji',
+      name: 'Moccoji',
+      component: () => import('@/views/MoccojiView.vue'),
     },
   ],
 });
