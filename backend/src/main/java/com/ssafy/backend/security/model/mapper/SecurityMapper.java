@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SecurityMapper {
     void insertSalt(SecurityDto securityDto);
+    String getSalt(String userId);
+
 }
