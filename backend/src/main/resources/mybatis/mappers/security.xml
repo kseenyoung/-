@@ -9,4 +9,10 @@
         values(#{userId}, #{salt})
     </insert>
 
+
+    <select id="getSalt" resultType="String" parameterType="String">
+        select salt
+        from user_security
+        where user_id = #{userId}
+    </select>
 </mapper>
