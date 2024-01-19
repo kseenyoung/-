@@ -9,10 +9,10 @@ import com.ssafy.backend.utils.HttpResponseBody;
 import io.openvidu.java.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -90,6 +90,30 @@ public class RoomController {
                 List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionNumber);
                 return new ResponseEntity<>(new HttpResponseBody<>("답변을 불러옵니다.",answerDtos),HttpStatus.OK);
             case "test":
+//                RestTemplate restTemplate = new RestTemplate();
+//                restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+//
+//                String secret = "Basic "+OPENVIDU_SECRET;
+//                secret = Base64.getEncoder().encodeToString(secret.getBytes());
+//
+//                // Header set
+//                HttpHeaders httpHeaders = new HttpHeaders();
+//                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+//                httpHeaders.add("Authorization",secret);
+//
+//                // Body set
+//                MultiValueMap<String, String> b = new LinkedMultiValueMap<>();
+//                b.add("session", "SessionA1");
+//                b.add("data", "하이하이");
+//
+//                HttpEntity<?> requestMessage = new HttpEntity<>(body, httpHeaders);
+//
+//                HttpEntity<String> res = restTemplate.postForEntity("https://capstone-6.shop:4443/openvidu/api/signal", requestMessage, String.class);
+
+
+
+
+//
                 URI uri = UriComponentsBuilder
                         .fromUriString("https://capstone-6.shop:4443")
                         .path("/openvidu/api/signal")
@@ -107,17 +131,14 @@ public class RoomController {
                         .post(uri)
                         .header("Content-Type", "application/json")
                         .header("Authorization", secret)
-                        .header("Access-Control-Allow-Origin", "*")
                         .body(questionDto2);
 
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
                 ResponseEntity<QuestionDto2> responseEntity = restTemplate.exchange(
-                        requestEntity, QuestionDto2.class
+                        uri,HttpMethod.POST,requestEntity,QuestionDto2.class
                 );
-
                 break;
-
         }
         return null;
     }
