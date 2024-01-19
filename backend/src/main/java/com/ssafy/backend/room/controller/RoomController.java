@@ -69,6 +69,7 @@ public class RoomController {
 
                 QuestionDto questionDto = new QuestionDto(sessionName, question);
                 roomService.askQuestion(questionDto);
+		break;
             case "answerQuestion": // 답변하기
                 sessionName = (String) body.get("sessionName");
                 String answer = (String) body.get("answer");
@@ -76,6 +77,7 @@ public class RoomController {
 
                 AnswerDto answerDto = new AnswerDto(sessionName, answer, questionNumber);
                 roomService.answerQuestion(answerDto);
+		break;
             case "findAnswer": // 답변 찾기
                 questionNumber = (int) body.get("answer");
                 List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionNumber);

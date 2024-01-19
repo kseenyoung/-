@@ -34,6 +34,8 @@ public class QuestionDto {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("session", this.sessionName);
         jsonObject.addProperty("data", this.message);
+	System.out.println("session: "+ this.sessionName);
+        System.out.println("data: "+this.message);
         return jsonObject.toString();
     }
 }

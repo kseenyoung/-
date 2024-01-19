@@ -96,8 +96,10 @@ public class RoomServiceImpl implements RoomService {
         if(session == null){
             throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
-
+         
+	System.out.println("session: "+session.getSessionId());
         HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
+	System.out.println("URL: "+OPENVIDU_URL+"openvidu/api/signal");
         String secret = "Basic "+OPENVIDU_SECRET;
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
         request.setHeader("Content-Type", "application/json");
@@ -107,7 +109,9 @@ public class RoomServiceImpl implements RoomService {
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpResponse response = httpClient.execute(request);
+	    System.out.println("통신에 성공했습니다!");
         } catch (Exception e){
+	    System.out.println("e: "+e);
             throw new MyException("Openvidu서버 통신에 실패했습니다.",HttpStatus.BAD_REQUEST);
         }
     }
@@ -127,18 +131,20 @@ public class RoomServiceImpl implements RoomService {
 
         // 답변 문제번호 전송
         HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
+	System.out.println("URL: "+OPENVIDU_URL + "openvidu/api/signal");
         String secret = "Basic "+OPENVIDU_SECRET;
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
         request.setHeader("Content-Type", "application/json");
         request.setHeader("Authorization", secret);
         StringEntity entity = new StringEntity(answerDto.toJsonString(),StandardCharsets.UTF_8);
         request.setEntity(entity);
+	System.out.println(entity.getContent().toString());
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpResponse response = httpClient.execute(request);
             System.out.println("통신에 성공했습니다.");
         } catch (Exception e){
-            System.out.println(e);
+            System.out.println("e"+e);
             throw new MyException("Openvidu서버 통신에 실패했습니다.",HttpStatus.BAD_REQUEST);
         }
     }
