@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.backend.friend.model.mapper.FriendMapper">
+
+    <resultMap id="friendVO" type="com.ssafy.backend.friend.model.vo.FriendVO">
+        <result property="userId" column="user_id" />
+        <result property="userNickname" column="user_nickname" />
+    </resultMap>
+
+    <select id="countFriend" parameterType="String" resultType="Integer">
+        select count(*)
+        from friend
+        where (user_id = #{id} or user_id2 = #{id})
+          and is_friend = 1;
+    </select>
+
+    <!-- #{user_id}의 친구 닉네임 찾기 -->
+    <select id="listFriends" parameterType="String" resultMap="friendVO">
+        select user_id, user_nickname
+        from user u join(select user_id2, is_friend
+                         from friend
+                         where user_id = #{user_id}) f on u.user_id = f.user_id2
+        where is_friend = 1
+        union all
+        select user_id, user_nickname
+        from user u join friend using(user_id)
+        where user_id2 = #{user_id};
+    </select>
+
+</mapper>
