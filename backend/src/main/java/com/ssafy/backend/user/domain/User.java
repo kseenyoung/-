@@ -1,12 +1,11 @@
 package com.ssafy.backend.user.domain;
 
+import com.ssafy.backend.mokkoji.domain.Mokkoji;
 import com.ssafy.backend.user.model.UserSignupDto;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 @AllArgsConstructor
