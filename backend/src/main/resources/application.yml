@@ -1,25 +1,44 @@
 server:
   port: 8080
+  servlet:
+    context-path: /dagak
   ssl:
     enabled: false
 spring:
   dagak:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/dagak
+      jdbc-url: jdbc:mysql://localhost:3306/dagak
+      username: root
+      password: ssafy
+  security:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/security
       username: root
       password: ssafy
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/dagak
+    jdbc-url: jdbc:mysql://localhost:3306/dagak?serverTimezone=UTC&useLegacyDatetimeCode=false
     username: root
     password: ssafy
+
   jpa:
     hibernate:
       ddl-auto: create
-  redis:
-    host: 3.143.74.33
-    port: 6379
+    show-sql: true
+    database: mysql
+    properties:
+      database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+      hibernate:
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  h2:
+    console:
+      enabled: true
+redis:
+  host: 3.143.74.33
+  port: 6379
 mybatis:
   mapper-locations: classpath:mybatis/mappers/**/*.xml
 openvidu:
