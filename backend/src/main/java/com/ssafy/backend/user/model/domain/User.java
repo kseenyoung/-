@@ -1,13 +1,10 @@
-package com.ssafy.backend.user.domain;
+package com.ssafy.backend.user.model.domain;
 
-import com.ssafy.backend.mokkoji.domain.Mokkoji;
-import com.ssafy.backend.user.model.UserSignupDto;
+import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import lombok.*;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
@@ -15,6 +12,7 @@ import java.util.Date;
 @ToString
 @Getter
 public class User {
+
     @Column
     private Integer userPoint;;
 
@@ -22,10 +20,13 @@ public class User {
     @JoinColumn(name = "mokkojiId")
     private Mokkoji mokkojiId;
 
+
+
     @Column
     private String userPassword,  userName,
             modifyUserPasswordTime, userPhonenumber, userBirthday,
     userEmail, userNickname, userPicture,  todayDagakId, userStatusMessage;
+
     @Column
     private LocalDateTime createdDate;
 
@@ -33,9 +34,6 @@ public class User {
     @Id
     private String userId;
 
-    public UserSignupDto toDto(){
-        return new UserSignupDto(userId);
-    }
     public boolean checkPassword(String encryptedPassword) {
         return this.userPassword.equals(encryptedPassword);
     }
