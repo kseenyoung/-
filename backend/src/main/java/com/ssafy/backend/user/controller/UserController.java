@@ -40,20 +40,10 @@ public class UserController {
         if (sign != null) {
             switch (sign) {
                 /*
-                 * [POST] /user
-                 * 회원가입 처리
+                 * [POST] 회원가입
                  */
                 case "signup":
                     String userLoginId = (String) body.get("userId");
-                    try {
-                        boolean isExistId = userService.isExistId(userLoginId);
-                        if (isExistId){
-                            HttpResponseBody<String> responseBody = new HttpResponseBody<>("Fail", "이미 존재하는 아이디입니다.");
-                            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                     String userLoginBirthday = (String) body.get("userBirthday");
                     String userLoginName = (String) body.get("userName");
                     String userLoginPassword = (String) body.get("userPassword");
@@ -73,6 +63,9 @@ public class UserController {
                     HttpResponseBody<String> responseBody = new HttpResponseBody<>("OK", "회원 가입 성공!!!");
                     return new ResponseEntity<>(responseBody, HttpStatus.OK);
 
+                /*
+                 * [POST] 로그인
+                 */
                 case "login":
                     String loginUserId = (String) body.get("userId");
                     String loginUserPassword = (String) body.get("userPassword");
@@ -83,6 +76,37 @@ public class UserController {
                     } else {
                         responseBody = new HttpResponseBody<>("Fail", "로그인 실패!!!");
                         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+                    }
+
+                /*
+                 * [POST] 아이디 중복 검사
+                 */
+                case "isExistId":
+                    String userTriedId = (String) body.get("userId");
+                    try {
+                        boolean isExistId = userService.isExistId(userTriedId);
+                        if (isExistId){
+                            responseBody = new HttpResponseBody<>("Fail", "이미 존재하는 아이디입니다.");
+                            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    
+                /*
+                 * [POST] 닉네임 중복 검사
+                 */
+                case "isExistNickname":
+                    String userTriedNickname = (String) body.get("userNickname");
+                    System.out.println(userTriedNickname);
+                    try {
+                        boolean isExistNickname = userService.isExistNickname(userTriedNickname);
+                        if (isExistNickname){
+                            responseBody = new HttpResponseBody<>("Fail", "이미 존재하는 닉네임입니다.");
+                            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
             }
         }

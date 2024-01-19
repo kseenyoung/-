@@ -69,4 +69,15 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
         return user.checkPassword(encryptedLoginPassword);
     }
+
+    @Override
+    public boolean isExistNickname(String userTriedNickname) {
+        User user = userRepository.findUserByUserNickname(userTriedNickname);
+        System.out.println(user);
+        if (user!=null){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
