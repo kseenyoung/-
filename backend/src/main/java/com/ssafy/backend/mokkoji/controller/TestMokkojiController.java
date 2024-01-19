@@ -21,6 +21,10 @@ public class TestMokkojiController {
         return new ResponseEntity<>(new HttpResponseBody<>("OK",mokkojiRankingsResponseDto), HttpStatus.OK);
     }
 
-
+    @GetMapping("/rank/{mokkojiName}")
+    public ResponseEntity<HttpResponseBody<?>> mokkojiRankings(@PathVariable(name = "") String mokkojiName){
+        MokkojiRankingsResponseDto mokkojiRankingsResponseDto = mokkojiService.searchRanking(mokkojiName);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK",mokkojiRankingsResponseDto), HttpStatus.OK);
+    }
 
 }
