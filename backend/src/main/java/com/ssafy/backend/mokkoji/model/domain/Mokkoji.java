@@ -1,6 +1,5 @@
-package com.ssafy.backend.mokkoji.domain;
+package com.ssafy.backend.mokkoji.model.domain;
 
-import com.ssafy.backend.user.domain.User;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

@@ -1,4 +1,4 @@
-package com.ssafy.backend.mokkoji.domain;
+package com.ssafy.backend.mokkoji.model.domain;
 
 import javax.persistence.*;
 

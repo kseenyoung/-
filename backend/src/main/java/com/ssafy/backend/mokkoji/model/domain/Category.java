@@ -1,5 +1,6 @@
-package com.ssafy.backend.mokkoji.domain;
+package com.ssafy.backend.mokkoji.model.domain;
 
+import com.ssafy.backend.mokkoji.model.dto.CategoryDto;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -19,4 +20,6 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     private List<MokkojiCategory> mokkojiCategories = new ArrayList<>();
+
+
 }
