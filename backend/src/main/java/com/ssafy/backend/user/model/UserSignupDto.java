@@ -3,7 +3,7 @@ package com.ssafy.backend.user.model;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.RegEx;
-import com.ssafy.backend.user.domain.User;
+import com.ssafy.backend.user.model.domain.User;
 import org.springframework.http.HttpStatus;
 
 

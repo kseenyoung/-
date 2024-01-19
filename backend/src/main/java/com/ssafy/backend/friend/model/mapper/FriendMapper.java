@@ -1,6 +1,6 @@
 package com.ssafy.backend.friend.model.mapper;
 
-import com.ssafy.backend.friend.model.FriendVO;
+import com.ssafy.backend.friend.model.vo.FriendVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
