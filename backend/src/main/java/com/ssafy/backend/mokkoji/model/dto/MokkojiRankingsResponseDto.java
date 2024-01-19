@@ -1,6 +1,6 @@
 package com.ssafy.backend.mokkoji.model.dto;
 
-import com.ssafy.backend.mokkoji.model.domain.Category;
+import com.ssafy.backend.category.model.dto.CategoryDto;
 import lombok.Getter;
 import lombok.Setter;
 

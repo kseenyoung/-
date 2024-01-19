@@ -20,7 +20,7 @@ public interface MokkojiRankingsRepository extends JpaRepository<MokkojiRankings
             "WHERE m.mokkoji_name = :mokkojiName " +
             "GROUP BY m.mokkoji_id " +
             "ORDER BY t.total_memory_time DESC", nativeQuery = true)
-    List<MokkojiRankings> getGuildRankListByName(@Param("mokkojiName") String mokkojiName);
+    List<MokkojiRankings> getMokkojiRankListByName(@Param("mokkojiName") String mokkojiName);
 
 
     @Query(value = "SELECT m.mokkoji_id, m.mokkoji_name, m.leader_id, t.total_memory_time, GROUP_CONCAT(c.category_id) as categories, " +
@@ -31,5 +31,5 @@ public interface MokkojiRankingsRepository extends JpaRepository<MokkojiRankings
             "JOIN category c ON mc.category_id = c.category_id " +
             "GROUP BY m.mokkoji_id " +
             "ORDER BY t.total_memory_time DESC limit 10", nativeQuery = true)
-    List<MokkojiRankings> getGuildRankList();
+    List<MokkojiRankings> getMokkojiRankList();
 }

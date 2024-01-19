@@ -1,5 +1,7 @@
 package com.ssafy.backend.mokkoji.model.domain;
 
+import com.ssafy.backend.category.model.domain.Category;
+
 import javax.persistence.*;
 
 @Entity
