@@ -3,7 +3,10 @@ server:
   servlet:
     context-path: /dagak
   ssl:
-    enabled: false
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-type: PKCS12
+    key-store-password: dongjae123
 spring:
   dagak:
     datasource:
@@ -43,4 +46,4 @@ mybatis:
   mapper-locations: classpath:mybatis/mappers/**/*.xml
 openvidu:
   secret: MY_SECRET
-  url: https://3.143.74.33:4443/
+  url: https://capstone-6.shop:4443/
