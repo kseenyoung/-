@@ -1,6 +1,5 @@
-package com.ssafy.backend.mokkoji.domain;
+package com.ssafy.backend.mokkoji.model.domain;
 
-import com.ssafy.backend.user.domain.User;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -8,6 +7,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,6 +26,9 @@ public class Mokkoji {
 
     @Column(columnDefinition = "char(60)")
     private String mokkojiStatus;
+
+    @OneToMany(mappedBy = "mokkoji")
+    private List<MokkojiCategory> mokkojiCategories = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime createdDate;
