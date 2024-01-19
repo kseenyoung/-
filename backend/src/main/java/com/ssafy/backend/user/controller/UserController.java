@@ -30,6 +30,8 @@ public class UserController {
         System.out.println(isExistId);
     }
 
+
+
     @PostMapping("")
     public ResponseEntity<HttpResponseBody<?>> user(@RequestBody Map<String, Object> body) throws Exception {
         String sign = (String) body.get("sign");
@@ -48,15 +50,6 @@ public class UserController {
                     String userLoginPhonenumber = (String) body.get("userPhonenumber");
                     String userLoginEmail = (String) body.get("userEmail");
                     String userLoginNickname = (String) body.get("userNickname");
-                    try {
-                        boolean isExistId = userService.isExistId(userLoginId);
-                        if (isExistId){
-                            HttpResponseBody<String> responseBody = new HttpResponseBody<>("Fail", "이미 존재하는 닉네임입니다.");
-                            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
                     UserSignupDto userSignupDto = new UserSignupDto(userLoginId, userLoginBirthday, userLoginName, userLoginPassword, userLoginPhonenumber, userLoginEmail, userLoginNickname);
 

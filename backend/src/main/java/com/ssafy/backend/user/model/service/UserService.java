@@ -12,5 +12,7 @@ public interface UserService {
 
     boolean login(UserLoginDto userLoginDto) throws Exception;
 
+    boolean login(UserLoginDto userLoginDto) throws Exception;
+
     boolean isExistNickname(String userTriedNickname);
 }

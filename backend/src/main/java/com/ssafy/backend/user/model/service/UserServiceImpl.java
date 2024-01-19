@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
         userSignupDto.setUserPassword(safePassword);
 
         securityMapper.insertSalt(securityDto);
+
         userMapper.signup(userSignupDto);
     }
 
