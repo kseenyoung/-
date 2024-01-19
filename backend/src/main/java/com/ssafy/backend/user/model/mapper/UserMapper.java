@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface UserMapper {
     void signup(UserSignupDto userSignupDto) throws Exception;
 
+    String getUserPassword(String loginUserId);
+
 }
