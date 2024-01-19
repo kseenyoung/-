@@ -1,6 +1,7 @@
-package com.ssafy.backend.mokkoji.model.domain;
+package com.ssafy.backend.category.model.domain;
 
-import com.ssafy.backend.mokkoji.model.dto.CategoryDto;
+import com.ssafy.backend.common.model.domain.BaseTime;
+import com.ssafy.backend.mokkoji.model.domain.MokkojiCategory;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
-public class Category {
+public class Category{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
