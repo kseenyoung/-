@@ -22,7 +22,7 @@
             </div>
           </div>
           <RouterLink to="/mypage" class="dropdown-item"><span class="underline">마이페이지</span></RouterLink>
-          <RouterLink to="/moccoji" class="dropdown-item"><span class="underline">모꼬지</span></RouterLink>
+          <RouterLink to="/mokkoji" class="dropdown-item"><span class="underline">모꼬지</span></RouterLink>
           <li><a href="#" class="logout dropdown-item"><span>로그아웃</span></a></li>
         </ul>
       </div>

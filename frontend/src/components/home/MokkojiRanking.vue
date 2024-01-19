@@ -1,7 +1,7 @@
 <template>
   <div class="ranking">
     <div>
-      <p class="title">나의 순위</p>
+      <p class="title">모꼬지 순위</p>
     </div>
     <!-- <div class="top-ranker">
       <p>{{ topRankingData.rank }}위 {{ topRankingData.name }} {{ topRankingData.score }}</p>
