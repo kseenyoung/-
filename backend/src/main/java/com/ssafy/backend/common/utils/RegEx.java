@@ -26,7 +26,7 @@ public class RegEx {
         }
     }
 
-    public  static void isValidUserEmail(String user_email) throws MyException{
+    public  static void isUserEmail(String user_email) throws MyException{
         if(!Pattern.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$", user_email)){
             throw new MyException("알맞는 이메일 표현으로 작성해주세요.", HttpStatus.BAD_REQUEST);
         }
