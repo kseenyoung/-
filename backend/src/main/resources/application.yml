@@ -1,0 +1,50 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  dagak:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/dagak
+      username: root
+      password: ssafy
+  security:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://localhost:3306/security
+      username: root
+      password: ssafy
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://localhost:3306/dagak?serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: root
+    password: ssafy
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database: mysql
+    properties:
+      database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+      hibernate:
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    h2:
+      console:
+        enabled: true
+  redis:
+    host: 3.143.74.33
+    port: 6379
+  mybatis:
+    mapper-locations: classpath:mybatis/mappers/**/*.xml
+openvidu:
+  secret: MY_SECRET
+  url: https://capstone-6.shop:4443/
+server:
+  servlet:
+    context-path: /dagak
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-type: PKCS12
+    key-store-password: dongjae123
