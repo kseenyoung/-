@@ -1,5 +1,6 @@
 package com.ssafy.backend.common.config;
 
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -19,6 +20,7 @@ import javax.sql.DataSource;
 @MapperScan(value = {"com.ssafy.backend.user.model.mapper"}, sqlSessionFactoryRef="dagakSqlSessionFactory")
 public class DagakDatabaseConfig {
 
+
     @Bean(name="dagakDataSource")
     @ConfigurationProperties(prefix="spring.dagak.datasource")
     public DataSource dagakDataSource(){
@@ -34,16 +36,16 @@ public class DagakDatabaseConfig {
     }
 
     //	@Primary
-    @Bean(name="dagakSqlSessionTemplate")
-    public SqlSessionTemplate dagakSqlSessionTemplate(@Qualifier("dagakSqlSessionFactory")SqlSessionFactory dagakSqlSessionFactory) throws Exception{
+    @Bean(name = "dagakSqlSessionTemplate")
+    public SqlSessionTemplate dagakSqlSessionTemplate(@Qualifier("dagakSqlSessionFactory") SqlSessionFactory dagakSqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(dagakSqlSessionFactory);
     }
 
     //	@Primary
-    @Bean(name = "myTriptransactionManager")
+    @Bean(name = "dagaktransactionManager")
     public PlatformTransactionManager transactionManager(@Qualifier("dagakDataSource") DataSource dagakDataSource) {
         return new DataSourceTransactionManager(dagakDataSource);
     }
 
-
 }
+
