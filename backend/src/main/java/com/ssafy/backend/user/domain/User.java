@@ -16,13 +16,18 @@ import java.util.Date;
 @ToString
 @Getter
 public class User {
+
     @Column
-    private Integer guildId, userPoint;;
+    private Integer guildId;
+
+    @Column
+    private Integer userPoint;
 
     @Column
     private String userPassword,  userName,
             modifyUserPasswordTime, userPhonenumber, userBirthday,
     userEmail, userNickname, userPicture,  todayDagakId, userStatusMessage;
+
     @Column
     private LocalDateTime createdDate;
 
@@ -30,9 +35,8 @@ public class User {
     @Id
     private String userId;
 
-    public UserSignupDto toDto(){
-        return new UserSignupDto(userId);
+    public boolean checkPassword(String encryptedPassword) {
+        return this.userPassword.equals(encryptedPassword);
     }
-
 
 }
