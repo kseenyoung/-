@@ -90,30 +90,6 @@ public class RoomController {
                 List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionNumber);
                 return new ResponseEntity<>(new HttpResponseBody<>("답변을 불러옵니다.",answerDtos),HttpStatus.OK);
             case "test":
-//                RestTemplate restTemplate = new RestTemplate();
-//                restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//
-//                String secret = "Basic "+OPENVIDU_SECRET;
-//                secret = Base64.getEncoder().encodeToString(secret.getBytes());
-//
-//                // Header set
-//                HttpHeaders httpHeaders = new HttpHeaders();
-//                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-//                httpHeaders.add("Authorization",secret);
-//
-//                // Body set
-//                MultiValueMap<String, String> b = new LinkedMultiValueMap<>();
-//                b.add("session", "SessionA1");
-//                b.add("data", "하이하이");
-//
-//                HttpEntity<?> requestMessage = new HttpEntity<>(body, httpHeaders);
-//
-//                HttpEntity<String> res = restTemplate.postForEntity("https://capstone-6.shop:4443/openvidu/api/signal", requestMessage, String.class);
-
-
-
-
-//
                 URI uri = UriComponentsBuilder
                         .fromUriString("https://capstone-6.shop:4443")
                         .path("/openvidu/api/signal")
@@ -122,7 +98,7 @@ public class RoomController {
                         .toUri();
 
                 QuestionDto2 questionDto2 = new QuestionDto2();
-                questionDto2.setSession("SessionA");
+                questionDto2.setSession("SessionA1");
                 questionDto2.setData("안녕 애두라!");
                 String secret = "Basic "+OPENVIDU_SECRET;
                 secret = Base64.getEncoder().encodeToString(secret.getBytes());
@@ -130,7 +106,7 @@ public class RoomController {
                 RequestEntity<QuestionDto2> requestEntity = RequestEntity
                         .post(uri)
                         .header("Content-Type", "application/json")
-                        .header("Authorization", secret)
+                        .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
                         .body(questionDto2);
 
                 RestTemplate restTemplate = new RestTemplate();
