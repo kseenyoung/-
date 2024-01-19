@@ -1,8 +1,11 @@
 <template>
     <div class="answerbox">
         <!-- <p class="answertitle"># 이건 뭐고 저건 뭡니다.</p> -->
-    <p class="answerlabel">답</p>
-    <p class="answerdetail">이건 이렇고 저건 저렇기 때문입니다. 어디어디를 참고하세요.</p>
+    <div class="answerlabel">답</div>
+    <div class="answerdetail">
+    <p class="nametag"><b>mory</b></p>
+    <p >dfs로 풀되 예외 처리를 하나 해 줘야 합니다. 모든 경우의 수를 잘 생각해보세요.</p>
+    </div>
     </div>
 </template>
 
@@ -18,7 +21,9 @@
     padding-left: 10px;
     padding-right: 10px;
 } */
-
+.nametag{
+    margin: 0;
+}
 .answerlabel{
     font-weight: 800;
     padding: 3px;

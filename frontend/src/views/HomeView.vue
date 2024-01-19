@@ -7,7 +7,7 @@
       <div id="square3">C++</div>
       <div id="square4">민법</div>
       <div id="square5">수능수학</div>
-      <div id="square6">수능국어</div>
+      <!-- <div id="square6">수능국어</div> -->
       <div id="square7">재수</div>
       <div id="square8">이모티콘제작</div>
       <div id="bsquare7">형법</div>
@@ -19,9 +19,13 @@
       <div id="bsquare5">민사소송법</div>
       <div id="bsquare7">미분적분학</div>
       <div id="bsquare10">R</div>
-      <button class="startbutton" @click="navigateToStudyRoom">공부 시작하기</button>
+      <button class="startbutton" @click="navigateToStudyRoom">공부시작</button>
     </div>
-    <div class="part two">2</div>
+    <div class="part two">
+     <MyRanking />
+     <MokojiRanking />
+      
+    </div>
     <div class="part three">3</div>
   </div>
 </template>
@@ -29,6 +33,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import MyRanking from "@/components/home/MyRanking.vue";
+import MokojiRanking from "@/components/home/MokojiRanking.vue";
 const router = useRouter()
 const navigateToStudyRoom = () => {
   router.push('/studyroom') 
@@ -43,18 +49,75 @@ const navigateToStudyRoom = () => {
   font-weight: bold;
   position: relative;
   z-index: 20;
+  color: black;
 }
-.startbutton {
+
+.title::before {
+  content: attr(data-text); /* 글자 내용을 속성값으로 가져와서 적용 */
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  font-family: 'NanumSquareNeo';
-  font-size: 20px;
-  font-weight: 600;
-  z-index: 100;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  color: white; /* 흰색으로 설정 */
+  overflow: hidden;
+  clip: rect(0, auto, 0, auto); /* 추가된 텍스트를 숨기기 위해 사용 */
 }
+// .startbutton {
+//   position: absolute;
+//   top: 90%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   padding: 25px;
+//   font-family: 'NanumSquareNeo';
+//   font-size: 40px;
+//   font-weight: 600;
+//   z-index: 100;
+//   background-color: black;
+//   color: white;
+// }
+
+.startbutton {
+  // 기존 스타일 유지
+  background-color: #639B9D; /* 적절한 배경색으로 변경 */
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 24px;
+  cursor: pointer;
+  border-radius: 8px; /* 둥근 모서리 추가 */
+  transition: background-color 0.3s; /* 부드러운 전환 효과 */
+
+  &:hover {
+    background-color: #3E6271; /* 마우스 호버 시 색상 변경 */
+  }
+
+  span {
+    position: relative;
+    z-index: 1;
+  }
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #FF8C00, #FFD700); /* 그라데이션 효과 추가 */
+    z-index: -1;
+    border-radius: 8px; /* 둥근 모서리에 그라데이션도 적용 */
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &:hover:before {
+    opacity: 1;
+  }
+}
+
 .parent {
       overflow: scroll;
       height: 100vh;
@@ -73,305 +136,271 @@ const navigateToStudyRoom = () => {
     }
     .one {
       // background-image: url('https://img.freepik.com/free-vector/abstract-3d-perspective-indoor-wireframe-vector-design_1017-39916.jpg?w=1060&t=st=1705037743~exp=1705038343~hmac=abc423a6b1c37e3cfec62d1e9af305e6f3989f5421e7c351a80a494cad1a4629');
- 
-      background-image: url('https://img.freepik.com/free-vector/detailed-wireframe-terrain-landscape-in-black-and-white_1048-11902.jpg?w=1380&t=st=1705038502~exp=1705039102~hmac=ab8142a255e5fb577d99e6111f45612933a987327ade60ae55e02646d932400a');
+      // background-image: url('https://img.freepik.com/free-vector/detailed-wireframe-terrain-landscape-in-black-and-white_1048-11902.jpg?w=1380&t=st=1705038502~exp=1705039102~hmac=ab8142a255e5fb577d99e6111f45612933a987327ade60ae55e02646d932400a');
+      // background-image: url('https://previews.123rf.com/images/roxiller/roxiller1608/roxiller160800030/61554592-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%B6%94%EC%83%81-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%A0%90%EC%9D%B4%EC%9E%88%EB%8A%94-%ED%85%8D%EC%8A%A4%EC%B2%98-%EA%B2%80%EC%9D%80-%ED%8C%A8%ED%84%B4-%EB%B2%A1%ED%84%B0.jpg');
+      background-image: url('@/assets/square.png');
 
-      // background-image: url('');
+      
 
-
-    
+      // filter: invert(100%);
     background-size: cover;
     background-position: center;
     }
-    .two {
-      background-color: rgb(195, 195, 255);
-    }
-    .three {
-      background-color: rgb(195, 195, 195);
-    }
-    //자바
+
     @keyframes move1h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color:gray;
-        font-size: 0;
-      }
-      to {
-        top:120px;
-        left: 200px;
-        width:150px;
-        height: 100px;
-        background-color:rgb(190, 190, 190);
-        font-size: x-large;
-        font-family: 'ChosunGs';
-      }
-    }
-    //플러터
-    @keyframes move1h_1 {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 120px;
-        width: 225px;
-        height: 150px;
-        background-color: gainsboro;
-        font-size: x-large;
-      }
-    }
-    //파이썬
-    @keyframes move2h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 100px;
-        left: 430px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-        font-family: 'ChosunGs';
-      }
-    }
-    //씨
-    @keyframes move3h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 400px;
-        left: 1200px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-        font-family: 'Roboto Mono', monospace;
-      }
-    }
-    //민법
-    @keyframes move4h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 300px;
-        left: 120px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-        font-family: 'Eulyoo1945';
-      }
-    }
-    //수능수학
-    @keyframes move5h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 100px;
-        left: 1050px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-      }
-    }
-    //민사소송법
-    @keyframes move5h_1 {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 600px;
-        left: 1200px;
-        width: 225px;
-        height: 150px;
-        background-color: rgb(207, 207, 207);
-        font-size: x-large;
-        font-family: 'ChosunGs';
-      }
-    }
-    //국어
-    @keyframes move6h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 650px;
-        left: 650px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-        font-family: 'ChosunGs';
-      }
-    }
-    // 재수
-    @keyframes move7h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 550px;
-        left: 140px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-        font-family: 'Eulyoo1945';
-      }
-    }
-    //미분적분학
-    @keyframes move7h_1 {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 630px;
-        left: 380px;
-        width: 225px;
-        height: 150px;
-        background-color: gainsboro;
-        font-size: x-large;
-        font-family: 'ChosunGs';
-      }
-    }
-    //이모티콘제작
-    @keyframes move8h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 130px;
-        left: 1300px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-      }
-    }
-    //입시미술
-    @keyframes move9h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 400px;
-        left: 350px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-        font-family: 'Eulyoo1945';
-      }
-    }
-    //도전만화
-    @keyframes move10h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 620px;
-        left: 900px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-        font-family: 'ChosunGs';
-      }
-    }
-    //알
-    @keyframes move10h_1 {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 350px;
-        left: 1350px;
-        width: 225px;
-        height: 150px;
-        background-color: gainsboro;
-        font-size: x-large;
-        font-family: 'Roboto Mono', monospace;
-      }
-    }
-    //수능영어
-    @keyframes move11h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 230px;
-        left: 380px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-      }
-    }
-    //오픽
-    @keyframes move12h {
-      from {
-        width: 30px;
-        height: 20px;
-        background-color: gray;
-        font-size: 0;
-      }
-      to {
-        top: 230px;
-        left: 1110px;
-        width: 150px;
-        height: 100px;
-        background-color: rgb(190, 190, 190);
-        font-size: x-large;
-        font-family: 'ChosunGs';
-      }
-    }
+        from {top:50vh;
+            left: 50vw;
+            width: 30px;
+              height: 20px;
+              background-color:gray;
+            font-size: 0;}
+        to {top:25vh;
+            left: 65vw;
+            width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+          font-size: x-large;
+          font-family: 'ChosunGs';
+   
+        }
+        }
+
+        @keyframes move1h_1 {
+        from {top:50vh;
+            left: 50vw;
+              width: 30px;
+              height: 20px;
+              background-color:gray;
+            font-size: 0;}
+        to {top:20vh;
+            left: 90vw;
+            width: 225px;
+            height: 150px;
+            background-color:gainsboro;
+          font-size: x-large;
+          font-family: 'Roboto Mono', monospace ;
+      
+ }
+        }
+
+        @keyframes move2h {
+        from {top:50vh;
+            left: 50vw;
+            width: 30px;
+              height: 20px;
+              background-color:gray;
+            font-size: 0;}
+        to {top:35vh;
+            left: 80vw;
+            width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+          font-size: x-large;
+          font-family: 'ChosunGs';}
+        }
+
+        @keyframes move3h {
+        from {left: 50vw;
+          width: 30px;
+              height: 20px;
+              background-color:gray;
+            font-size: 0;}
+        to {left: 90vw;
+          width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;
+            font-family: 'Roboto Mono', monospace ;}
+        }
+
+        @keyframes move4h {
+        from {top:50vh;
+            left: 50vw;
+            width: 30px;
+              height: 20px;
+              background-color:gray; 
+              font-size:0;}
+        to {top:70vh;
+            left: 80vw;
+            width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;
+            font-family: 'Eulyoo1945';}
+        }
+
+        @keyframes move5h {
+        from {top:50vh;
+            left: 50vw;
+              width: 30px;
+              height: 20px;
+              background-color:gray;
+              font-size:0;}
+        to {top:85vh;
+            left: 65vw;
+            width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;}
+        }
+
+        @keyframes move5h_1 {
+        from {top:50vh;
+            left: 50vw;
+              width: 30px;
+              height: 20px;
+              background-color:gray;
+              font-size:0;}
+        to {top:85vh;
+            left: 85vw;
+            width: 225px;
+            height: 150px;
+            background-color:rgb(207, 207, 207);
+            font-size: x-large;
+            font-family: 'Eulyoo1945';}
+        }
+        @keyframes move6h {
+        from {top: 50vh;
+              width: 30px;
+              height: 20px;
+              background-color:gray;
+              font-size:0;}
+        to {top: 93vh;
+            width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;
+            font-family: 'Eulyoo1945';}
+        }
+
+        @keyframes move7h {
+            from {top:50vh;
+            left: 50vw;
+            width: 30px;
+              height: 20px;
+              background-color:gray;
+              font-size:0;
+    ;}
+        to {top:85vh;
+            left: 30vw;
+            width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;
+            font-family: 'Eulyoo1945';}
+        }
+
+        @keyframes move7h_1 {
+            from {top:50vh;
+            left: 50vw;
+                  width: 30px;
+                  height: 20px;
+                  background-color:gray;
+                  font-size:0;}
+          
+        to {top:85vh;
+            left:10vw;
+            width: 225px;
+            height: 150px;
+            background-color:gainsboro;
+            font-size: x-large;
+  }
+        }
+
+
+        @keyframes move8h {
+            from {top:50vh;
+            left: 50vw;
+            width: 30px;
+              height: 20px;
+              background-color:gray;
+              font-size:0;}
+        to {top:70vh;
+            left:20vw;
+            width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;}
+        }
+
+        @keyframes move9h {
+        from {left: 50vw;
+          width: 30px;
+              height: 20px;
+              background-color:gray;
+              font-size:0;}
+        to {left: 10vw;
+          width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;
+            font-family: 'Eulyoo1945';}
+        }
+
+
+        @keyframes move10h {
+            from {top:50vh;
+            left: 50vw;
+            width: 30px;
+              height: 20px;
+              background-color:gray;
+              font-size:0;}
+        to {top:35vh;
+            left: 20vw;
+            width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;
+            font-family: 'Eulyoo1945';}
+        }
+
+        @keyframes move10h_1 {
+            from {top:50vh;
+            left: 50vw;
+            width: 30px;
+            height: 20px;
+            background-color:gray;
+            font-size:0;}
+        to {top:20vh;
+            left: 10vw;
+            width: 225px;
+            height: 150px;
+            background-color:gainsboro;
+            font-size: x-large;
+            font-family: 'Roboto Mono', monospace ;}
+        }
+
+
+        @keyframes move11h {
+            from {top:50vh;
+            left: 50vw;
+            width: 30px;
+            height: 20px;
+            background-color:gray;
+            font-size:0;}
+        to {top:25vh;
+            left: 35vw;
+            width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;}
+        }
+
+
+
+        @keyframes move12h {
+        from {top: 50vh;
+          width: 30px;
+            height: 20px;
+            background-color:gray;
+            font-size:0;}
+        to {top: 20vh;
+          width:150px;
+            height: 100px;
+            background-color:rgb(190, 190, 190);
+            font-size: x-large;
+            font-family: 'ChosunGs'}
+        }
 
 div[id^="square"] {
   position: absolute;
@@ -387,6 +416,7 @@ div[id^="square"] {
   box-shadow: 4px 4px 0px #acacac, 8px 8px 0px #d9d9d9, 12px 12px 0px #ffffff;
   border: 4px solid #000;
   border-radius: 4px 4px 4px 4px;
+  color: black;
 }
 
 div[id^="bsquare"] {
@@ -481,4 +511,28 @@ div[id^="bsquare"] {
   transition-timing-function: ease-in;
   animation: move12h 2s forwards;
 }
+
+.two {
+      // background-color: gray;
+      display: flex;
+      align-items: center;
+    justify-content: space-evenly;
+    font-family: 'NanumSquareNeo';
+    font-weight: 700;
+    background-image: url('@/assets/navymountain.jpg');
+    background-size: cover;
+    background-position: center;
+    }
+
+  
+
+    .three {
+      // background-color: rgb(195, 195, 195);
+      background-image: url('@/assets/sky.jpg');
+    background-size: cover;
+    background-position: center;
+    }
+    
+
+
 </style>

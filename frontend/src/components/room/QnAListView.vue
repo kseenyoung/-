@@ -19,14 +19,17 @@ import QuestionField from "@/components/room/QuestionField.vue";
 
 <style scoped>
 .QnA{
+  padding: 2px;
   padding-top: 15px;
   padding-bottom: 15px;
-  border-radius: 15px;
   border: 2px solid black;
-  background-color: beige;
-  height: 500px;
+  background-color: white;
+  height: calc(100% - 30px);
   width: 320px;
   position: relative;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
 }
 
 .QuestionField {
@@ -34,7 +37,4 @@ import QuestionField from "@/components/room/QuestionField.vue";
   bottom: 0;
 }
 
-.qnalist{
-  height: 350px;
-}
 </style>
