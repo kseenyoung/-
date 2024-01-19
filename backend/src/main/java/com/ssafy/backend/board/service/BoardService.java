@@ -1,9 +1,10 @@
 package com.ssafy.backend.board.service;
 
-import com.ssafy.backend.board.dto.*;
+import com.ssafy.backend.board.model.dto.*;
+
 
 public interface BoardService {
-    void boardCreate(BoardCreateRequestDto dto,String userId);
+    void boardCreate(BoardCreateRequestDto dto, String userId);
 
     void delete(BoardDeleteRequestDto dto, String userId);
 

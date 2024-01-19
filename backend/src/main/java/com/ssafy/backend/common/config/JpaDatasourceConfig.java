@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 
 @PropertySource(value={"application.yml"}, factory = YamlLoadFactory.class)
 @EnableJpaRepositories(
-        basePackages = "com.ssafy.backend.user.repository",
+        basePackages = "com.ssafy.backend.*.model.repository",
         entityManagerFactoryRef = "firstEntityManager",
         transactionManagerRef = "firstTransactionManager"
 )
@@ -47,7 +47,7 @@ public class JpaDatasourceConfig {
     public LocalContainerEntityManagerFactoryBean firstEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(firstDataSource());
-        em.setPackagesToScan(new String[] {"com.ssafy.backend.user.domain"});
+        em.setPackagesToScan(new String[] {"com.ssafy.backend.*.model.domain"});
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();

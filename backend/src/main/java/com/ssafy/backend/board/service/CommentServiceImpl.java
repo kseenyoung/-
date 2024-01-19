@@ -1,12 +1,12 @@
 package com.ssafy.backend.board.service;
 
-import com.ssafy.backend.board.domain.Board;
-import com.ssafy.backend.board.domain.Comment;
-import com.ssafy.backend.board.dto.CommentCreateRequestDto;
-import com.ssafy.backend.board.dto.CommentDeleteRequestDto;
-import com.ssafy.backend.board.dto.CommentModifyRequestDto;
-import com.ssafy.backend.board.repository.BoardRepository;
-import com.ssafy.backend.board.repository.CommentRepository;
+import com.ssafy.backend.board.model.domain.Board;
+import com.ssafy.backend.board.model.domain.Comment;
+import com.ssafy.backend.board.model.dto.CommentCreateRequestDto;
+import com.ssafy.backend.board.model.dto.CommentDeleteRequestDto;
+import com.ssafy.backend.board.model.dto.CommentModifyRequestDto;
+import com.ssafy.backend.board.model.repository.BoardRepository;
+import com.ssafy.backend.board.model.repository.CommentRepository;
 import com.ssafy.backend.common.exception.MyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

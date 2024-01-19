@@ -37,6 +37,6 @@ spring:
     port: 6379
   mybatis:
     mapper-locations: classpath:mybatis/mappers/**/*.xml
-  openvidu:
-    secret: MY_SECRET
-    url: https://3.143.74.33:4443/
+openvidu:
+  secret: MY_SECRET
+  url: https://3.143.74.33:4443/

@@ -17,7 +17,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(value = {"com.ssafy.backend.user.model.mapper"}, sqlSessionFactoryRef="dagakSqlSessionFactory")
+@MapperScan(value = {"com.ssafy.backend.user.model.mapper",
+        "com.ssafy.backend.friend.model.mapper"}, sqlSessionFactoryRef="dagakSqlSessionFactory")
 public class DagakDatabaseConfig {
 
 

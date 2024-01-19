@@ -1,11 +1,12 @@
 package com.ssafy.backend.board.controller;
 
-import com.ssafy.backend.board.dto.*;
+
+import com.ssafy.backend.board.model.dto.*;
 import com.ssafy.backend.board.service.BoardService;
 import com.ssafy.backend.board.service.CommentService;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.HttpResponseBody;
-import com.ssafy.backend.user.domain.User;
+import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

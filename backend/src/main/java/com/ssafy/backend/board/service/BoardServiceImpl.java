@@ -1,12 +1,15 @@
 package com.ssafy.backend.board.service;
 
-import com.ssafy.backend.board.domain.Board;
-import com.ssafy.backend.board.domain.Comment;
-import com.ssafy.backend.board.domain.Tag;
-import com.ssafy.backend.board.dto.*;
-import com.ssafy.backend.board.repository.BoardRepository;
-import com.ssafy.backend.board.repository.CommentRepository;
-import com.ssafy.backend.board.repository.TagRepository;
+import com.ssafy.backend.board.model.domain.Board;
+import com.ssafy.backend.board.model.domain.Comment;
+import com.ssafy.backend.board.model.domain.Tag;
+
+import com.ssafy.backend.board.model.dto.*;
+
+import com.ssafy.backend.board.model.repository.BoardRepository;
+import com.ssafy.backend.board.model.repository.CommentRepository;
+import com.ssafy.backend.board.model.repository.TagRepository;
+
 import com.ssafy.backend.common.exception.MyException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,7 +33,7 @@ public class BoardServiceImpl implements BoardService{
 
 
     @Override
-    public void boardCreate(BoardCreateRequestDto dto,String userId){
+    public void boardCreate(BoardCreateRequestDto dto, String userId){
         Tag tag = tagRepository.findByTagId(dto.getTagId())
                 .orElseThrow(() -> new MyException("없는 태그입니다.", HttpStatus.BAD_REQUEST));
         boardRepository.save(dto.toEntity(tag,userId));

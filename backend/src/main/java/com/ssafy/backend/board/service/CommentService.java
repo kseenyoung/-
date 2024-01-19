@@ -1,8 +1,8 @@
 package com.ssafy.backend.board.service;
 
-import com.ssafy.backend.board.dto.CommentCreateRequestDto;
-import com.ssafy.backend.board.dto.CommentDeleteRequestDto;
-import com.ssafy.backend.board.dto.CommentModifyRequestDto;
+import com.ssafy.backend.board.model.dto.CommentCreateRequestDto;
+import com.ssafy.backend.board.model.dto.CommentDeleteRequestDto;
+import com.ssafy.backend.board.model.dto.CommentModifyRequestDto;
 
 public interface CommentService {
     public long commentCreate(CommentCreateRequestDto dto,String userId);

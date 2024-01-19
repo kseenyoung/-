@@ -1,7 +1,7 @@
 package com.ssafy.backend.board.service;
 
-import com.ssafy.backend.board.dto.TagCreateRequestDto;
-import com.ssafy.backend.board.repository.TagRepository;
+import com.ssafy.backend.board.model.dto.TagCreateRequestDto;
+import com.ssafy.backend.board.model.repository.TagRepository;
 import com.ssafy.backend.common.exception.MyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

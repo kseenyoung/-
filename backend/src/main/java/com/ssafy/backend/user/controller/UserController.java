@@ -1,11 +1,9 @@
 package com.ssafy.backend.user.controller;
 
-import com.ssafy.backend.common.exception.MyException;
-
 import com.ssafy.backend.user.model.UserLoginDto;
 
 import com.ssafy.backend.user.model.UserSignupDto;
-import com.ssafy.backend.user.model.service.UserService;
+import com.ssafy.backend.user.service.UserService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

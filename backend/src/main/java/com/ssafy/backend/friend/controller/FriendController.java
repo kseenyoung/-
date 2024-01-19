@@ -2,9 +2,8 @@ package com.ssafy.backend.friend.controller;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.HttpResponseBody;
-import com.ssafy.backend.friend.model.FriendListVO;
-import com.ssafy.backend.friend.model.FriendVO;
-import com.ssafy.backend.friend.model.service.FriendService;
+import com.ssafy.backend.friend.model.vo.FriendListVO;
+import com.ssafy.backend.friend.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 import java.util.Map;
 
 @RestController
