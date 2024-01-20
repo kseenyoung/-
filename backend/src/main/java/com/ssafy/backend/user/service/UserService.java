@@ -1,8 +1,10 @@
 package com.ssafy.backend.user.service;
 
 
+import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.user.model.UserLoginDto;
 import com.ssafy.backend.user.model.UserSignupDto;
+import com.ssafy.backend.user.model.domain.User;
 
 public interface UserService {
 
@@ -13,4 +15,8 @@ public interface UserService {
     boolean login(UserLoginDto userLoginDto) throws Exception;
 
     boolean isExistNickname(String userTriedNickname);
+
+    User canCreateMokkoji(String userId, int point);
+
+    void saveMokkojiId(User user, Mokkoji mokkoji);
 }
