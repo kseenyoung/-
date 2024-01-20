@@ -2,6 +2,7 @@ package com.ssafy.backend.mokkoji.model.domain;
 
 import com.ssafy.backend.mokkoji.model.dto.MokkojiRankDto;
 import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Entity
 @Immutable
 @Getter
+@ToString
 public class MokkojiRankings {
     @Id
     private int mokkojiId;
@@ -40,9 +42,12 @@ public class MokkojiRankings {
     @PostLoad
         // 엔터티를 DB로부터 로드한 후에 실행되는 메서드
     void fillCategories() {
-        this.categories = Arrays.stream(categoryIds.split(","))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
+        if(categoryIds == null) this.categories = new ArrayList<Integer>();
+        else {
+            this.categories = Arrays.stream(categoryIds.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+        }
     }
 
 }
