@@ -38,4 +38,11 @@ public class User {
         return this.userPassword.equals(encryptedPassword);
     }
 
+    public void usePoint(int userPoint) {
+        this.userPoint -= userPoint;
+    }
+
+    public void saveMokkoji(Mokkoji mokkoji) {
+        this.mokkojiId = mokkoji;
+    }
 }

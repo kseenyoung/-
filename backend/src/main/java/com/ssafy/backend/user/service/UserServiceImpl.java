@@ -2,6 +2,7 @@ package com.ssafy.backend.user.service;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
+import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.security.model.SecurityDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
@@ -10,6 +11,7 @@ import com.ssafy.backend.user.model.UserLoginDto;
 import com.ssafy.backend.user.model.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import java.util.UUID;
 
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -78,4 +81,31 @@ public class UserServiceImpl implements UserService {
             return false;
         }
     }
+
+    @Override
+    public User canCreateMokkoji(String userId, int point) {
+        User user = isExistUser(userId);
+        log.info("모꼬지가 있는지 확인합니다. mokkojiId : {}",user.getMokkojiId());
+        if(user.getMokkojiId() != null ) throw new MyException("이미 유저는 길드가 존재합니다.", HttpStatus.BAD_REQUEST);
+        if(user.getUserPoint() - point <0) throw new MyException("포인트가 부족합니다." , HttpStatus.BAD_REQUEST);
+        user.usePoint(point);
+        return user;
+    }
+
+    @Override
+    public void saveMokkojiId(User user, Mokkoji mokkoji) {
+        user.saveMokkoji(mokkoji);
+        updateUser(user);
+    }
+
+    public User isExistUser(String userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new MyException("회원이 존재하지 않습니다.", HttpStatus.BAD_REQUEST));
+    }
+
+    private void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+
 }
