@@ -1,23 +1,22 @@
 package com.ssafy.backend.mokkoji.model.dto;
 
+import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
 import lombok.Getter;
 import lombok.Setter;
 
-// DTO 클래스
 @Getter
 @Setter
 public class MokkojiRankDto {
-    private Long mokkojiId;
+    private int mokkojiId;
+
     private String mokkojiName;
+
     private String leaderId;
-    private Long totalMemoryTime;
-    private String categories;
-    private Long rank;
-
-    // getter, setter
-
+    private int rank;
+    public MokkojiRankDto(MokkojiRankings entity) {
+        this.mokkojiId = entity.getMokkojiId();
+        this.mokkojiName = entity.getMokkojiName();
+        this.leaderId = entity.getLeaderId();
+        this.rank = entity.getRank();
+    }
 }
-
-
-
-

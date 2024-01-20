@@ -1,6 +1,9 @@
 package com.ssafy.backend.mokkoji.model.domain;
 
+import com.ssafy.backend.common.model.domain.BaseTime;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,8 +15,8 @@ import java.util.List;
 
 @Entity
 @Getter
-@EntityListeners(AuditingEntityListener.class)
-public class Mokkoji {
+@NoArgsConstructor
+public class Mokkoji extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mokkojiId;
@@ -30,11 +33,9 @@ public class Mokkoji {
     @OneToMany(mappedBy = "mokkoji")
     private List<MokkojiCategory> mokkojiCategories = new ArrayList<>();
 
-    @CreatedDate
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    private LocalDateTime updatedDate;
-
-
+    @Builder
+    public Mokkoji(String mokkojiName, String leaderId) {
+        this.mokkojiName = mokkojiName;
+        this.leaderId = leaderId;
+    }
 }

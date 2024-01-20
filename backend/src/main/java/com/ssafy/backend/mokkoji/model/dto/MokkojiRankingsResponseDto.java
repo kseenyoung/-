@@ -10,9 +10,9 @@ import java.util.List;
 @Setter
 public class MokkojiRankingsResponseDto {
     private List<CategoryDto> categories;
-    private MokkojiDto mokkoji;
+    private MokkojiRankDto mokkoji;
 
-    public MokkojiRankingsResponseDto(List<CategoryDto> categories, MokkojiDto mokkoji) {
+    public MokkojiRankingsResponseDto(List<CategoryDto> categories, MokkojiRankDto mokkoji) {
         this.categories = categories;
         this.mokkoji = mokkoji;
     }
