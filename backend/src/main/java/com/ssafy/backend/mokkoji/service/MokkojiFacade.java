@@ -46,6 +46,7 @@ public class MokkojiFacade {
 
     public MokkojiRankingsResponseDto getByMokkojiNameRanking(String mokkojiName) {
         List<MokkojiRankings> byMokkojiName = mokkojiRankingService.getByMokkojiName(mokkojiName);
+        log.info("모꼬지 이름 랭킹 검색입니다.{}",byMokkojiName);
         MokkojiRankings mokkojiRankings = byMokkojiName.get(0);
 
         MokkojiRankDto mokkojiDto = new MokkojiRankDto(mokkojiRankings);
@@ -60,7 +61,7 @@ public class MokkojiFacade {
     public List<MokkojiRankingsResponseDto> geTmokkojiTopTen() {
         List<MokkojiRankingsResponseDto> list = new ArrayList<>();
         List<MokkojiRankings> topTen = mokkojiRankingService.getRankingTopTen();
-
+        log.info("모꼬지 이름 탑텐입니다.{}",topTen);
         for (MokkojiRankings mokkojiRankings: topTen) {
             MokkojiRankDto mokkojiDto = new MokkojiRankDto(mokkojiRankings);
             List<Category> categoriesEntities = categoryService.getCategories(mokkojiRankings.getCategories());
