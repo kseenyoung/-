@@ -4,18 +4,14 @@ import com.ssafy.backend.common.model.domain.BaseTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@ToString
 public class Mokkoji extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,9 +25,6 @@ public class Mokkoji extends BaseTime {
 
     @Column(columnDefinition = "char(60)")
     private String mokkojiStatus;
-
-    @OneToMany(mappedBy = "mokkoji")
-    private List<MokkojiCategory> mokkojiCategories = new ArrayList<>();
 
     @Builder
     public Mokkoji(String mokkojiName, String leaderId) {
