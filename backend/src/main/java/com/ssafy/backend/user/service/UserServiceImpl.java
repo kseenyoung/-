@@ -82,6 +82,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    //포인트 null이면 오류 널 체크 해야됨
     @Override
     public User canCreateMokkoji(String userId, int point) {
         User user = isExistUser(userId);

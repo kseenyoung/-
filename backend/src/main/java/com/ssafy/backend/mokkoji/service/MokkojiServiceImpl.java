@@ -5,8 +5,14 @@ import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.repository.MokkojiRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 
 @RequiredArgsConstructor
@@ -23,5 +29,12 @@ public class MokkojiServiceImpl implements MokkojiService {
                 });
         return mokkojiRepository.save(mokkoji);
 
+    }
+    @Override
+    public Page<Mokkoji> getMokkojiList(int page, String keyword) {
+        ArrayList<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createdDate"));
+        Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
+        return mokkojiRepository.findByMokkojiNameContaining(keyword,pageable);
     }
 }

@@ -2,12 +2,14 @@ package com.ssafy.backend.mokkoji.model.domain;
 
 import com.ssafy.backend.category.model.domain.Category;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class MokkojiCategory {
 
     @Id
