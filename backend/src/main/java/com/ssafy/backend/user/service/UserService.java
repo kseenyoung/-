@@ -25,4 +25,10 @@ public interface UserService {
     User deleteMokkojiCheck(String userId);
 
     void deleteMokkojiUser(Mokkoji mokkojiId);
+
+    User leaderCheck(String userId);
+
+    User memberCheck(String memberId, Mokkoji mokkoji);
+
+    void kickMokkojiUser(User memberCheck);
 }

@@ -104,4 +104,11 @@ public class MokkojiFacade {
         userService.deleteMokkojiUser(mokkoji);
         mokkojiService.deleteMokkoji(mokkoji);
     }
+
+    @Transactional
+    public void kickUser(String leader, String member) {
+        User user = userService.leaderCheck(leader);
+        User memberCheck = userService.memberCheck(member, user.getMokkojiId());
+        userService.kickMokkojiUser(memberCheck);
+    }
 }
