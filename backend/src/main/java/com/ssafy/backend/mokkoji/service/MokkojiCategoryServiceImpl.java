@@ -49,4 +49,9 @@ public class MokkojiCategoryServiceImpl implements MokkojiCategoryService{
         return map;
     }
 
+    @Override
+    public void deleteMokkojiCategory(Mokkoji mokkojiId) {
+        mokkojiCategoryRepository.deleteAllByMokkoji(mokkojiId);
+    }
+
 }

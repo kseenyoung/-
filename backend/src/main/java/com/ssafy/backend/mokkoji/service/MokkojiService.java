@@ -8,4 +8,5 @@ public interface MokkojiService {
     Mokkoji createMokkoji(Mokkoji mokkoji);
     Page<Mokkoji> getMokkojiList(int page, String keyword);
 
+    void deleteMokkoji(Mokkoji mokkoji);
 }

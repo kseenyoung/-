@@ -44,5 +44,12 @@ public class TestMokkojiController {
         MokkojiListResponseDto mokkojiList = mokkojiFacade.getMokkojiList(categories,page, keyword);
         return new ResponseEntity<>(new HttpResponseBody<>("OK",mokkojiList),HttpStatus.OK);
     }
+    //모꼬지 삭제
+    @PostMapping("/delete")
+    public ResponseEntity<HttpResponseBody<?>> deleteMokkoji(@RequestBody String userId){
+        mokkojiFacade.deleteMokkoji(userId);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 삭제완료"), HttpStatus.OK);
+
+    }
 
 }

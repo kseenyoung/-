@@ -13,4 +13,5 @@ import java.util.List;
 public interface MokkojiCategoryRepository extends JpaRepository<MokkojiCategory,Long> {
     List<MokkojiCategory> findByMokkojiIn(List<Mokkoji> mokkoji);
 
+    void deleteAllByMokkoji(Mokkoji mokkoji);
 }

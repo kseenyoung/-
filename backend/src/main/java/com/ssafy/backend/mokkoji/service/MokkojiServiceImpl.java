@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 
 
@@ -36,5 +37,12 @@ public class MokkojiServiceImpl implements MokkojiService {
         sorts.add(Sort.Order.desc("createdDate"));
         Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
         return mokkojiRepository.findByMokkojiNameContaining(keyword,pageable);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMokkoji(Mokkoji mokkoji) {
+        mokkojiRepository.delete(mokkoji);
+
     }
 }
