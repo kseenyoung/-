@@ -10,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/mokkojiTest")
@@ -49,6 +51,14 @@ public class TestMokkojiController {
     public ResponseEntity<HttpResponseBody<?>> deleteMokkoji(@RequestBody String userId){
         mokkojiFacade.deleteMokkoji(userId);
         return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 삭제완료"), HttpStatus.OK);
+    }
+
+    @PostMapping("/kick")
+    public ResponseEntity<HttpResponseBody<?>> kickUser(@RequestBody HashMap<String, Object> map) {
+        String leader = (String)map.get("userId");
+        String member = (String)map.get("userId1");
+        mokkojiFacade.kickUser(leader,member);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 유저 강퇴 완료"), HttpStatus.OK);
 
     }
 

@@ -109,11 +109,7 @@ public class UserServiceImpl implements UserService {
     //길드 삭제시 유저에서 확인해야하는 것
     @Override
     public User deleteMokkojiCheck(String userId) {
-        User user = isExistUser(userId);
-        //길드장인지 체크
-        if (!user.getMokkojiId().getLeaderId().equals(user.getUserId()))
-            throw new MyException("길드장이 아닙니다.", HttpStatus.BAD_REQUEST);
-
+        User user = leaderCheck(userId);
         LocalDateTime createdDateTime = user.getMokkojiId().getCreatedDate().plusDays(PLUS_DAYS);
         LocalDateTime now = LocalDateTime.now();
         //7일 이전인지 체크
@@ -134,5 +130,27 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    //길드장인지 체크
+    public User leaderCheck(String userId) {
+        User user = isExistUser(userId);
+        if(user.getMokkojiId() == null) throw new MyException("해당 회원은 모꼬지가 현재 없습니다", HttpStatus.BAD_REQUEST);
+        if (!user.getMokkojiId().getLeaderId().equals(user.getUserId()))
+            throw new MyException("모꼬지장이 아닙니다.", HttpStatus.BAD_REQUEST);
+        return user;
+    }
+
+    //해당 모꼬지 사람인지 체크
+    @Override
+    public User memberCheck(String memberId, Mokkoji mokkoji) {
+        return userRepository.findByMokkojiIdAndUserId(mokkoji, memberId)
+                .orElseThrow(() -> new MyException("현재 모꼬지에서 해당 회원을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
+    }
+
+    @Override
+    @Transactional
+    public void kickMokkojiUser(User user) {
+        user.saveMokkoji(null);
+        userRepository.save(user);
+    }
 
 }
