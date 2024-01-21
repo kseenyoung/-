@@ -3,7 +3,6 @@ package com.ssafy.backend.room.controller;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import com.ssafy.backend.room.model.dto.AnswerDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
-import com.ssafy.backend.room.model.dto.QuestionDto2;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.service.RoomService;
 import io.openvidu.java.client.OpenVidu;
@@ -11,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -71,9 +68,10 @@ public class RoomController {
 
                 return new ResponseEntity<>(new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token),HttpStatus.OK);
             case "askQuestion": // 질문하기
-                sessionName = (String) body.get("sessionName");
-                String question = (String) body.get("question");
+                sessionName = (String) body.get("session");
+                String question = (String) body.get("data");
 
+                System.out.println("sessionName: "+sessionName);
                 QuestionDto questionDto = new QuestionDto(sessionName, question);
                 roomService.askQuestion(questionDto);
 		        break;
@@ -97,13 +95,13 @@ public class RoomController {
                         .build()
                         .toUri();
 
-                QuestionDto2 questionDto2 = new QuestionDto2();
+                QuestionDto questionDto2 = new QuestionDto();
                 questionDto2.setSession("SessionA1");
                 questionDto2.setData("안녕 애두라!");
                 String secret = "Basic "+OPENVIDU_SECRET;
                 secret = Base64.getEncoder().encodeToString(secret.getBytes());
 
-                RequestEntity<QuestionDto2> requestEntity = RequestEntity
+                RequestEntity<QuestionDto> requestEntity = RequestEntity
                         .post(uri)
                         .header("Content-Type", "application/json")
                         .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
@@ -111,8 +109,8 @@ public class RoomController {
 
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-                ResponseEntity<QuestionDto2> responseEntity = restTemplate.exchange(
-                        uri,HttpMethod.POST,requestEntity,QuestionDto2.class
+                ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
+                        uri,HttpMethod.POST,requestEntity, QuestionDto.class
                 );
                 break;
         }
