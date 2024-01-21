@@ -15,7 +15,8 @@ public class QuestionDto {
 
     public Question toEntity(){
         return Question.builder()
-                .question(data)
+                .session(this.session)
+                .question(this.data)
                 .build();
     }
 }

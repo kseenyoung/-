@@ -14,12 +14,12 @@ import javax.persistence.GenerationType;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 @RedisHash("answer")
 public class Answer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer answerId;
     String session;
-    Integer questionId;
+    String questionId;
     String answer;
 }

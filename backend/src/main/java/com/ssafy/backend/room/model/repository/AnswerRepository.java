@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface AnswerRepository extends CrudRepository<Answer, Integer> {
-    List<Answer> findAllByQuestionId(int questionId) throws Exception;
+    List<Answer> findByQuestionId(String questionId) throws Exception;
 }

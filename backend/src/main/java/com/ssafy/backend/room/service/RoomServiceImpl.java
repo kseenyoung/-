@@ -105,7 +105,7 @@ public class RoomServiceImpl implements RoomService {
         Session session;
         session = openvidu.getActiveSession(sessionId);
         if(session == null){
-            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+//            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
 
         // DB에 질문 저장
@@ -142,7 +142,7 @@ public class RoomServiceImpl implements RoomService {
         Session session;
         session = openvidu.getActiveSession(sessionId);
         if(session == null){
-            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+//            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
 
         // DB에 대답 저장
@@ -185,13 +185,20 @@ public class RoomServiceImpl implements RoomService {
     public Question saveQuestion(QuestionDto questionDto) throws Exception {
         Question question = questionDto.toEntity();
         question = questionRepository.save(question);
-        return null;
+        System.out.println(question);
+        return question;
     }
 
 
     @Override
-    public List<AnswerDto> findAnswerByQuestionId(int questionId) throws Exception {
-        List<Answer> answers = answerRepository.findAllByQuestionId(questionId);
+    public List<AnswerDto> findAnswerByQuestionId(String questionId) throws Exception {
+        List<Answer> answers = answerRepository.findByQuestionId(questionId+"");
+        System.out.println(questionId+"");
+        System.out.println(answers);
+        Answer answers2 = answerRepository.findById(-469009711).get();
+        System.out.println(answers2);
+
+
         List<AnswerDto> answerDtos = answers.stream()
                 .map(a -> new AnswerDto(a.getSession(),a.getAnswer(),a.getQuestionId()))
                 .collect(Collectors.toList());

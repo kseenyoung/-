@@ -11,7 +11,7 @@ import lombok.*;
 public class AnswerDto {
     private String session;
     private String data;
-    private Integer questionId;
+    private String questionId;
 
     public Answer toEntity(){
         return Answer.builder()

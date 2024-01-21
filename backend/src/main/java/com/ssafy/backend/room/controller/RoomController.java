@@ -77,14 +77,15 @@ public class RoomController {
             case "answerQuestion": // 답변하기
                 sessionName = (String) body.get("session");
                 String answerData = (String) body.get("data");
-                int questionNumber = (int) body.get("questionNumber");
+                String questionId = (String) body.get("questionId");
 
-                AnswerDto answerDto = new AnswerDto(sessionName, answerData, questionNumber);
+                AnswerDto answerDto = new AnswerDto(sessionName, answerData, questionId);
                 roomService.answerQuestion(answerDto);
 		        break;
             case "findAnswer": // 답변 찾기
-                questionNumber = (int) body.get("answer");
-                List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionNumber);
+                sessionName = (String) body.get("session");
+                questionId = (String) body.get("questionId");
+                List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionId);
                 return new ResponseEntity<>(new HttpResponseBody<>("답변을 불러옵니다.",answerDtos),HttpStatus.OK);
             case "test":
                 URI uri = UriComponentsBuilder
