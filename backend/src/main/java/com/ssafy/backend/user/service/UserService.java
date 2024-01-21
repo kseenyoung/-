@@ -19,4 +19,10 @@ public interface UserService {
     User canCreateMokkoji(String userId, int point);
 
     void saveMokkojiId(User user, Mokkoji mokkoji);
+
+    User isExistUser(String userId);
+
+    User deleteMokkojiCheck(String userId);
+
+    void deleteMokkojiUser(Mokkoji mokkojiId);
 }

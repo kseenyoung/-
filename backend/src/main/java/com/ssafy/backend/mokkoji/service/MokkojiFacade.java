@@ -95,5 +95,13 @@ public class MokkojiFacade {
 
         return new MokkojiListResponseDto(list, mokkojiList.getTotalPages());
     }
-
+    //모꼬지 삭제로직
+    @Transactional
+    public void deleteMokkoji(String userId) {
+        User user = userService.deleteMokkojiCheck(userId);
+        Mokkoji mokkoji = user.getMokkojiId();
+        mokkojiCategoryService.deleteMokkojiCategory(mokkoji);
+        userService.deleteMokkojiUser(mokkoji);
+        mokkojiService.deleteMokkoji(mokkoji);
+    }
 }

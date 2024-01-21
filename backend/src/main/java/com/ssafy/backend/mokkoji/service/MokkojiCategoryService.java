@@ -10,4 +10,6 @@ import java.util.Map;
 public interface MokkojiCategoryService {
     void createMokkjiCategory(Mokkoji mokkoji, Category category);
     Map<Mokkoji, List<Category>> findAllByMokkojis(Page<Mokkoji> mokkojiList);
+
+    void deleteMokkojiCategory(Mokkoji mokkojiId);
 }
