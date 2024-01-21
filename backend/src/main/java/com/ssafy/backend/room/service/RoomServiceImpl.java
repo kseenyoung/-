@@ -2,10 +2,12 @@ package com.ssafy.backend.room.service;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.room.model.domain.Answer;
+import com.ssafy.backend.room.model.domain.Question;
 import com.ssafy.backend.room.model.dto.AnswerDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.model.repository.AnswerRepository;
+import com.ssafy.backend.room.model.repository.QuestionRepository;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -14,9 +16,17 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import javax.annotation.PostConstruct;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -35,6 +45,7 @@ public class RoomServiceImpl implements RoomService {
     private String OPENVIDU_SECRET;
 
     private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
 
     private OpenVidu openvidu;
 
@@ -90,63 +101,77 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void askQuestion(QuestionDto questionDto) throws Exception {
-        String sessionName = questionDto.getSessionName();
+        String sessionId = questionDto.getSession();
         Session session;
-        session = openvidu.getActiveSession(sessionName);
+        session = openvidu.getActiveSession(sessionId);
         if(session == null){
             throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
-         
-	    System.out.println("session: "+session.getSessionId());
-        HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
-	    System.out.println("URL: "+OPENVIDU_URL+"openvidu/api/signal");
+
+        // DB에 질문 저장
+        Question question = saveQuestion(questionDto);
+        int questionId = question.getQuestionId();
+        questionDto.setData(questionId+"");
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(OPENVIDU_URL)
+                .path("/openvidu/api/signal")
+                .encode()
+                .build()
+                .toUri();
+
         String secret = "Basic "+OPENVIDU_SECRET;
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
-        request.setHeader("Content-Type", "application/json");
-        request.setHeader("Authorization", secret);
-        StringEntity entity = new StringEntity(questionDto.toJsonString(),StandardCharsets.UTF_8);
-        request.setEntity(entity);
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpResponse response = httpClient.execute(request);
-	    System.out.println("통신에 성공했습니다!");
-        } catch (Exception e){
-	    System.out.println("e: "+e);
-            throw new MyException("Openvidu서버 통신에 실패했습니다.",HttpStatus.BAD_REQUEST);
-        }
+        RequestEntity<QuestionDto> requestEntity = RequestEntity
+                .post(uri)
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
+                .body(questionDto);
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
+                uri, HttpMethod.POST,requestEntity, QuestionDto.class
+        );
     }
 
     @Override
     public void answerQuestion(AnswerDto answerDto) throws Exception {
-        String sessionName = answerDto.getSessionName();
+        String sessionId = answerDto.getSession();
         Session session;
-        session = openvidu.getActiveSession(sessionName);
+        session = openvidu.getActiveSession(sessionId);
         if(session == null){
             throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
 
         // DB에 대답 저장
         Answer answer = saveAnswer(answerDto);
-        answerDto.setAnswerId(answer.getAnswerId());
+        int answerId = answer.getAnswerId();
+        answerDto.setData(answerId+"");
 
         // 답변 문제번호 전송
-        HttpPost request = new HttpPost(OPENVIDU_URL + "openvidu/api/signal");
-	System.out.println("URL: "+OPENVIDU_URL + "openvidu/api/signal");
+        URI uri = UriComponentsBuilder
+                .fromUriString(OPENVIDU_URL)
+                .path("/openvidu/api/signal")
+                .encode()
+                .build()
+                .toUri();
+
         String secret = "Basic "+OPENVIDU_SECRET;
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
-        request.setHeader("Content-Type", "application/json");
-        request.setHeader("Authorization", secret);
-        StringEntity entity = new StringEntity(answerDto.toJsonString(),StandardCharsets.UTF_8);
-        request.setEntity(entity);
-	System.out.println(entity.getContent().toString());
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpResponse response = httpClient.execute(request);
-            System.out.println("통신에 성공했습니다.");
-        } catch (Exception e){
-            System.out.println("e"+e);
-            throw new MyException("Openvidu서버 통신에 실패했습니다.",HttpStatus.BAD_REQUEST);
-        }
+        RequestEntity<AnswerDto> requestEntity = RequestEntity
+                .post(uri)
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
+                .body(answerDto);
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
+                uri, HttpMethod.POST,requestEntity, QuestionDto.class
+        );
     }
 
     @Override
@@ -157,10 +182,18 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public Question saveQuestion(QuestionDto questionDto) throws Exception {
+        Question question = questionDto.toEntity();
+        question = questionRepository.save(question);
+        return null;
+    }
+
+
+    @Override
     public List<AnswerDto> findAnswerByQuestionId(int questionId) throws Exception {
         List<Answer> answers = answerRepository.findAllByQuestionId(questionId);
         List<AnswerDto> answerDtos = answers.stream()
-                .map(a -> new AnswerDto(a.getAnswerId(),a.getSessionName(),a.getAnswer(),a.getQuestionId()))
+                .map(a -> new AnswerDto(a.getSession(),a.getAnswer(),a.getQuestionId()))
                 .collect(Collectors.toList());
         return answerDtos;
     }

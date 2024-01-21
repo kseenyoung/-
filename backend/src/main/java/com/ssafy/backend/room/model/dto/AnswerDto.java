@@ -9,28 +9,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnswerDto {
-    private Integer answerId;
-    private String sessionName;
-    private String message;
-    private Integer question;
-
-    public String toJsonString(){
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("session", this.sessionName);
-        jsonObject.addProperty("data", this.answerId);
-        return jsonObject.toString();
-    }
-
-    public AnswerDto(String sessionName, String message, Integer question) {
-        this.sessionName = sessionName;
-        this.message = message;
-        this.question = question;
-    }
+    private String session;
+    private String data;
+    private Integer questionId;
 
     public Answer toEntity(){
         return Answer.builder()
-                .answer(this.message)
-                .questionId(this.question)
+                .answer(this.data)
+                .questionId(this.questionId)
                 .build();
     }
 }

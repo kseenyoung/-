@@ -39,7 +39,7 @@ spring:
     mapper-locations: classpath:mybatis/mappers/**/*.xml
 openvidu:
   secret: MY_SECRET
-  url: https://capstone-6.shop:4443/
+  url: https://capstone-6.shop:4443
 server:
   servlet:
     context-path: /dagak

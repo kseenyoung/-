@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
@@ -14,12 +13,12 @@ import javax.persistence.GenerationType;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@RedisHash("answer")
-public class Answer {
+@RedisHash("question")
+public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer answerId;
-    String session;
     Integer questionId;
-    String answer;
+    String session;
+    String question;
+
 }
