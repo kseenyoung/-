@@ -63,9 +63,9 @@ const router = createRouter({
       component: StudyRoomView
     },
     {
-      path: '/moccoji',
-      name: 'Moccoji',
-      component: () => import('@/views/MoccojiView.vue'),
+      path: '/mokkoji',
+      name: 'Mokkoji',
+      component: () => import('@/views/MokkojiView.vue'),
     },
   ],
 });

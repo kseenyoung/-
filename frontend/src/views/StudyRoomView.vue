@@ -3,8 +3,8 @@
     <div class="studyroomheader">
         <div class="nowname">
           <div class="nametag">Python 마스터</div>
-          <img class= "mute" @click="toggleMute" src="@/assets/mute.png" alt="음소거">
-          <img class= "pause" @click="togglePause" src="@/assets/pause.png" alt="휴식중">
+          <img class= "mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거">
+          <img class= "pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중">
         </div>
           <div class="lastlater">
             <div class="lastname">java 마스터 3:40
@@ -69,7 +69,7 @@
                   <hr>
                   <p class="titletag">달성률</p>
                     <div class="dagak">
-                    <img src="@/assets/hexagon.png" style="transform:rotate(30deg);" alt="">
+                    <img src="@/assets/img/studyroom/hexagon.png" style="transform:rotate(30deg);" alt="">
                     </div>
                     <div class="ratedetail">
                       java 마스터 --- <b>140%</b><br>
@@ -89,7 +89,7 @@
 <div class="black" v-if=isPause>
   <p class="resttitle">휴식중</p>
   <p class="resttime">~00:30</p>
-  <img class= "play" @click="togglePause" src="@/assets/whiteplay.png" alt="다시시작">
+  <img class= "play" @click="togglePause" src="@/assets/img/studyroom/whiteplay.png" alt="다시시작">
 </div>
   </div>
 

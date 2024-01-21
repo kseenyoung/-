@@ -1,12 +1,12 @@
 package com.ssafy.backend.room.controller;
 
+import com.ssafy.backend.common.utils.HttpResponseBody;
 import com.ssafy.backend.room.model.dto.AnswerDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.QuestionDto2;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
-import com.ssafy.backend.room.model.service.RoomService;
-import com.ssafy.backend.utils.HttpResponseBody;
-import io.openvidu.java.client.*;
+import com.ssafy.backend.room.service.RoomService;
+import io.openvidu.java.client.OpenVidu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

@@ -4,7 +4,7 @@
 
 <mapper namespace="com.ssafy.backend.friend.model.mapper.FriendMapper">
 
-    <resultMap id="friendVO" type="com.ssafy.backend.friend.model.FriendVO">
+    <resultMap id="friendVO" type="com.ssafy.backend.friend.model.vo.FriendVO">
         <result property="userId" column="user_id" />
         <result property="userNickname" column="user_nickname" />
     </resultMap>

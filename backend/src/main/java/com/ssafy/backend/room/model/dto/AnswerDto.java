@@ -1,7 +1,7 @@
 package com.ssafy.backend.room.model.dto;
 
 import com.google.gson.JsonObject;
-import com.ssafy.backend.room.domain.Answer;
+import com.ssafy.backend.room.model.domain.Answer;
 import lombok.*;
 
 @Getter

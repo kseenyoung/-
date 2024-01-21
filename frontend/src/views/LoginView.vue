@@ -24,8 +24,8 @@
         <button class="btn btn-primary common-btn">로그인</button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
-          <img src="@/assets/img/googleLoginImg.png" alt="구글로그인">
-          <img src="@/assets/img/kakaoLoginImg.png" alt="카카오로그인">
+          <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인">
+          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인">
         </div>
       </div>
     </div>

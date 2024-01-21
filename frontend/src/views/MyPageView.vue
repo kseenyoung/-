@@ -1,3 +1,4 @@
+
 <template>
   <div class="container d-flex flex-column">
     <nav class="mypage-wrapper-router">
@@ -8,7 +9,7 @@
     <div class="mypage-wrapper-content d-flex">
       <MyPageProfile/>
       <div class="mypage-wrapper-spring">
-        <img src="@/assets/img/notespring2.png" class="notespring">
+        <img src="@/assets/img/mypage/notespring2.png" class="notespring">
       </div>
       <transition name="flip" mode="out-in">
       <div class="mypage-content flex-fill" :key="$route.fullPath">
