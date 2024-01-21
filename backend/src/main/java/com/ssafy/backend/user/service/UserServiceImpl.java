@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveMokkojiId(User user, Mokkoji mokkoji) {
         user.saveMokkoji(mokkoji);
-        updateUser(user);
+        userRepository.save(user);
     }
 
     public User isExistUser(String userId) {
@@ -124,10 +124,6 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAllByMokkojiId(mokkojiId);
         users.forEach(user -> user.saveMokkoji(null));
         userRepository.saveAll(users);
-    }
-
-    private void updateUser(User user) {
-        userRepository.save(user);
     }
 
     //길드장인지 체크
