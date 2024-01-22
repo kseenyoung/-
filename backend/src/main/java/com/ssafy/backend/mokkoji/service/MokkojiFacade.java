@@ -37,6 +37,7 @@ public class MokkojiFacade {
         User user = userService.canCreateMokkoji(dto.getLeaderId(), CREATE_MOKKOJI_POINT);
         Mokkoji mokkoji = mokkojiService.createMokkoji(dto.toEntity());
         List<Category> categories = categoryService.getCategories(dto.getMokkojiCategories());
+        //이거 나중에 saveAll로 바꿔야함
         for (Category category : categories) {
             mokkojiCategoryService.createMokkjiCategory(mokkoji, category);
         }

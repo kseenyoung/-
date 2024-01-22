@@ -14,4 +14,5 @@ import java.util.Optional;
 public interface MokkojiRepository extends JpaRepository<Mokkoji, Integer> {
     Optional<Mokkoji> findByMokkojiName(String mokkojiName);
     Page<Mokkoji> findByMokkojiNameContaining(String mokkojiName, Pageable pageable);
+
 }
