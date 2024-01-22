@@ -19,6 +19,7 @@ public class MokkojiCategoryServiceImpl implements MokkojiCategoryService{
     private final MokkojiCategoryRepository mokkojiCategoryRepository;
 
 
+
     @Override
     public void createMokkjiCategory(Mokkoji mokkoji, Category category) {
         mokkojiCategoryRepository.save(MokkojiCategory.builder()
@@ -54,4 +55,13 @@ public class MokkojiCategoryServiceImpl implements MokkojiCategoryService{
         mokkojiCategoryRepository.deleteAllByMokkoji(mokkojiId);
     }
 
+    @Override
+    public List<Category> findByMokkoji(Mokkoji mokkoji) {
+        List<Category> data = new ArrayList<Category>();
+        List<MokkojiCategory> list = mokkojiCategoryRepository.findByMokkoji(mokkoji);
+        for (MokkojiCategory m : list){
+            data.add(m.getCategory());
+        }
+        return data;
+    }
 }

@@ -7,6 +7,8 @@ import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 
+import java.util.List;
+
 public interface UserService {
 
     void signup(UserSignupDto userSignupDto) throws Exception;
@@ -34,4 +36,6 @@ public interface UserService {
     void kickMokkojiUser(User memberCheck);
 
     UserViewVO viewUserInformation(String viewUserNickname);
+
+    List<UserViewVO> viewUserInformationByMokkoji(Mokkoji mokkoji);
 }
