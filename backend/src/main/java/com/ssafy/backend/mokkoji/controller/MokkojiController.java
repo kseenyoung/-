@@ -1,16 +1,14 @@
 package com.ssafy.backend.mokkoji.controller;
 
 import com.ssafy.backend.common.utils.HttpResponseBody;
+import com.ssafy.backend.mokkoji.model.dto.MokkojiListResponseDto;
 import com.ssafy.backend.mokkoji.model.dto.MokkojiRankingsResponseDto;
 import com.ssafy.backend.mokkoji.service.MokkojiFacade;
 import com.ssafy.backend.mokkoji.service.MokkojiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +29,13 @@ public class MokkojiController {
         MokkojiRankingsResponseDto mokkojiRankingsResponseDto = mokkojiFacade.getByMokkojiNameRanking(mokkojiName);
         return new ResponseEntity<>(new HttpResponseBody<>("OK",mokkojiRankingsResponseDto), HttpStatus.OK);
     }
-
+    //모꼬지 리스트 조회
+    @GetMapping("/list")
+    public ResponseEntity<HttpResponseBody<?>> getMokkojiList(
+            @RequestParam(value = "page", defaultValue = "0") int page
+            ,@RequestParam(value = "keyword", defaultValue = "") String keyword
+            ,@RequestParam(value = "categories",required = false) List<Integer> categories){
+        MokkojiListResponseDto mokkojiList = mokkojiFacade.getMokkojiList(categories,page, keyword);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK",mokkojiList),HttpStatus.OK);
+    }
 }
