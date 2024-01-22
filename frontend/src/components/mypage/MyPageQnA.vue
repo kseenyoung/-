@@ -4,26 +4,26 @@
 
      <div class="qna-content-wrapper">
         <div class="qna-wrapper">
-            <div class="question"><i class="bi bi-question-circle-fill"></i> 수학공부 잘하는법 알려주세요</div>
-            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변1</div>
+            <div class="question"><i class="bi bi-question-circle-fill"></i> [수학] 수학공부 잘하는법 알려주세요<span class="qna-date">2024-01-01</span></div>
+            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변1<span class="qna-date">2024-01-01</span></div>
         </div>
-        
+
         <div class="qna-wrapper">
-            <div class="question"><i class="bi bi-question-circle-fill"></i> 수학공부 잘하는법 알려주세요!!!!!!!</div>
-            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변입니다.</div>
-            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변3</div>
-        </div>
-        <div class="qna-wrapper">
-            <div class="question"><i class="bi bi-question-circle-fill"></i> 수학공부 잘하는법 알려주세요수학공부 잘하는법 알려주세요수학공부 잘하는법 알려주세요수학공부 잘하는법 알려주세요</div>
-            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변1</div>
+            <div class="question"><i class="bi bi-question-circle-fill"></i> [수학] 수학공부 잘하는법 알려주세요!!!!!!!<span class="qna-date">2024-01-01</span></div>
+            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변입니다.<span class="qna-date">2024-01-01</span></div>
+            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변3<span class="qna-date">2024-01-01</span></div>
         </div>
         <div class="qna-wrapper">
-            <div class="question"><i class="bi bi-question-circle-fill"></i> 수학공부 잘하는법 알려주세요</div>
-            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변1</div>
+            <div class="question"><i class="bi bi-question-circle-fill"></i> [수학] 수학공부 잘하는법 알려주세요수학공부 잘하는법 알려주세요수학공부 잘하는법 알려주세요수학공부 잘하는법 알려주세요<span class="qna-date">2024-01-01</span></div>
+            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변1<span class="qna-date">2024-01-01</span></div>
         </div>
         <div class="qna-wrapper">
-            <div class="question"><i class="bi bi-question-circle-fill"></i> 수학공부 잘하는법 알려주세요</div>
-            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변1</div>
+            <div class="question"><i class="bi bi-question-circle-fill"></i> [수학] 수학공부 잘하는법 알려주세요<span class="qna-date">2024-01-01</span></div>
+            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변1<span class="qna-date">2024-01-01</span></div>
+        </div>
+        <div class="qna-wrapper">
+            <div class="question"><i class="bi bi-question-circle-fill"></i> [수학] 수학공부 잘하는법 알려주세요<span class="qna-date">2024-01-01</span></div>
+            <div class="answer"><i class="bi bi-arrow-return-right"></i> 답변1<span class="qna-date">2024-01-01</span></div>
         </div>
 
       </div>
@@ -49,10 +49,17 @@
 .qna-content-wrapper {
   min-height: 400px;
   .qna-wrapper {
+    max-width: 690px;
     margin-bottom: 10px;
     .question {
       padding: 6px 10px;
       background-color: aliceblue;
+
+    }
+    .qna-date {
+      font-size: 0.8rem;
+      color: #777;
+      margin-left: 10px;
     }
     .answer {
       margin-left: 35px;

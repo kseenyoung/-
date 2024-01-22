@@ -60,6 +60,11 @@ const router = createRouter({
           name: 'myPageQnA',
           component: () => import('@/components/mypage/MyPageQnA.vue'),
         },
+        {
+          path: 'mypagealarm',
+          name: 'myPageAlarm',
+          component: () => import('@/components/mypage/MyPageAlarm.vue'),
+        },
       ],
     },
     {
