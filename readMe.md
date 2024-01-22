@@ -8,3 +8,6 @@
 - Frontend: Merge study_room into Develop
 - Backend: JIRA 스프린트 작성 및 코드 템플릿 작성
 
+#24.01.22
+- 도메인 발급
+![1.png](./1.png)
