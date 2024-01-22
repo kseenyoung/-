@@ -14,9 +14,9 @@ public interface RoomService {
     String enterRandomroom(RoomEnterDto roomEnterDto) throws Exception;
     String enterMoccojiroom(RoomEnterDto roomEnterDto) throws Exception;
 
-    void askQuestion(QuestionDto questionDto) throws Exception;
+    QuestionDto askQuestion(QuestionDto questionDto) throws Exception;
 
-    void answerQuestion(AnswerDto answerDto) throws Exception;
+    AnswerDto answerQuestion(AnswerDto answerDto) throws Exception;
 
     Answer saveAnswer(AnswerDto answerDto) throws Exception;
     Question saveQuestion(QuestionDto questionDto) throws Exception;

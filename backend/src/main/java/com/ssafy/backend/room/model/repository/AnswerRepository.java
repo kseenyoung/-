@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AnswerRepository extends CrudRepository<Answer, Integer> {
+public interface AnswerRepository extends CrudRepository<Answer, String> {
     List<Answer> findByQuestionId(String questionId) throws Exception;
+
 }
