@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
@@ -16,13 +15,10 @@ import javax.persistence.GenerationType;
 @NoArgsConstructor
 @Builder
 @ToString
-@RedisHash("answer")
-public class Answer {
+@RedisHash("question")
+public class Question {
     @Id
-    String answerId;
-
-    @Indexed
-    String questionId;
-    String answer;
+    Integer questionId;
     String session;
+    String question;
 }
