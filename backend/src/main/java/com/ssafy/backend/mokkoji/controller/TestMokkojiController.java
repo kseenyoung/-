@@ -1,5 +1,6 @@
 package com.ssafy.backend.mokkoji.controller;
 
+import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import com.ssafy.backend.mokkoji.model.dto.MokkojiCreateRequestDto;
 import com.ssafy.backend.mokkoji.model.dto.MokkojiListResponseDto;
@@ -57,6 +58,7 @@ public class TestMokkojiController {
     public ResponseEntity<HttpResponseBody<?>> kickUser(@RequestBody HashMap<String, Object> map) {
         String leader = (String)map.get("userId");
         String member = (String)map.get("userId1");
+        if(leader  == null || member == null) throw new MyException("null 입력 하셨습니다", HttpStatus.BAD_REQUEST);
         mokkojiFacade.kickUser(leader,member);
         return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 유저 강퇴 완료"), HttpStatus.OK);
 

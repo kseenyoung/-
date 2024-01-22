@@ -63,6 +63,13 @@ public class MokkojiController {
             mokkojiFacade.deleteMokkoji(userId);
             return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 삭제완료"), HttpStatus.OK);
         }
+        //모꼬지 강퇴
+        else if("kickMember".equals(sign)){
+            String member = (String) body.get("member");
+            if(member == null) throw new MyException("강퇴할 유저 값이 없습니다", HttpStatus.BAD_REQUEST);
+            mokkojiFacade.kickUser(userId,member);
+            return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 유저 강퇴 완료"), HttpStatus.OK);
+        }
 
         throw new MyException("해당 기능을 처리하지 못했습니다", HttpStatus.BAD_REQUEST);
     }
