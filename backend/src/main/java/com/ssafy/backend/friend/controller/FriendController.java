@@ -3,12 +3,10 @@ package com.ssafy.backend.friend.controller;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.response.BaseResponse;
-import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import com.ssafy.backend.friend.model.vo.FriendListVO;
 import com.ssafy.backend.friend.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +34,7 @@ public class FriendController {
         switch (sign) {
             /**
              * [POST] /friend
-             * @return ResponseEntity<HttpResponseBody < String>>
+             * @return ResponseEntity<HttpResponseBody <String>>
              * 친구 요청을 처리
              **/
             case "request":
@@ -47,8 +45,7 @@ public class FriendController {
 
                 friendService.requestFriend(userId, userId2);
 
-//                return ResponseEntity.ok(new HttpResponseBody<String>("성공", "성공^^"));
-                return new BaseResponse<>("성공^^");
+                return new BaseResponse<>(SUCCESS);
             /**
              * [POST] /friend
              * @return ResponseEntity<HttpResponseBody < String>>
@@ -62,9 +59,7 @@ public class FriendController {
 
                 friendService.accessFriend(accessUserId, accessUserId2);
 
-//                return ResponseEntity.ok(new HttpResponseBody<String>(
-//                        new StringBuilder().append(accessUserId).append("님이 ").append(accessUserId2).append("님의 친구요청을 받았습니다.").toString(), "성공^^"));
-                return new BaseResponse<>(new StringBuilder().append(accessUserId).append("님이 ").append(accessUserId2).append("님의 친구요청을 받았습니다.").toString());
+                return new BaseResponse<>(SUCCESS);
 
             case "quitFriend":
 //                    User user = (User) session.getAttribute("User");
@@ -75,7 +70,7 @@ public class FriendController {
                 friendService.quitFriend(quitUserId, quitUserId2);
 
 //                return ResponseEntity.ok(new HttpResponseBody<String>("성공", "친구 끊기 성공"));
-                return new BaseResponse<>("친구 끊기 성공");
+                return new BaseResponse<>(SUCCESS);
 
         }
         throw new BaseException(NOT_MATCH_SIGN);
