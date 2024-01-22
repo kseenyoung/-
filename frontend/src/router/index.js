@@ -46,14 +46,29 @@ const router = createRouter({
           component: () => import('@/components/mypage/MyPageSchedule.vue'),
         },
         {
-          path: 'mypagefriend',
+          path: 'friend',
           name: 'myPageFriend',
           component: () => import('@/components/mypage/MyPageFriend.vue'),
         },
         {
-          path: 'mypageinformation',
+          path: 'information',
           name: 'myPageInformation',
           component: () => import('@/components/mypage/MyPageInformation.vue'),
+        },
+        {
+          path: 'qna',
+          name: 'myPageQnA',
+          component: () => import('@/components/mypage/MyPageQnA.vue'),
+        },
+        {
+          path: 'alarm',
+          name: 'myPageAlarm',
+          component: () => import('@/components/mypage/MyPageAlarm.vue'),
+        },
+        {
+          path: 'inventory',
+          name: 'myPageInventory',
+          component: () => import('@/components/mypage/MyPageInventory.vue'),
         },
       ],
     },
