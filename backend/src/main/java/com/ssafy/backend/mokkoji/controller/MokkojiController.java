@@ -86,6 +86,11 @@ public class MokkojiController {
             mokkojiFacade.saveMokkoji(dto);
             return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 생성 완료"), HttpStatus.OK);
         }
+        //모꼬지 나가기
+        else if ("leaveMokkoji".equals("sign")) {
+            mokkojiFacade.leaveMokkoji(userId);
+            return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 나가기 완료"), HttpStatus.OK);
+        }
 
         throw new MyException("해당 기능을 처리하지 못했습니다", HttpStatus.BAD_REQUEST);
     }
