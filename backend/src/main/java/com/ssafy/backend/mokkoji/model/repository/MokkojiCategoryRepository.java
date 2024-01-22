@@ -14,4 +14,6 @@ public interface MokkojiCategoryRepository extends JpaRepository<MokkojiCategory
     List<MokkojiCategory> findByMokkojiIn(List<Mokkoji> mokkoji);
 
     void deleteAllByMokkoji(Mokkoji mokkoji);
+
+    List<MokkojiCategory> findByMokkoji(Mokkoji mokkoji);
 }

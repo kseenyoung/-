@@ -12,4 +12,6 @@ public interface MokkojiCategoryService {
     Map<Mokkoji, List<Category>> findAllByMokkojis(Page<Mokkoji> mokkojiList);
 
     void deleteMokkojiCategory(Mokkoji mokkojiId);
+
+    List<Category> findByMokkoji(Mokkoji mokkoji);
 }

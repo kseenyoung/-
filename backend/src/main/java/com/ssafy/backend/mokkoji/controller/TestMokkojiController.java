@@ -3,6 +3,7 @@ package com.ssafy.backend.mokkoji.controller;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import com.ssafy.backend.mokkoji.model.dto.MokkojiCreateRequestDto;
+import com.ssafy.backend.mokkoji.model.dto.MokkojiDetailResponseDto;
 import com.ssafy.backend.mokkoji.model.dto.MokkojiListResponseDto;
 import com.ssafy.backend.mokkoji.model.dto.MokkojiRankingsResponseDto;
 import com.ssafy.backend.mokkoji.service.MokkojiFacade;
@@ -69,6 +70,14 @@ public class TestMokkojiController {
     public ResponseEntity<HttpResponseBody<?>> leaveMokkoji(@RequestBody String userId) {
         mokkojiFacade.leaveMokkoji(userId);
         return new ResponseEntity<>(new HttpResponseBody<>("OK", "회원이 모꼬지를 나갔습니다"), HttpStatus.OK);
+    }
+
+    @GetMapping("/detail/{mokkojiId:[\\d]+}")
+    public ResponseEntity<HttpResponseBody<?>> detailData(
+            @PathVariable(name = "mokkojiId") int mokkojiId,
+            @RequestParam String userId) {
+        MokkojiDetailResponseDto dto = mokkojiFacade.getDetailMokkoji(mokkojiId,userId);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", dto), HttpStatus.OK);
     }
 
 }
