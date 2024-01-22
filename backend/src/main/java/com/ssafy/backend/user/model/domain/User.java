@@ -1,14 +1,11 @@
 package com.ssafy.backend.user.model.domain;
 
-import com.ssafy.backend.user.model.UserSignupDto;
+import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
+import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.*;
-import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
@@ -18,10 +15,13 @@ import java.util.Date;
 public class User {
 
     @Column
-    private Integer guildId;
+    private Integer userPoint, userTotalStudyTime;
 
-    @Column
-    private Integer userPoint;
+    @ManyToOne
+    @JoinColumn(name = "mokkojiId")
+    private Mokkoji mokkojiId;
+
+
 
     @Column
     private String userPassword,  userName,
@@ -37,6 +37,14 @@ public class User {
 
     public boolean checkPassword(String encryptedPassword) {
         return this.userPassword.equals(encryptedPassword);
+    }
+
+    public void usePoint(int userPoint) {
+        this.userPoint -= userPoint;
+    }
+
+    public void saveMokkoji(Mokkoji mokkoji) {
+        this.mokkojiId = mokkoji;
     }
 
 }

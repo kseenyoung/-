@@ -2,7 +2,7 @@ package com.ssafy.backend.user.model.mapper;
 
 // 추후 JPA 로 전환 예정
 
-import com.ssafy.backend.user.model.UserSignupDto;
+import com.ssafy.backend.user.model.dto.UserSignupDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

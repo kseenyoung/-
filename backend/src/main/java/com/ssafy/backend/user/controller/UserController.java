@@ -1,8 +1,10 @@
 package com.ssafy.backend.user.controller;
 
-import com.ssafy.backend.user.model.UserLoginDto;
+import com.ssafy.backend.user.model.dto.UserLoginDto;
 
-import com.ssafy.backend.user.model.UserSignupDto;
+import com.ssafy.backend.user.model.dto.UserSignupDto;
+import com.ssafy.backend.user.model.domain.User;
+import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.UserService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +98,6 @@ public class UserController {
                  */
                 case "isExistNickname":
                     String userTriedNickname = (String) body.get("userNickname");
-                    System.out.println(userTriedNickname);
                     try {
                         boolean isExistNickname = userService.isExistNickname(userTriedNickname);
                         if (isExistNickname){
@@ -106,6 +107,28 @@ public class UserController {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
+
+                /*
+                 * [POST] 회원 정보 보기
+                 * 유저아이디, 유저닉네임, 유저사진, 유저상태메세지, 유저모꼬지이름, 유저누적공부시간, 유저랭크
+                 */
+                case "viewUserInformation":
+                    String viewUserNickname = (String) body.get("userNickname");
+                    if (viewUserNickname!=null){
+                        boolean isExistNickname = userService.isExistNickname(viewUserNickname);
+                        if (isExistNickname) {
+                            UserViewVO userViewVO = userService.viewUserInformation(viewUserNickname);
+                            return new ResponseEntity<>(new HttpResponseBody<>("ok", userViewVO), HttpStatus.BAD_REQUEST);
+                        } else {
+                            return new ResponseEntity<>(new HttpResponseBody<>("Fail", "존재하지 않는 회원입니다."), HttpStatus.BAD_REQUEST);
+                        }
+                        
+                    } else {
+                        return new ResponseEntity<>(new HttpResponseBody<>("Fail", "닉네임을 입력해주세요."), HttpStatus.BAD_REQUEST);
+                    }
+
+
             }
         }
         return response;
