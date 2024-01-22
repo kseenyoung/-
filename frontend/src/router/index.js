@@ -55,6 +55,11 @@ const router = createRouter({
           name: 'myPageInformation',
           component: () => import('@/components/mypage/MyPageInformation.vue'),
         },
+        {
+          path: 'mypageqna',
+          name: 'myPageQnA',
+          component: () => import('@/components/mypage/MyPageQnA.vue'),
+        },
       ],
     },
     {

@@ -4,6 +4,7 @@
     <nav class="mypage-wrapper-router">
       <RouterLink :to="{ name : 'myPageSchedule' }">스케줄</RouterLink>
       <RouterLink :to="{ name : 'myPageFriend' }">친구</RouterLink>
+      <RouterLink :to="{ name : 'myPageQnA' }">질문</RouterLink>
       <RouterLink :to="{ name : 'myPageInformation' }">정보</RouterLink>
     </nav>
     <div class="mypage-wrapper-content d-flex">
@@ -43,7 +44,7 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
   margin: 0px 10px;
   position: relative;
   top: -4px;
-  left: 65%;
+  left: 40%;
   padding: 5px 30px;
   // transition: none;
 }
