@@ -1,6 +1,7 @@
 package com.ssafy.backend.room.controller;
 
 import com.ssafy.backend.common.utils.HttpResponseBody;
+import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.dto.AnswerDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
@@ -72,18 +73,17 @@ public class RoomController {
 
                 System.out.println("sessionName: "+sessionName);
                 QuestionDto questionDto = new QuestionDto(sessionName, qustionData);
-                roomService.askQuestion(questionDto);
-		        break;
+                questionDto = roomService.askQuestion(questionDto);
+                return new ResponseEntity<>(new HttpResponseBody<>("질문을 등록합니다.",questionDto),HttpStatus.OK);
             case "answerQuestion": // 답변하기
                 sessionName = (String) body.get("session");
                 String answerData = (String) body.get("data");
                 String questionId = (String) body.get("questionId");
 
-                AnswerDto answerDto = new AnswerDto(sessionName, answerData, questionId);
-                roomService.answerQuestion(answerDto);
-		        break;
+                AnswerDto answerDto = new AnswerDto(sessionName,answerData,questionId);
+                answerDto = roomService.answerQuestion(answerDto);
+                return new ResponseEntity<>(new HttpResponseBody<>("답변을 등록합니다.",answerDto),HttpStatus.OK);
             case "findAnswer": // 답변 찾기
-                sessionName = (String) body.get("session");
                 questionId = (String) body.get("questionId");
                 List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionId);
                 return new ResponseEntity<>(new HttpResponseBody<>("답변을 불러옵니다.",answerDtos),HttpStatus.OK);
