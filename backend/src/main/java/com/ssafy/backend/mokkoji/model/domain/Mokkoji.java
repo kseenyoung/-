@@ -27,8 +27,9 @@ public class Mokkoji extends BaseTime {
     private String mokkojiStatus;
 
     @Builder
-    public Mokkoji(String mokkojiName, String leaderId) {
+    public Mokkoji(String mokkojiName, String leaderId,String mokkojiStatus) {
         this.mokkojiName = mokkojiName;
         this.leaderId = leaderId;
+        this.mokkojiStatus = mokkojiStatus;
     }
 }

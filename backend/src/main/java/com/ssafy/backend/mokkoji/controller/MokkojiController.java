@@ -2,10 +2,10 @@ package com.ssafy.backend.mokkoji.controller;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.HttpResponseBody;
+import com.ssafy.backend.mokkoji.model.dto.MokkojiCreateRequestDto;
 import com.ssafy.backend.mokkoji.model.dto.MokkojiListResponseDto;
 import com.ssafy.backend.mokkoji.model.dto.MokkojiRankingsResponseDto;
 import com.ssafy.backend.mokkoji.service.MokkojiFacade;
-import com.ssafy.backend.mokkoji.service.MokkojiService;
 import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -46,8 +46,9 @@ public class MokkojiController {
 
 
     @PostMapping("")
-    public ResponseEntity<HttpResponseBody<?>> deleteMokkoji(@RequestBody HashMap<String, Object> body
+    public ResponseEntity<HttpResponseBody<?>> hideMokkojiURL(@RequestBody HashMap<String, Object> body
             , HttpServletRequest request) {
+        System.out.println(body);
 
         //회원 체크
         HttpSession session = request.getSession(false);
@@ -56,7 +57,7 @@ public class MokkojiController {
         }
         User user = (User) session.getAttribute("session");
         String userId = user.getUserId();
-        //sign 체크
+//        sign 체크
         String sign = (String) body.get("sign");
         // 모꼬지 삭제
         if ("deleteMokkoji".equals(sign)) {
@@ -69,6 +70,21 @@ public class MokkojiController {
             if(member == null) throw new MyException("강퇴할 유저 값이 없습니다", HttpStatus.BAD_REQUEST);
             mokkojiFacade.kickUser(userId,member);
             return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 유저 강퇴 완료"), HttpStatus.OK);
+        }
+        //모꼬지 만들기
+        else if ("addMokkoji".equals(sign)) {
+            String mokkojiName = (String) body.get("mokkojiName");
+            String mokkjiStatus = (String) body.get("mokkojiStatus");
+            List<Integer> categories = (List<Integer>) body.get("mokkojiCategories");
+            MokkojiCreateRequestDto dto = MokkojiCreateRequestDto.builder()
+                    .mokkojiName(mokkojiName)
+                    .mokkojiStatus(mokkjiStatus)
+                    .mokkojiCategories(categories)
+                    .leaderId(userId)
+                    .build();
+
+            mokkojiFacade.saveMokkoji(dto);
+            return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 생성 완료"), HttpStatus.OK);
         }
 
         throw new MyException("해당 기능을 처리하지 못했습니다", HttpStatus.BAD_REQUEST);
