@@ -56,6 +56,22 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public String enterDefaultroom(RoomEnterDto roomEnterDto) throws Exception {
+        Session session = openvidu.getActiveSession("default");
+        if(session == null){
+            // 방이 존재하지 않다면 생성하라
+            HashMap<String,String> SessionPropertyJson = roomEnterDto.toSessionPropertyJson();
+            SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
+            session = openvidu.createSession(properties);
+        } else if (session.getActiveConnections().size() > 20) {
+            // 방에 20명이상이 있다면
+        }
+        ConnectionProperties properties = new ConnectionProperties.Builder().build();
+        Connection connection = session.createConnection(properties);
+        return connection.getToken();
+    }
+
+    @Override
     public String enterRandomroom(RoomEnterDto roomEnterDto) throws Exception {
         String sessionName = roomEnterDto.getSessionName();
         Session session;
@@ -74,6 +90,7 @@ public class RoomServiceImpl implements RoomService {
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             session = openvidu.createSession(properties);
         } else if (session.getActiveConnections().size() > 20) {
+            // 방에 20명이상이 있다면
         }
 
         ConnectionProperties properties = new ConnectionProperties.Builder().build();

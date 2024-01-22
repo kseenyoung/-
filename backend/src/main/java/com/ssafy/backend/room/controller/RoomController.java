@@ -60,6 +60,10 @@ public class RoomController {
                 token = roomService.enterRandomroom(randomRoomEnterDto);
 
                 return new ResponseEntity<>(new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token),HttpStatus.OK);
+            case "enterDefaultroom":
+                RoomEnterDto defaultRoomEnterDto = new RoomEnterDto("all", "VP8");
+                token = roomService.enterDefaultroom(defaultRoomEnterDto);
+                return new ResponseEntity<>(new HttpResponseBody<>("기본방 토큰을 발급합니다.", token),HttpStatus.OK);
             case "enterMoccojiroom": // 모꼬지(길드) 방 입장
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");

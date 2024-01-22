@@ -11,6 +11,7 @@ import java.util.List;
 
 @Service
 public interface RoomService {
+    String enterDefaultroom(RoomEnterDto roomEnterDto) throws Exception;
     String enterRandomroom(RoomEnterDto roomEnterDto) throws Exception;
     String enterMoccojiroom(RoomEnterDto roomEnterDto) throws Exception;
 
@@ -21,4 +22,6 @@ public interface RoomService {
     Answer saveAnswer(AnswerDto answerDto) throws Exception;
     Question saveQuestion(QuestionDto questionDto) throws Exception;
     List<AnswerDto> findAnswerByQuestionId(String questionId) throws Exception;
+
+
 }
