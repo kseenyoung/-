@@ -3,6 +3,7 @@ package com.ssafy.backend.mokkoji.service;
 import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.model.dto.CategoryDto;
 import com.ssafy.backend.category.service.CategoryService;
+import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
 import com.ssafy.backend.mokkoji.model.dto.*;
@@ -11,6 +12,7 @@ import com.ssafy.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,5 +113,14 @@ public class MokkojiFacade {
         User user = userService.leaderCheck(leader);
         User memberCheck = userService.memberCheck(member, user.getMokkojiId());
         userService.kickMokkojiUser(memberCheck);
+    }
+
+    @Transactional
+    public void leaveMokkoji(String userId) {
+        User user = userService.isExistUser(userId);
+        if(user.getMokkojiId() == null) throw new MyException("회원 모꼬지가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
+        if(user.getMokkojiId().getLeaderId().equals(user.getUserId()))
+            throw new MyException("길드장은 탈퇴할 수 없습니다.", HttpStatus.BAD_REQUEST);
+        userService.kickMokkojiUser(user);
     }
 }

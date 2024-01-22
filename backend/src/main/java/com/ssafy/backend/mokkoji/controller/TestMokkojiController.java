@@ -64,4 +64,11 @@ public class TestMokkojiController {
 
     }
 
+    //모꼬지 탈퇴 -> 내가 탈퇴하겠다 !
+    @PostMapping("/leave")
+    public ResponseEntity<HttpResponseBody<?>> leaveMokkoji(@RequestBody String userId) {
+        mokkojiFacade.leaveMokkoji(userId);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", "회원이 모꼬지를 나갔습니다"), HttpStatus.OK);
+    }
+
 }
