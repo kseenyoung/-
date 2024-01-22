@@ -19,6 +19,8 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
@@ -53,9 +55,11 @@ public class JpaDatasourceConfig {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
 
-        em.setJpaPropertyMap(
-                Map.of("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy")
-        );
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
+        properties.put("hibernate.show_sql", true);  // 쿼리문 출력 설정
+        properties.put("hibernate.use_sql_comments", true);  // 쿼리문 매개변수 값 출력 설정
+        em.setJpaPropertyMap(properties);
 
         return em;
     }
