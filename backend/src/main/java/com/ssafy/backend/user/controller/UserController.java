@@ -1,8 +1,10 @@
 package com.ssafy.backend.user.controller;
 
-import com.ssafy.backend.user.model.UserLoginDto;
+import com.ssafy.backend.user.model.dto.UserLoginDto;
 
-import com.ssafy.backend.user.model.UserSignupDto;
+import com.ssafy.backend.user.model.dto.UserSignupDto;
+import com.ssafy.backend.user.model.domain.User;
+import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.UserService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +98,6 @@ public class UserController {
                  */
                 case "isExistNickname":
                     String userTriedNickname = (String) body.get("userNickname");
-                    System.out.println(userTriedNickname);
                     try {
                         boolean isExistNickname = userService.isExistNickname(userTriedNickname);
                         if (isExistNickname){
@@ -106,6 +107,14 @@ public class UserController {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
+                case "viewUserInformation":
+                    String viewUserNickname = (String) body.get("userNickname");
+                    UserViewVO userViewVO = userService.viewUserInformation(viewUserNickname);
+
+
+                    return new ResponseEntity<>(new HttpResponseBody<>("ok", userViewVO), HttpStatus.BAD_REQUEST);
+
             }
         }
         return response;

@@ -2,9 +2,10 @@ package com.ssafy.backend.user.service;
 
 
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
-import com.ssafy.backend.user.model.UserLoginDto;
-import com.ssafy.backend.user.model.UserSignupDto;
+import com.ssafy.backend.user.model.dto.UserLoginDto;
+import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.domain.User;
+import com.ssafy.backend.user.model.vo.UserViewVO;
 
 public interface UserService {
 
@@ -31,4 +32,6 @@ public interface UserService {
     User memberCheck(String memberId, Mokkoji mokkoji);
 
     void kickMokkojiUser(User memberCheck);
+
+    UserViewVO viewUserInformation(String viewUserNickname);
 }
