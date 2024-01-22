@@ -1,7 +1,7 @@
 package com.ssafy.backend.common.exception;
 
-import com.ssafy.backend.common.utils.response.BaseResponse;
-import com.ssafy.backend.common.utils.response.BaseResponseStatus;
+import com.ssafy.backend.common.response.BaseResponse;
+import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

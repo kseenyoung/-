@@ -1,4 +1,4 @@
-package com.ssafy.backend.common.utils.response;
+package com.ssafy.backend.common.response;
 
 public class BaseResponse<T> {
     private final Boolean isSuccess;

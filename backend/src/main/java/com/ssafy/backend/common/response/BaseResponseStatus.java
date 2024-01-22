@@ -1,4 +1,4 @@
-package com.ssafy.backend.common.utils.response;
+package com.ssafy.backend.common.response;
 
 import lombok.Getter;
 

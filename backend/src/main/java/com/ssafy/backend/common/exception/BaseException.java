@@ -1,6 +1,6 @@
 package com.ssafy.backend.common.exception;
 
-import com.ssafy.backend.common.utils.response.BaseResponseStatus;
+import com.ssafy.backend.common.response.BaseResponseStatus;
 import lombok.Getter;
 import lombok.Setter;
 

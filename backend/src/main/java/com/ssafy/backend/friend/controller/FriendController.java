@@ -2,7 +2,7 @@ package com.ssafy.backend.friend.controller;
 
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
-import com.ssafy.backend.common.utils.response.BaseResponse;
+import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import com.ssafy.backend.friend.model.vo.FriendListVO;
 import com.ssafy.backend.friend.service.FriendService;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
-import static com.ssafy.backend.common.utils.response.BaseResponseStatus.*;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("friend")

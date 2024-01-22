@@ -6,14 +6,14 @@ import com.ssafy.backend.alarm.model.dto.ListOfAllAlarmDto;
 import com.ssafy.backend.alarm.model.dto.ListOfUncheckedtAlarmDto;
 import com.ssafy.backend.alarm.model.dto.ReqestAlarmDto;
 import com.ssafy.backend.alarm.service.AlarmService;
-import com.ssafy.backend.common.utils.response.BaseResponse;
+import com.ssafy.backend.common.response.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-import static com.ssafy.backend.common.utils.response.BaseResponseStatus.*;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("alarms")
