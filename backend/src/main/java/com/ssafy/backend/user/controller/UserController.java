@@ -108,12 +108,26 @@ public class UserController {
                         e.printStackTrace();
                     }
 
+
+                /*
+                 * [POST] 회원 정보 보기
+                 * 유저아이디, 유저닉네임, 유저사진, 유저상태메세지, 유저모꼬지이름, 유저누적공부시간, 유저랭크
+                 */
                 case "viewUserInformation":
                     String viewUserNickname = (String) body.get("userNickname");
-                    UserViewVO userViewVO = userService.viewUserInformation(viewUserNickname);
+                    if (viewUserNickname!=null){
+                        boolean isExistNickname = userService.isExistNickname(viewUserNickname);
+                        if (isExistNickname) {
+                            UserViewVO userViewVO = userService.viewUserInformation(viewUserNickname);
+                            return new ResponseEntity<>(new HttpResponseBody<>("ok", userViewVO), HttpStatus.BAD_REQUEST);
+                        } else {
+                            return new ResponseEntity<>(new HttpResponseBody<>("Fail", "존재하지 않는 회원입니다."), HttpStatus.BAD_REQUEST);
+                        }
+                        
+                    } else {
+                        return new ResponseEntity<>(new HttpResponseBody<>("Fail", "닉네임을 입력해주세요."), HttpStatus.BAD_REQUEST);
+                    }
 
-
-                    return new ResponseEntity<>(new HttpResponseBody<>("ok", userViewVO), HttpStatus.BAD_REQUEST);
 
             }
         }
