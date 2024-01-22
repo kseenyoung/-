@@ -6,6 +6,7 @@
       <RouterLink :to="{ name : 'myPageFriend' }">친구</RouterLink>
       <RouterLink :to="{ name : 'myPageQnA' }">질문</RouterLink>
       <RouterLink :to="{ name : 'myPageAlarm' }">알림</RouterLink>
+      <RouterLink :to="{ name : 'myPageInventory' }">인벤토리</RouterLink>
       <RouterLink :to="{ name : 'myPageInformation' }">정보</RouterLink>
     </nav>
     <div class="mypage-wrapper-content d-flex">
