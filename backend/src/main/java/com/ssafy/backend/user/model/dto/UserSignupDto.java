@@ -1,4 +1,4 @@
-package com.ssafy.backend.user.model;
+package com.ssafy.backend.user.model.dto;
 
 
 import com.ssafy.backend.common.exception.MyException;

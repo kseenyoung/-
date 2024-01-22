@@ -6,11 +6,14 @@ import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.security.model.SecurityDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
-import com.ssafy.backend.user.model.UserLoginDto;
+import com.ssafy.backend.user.model.domain.UserRank;
+import com.ssafy.backend.user.model.dto.UserLoginDto;
 
-import com.ssafy.backend.user.model.UserSignupDto;
+import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
+import com.ssafy.backend.user.model.repository.UserRankRepository;
 import com.ssafy.backend.user.model.repository.UserRepository;
+import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserRankRepository userRankRepository;
 
 
     @Transactional(rollbackOn = Exception.class)
@@ -147,6 +153,31 @@ public class UserServiceImpl implements UserService {
     public void kickMokkojiUser(User user) {
         user.saveMokkoji(null);
         userRepository.save(user);
+    }
+
+    /*
+     * [POST] 회원 정보 조회
+     * 유저아이디, 유저닉네임, 유저사진, 유저상태메세지, 유저모꼬지이름, 유저누적공부시간, 유저랭크
+     */
+    @Override
+    public UserViewVO viewUserInformation(String viewUserNickname) {
+        User user = userRepository.findUserByUserNickname(viewUserNickname);
+        UserViewVO userViewVO = new UserViewVO();
+        userViewVO.setUserId(user.getUserId());
+        userViewVO.setUserNickname(user.getUserNickname());
+        userViewVO.setUserPicture(user.getUserPicture());
+        userViewVO.setUserStatusMessage(user.getUserStatusMessage());
+        if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
+            userViewVO.setMokkoijiName(user.getMokkojiId().getMokkojiName());
+        }
+
+        if (user.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
+            UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
+            userViewVO.setUserRank(userRank.getUserRank());
+        }
+
+        System.out.println(userViewVO);
+        return userViewVO;
     }
 
 }
