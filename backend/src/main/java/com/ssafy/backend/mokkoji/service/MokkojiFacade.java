@@ -8,6 +8,7 @@ import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
 import com.ssafy.backend.mokkoji.model.dto.*;
 import com.ssafy.backend.user.model.domain.User;
+import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -122,5 +123,16 @@ public class MokkojiFacade {
         if(user.getMokkojiId().getLeaderId().equals(user.getUserId()))
             throw new MyException("길드장은 탈퇴할 수 없습니다.", HttpStatus.BAD_REQUEST);
         userService.kickMokkojiUser(user);
+    }
+
+    public MokkojiDetailResponseDto getDetailMokkoji(int mokkojiId, String userId) {
+        MokkojiDetailResponseDto dto = new MokkojiDetailResponseDto();
+        Mokkoji mokkoji = mokkojiService.findByMokkojiId(mokkojiId);
+        List<UserViewVO> user = userService.viewUserInformationByMokkoji(mokkoji);
+        List<Category> categories = mokkojiCategoryService.findByMokkoji(mokkoji);
+
+        if(userId != null && userId.equals(mokkoji.getLeaderId())) dto.setLeader(true);
+        dto.setMokkojiData(mokkoji, user, categories);
+        return dto;
     }
 }
