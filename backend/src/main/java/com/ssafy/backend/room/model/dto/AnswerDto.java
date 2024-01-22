@@ -15,6 +15,7 @@ public class AnswerDto {
 
     public Answer toEntity(){
         return Answer.builder()
+                .session(this.session)
                 .answer(this.data)
                 .questionId(this.questionId)
                 .build();

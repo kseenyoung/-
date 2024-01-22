@@ -16,6 +16,7 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -100,7 +101,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void askQuestion(QuestionDto questionDto) throws Exception {
+    public QuestionDto askQuestion(QuestionDto questionDto) throws Exception {
         String sessionId = questionDto.getSession();
         Session session;
         session = openvidu.getActiveSession(sessionId);
@@ -134,10 +135,11 @@ public class RoomServiceImpl implements RoomService {
         ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
                 uri, HttpMethod.POST,requestEntity, QuestionDto.class
         );
+        return questionDto;
     }
 
     @Override
-    public void answerQuestion(AnswerDto answerDto) throws Exception {
+    public AnswerDto answerQuestion(AnswerDto answerDto) throws Exception {
         String sessionId = answerDto.getSession();
         Session session;
         session = openvidu.getActiveSession(sessionId);
@@ -147,8 +149,8 @@ public class RoomServiceImpl implements RoomService {
 
         // DB에 대답 저장
         Answer answer = saveAnswer(answerDto);
-        int answerId = answer.getAnswerId();
-        answerDto.setData(answerId+"");
+        String answerId = answer.getAnswerId();
+        answerDto.setData(answerId);
 
         // 답변 문제번호 전송
         URI uri = UriComponentsBuilder
@@ -169,9 +171,18 @@ public class RoomServiceImpl implements RoomService {
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-        ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
-                uri, HttpMethod.POST,requestEntity, QuestionDto.class
-        );
+
+        try{
+            ResponseEntity<AnswerDto> responseEntity = restTemplate.exchange(
+                    uri, HttpMethod.POST,requestEntity, AnswerDto.class
+            );
+        } catch (Exception e){
+            System.out.println("e: "+e.getCause());
+            System.out.println("e: "+e.getStackTrace());
+
+        }
+
+        return answerDto;
     }
 
     @Override
@@ -192,13 +203,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<AnswerDto> findAnswerByQuestionId(String questionId) throws Exception {
-        List<Answer> answers = answerRepository.findByQuestionId(questionId+"");
-        System.out.println(questionId+"");
-        System.out.println(answers);
-        Answer answers2 = answerRepository.findById(-469009711).get();
-        System.out.println(answers2);
-
-
+        List<Answer> answers = answerRepository.findByQuestionId(questionId);
         List<AnswerDto> answerDtos = answers.stream()
                 .map(a -> new AnswerDto(a.getSession(),a.getAnswer(),a.getQuestionId()))
                 .collect(Collectors.toList());
