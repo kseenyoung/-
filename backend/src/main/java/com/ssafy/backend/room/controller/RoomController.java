@@ -100,32 +100,6 @@ public class RoomController {
                 questionId = (String) body.get("questionId");
                 List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionId);
                 return new ResponseEntity<>(new HttpResponseBody<>("답변을 불러옵니다.",answerDtos),HttpStatus.OK);
-            case "test":
-                URI uri = UriComponentsBuilder
-                        .fromUriString("https://capstone-6.shop:4443")
-                        .path("/openvidu/api/signal")
-                        .encode()
-                        .build()
-                        .toUri();
-
-                QuestionDto questionDto2 = new QuestionDto();
-                questionDto2.setSession("SessionA1");
-                questionDto2.setData("안녕 애두라!");
-                String secret = "Basic "+OPENVIDU_SECRET;
-                secret = Base64.getEncoder().encodeToString(secret.getBytes());
-
-                RequestEntity<QuestionDto> requestEntity = RequestEntity
-                        .post(uri)
-                        .header("Content-Type", "application/json")
-                        .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
-                        .body(questionDto2);
-
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-                ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
-                        uri,HttpMethod.POST,requestEntity, QuestionDto.class
-                );
-                break;
         }
         return null;
     }

@@ -54,8 +54,6 @@ public class UserController {
         System.out.println(isExistId);
     }
 
-
-
     @PostMapping("")
     public ResponseEntity<HttpResponseBody<?>> user(@RequestBody Map<String, Object> body) throws Exception {
         String sign = (String) body.get("sign");
