@@ -82,9 +82,13 @@ public class UserController {
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
                         return new ResponseEntity<>(responseBody, HttpStatus.OK);
                     } else {  // 로그인 실패 시 카운트 시작.
-                        loginHistoryService.failLogin(loginUserId, loginUserIp);
-
-                        responseBody = new HttpResponseBody<>("Fail", "로그인 실패!!!");
+                        int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
+                        if (remainTime == 0){
+                            responseBody = new HttpResponseBody<>("Fail", "로그인 실패!!!");
+                        } else {
+                            // TODO : 프론트에 전달해 줄 데이터를 바꿔야 할 것 같음...`ㅎ
+                            responseBody = new HttpResponseBody<>("Fail", remainTime+"초 이후 로그인이 가능합니다.");
+                        }
                         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
                     }
 
