@@ -1,6 +1,13 @@
 package com.ssafy.backend.user.controller;
 
+
 import com.ssafy.backend.common.utils.RegEx;
+import com.ssafy.backend.friend.model.vo.FriendListVO;
+import com.ssafy.backend.friend.model.vo.FriendVO;
+import com.ssafy.backend.friend.service.FriendService;
+import com.ssafy.backend.room.model.dto.QuestionDto;
+import com.ssafy.backend.room.service.RoomService;
+import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
 import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 
@@ -9,11 +16,20 @@ import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.UserService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.util.Base64;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -26,8 +42,16 @@ public class UserController {
     UserService userService;
 
     @Autowired
-    LoginHistoryService loginHistoryService;
+    FriendService friendService;
 
+    @Value("${openvidu.url}")
+    private String OPENVIDU_URL;
+
+    @Value("${openvidu.secret}")
+    private String OPENVIDU_SECRET;
+
+    @Autowired
+    LoginHistoryService loginHistoryService;
 
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body) throws Exception {
@@ -81,6 +105,38 @@ public class UserController {
                     UserLoginDto userLoginDto = new UserLoginDto(loginUserId, loginUserPassword);
                     if (userService.login(userLoginDto)) {  // 로그인 성공 시...
                         responseBody = new HttpResponseBody<>("OK", "로그인 성공!!!");
+                        
+                        // 로그인 성공시 친구들에게 시그널 전송
+                        List<FriendVO> friendList = friendService.listFriends(loginUserId);
+                        System.out.println("친구 목록: "+friendList);
+
+                        for(FriendVO friend: friendList){
+                            System.out.println(friend.getUserId()+"에게 친구요청");
+                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(),loginUserId);
+                            URI uri = UriComponentsBuilder
+                                    .fromUriString(OPENVIDU_URL)
+                                    .path("/openvidu/api/signal")
+                                    .encode()
+                                    .build()
+                                    .toUri();
+
+                            String secret = "Basic "+OPENVIDU_SECRET;
+                            secret = Base64.getEncoder().encodeToString(secret.getBytes());
+
+                            RequestEntity<OpenviduRequestDto> requestEntity = RequestEntity
+                                    .post(uri)
+                                    .header("Content-Type", "application/json")
+                                    .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
+                                    .body(openviduRequestDto);
+
+                            RestTemplate restTemplate = new RestTemplate();
+                            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+                            ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
+                                    uri, HttpMethod.POST,requestEntity, QuestionDto.class
+                            );
+
+                        }
+
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
                         return new ResponseEntity<>(responseBody, HttpStatus.OK);
                     } else {  // 로그인 실패 시 카운트 시작.

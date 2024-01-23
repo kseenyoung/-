@@ -2,10 +2,7 @@ package com.ssafy.backend.mokkoji.controller;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.HttpResponseBody;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiCreateRequestDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiDetailResponseDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiListResponseDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiRankingsResponseDto;
+import com.ssafy.backend.mokkoji.model.dto.*;
 import com.ssafy.backend.mokkoji.service.MokkojiFacade;
 import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -104,9 +101,19 @@ public class MokkojiController {
             return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 생성 완료"), HttpStatus.OK);
         }
         //모꼬지 나가기
-        else if ("leaveMokkoji".equals("sign")) {
+        else if ("leaveMokkoji".equals(sign)) {
             mokkojiFacade.leaveMokkoji(userId);
             return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 나가기 완료"), HttpStatus.OK);
+        }
+        //모꼬지 가입 신청 나중에 ParseInt 수정해야됨
+        else if ("ApplyMokkoji".equals(sign)) {
+            String mokkojiId = (String) body.get("mokkojiId");
+            mokkojiFacade.applyForMokkoji(
+                    MokkojiApplyForRequestDto.builder()
+                            .userId(userId)
+                            .mokkojiId(Integer.parseInt(mokkojiId))
+                            .build()
+            );
         }
 
         throw new MyException("해당 기능을 처리하지 못했습니다", HttpStatus.BAD_REQUEST);
