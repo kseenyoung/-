@@ -108,15 +108,15 @@ public class FriendController {
      * 아이디, 닉네임, 상태메시지, 이메일, 랭킹, 총 공부 시간, 모꼬지명
      **/
     @GetMapping("list")
-    public ResponseEntity<HttpResponseBody<?>> listFriends() {
+        public ResponseEntity<HttpResponseBody<?>> listFriends() {
 //        HttpSession session = request.getSession(false);
-        // User user = (User) session.getAttribute("User");
-        // String userId = user.getUserId();
-        String listUserId = "ssafy";  // request session Id
+            // User user = (User) session.getAttribute("User");
+            // String userId = user.getUserId();
+            String listUserId = "yj";  // request session Id
 
-        FriendListVO friendListVO = new FriendListVO(friendService.countFriend(listUserId), friendService.listFriends(listUserId));
+            FriendListVO friendListVO = new FriendListVO(friendService.countFriend(listUserId), friendService.listFriends(listUserId));
 
-        return ResponseEntity.ok(new HttpResponseBody<FriendListVO>("성공", friendListVO));
+            return ResponseEntity.ok(new HttpResponseBody<FriendListVO>("성공", friendListVO));
 
     }
 

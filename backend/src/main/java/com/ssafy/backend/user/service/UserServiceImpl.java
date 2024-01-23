@@ -2,6 +2,7 @@ package com.ssafy.backend.user.service;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
+import com.ssafy.backend.friend.model.repository.FriendRepository;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.security.model.SecurityDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
@@ -39,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    FriendRepository friendRepository;
 
     @Autowired
     UserRankRepository userRankRepository;

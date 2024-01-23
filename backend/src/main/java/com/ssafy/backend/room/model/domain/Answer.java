@@ -25,4 +25,5 @@ public class Answer {
     String questionId;
     String answer;
     String session;
+    String userId;
 }

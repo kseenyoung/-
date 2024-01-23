@@ -7,6 +7,7 @@ import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.service.RoomService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
+import com.ssafy.backend.user.model.domain.User;
 import io.openvidu.java.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.Base64;
 import java.util.List;
@@ -44,9 +48,13 @@ public class RoomController {
     }
 
     @PostMapping("")
-    public ResponseEntity<HttpResponseBody<?>> room(@RequestBody Map<String, Object> body) throws Exception {
+    public ResponseEntity<HttpResponseBody<?>> room(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
         ResponseEntity<HttpResponseBody<?>> response = null;
+        HttpSession session = request.getSession(false);
+//        User user = (User) session.getAttribute("User");
+//        String userId = user.getUserId();
+        String userId="yj";
         String sessionName;
         String videoCodec;
         String token;
@@ -60,6 +68,11 @@ public class RoomController {
                 token = roomService.enterRandomroom(randomRoomEnterDto);
 
                 return new ResponseEntity<>(new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token),HttpStatus.OK);
+            case "enterMyRoom":
+                userId = (String) body.get("userId");
+                RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, "VP8");
+                token = roomService.enterDefaultroom(defaultRoomEnterDto);
+                return new ResponseEntity<>(new HttpResponseBody<>("기본방 토큰을 발급합니다.", token),HttpStatus.OK);
             case "enterMoccojiroom": // 모꼬지(길드) 방 입장
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
@@ -73,47 +86,20 @@ public class RoomController {
                 String qustionData = (String) body.get("data");
 
                 System.out.println("sessionName: "+sessionName);
-                QuestionDto questionDto = new QuestionDto(sessionName, qustionData);
+                QuestionDto questionDto = new QuestionDto(userId, sessionName, qustionData);
                 questionDto = roomService.askQuestion(questionDto);
                 return new ResponseEntity<>(new HttpResponseBody<>("질문을 등록합니다.",questionDto),HttpStatus.OK);
             case "answerQuestion": // 답변하기
                 sessionName = (String) body.get("session");
                 String answerData = (String) body.get("data");
                 String questionId = (String) body.get("questionId");
-
-                AnswerDto answerDto = new AnswerDto(sessionName,answerData,questionId);
+                AnswerDto answerDto = new AnswerDto(userId,sessionName,answerData,questionId);
                 answerDto = roomService.answerQuestion(answerDto);
                 return new ResponseEntity<>(new HttpResponseBody<>("답변을 등록합니다.",answerDto),HttpStatus.OK);
             case "findAnswer": // 답변 찾기
                 questionId = (String) body.get("questionId");
                 List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionId);
                 return new ResponseEntity<>(new HttpResponseBody<>("답변을 불러옵니다.",answerDtos),HttpStatus.OK);
-            case "test":
-                URI uri = UriComponentsBuilder
-                        .fromUriString("https://capstone-6.shop:4443")
-                        .path("/openvidu/api/signal")
-                        .encode()
-                        .build()
-                        .toUri();
-
-                QuestionDto questionDto2 = new QuestionDto();
-                questionDto2.setSession("SessionA1");
-                questionDto2.setData("안녕 애두라!");
-                String secret = "Basic "+OPENVIDU_SECRET;
-                secret = Base64.getEncoder().encodeToString(secret.getBytes());
-
-                RequestEntity<QuestionDto> requestEntity = RequestEntity
-                        .post(uri)
-                        .header("Content-Type", "application/json")
-                        .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
-                        .body(questionDto2);
-
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-                ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
-                        uri,HttpMethod.POST,requestEntity, QuestionDto.class
-                );
-                break;
         }
         return null;
     }

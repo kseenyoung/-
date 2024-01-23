@@ -10,11 +10,13 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class QuestionDto {
+    private String userId;
     private String session;
     private String data;
 
     public Question toEntity(){
         return Question.builder()
+                .userId(this.userId)
                 .session(this.session)
                 .question(this.data)
                 .build();

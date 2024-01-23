@@ -21,4 +21,5 @@ public class Question {
     Integer questionId;
     String session;
     String question;
+    String userId;
 }
