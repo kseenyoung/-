@@ -142,17 +142,48 @@ public class MokkojiFacade {
         return dto;
     }
 
+    @Transactional
     public void applyForMokkoji(MokkojiApplyForRequestDto dto) {
         User user = userService.isExistUser(dto.getUserId());
         if(user.getMokkojiId() != null)
             throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
         Mokkoji mokkoji = mokkojiService.findByMokkojiId(dto.getMokkojiId());
-        ReqestAlarmDto dto2 = ReqestAlarmDto.builder()
+        ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
                 .tagId(1)
                 .userId(user.getUserId())
                 .requestedUserId(mokkoji.getLeaderId())
                 .build();
-        alarmService.aVoidDuplicateAlaram(dto2);
-        alarmService.requestAlarm(dto2);
+        alarmService.aVoidDuplicateAlaram(alarmDto);
+        alarmService.requestAlarm(alarmDto);
+    }
+
+
+    @Transactional
+    public void acceptForMokkoji(String leaderId, String memberId) {
+
+        ///leader check , member check
+        User leader = userService.leaderCheck(leaderId);
+        User member = userService.isExistUser(memberId);
+        if(member.getMokkojiId() != null)
+            throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
+        //save
+        userService.saveMokkojiId(member, leader.getMokkojiId());
+
+        //alarm save
+        ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
+                .tagId(2)
+                .userId(leader.getUserId())
+                .requestedUserId(member.getUserId())
+                .build();
+        alarmService.requestAlarm(alarmDto);
+    }
+
+    public void deleteAlarm(String leaderId, String memberId) {
+        ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
+                .tagId(1)
+                .userId(memberId)
+                .requestedUserId(leaderId)
+                .build();
+        alarmService.deleteAlarm(alarmDto);
     }
 }

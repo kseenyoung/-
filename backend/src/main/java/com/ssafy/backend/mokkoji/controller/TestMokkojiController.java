@@ -84,4 +84,15 @@ public class TestMokkojiController {
         return new ResponseEntity<>(new HttpResponseBody<>("OK", "메세지 성공"), HttpStatus.OK);
     }
 
+    //모꼬지 가입 승인 -> 일단 테스트
+    @PostMapping("/acceptFor/mokkoji")
+    public ResponseEntity<HttpResponseBody<?>> acceptForMokkoji(@RequestBody HashMap<String, Object> body) {
+        String leaderId = (String) body.get("leaderId");
+        String memberId = (String) body.get("memberId");
+        mokkojiFacade.deleteAlarm(leaderId,memberId);
+        mokkojiFacade.acceptForMokkoji(leaderId, memberId);
+
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 가입 승인"), HttpStatus.OK);
+    }
+
 }
