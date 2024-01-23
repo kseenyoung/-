@@ -9,12 +9,15 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnswerDto {
+    private String userId;
     private String session;
     private String data;
     private String questionId;
 
+
     public Answer toEntity(){
         return Answer.builder()
+                .userId(this.userId)
                 .session(this.session)
                 .answer(this.data)
                 .questionId(this.questionId)

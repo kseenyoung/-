@@ -222,7 +222,7 @@ public class RoomServiceImpl implements RoomService {
     public List<AnswerDto> findAnswerByQuestionId(String questionId) throws Exception {
         List<Answer> answers = answerRepository.findByQuestionId(questionId);
         List<AnswerDto> answerDtos = answers.stream()
-                .map(a -> new AnswerDto(a.getSession(),a.getAnswer(),a.getQuestionId()))
+                .map(a -> new AnswerDto(a.getUserId(),a.getSession(),a.getAnswer(),a.getQuestionId()))
                 .collect(Collectors.toList());
         return answerDtos;
     }
