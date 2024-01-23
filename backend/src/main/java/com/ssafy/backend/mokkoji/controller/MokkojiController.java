@@ -2,9 +2,7 @@ package com.ssafy.backend.mokkoji.controller;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.HttpResponseBody;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiCreateRequestDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiListResponseDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiRankingsResponseDto;
+import com.ssafy.backend.mokkoji.model.dto.*;
 import com.ssafy.backend.mokkoji.service.MokkojiFacade;
 import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MokkojiController {
     private final MokkojiFacade mokkojiFacade;
+
+    //모꼬지 상세조회
+    @GetMapping("/detail/{mokkojiId:[\\d]+}")
+    public ResponseEntity<HttpResponseBody<?>> detailData(
+            @PathVariable(name = "mokkojiId") int mokkojiId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        String userId = new String("");
+        if(session != null){
+            User user = (User) session.getAttribute("session");
+            userId = user.getUserId();
+        }
+        MokkojiDetailResponseDto dto = mokkojiFacade.getDetailMokkoji(mokkojiId,userId);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", dto), HttpStatus.OK);
+    }
+
+
     //탑텐 조회
     @GetMapping("/rank10")
     public ResponseEntity<HttpResponseBody<?>> mokkojiRankings(){
@@ -87,9 +101,19 @@ public class MokkojiController {
             return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 생성 완료"), HttpStatus.OK);
         }
         //모꼬지 나가기
-        else if ("leaveMokkoji".equals("sign")) {
+        else if ("leaveMokkoji".equals(sign)) {
             mokkojiFacade.leaveMokkoji(userId);
             return new ResponseEntity<>(new HttpResponseBody<>("OK", "모꼬지 나가기 완료"), HttpStatus.OK);
+        }
+        //모꼬지 가입 신청 나중에 ParseInt 수정해야됨
+        else if ("ApplyMokkoji".equals(sign)) {
+            String mokkojiId = (String) body.get("mokkojiId");
+            mokkojiFacade.applyForMokkoji(
+                    MokkojiApplyForRequestDto.builder()
+                            .userId(userId)
+                            .mokkojiId(Integer.parseInt(mokkojiId))
+                            .build()
+            );
         }
 
         throw new MyException("해당 기능을 처리하지 못했습니다", HttpStatus.BAD_REQUEST);

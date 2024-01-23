@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -184,4 +185,22 @@ public class UserServiceImpl implements UserService {
         return userViewVO;
     }
 
+    @Override
+    public List<UserViewVO> viewUserInformationByMokkoji(Mokkoji mokkoji) {
+        List<User> user = userRepository.findAllByMokkojiId(mokkoji);
+        List<UserViewVO> data = new ArrayList<UserViewVO>();
+        for(User u : user){
+            UserViewVO userViewVO = new UserViewVO();
+            userViewVO.setUserId(u.getUserId());
+            userViewVO.setUserNickname(u.getUserNickname());
+            userViewVO.setUserPicture(u.getUserPicture());
+            userViewVO.setUserStatusMessage(u.getUserStatusMessage());
+            if (u.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
+                UserRank userRank = userRankRepository.findUserRankByUserId(u.getUserId());
+                userViewVO.setUserRank(userRank.getUserRank());
+            }
+            data.add(userViewVO);
+        }
+        return data;
+    }
 }

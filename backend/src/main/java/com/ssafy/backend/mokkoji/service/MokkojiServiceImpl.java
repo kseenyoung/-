@@ -45,4 +45,12 @@ public class MokkojiServiceImpl implements MokkojiService {
         mokkojiRepository.delete(mokkoji);
 
     }
+
+    @Override
+    public Mokkoji findByMokkojiId(int mokkojiId) {
+        return mokkojiRepository.findMokkojiByMokkojiId(mokkojiId)
+                .orElseThrow(() -> new MyException("해당 모꼬지를 찾을 수 없습니다."
+                        ,HttpStatus.BAD_REQUEST));
+    }
+
 }

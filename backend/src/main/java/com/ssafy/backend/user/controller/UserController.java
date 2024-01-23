@@ -6,10 +6,10 @@ import com.ssafy.backend.friend.service.FriendService;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.service.RoomService;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
+import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 
 import com.ssafy.backend.user.model.dto.UserSignupDto;
-import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.UserService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
@@ -27,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.Base64;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -45,6 +46,8 @@ public class UserController {
     @Value("${openvidu.secret}")
     private String OPENVIDU_SECRET;
 
+    @Autowired
+    LoginHistoryService loginHistoryService;
 
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body) throws Exception {
@@ -55,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ResponseEntity<HttpResponseBody<?>> user(@RequestBody Map<String, Object> body) throws Exception {
+    public ResponseEntity<HttpResponseBody<?>> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
         ResponseEntity<HttpResponseBody<?>> response = null;
 
@@ -87,13 +90,17 @@ public class UserController {
 
                 /*
                  * [POST] 로그인
+                 * 로그인 반복 시도 시 5회 제한...
                  */
                 case "login":
                     String loginUserId = (String) body.get("userId");
                     String loginUserPassword = (String) body.get("userPassword");
+                    String loginUserIp = request.getRemoteAddr();
+
                     UserLoginDto userLoginDto = new UserLoginDto(loginUserId, loginUserPassword);
-                    if (userService.login(userLoginDto)){
+                    if (userService.login(userLoginDto)){  // 로그인 성공 시...
                         responseBody = new HttpResponseBody<>("OK", "로그인 성공!!!");
+                        
                         // 로그인 성공시 친구들에게 시그널 전송
                         List<FriendVO> friendList = friendService.listFriends(loginUserId);
                         System.out.println("친구 목록: "+friendList);
@@ -125,8 +132,11 @@ public class UserController {
 
                         }
 
+                        loginHistoryService.successLogin(loginUserId, loginUserIp);
                         return new ResponseEntity<>(responseBody, HttpStatus.OK);
-                    } else {
+                    } else {  // 로그인 실패 시 카운트 시작.
+                        loginHistoryService.failLogin(loginUserId, loginUserIp);
+
                         responseBody = new HttpResponseBody<>("Fail", "로그인 실패!!!");
                         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
                     }

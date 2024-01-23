@@ -9,4 +9,6 @@ public interface MokkojiService {
     Page<Mokkoji> getMokkojiList(int page, String keyword);
 
     void deleteMokkoji(Mokkoji mokkoji);
+
+    Mokkoji findByMokkojiId(int mokkojiId);
 }

@@ -15,4 +15,5 @@ public interface MokkojiRepository extends JpaRepository<Mokkoji, Integer> {
     Optional<Mokkoji> findByMokkojiName(String mokkojiName);
     Page<Mokkoji> findByMokkojiNameContaining(String mokkojiName, Pageable pageable);
 
+    Optional<Mokkoji> findMokkojiByMokkojiId(int mokkojiId);
 }

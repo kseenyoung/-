@@ -39,6 +39,14 @@ public enum BaseResponseStatus {
     NOT_EXIST_POINT(false, 2028, "존재하지 않는 포인트입니다."),
     INSUFFICIENT_POINT(false, 2029, "포인트가 부족합니다."),
     NOT_MATCH_SIGN(false, 2030,"일치하는 sign 정보가 없습니다."),
+    NOT_EXIST_TAG_ID(false, 2031, "일치하는 태그 번호가 없습니다."),
+    NOT_EXIST_ALARM_ID(false, 2032, "유효하지 않은 알람 아이디입니다."),
+
+
+    /* 모꼬지 관련 에러 이넘 클래스*/
+    AVOID_DUPLICATE_ALARM_MOKKOJI(false,2033, "이미 상대방한테 길드 요청을 보냈습니다."),
+    ALREADY_EXIST_USER_MOKKOJI(false, 2100,"이미 회원은 모꼬지를 가입한 상태입니다."),
+
 
 
     /**
@@ -61,7 +69,13 @@ public enum BaseResponseStatus {
      */
     INTERNAL_SERVER_ERROR(false, 4000, "서버 오류입니다"),
     JSON_PROCESSING_ERROR(false, 4001, "JSON을 처리하는 과정 중 오류가 발생했습니다."),
-    FILE_UPLOAD_ERROR(false, 4002, "파일을 업로드 하는 과정 중에 에러가 발생했습니다.");
+    FILE_UPLOAD_ERROR(false, 4002, "파일을 업로드 하는 과정 중에 에러가 발생했습니다."),
+
+    /**
+     * 5000 : 잡지 못 한 서버 오류
+     * */
+    OOPS(false, 5000, "Oops...");
+
     private final boolean isSuccess;
     private final int code;
     private final String message;
