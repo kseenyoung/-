@@ -1,6 +1,7 @@
 package com.ssafy.backend.alarm.model.dto;
 
 import com.ssafy.backend.common.exception.BaseException;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,6 +20,12 @@ public class ReqestAlarmDto {
         setUserId(userId);
         setRequestedUserId(requestedUserId);
         setTagId(tagId);
+    }
+    @Builder
+    public ReqestAlarmDto(String userId, String requestedUserId, Integer tagId) {
+        this.userId = userId;
+        this.requestedUserId = requestedUserId;
+        this.tagId = tagId;
     }
 
     public void setUserId(String userId) {

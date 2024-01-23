@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.ssafy.backend.common.response.BaseResponseStatus.AVOID_DUPLICATE_ALARM_MOKKOJI;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_ALARM_ID;
 
 @Service
@@ -54,5 +55,16 @@ public class AlarmServiceImpl implements  AlarmService {
         List<Alarm> byUserIdAndIsChecked = alarmRepository.findByUserIdAndIsChecked(userId, 0);
 
         return byUserIdAndIsChecked;
+    }
+
+    @Override
+    public void aVoidDuplicateAlaram(ReqestAlarmDto reqestAlarmDto) {
+        alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(
+                reqestAlarmDto.getUserId(),
+                reqestAlarmDto.getRequestedUserId(),
+                reqestAlarmDto.getTagId()).ifPresent(
+                        e -> {
+                            throw new BaseException(AVOID_DUPLICATE_ALARM_MOKKOJI);
+                        });
     }
 }

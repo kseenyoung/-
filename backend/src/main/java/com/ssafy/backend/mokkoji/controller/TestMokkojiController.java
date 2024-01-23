@@ -2,10 +2,7 @@ package com.ssafy.backend.mokkoji.controller;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.HttpResponseBody;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiCreateRequestDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiDetailResponseDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiListResponseDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiRankingsResponseDto;
+import com.ssafy.backend.mokkoji.model.dto.*;
 import com.ssafy.backend.mokkoji.service.MokkojiFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -78,6 +75,13 @@ public class TestMokkojiController {
             @RequestParam String userId) {
         MokkojiDetailResponseDto dto = mokkojiFacade.getDetailMokkoji(mokkojiId,userId);
         return new ResponseEntity<>(new HttpResponseBody<>("OK", dto), HttpStatus.OK);
+    }
+
+    //모꼬지 가입 신청 -> 일단 테스트
+    @PostMapping("/applyFor/mokkoji")
+    public ResponseEntity<HttpResponseBody<?>> applyForMokkoji(@RequestBody MokkojiApplyForRequestDto dto) {
+        mokkojiFacade.applyForMokkoji(dto);
+        return new ResponseEntity<>(new HttpResponseBody<>("OK", "메세지 성공"), HttpStatus.OK);
     }
 
 }
