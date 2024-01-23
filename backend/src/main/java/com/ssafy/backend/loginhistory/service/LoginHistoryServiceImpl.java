@@ -22,8 +22,9 @@ public class LoginHistoryServiceImpl implements LoginHistoryService{
     /*
      * 로그인 실패했을 때 들어오는 메서드...
      */
-    public void failLogin(String userId, String userIp){
+    public int failLogin(String userId, String userIp){
         LoginHistoryDto loginHistoryDto = loginHistoryMapper.getLoginHistory(userIp, userId);
+        int remainTime = 0;
         if (loginHistoryDto == null){
             /*
              * userid, userip 쌍이 처음 로그인을 실패한 상황...
@@ -44,17 +45,17 @@ public class LoginHistoryServiceImpl implements LoginHistoryService{
                 long diff = ChronoUnit.SECONDS.between(lastLoginTime, now);
                 if (diff <= WAIT_SECOND){  // 대기 시간이 지나지 않았을 때...
                     // TODO : 로그인 차단
-                    
+                    remainTime = 30-(int) diff;
+                    return remainTime;
                 } else {  // 대기 시간이 지났을 때 try 횟수를 초기화 시켜줌...
-                    System.out.println("try 횟수 초기화");
                     loginHistoryMapper.initializeTryLoginCount(userIp, userId);
+                    return remainTime;
                 }
             } else {   // 로그인 시도 횟수가 5회 미만...
                 loginHistoryMapper.updateTryLoginCount(userIp, userId);
             }
-
         }
-
+        return remainTime;
     }
 
     /*

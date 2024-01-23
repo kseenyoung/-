@@ -19,8 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,6 +51,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRankRepository userRankRepository;
 
+    @Autowired
+    private JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.username}")
+    private String senderEmail;
 
     @Transactional(rollbackOn = Exception.class)
     @Override
@@ -202,5 +211,30 @@ public class UserServiceImpl implements UserService {
             data.add(userViewVO);
         }
         return data;
+    }
+
+    @Override
+    public String sendEmail(String userEmailForAuth) throws MyException {
+        String codeForAuth = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+        MimeMessage emailContent = javaMailSender.createMimeMessage();
+
+        try {
+        emailContent.setFrom(new InternetAddress(senderEmail, "다각", "UTF-8"));
+        emailContent.setRecipients(MimeMessage.RecipientType.TO, userEmailForAuth);
+        emailContent.setSubject("다각 이메일 인증");
+
+        String body = "";
+        body += "<h3>" + "요청하신 인증번호 입니다." + "</h3>";
+        body += "<h1>" + "인증 번호 : " + codeForAuth + "</h1>";
+        body += "<h3>" + "인증번호를 정확하게 입력해주세요." + "</h3>";
+        body += "<h3>" + "위 인증번호의 유효시간은 30분 입니다." + "</h3>";
+        body += "<h3>" + "감사합니다." + "</h3>";
+        emailContent.setText(body, "UTF-8", "html"); }
+        catch (Exception e){
+            throw new MyException("메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST);
+        }
+        javaMailSender.send(emailContent);
+
+        return codeForAuth;
     }
 }
