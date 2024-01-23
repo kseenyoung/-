@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface AlarmService {
 
+    Integer findAlarmId(String userId, String requestedUserId, int tagId);
 
     void requestAlarm(ReqestAlarmDto reqestAlarmDto);
 

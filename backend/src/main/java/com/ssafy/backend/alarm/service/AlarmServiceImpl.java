@@ -21,6 +21,13 @@ public class AlarmServiceImpl implements  AlarmService {
     AlarmRepository alarmRepository;
 
     @Override
+    public Integer findAlarmId(String userId, String requestedUserId, int tagId) {
+        return alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(userId, requestedUserId, tagId).orElseThrow(
+                () -> {throw new BaseException(NOT_EXIST_ALARM_ID);}
+        ).getAlarmId();
+    }
+
+    @Override
     public void requestAlarm(ReqestAlarmDto reqestAlarmDto) {
         alarmRepository.save(
                 Alarm.builder()
@@ -63,7 +70,7 @@ public class AlarmServiceImpl implements  AlarmService {
                 reqestAlarmDto.getRequestedUserId(),
                 reqestAlarmDto.getTagId()).ifPresent(
                         e -> {
-                            throw new BaseException(AVOID_DUPLICATE_ALARM_MOKKOJI);
+                            throw new BaseException(AVOID_DUPLICATE_ALARM);
                         });
     }
 
