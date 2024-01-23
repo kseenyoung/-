@@ -65,7 +65,7 @@ public class FriendController {
                 String accessUserId = "ssafy";  // request session Id
                 String accessUserId2 = body.get("userId");
 
-                friendService.accessFriend(accessUserId, accessUserId2);
+                friendFacade.accessFriend(accessUserId, accessUserId2);
 
                 return new BaseResponse<>(SUCCESS);
 

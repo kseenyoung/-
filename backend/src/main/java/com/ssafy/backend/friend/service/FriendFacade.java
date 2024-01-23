@@ -22,4 +22,8 @@ public class FriendFacade {
         alarmService.requestAlarm(new ReqestAlarmDto(userId, userId2, 3));
     }
 
+    public void accessFriend(String userId, String userId2) {
+        friendService.accessFriend(userId, userId2);
+        alarmService.requestAlarm(new ReqestAlarmDto(userId, userId2, 4));
+    }
 }
