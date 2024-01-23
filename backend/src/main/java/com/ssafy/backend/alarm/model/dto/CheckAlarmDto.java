@@ -21,6 +21,11 @@ public class CheckAlarmDto {
         setAlarmId(alarmId);
     }
 
+    public CheckAlarmDto(String userId, int alarmId) {
+        setUserId(userId);
+        this.alarmId = alarmId;
+    }
+
     public void setUserId(String userId) {
         // TODO 유저 아이디 존재 여부
         this.userId = userId;

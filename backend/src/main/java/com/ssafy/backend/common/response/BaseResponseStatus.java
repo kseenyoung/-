@@ -40,12 +40,12 @@ public enum BaseResponseStatus {
     INSUFFICIENT_POINT(false, 2029, "포인트가 부족합니다."),
     NOT_MATCH_SIGN(false, 2030,"일치하는 sign 정보가 없습니다."),
     NOT_EXIST_TAG_ID(false, 2031, "일치하는 태그 번호가 없습니다."),
-    NOT_EXIST_ALARM_ID(false, 2032, "유효하지 않은 알람 아이디입니다."),
+    NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_DELETE_ALARM(false,2033, "이미 삭제된 알람입니다"),
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/
-    AVOID_DUPLICATE_ALARM_MOKKOJI(false,2101, "이미 상대방한테 길드 요청을 보냈습니다."),
+    AVOID_DUPLICATE_ALARM(false,2101, "이미 상대방에게 요청을 보냈습니다."),
     ALREADY_EXIST_USER_MOKKOJI(false, 2100,"이미 회원은 모꼬지를 가입한 상태입니다."),
 
 

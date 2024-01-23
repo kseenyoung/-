@@ -1,5 +1,6 @@
 package com.ssafy.backend.friend.controller;
 
+import com.ssafy.backend.alarm.model.dto.ReqestAlarmDto;
 import com.ssafy.backend.alarm.service.AlarmService;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
@@ -64,6 +65,9 @@ public class FriendController {
 //                    String userId = user.getUserId();
                 String accessUserId = "ssafy";  // request session Id
                 String accessUserId2 = body.get("userId");
+
+                // 이미 요청 승인을 눌렀는지 확인
+                alarmService.aVoidDuplicateAlaram(new ReqestAlarmDto(accessUserId, accessUserId2, 4));
 
                 friendFacade.accessFriend(accessUserId, accessUserId2);
 
