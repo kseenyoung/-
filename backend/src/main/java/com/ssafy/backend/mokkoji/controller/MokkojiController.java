@@ -115,6 +115,12 @@ public class MokkojiController {
                             .build()
             );
         }
+        //모꼬지 가입 승인
+        else if ("AcceptMokkoji".equals(sign)) {
+            String memberId = (String) body.get("memberId");
+            mokkojiFacade.deleteAlarm(userId,memberId);
+            mokkojiFacade.acceptForMokkoji(userId, memberId);
+        }
 
         throw new MyException("해당 기능을 처리하지 못했습니다", HttpStatus.BAD_REQUEST);
     }
