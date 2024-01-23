@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 public class User {
 
+
     @Column
     private Integer userPoint, userTotalStudyTime;
 
@@ -47,4 +48,11 @@ public class User {
         this.mokkojiId = mokkoji;
     }
 
+    public User(String userId) {
+        if (userId!=null){
+            this.userId = userId;
+        } else {
+            // do something...
+        }
+    }
 }
