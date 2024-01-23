@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+        namespace="com.ssafy.backend.loginhistory.model.mapper.LoginHistoryMapper">
+
+    <select id="getLoginHistory" parameterType="String"
+            resultType="com.ssafy.backend.loginhistory.model.dto.LoginHistoryDto">
+        select * from login_history where user_id = #{userId} and user_ip = #{userIp}
+    </select>
+
+    <insert id="insertFirstHistory" parameterType="String">
+        insert into
+            login_history (user_id, user_ip, try_login_count)
+        values (#{userId}, #{userIp}, 1)
+    </insert>
+
+    <delete id="deleteLoginHistory" parameterType="String">
+        delete
+        from login_history
+        where user_id=#{userId} and user_ip=#{userIp}
+    </delete>
+
+    <update id="initializeTryLoginCount" parameterType="String">
+        update
+            login_history set try_login_count = 0 where user_id = #{userId} and user_ip = #{userIp}
+    </update>
+
+    <update id="updateTryLoginCount" parameterType="String">
+        update
+            login_history set try_login_count = try_login_count + 1 where user_id = #{userId} and user_ip = #{userIp}
+    </update>
+
+
+</mapper>
