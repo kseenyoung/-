@@ -7,6 +7,7 @@ import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.service.RoomService;
+import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
 import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
@@ -65,6 +66,7 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<HttpResponseBody<?>> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
+        HttpSession session = null;
         ResponseEntity<HttpResponseBody<?>> response = null;
 
         if (sign != null) {
@@ -105,6 +107,9 @@ public class UserController {
                     UserLoginDto userLoginDto = new UserLoginDto(loginUserId, loginUserPassword);
                     if (userService.login(userLoginDto)) {  // 로그인 성공 시...
                         responseBody = new HttpResponseBody<>("OK", "로그인 성공!!!");
+                        User user = new User(loginUserId);
+                        session = request.getSession();
+                        session.setAttribute("User", user);
                         
                         // 로그인 성공시 친구들에게 시그널 전송
                         List<FriendVO> friendList = friendService.listFriends(loginUserId);
@@ -150,6 +155,11 @@ public class UserController {
                         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
                     }
 
+                case "logout":
+                    session = request.getSession(false);
+                    if (session!=null){
+                        session.invalidate();
+                    }
                     /*
                      * [POST] 아이디 중복 검사
                      */
@@ -208,7 +218,7 @@ public class UserController {
                     RegEx.isValidUserEmail(userEmailForAuth);
                     try {
                         String codeForAuth = userService.sendEmail(userEmailForAuth);
-                        HttpSession session = request.getSession();
+                        session = request.getSession();
                         session.setAttribute("codeForAuth", codeForAuth);
                         System.out.println(codeForAuth);
                         return new ResponseEntity<>(new HttpResponseBody<>("ok", "메일을 전송했습니다. 메일함을 확인해주세요."), HttpStatus.OK);
@@ -225,7 +235,7 @@ public class UserController {
                         return new ResponseEntity<>(new HttpResponseBody<>("Fail", "올바른 인증번호를 입력해주세요.."), HttpStatus.BAD_REQUEST);
                     }
 
-                    HttpSession session = request.getSession(false);
+                    session = request.getSession(false);
                     if (session!=null) {
                         String originCodeForAuth = (String) session.getAttribute("codeForAuth");
                         if (originCodeForAuth!=null) {
