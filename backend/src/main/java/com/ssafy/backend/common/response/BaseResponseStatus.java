@@ -43,6 +43,12 @@ public enum BaseResponseStatus {
     NOT_EXIST_ALARM_ID(false, 2032, "유효하지 않은 알람 아이디입니다."),
 
 
+    /* 모꼬지 관련 에러 이넘 클래스*/
+    AVOID_DUPLICATE_ALARM_MOKKOJI(false,2033, "이미 상대방한테 길드 요청을 보냈습니다."),
+    ALREADY_EXIST_USER_MOKKOJI(false, 2100,"이미 회원은 모꼬지를 가입한 상태입니다."),
+
+
+
     /**
      * 2500 : Request 성공
      */

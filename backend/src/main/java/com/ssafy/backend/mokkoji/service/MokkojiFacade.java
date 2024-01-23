@@ -1,8 +1,11 @@
 package com.ssafy.backend.mokkoji.service;
 
+import com.ssafy.backend.alarm.model.dto.ReqestAlarmDto;
+import com.ssafy.backend.alarm.service.AlarmService;
 import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.model.dto.CategoryDto;
 import com.ssafy.backend.category.service.CategoryService;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
@@ -22,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.ssafy.backend.common.response.BaseResponseStatus.ALREADY_EXIST_USER_MOKKOJI;
+
 //각 서비스를 끌어다 쓰기 위해서 퍼사드 형태로 모듈 분리
 //하나의 서비스에는 하나의 레포만 존재하도록 설정 -> 비지니스 로직 처리
 @RequiredArgsConstructor
@@ -34,6 +39,7 @@ public class MokkojiFacade {
     private final MokkojiService mokkojiService;
     private final MokkojiCategoryService mokkojiCategoryService;
     private final UserService userService;
+    private final AlarmService alarmService;
 
     @Transactional(rollbackFor = Exception.class)
     public void saveMokkoji(MokkojiCreateRequestDto dto){
@@ -134,5 +140,19 @@ public class MokkojiFacade {
         if(userId != null && userId.equals(mokkoji.getLeaderId())) dto.setLeader(true);
         dto.setMokkojiData(mokkoji, user, categories);
         return dto;
+    }
+
+    public void applyForMokkoji(MokkojiApplyForRequestDto dto) {
+        User user = userService.isExistUser(dto.getUserId());
+        if(user.getMokkojiId() != null)
+            throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
+        Mokkoji mokkoji = mokkojiService.findByMokkojiId(dto.getMokkojiId());
+        ReqestAlarmDto dto2 = ReqestAlarmDto.builder()
+                .tagId(1)
+                .userId(user.getUserId())
+                .requestedUserId(mokkoji.getLeaderId())
+                .build();
+        alarmService.aVoidDuplicateAlaram(dto2);
+        alarmService.requestAlarm(dto2);
     }
 }
