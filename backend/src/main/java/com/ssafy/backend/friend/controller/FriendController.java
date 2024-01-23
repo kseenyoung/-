@@ -1,10 +1,12 @@
 package com.ssafy.backend.friend.controller;
 
+import com.ssafy.backend.alarm.service.AlarmService;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import com.ssafy.backend.friend.model.vo.FriendListVO;
+import com.ssafy.backend.friend.service.FriendFacade;
 import com.ssafy.backend.friend.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,12 @@ public class FriendController {
 
     @Autowired
     FriendService friendService;
+
+    @Autowired
+    AlarmService alarmService;
+
+    @Autowired
+    FriendFacade friendFacade;
 
     @PostMapping("")
     public BaseResponse<?> friend(@RequestBody Map<String, String> body, HttpServletRequest request) throws MyException {
@@ -43,7 +51,7 @@ public class FriendController {
                 String userId = "ssafy";  // request session userId
                 String userId2 = body.get("userId");  // 요청하고싶은 친구 userId
 
-                friendService.requestFriend(userId, userId2);
+                friendFacade.requestFriend(userId, userId2);
 
                 return new BaseResponse<>(SUCCESS);
             /**
