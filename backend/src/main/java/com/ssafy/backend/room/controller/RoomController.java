@@ -52,8 +52,9 @@ public class RoomController {
         String sign = (String) body.get("sign");
         ResponseEntity<HttpResponseBody<?>> response = null;
         HttpSession session = request.getSession(false);
-        User user = (User) session.getAttribute("User");
-        String userId = user.getUserId();
+//        User user = (User) session.getAttribute("User");
+//        String userId = user.getUserId();
+        String userId;
         String sessionName;
         String videoCodec;
         String token;
@@ -68,7 +69,8 @@ public class RoomController {
 
                 return new ResponseEntity<>(new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token),HttpStatus.OK);
             case "enterMyRoom":
-                RoomEnterDto defaultRoomEnterDto = new RoomEnterDto("yj", "VP8");
+                userId = (String) body.get("userId");
+                RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, "VP8");
                 token = roomService.enterDefaultroom(defaultRoomEnterDto);
                 return new ResponseEntity<>(new HttpResponseBody<>("기본방 토큰을 발급합니다.", token),HttpStatus.OK);
             case "enterMoccojiroom": // 모꼬지(길드) 방 입장
