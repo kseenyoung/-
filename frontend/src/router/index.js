@@ -82,6 +82,11 @@ const router = createRouter({
       name: 'Mokkoji',
       component: () => import('@/views/MokkojiView.vue'),
     },
+    {
+      path: '/apply',
+      name: 'Apply',
+      component: () => import('@/views/ApplyView.vue'),
+    },
   ],
 });
 

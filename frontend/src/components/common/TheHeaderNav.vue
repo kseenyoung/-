@@ -5,8 +5,9 @@
         <RouterLink to="/">다각</RouterLink>
       </div>
       <div class="d-flex align-items-center">
-        <Alarm/>
+        <RouterLink to="/apply"><span class="underline">친구/모꼬지 신청</span></RouterLink>
         <RouterLink to="/store"><span class="underline">상점</span></RouterLink>
+        <Alarm/>
         <RouterLink to="/login"><span class="underline">로그인</span></RouterLink>
         <div class="dropdown-toggle common-pointer" data-bs-toggle="dropdown" aria-expanded="false">
           <img class="profile" src="@/assets/img/기본프로필_갈색.jpg">
