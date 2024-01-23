@@ -18,4 +18,6 @@ public interface AlarmService {
     List<Alarm> listOfUncheckedAlarm(String userId);
 
     void aVoidDuplicateAlaram(ReqestAlarmDto reqestAlarmDto);
+
+    void deleteAlarm(ReqestAlarmDto alarmDto);
 }
