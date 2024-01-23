@@ -54,7 +54,7 @@ public class RoomController {
         HttpSession session = request.getSession(false);
 //        User user = (User) session.getAttribute("User");
 //        String userId = user.getUserId();
-        String userId;
+        String userId="yj";
         String sessionName;
         String videoCodec;
         String token;
