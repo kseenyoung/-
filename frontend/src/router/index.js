@@ -78,7 +78,8 @@ const router = createRouter({
       component: StudyRoomView
     },
     {
-      path: '/mokkoji',
+      // :모꼬지pk 나중에 넣자
+      path: '/mokkoji/:id',
       name: 'Mokkoji',
       component: () => import('@/views/MokkojiView.vue'),
     },

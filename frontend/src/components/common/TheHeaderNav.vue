@@ -23,6 +23,7 @@
             </div>
           </div>
           <RouterLink to="/mypage" class="dropdown-item"><span class="underline">마이페이지</span></RouterLink>
+          <!-- 모꼬지가 있을때는 길드페이지로, 없으면 친구/모꼬지 신청 페이지로 이동 -->
           <RouterLink to="/mokkoji" class="dropdown-item"><span class="underline">모꼬지</span></RouterLink>
           <li><a href="#" class="logout dropdown-item"><span>로그아웃</span></a></li>
         </ul>
