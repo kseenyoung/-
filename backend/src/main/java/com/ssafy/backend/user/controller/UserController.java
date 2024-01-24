@@ -56,10 +56,7 @@ public class UserController {
 
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body) throws Exception {
-        String userLoginId = (String) body.get("userLoginId");
-        System.out.println(userLoginId);
-        boolean isExistId = userService.isExistId(userLoginId);
-        System.out.println(isExistId);
+        RegEx.isValidUserEmail("");
     }
 
 
@@ -211,7 +208,7 @@ public class UserController {
                     }
 
                     /*
-                     * [POST] 이메일 인증 보내기 ...
+                     * [POST] 회원 가입 이메일 인증 보내기 ...
                      */
                 case "sendEmailForSignUp":
                     String userEmailForAuth = (String) body.get("userEmail");
@@ -246,6 +243,26 @@ public class UserController {
                                 return new ResponseEntity<>(new HttpResponseBody<>("Fail", "인증번호가 일치하지 않습니다."), HttpStatus.BAD_REQUEST);
                             }
                         }
+                    }
+
+                case "deleteUser":
+                    session = request.getSession(false);
+                    if(session!=null){
+                        User deleteUser = (User) session.getAttribute("User");
+                        if(deleteUser!=null){
+                            String deleteUserId = deleteUser.getUserId();
+                            String deleteUserPassword = (String) body.get("userPassword");
+                            boolean isSuccess = userService.deleteUser(deleteUserId, deleteUserPassword);
+                            if (isSuccess){
+                                return new ResponseEntity<>(new HttpResponseBody<>("ok", "회원 탈퇴 성공."), HttpStatus.BAD_REQUEST);
+                            } else {
+                                return new ResponseEntity<>(new HttpResponseBody<>("Fail", "회원 탈퇴 실패."), HttpStatus.BAD_REQUEST);
+                            }
+                        } else {
+                            return new ResponseEntity<>(new HttpResponseBody<>("Fail", "로그인이 필요합니다."), HttpStatus.BAD_REQUEST);
+                        }
+                    } else {
+                        return new ResponseEntity<>(new HttpResponseBody<>("Fail", "로그인이 필요합니다."), HttpStatus.BAD_REQUEST);
                     }
             }
         }
