@@ -141,9 +141,12 @@ public class UserController {
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
                         return new BaseResponse<>(SUCCESS_LOGIN);
                     } else {  // 로그인 실패 시 카운트 시작.
+                        System.out.println(1);
                         int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
                         if (remainTime != 0) {
-                            return new BaseResponse<>(remainTime);
+                            return new BaseResponse<>(remainTime+"초 뒤에 다시 시도해주세요");
+                        } else {
+                            return new BaseResponse<>("로그인 실패");
                         }
                     }
 
@@ -152,6 +155,7 @@ public class UserController {
                     if (session != null) {
                         session.invalidate();
                     }
+                    return new BaseResponse<>("로그아웃 성공");
                     /*
                      * [POST] 아이디 중복 검사
                      */
