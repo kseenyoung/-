@@ -2,11 +2,9 @@ package com.ssafy.backend.user.controller;
 
 
 import com.ssafy.backend.common.utils.RegEx;
-import com.ssafy.backend.friend.model.vo.FriendListVO;
 import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
 import com.ssafy.backend.room.model.dto.QuestionDto;
-import com.ssafy.backend.room.service.RoomService;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
 import com.ssafy.backend.loginhistory.service.LoginHistoryService;
@@ -22,7 +20,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -34,6 +31,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("user")
@@ -56,10 +54,7 @@ public class UserController {
 
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body) throws Exception {
-        String userLoginId = (String) body.get("userLoginId");
-        System.out.println(userLoginId);
-        boolean isExistId = userService.isExistId(userLoginId);
-        System.out.println(isExistId);
+        RegEx.isValidUserEmail("");
     }
 
 
@@ -211,7 +206,7 @@ public class UserController {
                     }
 
                     /*
-                     * [POST] 이메일 인증 보내기 ...
+                     * [POST] 회원 가입 이메일 인증 보내기 ...
                      */
                 case "sendEmailForSignUp":
                     String userEmailForAuth = (String) body.get("userEmail");
@@ -246,6 +241,56 @@ public class UserController {
                                 return new ResponseEntity<>(new HttpResponseBody<>("Fail", "인증번호가 일치하지 않습니다."), HttpStatus.BAD_REQUEST);
                             }
                         }
+                    }
+
+                    /*
+                     * [POST] 회원 탈퇴 ...
+                     */
+                case "deleteUser":
+                    session = request.getSession(false);
+                    if(session!=null){
+                        User deleteUser = (User) session.getAttribute("User");
+                        if(deleteUser!=null){
+                            String deleteUserId = deleteUser.getUserId();
+                            String deleteUserPassword = (String) body.get("userPassword");
+                            boolean isSuccess = userService.deleteUser(deleteUserId, deleteUserPassword);
+                            if (isSuccess){
+                                return new ResponseEntity<>(new HttpResponseBody<>("ok", "회원 탈퇴 성공."), HttpStatus.BAD_REQUEST);
+                            } else {
+                                return new ResponseEntity<>(new HttpResponseBody<>("Fail", "회원 탈퇴 실패."), HttpStatus.BAD_REQUEST);
+                            }
+                        } else {
+                            return new ResponseEntity<>(new HttpResponseBody<>("Fail", "로그인이 필요합니다."), HttpStatus.BAD_REQUEST);
+                        }
+                    } else {
+                        return new ResponseEntity<>(new HttpResponseBody<>("Fail", "로그인이 필요합니다."), HttpStatus.BAD_REQUEST);
+                    }
+
+                    /*
+                     * [POST] 비밀번호 변경
+                     */
+                case "changePassword":
+                    session = request.getSession(false);
+                    if (session!=null){
+                        User originUser = (User) session.getAttribute("User");
+
+                        String originUserId = originUser.getUserId();
+                        String originPassword = (String) body.get("userPassword");
+                        String newPassword = (String) body.get("newPassword");
+
+                        UserLoginDto userOriginDto = new UserLoginDto(originUserId, originPassword);
+                        boolean isMatched = userService.login(userOriginDto);
+
+                        if (isMatched){  // TODO:  try catch 필요
+                            userService.changePassword(originUserId, newPassword);
+                            session.invalidate();
+                            return new ResponseEntity<>(new HttpResponseBody<>("ok", "비밀번호 변경 성공. 다시 로그인 하세요"), HttpStatus.BAD_REQUEST);
+                        } else {
+                            return new ResponseEntity<>(new HttpResponseBody<>("Fail", "기존 비밀번호가 일치하지 않습니다."), HttpStatus.BAD_REQUEST);
+                        }
+
+                    } else {
+                        return new ResponseEntity<>(new HttpResponseBody<>("Fail", "로그인이 필요합니다."), HttpStatus.BAD_REQUEST);
                     }
             }
         }

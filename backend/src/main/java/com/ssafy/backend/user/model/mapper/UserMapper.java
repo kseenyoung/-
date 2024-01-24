@@ -13,4 +13,5 @@ public interface UserMapper {
 
     String getUserPassword(String loginUserId);
 
+    void changePassword(String originUserId, String newSafePassword);
 }

@@ -87,7 +87,6 @@ public class UserServiceImpl implements UserService {
         String loginSalt = securityMapper.getSalt(loginUserId);
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
 
-
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
         return user.checkPassword(encryptedLoginPassword);
@@ -236,5 +235,35 @@ public class UserServiceImpl implements UserService {
         javaMailSender.send(emailContent);
 
         return codeForAuth;
+    }
+
+    @Override
+    public boolean deleteUser(String deleteUserId, String deleteUserPassword) throws Exception {
+        String deleteUserSalt = securityMapper.getSalt(deleteUserId);
+        String encryptedDeletePassword = EncryptUtil.getSHA256(deleteUserPassword, deleteUserSalt);
+
+        User user = userRepository.findById(deleteUserId)
+                .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
+
+        boolean isMatch = user.checkPassword(encryptedDeletePassword);
+
+        if (isMatch){
+            // TODO : 뭘 지울 지 정해야 함...
+            userRepository.deleteById(deleteUserId);
+            securityMapper.deleteSalt(deleteUserId);
+            return isMatch;
+        } else {
+            return isMatch;
+        }
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    @Override
+    public void changePassword(String originUserId, String newPassword) throws Exception {
+        String newSalt = UUID.randomUUID().toString();
+        String newSafePassword = EncryptUtil.getSHA256(newPassword, newSalt);
+
+        securityMapper.changeSalt(originUserId, newSalt);
+        userMapper.changePassword(originUserId, newSafePassword);
     }
 }
