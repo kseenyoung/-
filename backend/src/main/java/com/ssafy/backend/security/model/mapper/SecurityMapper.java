@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface SecurityMapper {
     void insertSalt(SecurityDto securityDto);
     String getSalt(String userId);
-
+    void deleteSalt(String deleteUserId);
 }
