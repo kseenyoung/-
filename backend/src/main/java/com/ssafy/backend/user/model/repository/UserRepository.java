@@ -15,4 +15,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findAllByMokkojiId(Mokkoji mokkoji);
 
     Optional<User> findByMokkojiIdAndUserId(Mokkoji mokkoji, String userId);
+
 }

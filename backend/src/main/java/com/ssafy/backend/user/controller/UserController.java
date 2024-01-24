@@ -180,6 +180,9 @@ public class UserController {
                         if (isExistNickname) {
                             responseBody = new HttpResponseBody<>("Fail", "이미 존재하는 닉네임입니다.");
                             return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+                        } else {
+                            responseBody = new HttpResponseBody<>("ok", " 사용 가능한 닉네임입니다.");
+                            return new ResponseEntity<>(responseBody, HttpStatus.OK);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -284,10 +287,26 @@ public class UserController {
                         if (isMatched){  // TODO:  try catch 필요
                             userService.changePassword(originUserId, newPassword);
                             session.invalidate();
-                            return new ResponseEntity<>(new HttpResponseBody<>("ok", "비밀번호 변경 성공. 다시 로그인 하세요"), HttpStatus.BAD_REQUEST);
+                            return new ResponseEntity<>(new HttpResponseBody<>("ok", "비밀번호 변경 성공. 다시 로그인 하세요"), HttpStatus.OK);
                         } else {
                             return new ResponseEntity<>(new HttpResponseBody<>("Fail", "기존 비밀번호가 일치하지 않습니다."), HttpStatus.BAD_REQUEST);
                         }
+
+                    } else {
+                        return new ResponseEntity<>(new HttpResponseBody<>("Fail", "로그인이 필요합니다."), HttpStatus.BAD_REQUEST);
+                    }
+
+                case "changeNickname":
+                    session = request.getSession(false);
+                    if (session!=null){
+                        User changeNicknameUser = (User) session.getAttribute("User");
+
+                        // 닉네임 중복 확인 받았다는 가정 하에 ...
+                        String changeNicknameUserId = changeNicknameUser.getUserId();
+                        String newNickname = (String) body.get("newNickname");
+
+                        userService.changeNickname(changeNicknameUserId, newNickname);
+                        return new ResponseEntity<>(new HttpResponseBody<>("ok", "닉네임이 변경되었습니다."), HttpStatus.OK);
 
                     } else {
                         return new ResponseEntity<>(new HttpResponseBody<>("Fail", "로그인이 필요합니다."), HttpStatus.BAD_REQUEST);
