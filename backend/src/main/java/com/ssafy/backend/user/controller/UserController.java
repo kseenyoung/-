@@ -1,6 +1,7 @@
 package com.ssafy.backend.user.controller;
 
 
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
@@ -31,6 +32,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.ALREADY_EXIST_USER;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
 
 @RestController
@@ -163,8 +167,12 @@ public class UserController {
                     try {
                         boolean isExistId = userService.isExistId(userTriedId);
                         if (isExistId) {
-                            responseBody = new HttpResponseBody<>("Fail", "이미 존재하는 아이디입니다.");
-                            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+                            throw new BaseException(ALREADY_EXIST_USER);
+//                            responseBody = new HttpResponseBody<>("Fail", "이미 존재하는 아이디입니다.");
+//                            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+                        } else {
+                            responseBody = new HttpResponseBody<>("ok", "사용 가능한 아이디입니다.");
+                            return new ResponseEntity<>(responseBody, HttpStatus.OK);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
