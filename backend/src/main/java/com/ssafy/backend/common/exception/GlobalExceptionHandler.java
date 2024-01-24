@@ -16,6 +16,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = MyException.class)
     public ResponseEntity<HttpResponseBody<?>> catchMyException(MyException e) {
+        log.info(e.getMessage());
         return new ResponseEntity(new HttpResponseBody<>("FAIL", e.getMessage()), e.getStatus());
     }
 

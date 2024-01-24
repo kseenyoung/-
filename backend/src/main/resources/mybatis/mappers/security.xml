@@ -15,4 +15,16 @@
         from user_security
         where user_id = #{userId}
     </select>
+
+    <delete id="deleteSalt" parameterType="String">
+        delete from user_security
+        where user_id=#{deleteUserId}
+    </delete>
+
+    <update id="changeSalt" parameterType="String">
+        update user_security
+        set salt = #{newSalt}
+        where user_id = #{originUserId}
+    </update>
+
 </mapper>

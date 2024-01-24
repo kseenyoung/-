@@ -31,15 +31,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,onMounted  } from 'vue'
 import { useRouter } from 'vue-router'
 import MyRanking from "@/components/home/MyRanking.vue";
 import MokkojiRanking from "@/components/home/MokkojiRanking.vue";
+import { useUserStore } from '@/stores/user';
+const store = useUserStore();
 const router = useRouter()
 const navigateToStudyRoom = () => {
   router.push('/studyroom') 
 }
-
+onMounted(() => {
+  store.login();
+});
 </script>
 
 <style lang="scss" scoped>

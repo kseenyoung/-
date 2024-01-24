@@ -45,13 +45,13 @@ spring:
       console:
         enabled: true
   redis:
-    host: 3.143.74.33
+    host: 43.202.55.218
     port: 6379
   mybatis:
     mapper-locations: classpath:mybatis/mappers/**/*.xml
 openvidu:
   secret: MY_SECRET
-  url: https://capstone-6.shop:4443/
+  url: https://i10a404.p.ssafy.io/
 server:
   servlet:
     context-path: /dagak

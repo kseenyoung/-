@@ -48,6 +48,10 @@ public class User {
         this.mokkojiId = mokkoji;
     }
 
+    public void setUserNickname(String userNickname) {
+        this.userNickname = userNickname;
+    }
+
     public User(String userId) {
         if (userId!=null){
             this.userId = userId;

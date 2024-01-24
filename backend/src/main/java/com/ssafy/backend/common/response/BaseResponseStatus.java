@@ -8,7 +8,15 @@ public enum BaseResponseStatus {
      * 1000 : 요청 성공
      */
     SUCCESS(true, 1000, "요청에 성공하였습니다."),
-
+    SUCCESS_LOGIN(true, 1001, "로그인에 성공하였습니다."),
+    SUCCESS_ID_CHECK(true, 1002, "사용 가능한 아이디입니다."),
+    SUCCESS_ID_SIGN_UP(true, 1003, "회원 가입에 성공했습니다."),
+    SUCCESS_NICKNAME_CHECK(true, 1004, "사용 가능한 닉네임입니다."),
+    SUCCESS_SEND_EMAIL(true, 1005, "이메일 전송에 성공했습니다."),
+    SUCCESS_AUTH(true, 1006, "인증에 성공했습니다."),
+    SUCCESS_DELETE_USER(true, 1007, "회원 탈퇴ㅇ 성공."),
+    SUCCESS_CHANGE_PASSWORD(true, 1008, "비밀번호 변경에 성공했습니다."),
+    SUCCESS_CHANGE_NICKNAME(true, 1009, "닉네임 변경에 성공했습니다."),
 
     /**
      * 2000 : Request 오류
@@ -41,12 +49,31 @@ public enum BaseResponseStatus {
     NOT_MATCH_SIGN(false, 2030,"일치하는 sign 정보가 없습니다."),
     NOT_EXIST_TAG_ID(false, 2031, "일치하는 태그 번호가 없습니다."),
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
+    
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_DELETE_ALARM(false,2033, "이미 삭제된 알람입니다"),
+
+    ALREADY_EXIST_USER(false, 2034,"이미 존재하는 회원입니다."),
+    ALREADY_EXIST_ID(false, 2035,"이미 존재하는 아이디입니다."),
+    FAIL_LOGIN(false, 2036,"로그인에 실패했습니다."),
+    FAIL_SIGN_UP(false, 2037,"회원 가입에 실패했습니다."),
+    ALREADY_EXIST_NICKNAME(false, 2038,"이미 존재하는 닉네임입니다."),
+    PLZ_ENTER_NICKNAME(false, 2039,"닉네임을 입력해주세요.."),
+    INVALID_AUTH_CODE(false, 2040,"올바른 인증번호를 입력해주세요."),
+
+    FAIL_TO_DELETE_USER(false, 2041,"회원 탈퇴 실패."),
+
+    NEED_LOGIN(false, 2042,"로그인이 필요한 서비스입니다."),
+
+    
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/
     AVOID_DUPLICATE_ALARM(false,2101, "이미 상대방에게 요청을 보냈습니다."),
     ALREADY_EXIST_USER_MOKKOJI(false, 2100,"이미 회원은 모꼬지를 가입한 상태입니다."),
+
+
+    
+
 
 
 

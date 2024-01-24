@@ -1,39 +1,41 @@
 package com.ssafy.backend.user.controller;
 
 
+import com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.utils.RegEx;
-import com.ssafy.backend.friend.model.vo.FriendListVO;
 import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
+import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.room.model.dto.QuestionDto;
-import com.ssafy.backend.room.service.RoomService;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
-import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
-
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.UserService;
-import com.ssafy.backend.common.utils.HttpResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.Base64;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Map;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
+
 
 @RestController
 @RequestMapping("user")
@@ -56,18 +58,14 @@ public class UserController {
 
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body) throws Exception {
-        String userLoginId = (String) body.get("userLoginId");
-        System.out.println(userLoginId);
-        boolean isExistId = userService.isExistId(userLoginId);
-        System.out.println(isExistId);
+        RegEx.isValidUserEmail("");
     }
 
 
     @PostMapping("")
-    public ResponseEntity<HttpResponseBody<?>> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
+    public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
         HttpSession session = null;
-        ResponseEntity<HttpResponseBody<?>> response = null;
 
         if (sign != null) {
             switch (sign) {
@@ -89,11 +87,10 @@ public class UserController {
                         userService.signup(userSignupDto);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        HttpResponseBody<String> responseBody = new HttpResponseBody<>("Fail", "회원 가입 실패!!!");
-                        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+                        throw new BaseException(FAIL_SIGN_UP);
+//
                     }
-                    HttpResponseBody<String> responseBody = new HttpResponseBody<>("OK", "회원 가입 성공!!!");
-                    return new ResponseEntity<>(responseBody, HttpStatus.OK);
+                    return new BaseResponse<>(SUCCESS_ID_SIGN_UP);
 
                 /*
                  * [POST] 로그인
@@ -106,18 +103,17 @@ public class UserController {
 
                     UserLoginDto userLoginDto = new UserLoginDto(loginUserId, loginUserPassword);
                     if (userService.login(userLoginDto)) {  // 로그인 성공 시...
-                        responseBody = new HttpResponseBody<>("OK", "로그인 성공!!!");
                         User user = new User(loginUserId);
                         session = request.getSession();
                         session.setAttribute("User", user);
-                        
+
                         // 로그인 성공시 친구들에게 시그널 전송
                         List<FriendVO> friendList = friendService.listFriends(loginUserId);
-                        System.out.println("친구 목록: "+friendList);
+                        System.out.println("친구 목록: " + friendList);
 
-                        for(FriendVO friend: friendList){
-                            System.out.println(friend.getUserId()+"에게 친구요청");
-                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(),loginUserId);
+                        for (FriendVO friend : friendList) {
+                            System.out.println(friend.getUserId() + "에게 친구요청");
+                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), loginUserId);
                             URI uri = UriComponentsBuilder
                                     .fromUriString(OPENVIDU_URL)
                                     .path("/openvidu/api/signal")
@@ -125,7 +121,7 @@ public class UserController {
                                     .build()
                                     .toUri();
 
-                            String secret = "Basic "+OPENVIDU_SECRET;
+                            String secret = "Basic " + OPENVIDU_SECRET;
                             secret = Base64.getEncoder().encodeToString(secret.getBytes());
 
                             RequestEntity<OpenviduRequestDto> requestEntity = RequestEntity
@@ -137,42 +133,40 @@ public class UserController {
                             RestTemplate restTemplate = new RestTemplate();
                             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
                             ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
-                                    uri, HttpMethod.POST,requestEntity, QuestionDto.class
+                                    uri, HttpMethod.POST, requestEntity, QuestionDto.class
                             );
 
                         }
 
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
-                        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+                        return new BaseResponse<>(SUCCESS_LOGIN);
                     } else {  // 로그인 실패 시 카운트 시작.
+                        System.out.println(1);
                         int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
-                        if (remainTime == 0) {
-                            responseBody = new HttpResponseBody<>("Fail", "로그인 실패!!!");
+                        if (remainTime != 0) {
+                            return new BaseResponse<>(remainTime+"초 뒤에 다시 시도해주세요");
                         } else {
-                            // TODO : 프론트에 전달해 줄 데이터를 바꿔야 할 것 같음...
-                            responseBody = new HttpResponseBody<>("Fail", remainTime + "초 이후 로그인이 가능합니다.");
+                            return new BaseResponse<>("로그인 실패");
                         }
-                        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
                     }
 
                 case "logout":
                     session = request.getSession(false);
-                    if (session!=null){
+                    if (session != null) {
                         session.invalidate();
                     }
+                    return new BaseResponse<>("로그아웃 성공");
                     /*
                      * [POST] 아이디 중복 검사
                      */
                 case "isExistId":
                     String userTriedId = (String) body.get("userId");
-                    try {
-                        boolean isExistId = userService.isExistId(userTriedId);
-                        if (isExistId) {
-                            responseBody = new HttpResponseBody<>("Fail", "이미 존재하는 아이디입니다.");
-                            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
+                    boolean isExistId = userService.isExistId(userTriedId);
+                    if (isExistId) {
+                        throw new BaseException(ALREADY_EXIST_USER);
+                    } else {
+                        return new BaseResponse<>(SUCCESS_ID_CHECK);
                     }
 
                     /*
@@ -180,16 +174,13 @@ public class UserController {
                      */
                 case "isExistNickname":
                     String userTriedNickname = (String) body.get("userNickname");
-                    try {
-                        boolean isExistNickname = userService.isExistNickname(userTriedNickname);
-                        if (isExistNickname) {
-                            responseBody = new HttpResponseBody<>("Fail", "이미 존재하는 닉네임입니다.");
-                            return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
+                    boolean isExistNickname = userService.isExistNickname(userTriedNickname);
+                    if (isExistNickname) {
+                        throw new BaseException(ALREADY_EXIST_NICKNAME);
+                    } else {
+                        return new BaseResponse<>(SUCCESS_NICKNAME_CHECK);
+                    }
 
                     /*
                      * [POST] 회원 정보 보기
@@ -198,57 +189,118 @@ public class UserController {
                 case "viewUserInformation":
                     String viewUserNickname = (String) body.get("userNickname");
                     if (viewUserNickname != null) {
-                        boolean isExistNickname = userService.isExistNickname(viewUserNickname);
-                        if (isExistNickname) {
+                        boolean isExistNicknameForView = userService.isExistNickname(viewUserNickname);
+                        if (isExistNicknameForView) {
                             UserViewVO userViewVO = userService.viewUserInformation(viewUserNickname);
-                            return new ResponseEntity<>(new HttpResponseBody<>("ok", userViewVO), HttpStatus.BAD_REQUEST);
+                            return new BaseResponse<>(userViewVO);
                         } else {
-                            return new ResponseEntity<>(new HttpResponseBody<>("Fail", "존재하지 않는 회원입니다."), HttpStatus.BAD_REQUEST);
+                            throw new BaseException(PLZ_ENTER_NICKNAME);
                         }
-
                     } else {
-                        return new ResponseEntity<>(new HttpResponseBody<>("Fail", "닉네임을 입력해주세요."), HttpStatus.BAD_REQUEST);
+                        throw new BaseException(PLZ_ENTER_NICKNAME);
                     }
 
                     /*
-                     * [POST] 이메일 인증 보내기 ...
+                     * [POST] 회원 가입 이메일 인증 보내기 ...
                      */
                 case "sendEmailForSignUp":
                     String userEmailForAuth = (String) body.get("userEmail");
                     RegEx.isValidUserEmail(userEmailForAuth);
-                    try {
-                        String codeForAuth = userService.sendEmail(userEmailForAuth);
-                        session = request.getSession();
-                        session.setAttribute("codeForAuth", codeForAuth);
-                        System.out.println(codeForAuth);
-                        return new ResponseEntity<>(new HttpResponseBody<>("ok", "메일을 전송했습니다. 메일함을 확인해주세요."), HttpStatus.OK);
-                    } catch (Exception e) {
-                        return new ResponseEntity<>(new HttpResponseBody<>("Fail", "메일 전송에 실패했습니다."), HttpStatus.BAD_REQUEST);
-                    }
 
-                    /*
-                     * [POST] 인증번호 확인하기 ...
-                     */
+                    String codeForAuth = userService.sendEmail(userEmailForAuth);
+                    session = request.getSession();
+                    session.setAttribute("codeForAuth", codeForAuth);
+                    System.out.println(codeForAuth);
+                    return new BaseResponse<>(SUCCESS_SEND_EMAIL);
+
+                /*
+                 * [POST] 인증번호 확인하기 ...
+                 */
                 case "confirmCode":
                     String userCodeForAuth = (String) body.get("userCodeForAuth");
                     if (userCodeForAuth == null || "".equals(userCodeForAuth)) {
-                        return new ResponseEntity<>(new HttpResponseBody<>("Fail", "올바른 인증번호를 입력해주세요.."), HttpStatus.BAD_REQUEST);
+                        throw new BaseException(INVALID_AUTH_CODE);
                     }
-
                     session = request.getSession(false);
-                    if (session!=null) {
+                    if (session != null) {
                         String originCodeForAuth = (String) session.getAttribute("codeForAuth");
-                        if (originCodeForAuth!=null) {
+                        if (originCodeForAuth != null) {
                             if (userCodeForAuth.equals(originCodeForAuth)) {
                                 session.removeAttribute("codeForAuth");
-                                return new ResponseEntity<>(new HttpResponseBody<>("ok", "인증에 성공했습니다."), HttpStatus.OK);
+                                return new BaseResponse<>(SUCCESS_AUTH);
                             } else {
-                                return new ResponseEntity<>(new HttpResponseBody<>("Fail", "인증번호가 일치하지 않습니다."), HttpStatus.BAD_REQUEST);
+                                throw new BaseException(INVALID_AUTH_CODE);
                             }
                         }
                     }
+
+                    /*
+                     * [POST] 회원 탈퇴 ...
+                     */
+                case "deleteUser":
+                    session = request.getSession(false);
+                    if (session != null) {
+                        User deleteUser = (User) session.getAttribute("User");
+                        if (deleteUser != null) {
+                            String deleteUserId = deleteUser.getUserId();
+                            String deleteUserPassword = (String) body.get("userPassword");
+                            boolean isSuccess = userService.deleteUser(deleteUserId, deleteUserPassword);
+                            if (isSuccess) {
+                                return new BaseResponse<>(SUCCESS_DELETE_USER);
+                            } else {
+                                throw new BaseException(FAIL_TO_DELETE_USER);
+                            }
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+                    /*
+                     * [POST] 비밀번호 변경
+                     */
+                case "changePassword":
+                    session = request.getSession(false);
+                    if (session != null) {
+                        User originUser = (User) session.getAttribute("User");
+
+                        String originUserId = originUser.getUserId();
+                        String originPassword = (String) body.get("userPassword");
+                        String newPassword = (String) body.get("newPassword");
+
+                        UserLoginDto userOriginDto = new UserLoginDto(originUserId, originPassword);
+                        boolean isMatched = userService.login(userOriginDto);
+
+                        if (isMatched) {
+                            userService.changePassword(originUserId, newPassword);
+                            session.invalidate();
+                            return new BaseResponse<>(SUCCESS_CHANGE_PASSWORD);
+                        } else {
+                            throw new BaseException(NOT_MATCH_PASSWORD);
+                        }
+
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+                case "changeNickname":
+                    session = request.getSession(false);
+                    if (session != null) {
+                        User changeNicknameUser = (User) session.getAttribute("User");
+
+                        // 닉네임 중복 확인 받았다는 가정 하에 ...
+                        String changeNicknameUserId = changeNicknameUser.getUserId();
+                        String newNickname = (String) body.get("newNickname");
+
+                        userService.changeNickname(changeNicknameUserId, newNickname);
+                        return new BaseResponse<>(SUCCESS_CHANGE_NICKNAME);
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
             }
         }
-        return response;
+        throw new BaseException(NOT_MATCH_SIGN);
     }
+
 }

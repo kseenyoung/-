@@ -3,14 +3,17 @@
     <div class="studyroomheader">
       <div class="nowname">
         <div class="nametag">Python 마스터</div>
-        <img class= "mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거">
-        <img class= "pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중">
+        <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
+        <img
+          class="pause"
+          @click="togglePause"
+          src="@/assets/img/studyroom/pause.png"
+          alt="휴식중"
+        />
       </div>
       <div class="lastlater">
-        <div class="lastname">java 마스터 3:40
-        </div>
-        <div class="latername">C++ 마스터 ~10:20
-        </div>
+        <div class="lastname">java 마스터 3:40</div>
+        <div class="latername">C++ 마스터 ~10:20</div>
       </div>
     </div>
 
@@ -18,63 +21,100 @@
       <div class="video-players">
         <div class="column">
           <div class="video-player-3">
-            <video class="bigvideo" ref="video13">
-              <source src="@/assets/movie.mp4" type="video/mp4" />
-            </video>
+            <div class="bigvideo" ref="video13">
+              <user-video :stream-manager="mainStreamManager" />
+            </div>
           </div>
           <div class="video-player-1">
-            <video class="videog1" ref="video1">
-              <source src="@/assets/movie.mp4" type="video/mp4" />
-            </video>
-            <video class="videog1" ref="video2">
-              <source src="@/assets/movie.mp4" type="video/mp4" />
-            </video>
-            <video class="videog1" ref="video3">
-              <source src="@/assets/movie.mp4" type="video/mp4" />
-            </video>
-            <video class="videog1" ref="video4">
-              <source src="@/assets/movie.mp4" type="video/mp4" />
-            </video>
+            <user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+ <user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+	 <user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+		 <user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+            <user-video
+              class="videog2"
+              ref="video2"
+              v-for="sub in subscribers"
+              :key="sub.stream.connection.connectionId"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
           </div>
         </div>
 
         <div class="video-player-2">
-          <video class="videog2" ref="video5">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video6">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video7">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video8">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video9">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
+		<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+			<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+				<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+					<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+						<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
         </div>
       </div>
       <div class="bar">
         <button class="ratetoggle" @click="toggleRate">달성률</button>
         <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
-
       </div>
       <div class="utility">
         <div class="achievement">
-          <div  class="rate"  v-if="showRate">
+          <div class="rate" v-if="showRate">
             <p class="titletag">공부시간</p>
             <div class="studytime">01:30:32</div>
-            <hr>
+            <hr />
             <p class="titletag">달성률</p>
             <div class="dagak">
-              <!-- <img src="@/assets/img/studyroom/hexagon.png" style="transform:rotate(30deg);" alt=""> -->
-              <DagakView />
+              <img
+                src="@/assets/img/studyroom/hexagon.png"
+                style="transform: rotate(30deg)"
+                alt=""
+              />
             </div>
             <div class="ratedetail">
-              java 마스터 --- <b>140%</b><br>
-              Python 마스터 --- <b>75%</b><br>
+              java 마스터 --- <b>140%</b><br />
+              Python 마스터 --- <b>75%</b><br />
               C++ 마스터 --- <b>0%</b>
             </div>
           </div>
@@ -87,90 +127,255 @@
       </div>
     </div>
 
-    <div class="black" v-if=isPause>
+    <div class="black" v-if="isPause">
       <p class="resttitle">휴식중</p>
       <p class="resttime">~00:30</p>
-      <img class="play" @click="togglePause" src="@/assets/img/studyroom/whiteplay.png" alt="다시시작">
+      <img
+        class="play"
+        @click="togglePause"
+        src="@/assets/img/studyroom/whiteplay.png"
+        alt="다시시작"
+      />
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { OpenVidu } from 'openvidu-browser';
+import { useUserStore } from '@/stores/user';
 import QnAListView from "@/components/room/QnAListView.vue";
-import { ref, onMounted } from "vue";
-import DagakView from "@/components/dagak/Dagak.vue";
-export default {
+import UserVideo from "@/components/room/UserVideo.vue";
 
 
-  name: "VideoPlayer",
-  components: { QnAListView, DagakView, },
-  setup() {
-    const video1 = ref(null);
-    const video2 = ref(null);
-    const video3 = ref(null);
-    const video4 = ref(null);
-    const video5 = ref(null);
-    const video6 = ref(null);
-    const video7 = ref(null);
-    const video8 = ref(null);
-    const video9 = ref(null);
-    const video10 = ref(null);
-    const video11 = ref(null);
-    const video12 = ref(null);
-    const video13 = ref(null);
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 
-    onMounted(() => {
-      // 비디오 요소들에 대한 작업을 수행
-      console.log(video1.value); // 예시: video1 요소에 접근
-    });
-    return {
-      video1,
-      video2,
-      video3,
-      video4,
-      video5,
-      video6,
-      video7,
-      video8,
-      video9,
-      video10,
-      video11,
-      video12,
-      video13,
-    };
-  },
-  data() {
-    return {
-      showRate: true,
-      showQuestion: true,
-      isPause: false,
-    };
-  },
-  methods: {
-    toggleRate() {
-      this.showRate = !this.showRate;
-    },
-    toggleQuestion() {
-      this.showQuestion = !this.showQuestion;
-    },
-    toggleMute(video) {
-      if (video && video.value instanceof HTMLVideoElement) {
-        video.value.muted = !video.value.muted;
+const store = useUserStore();
+const APPLICATION_SERVER_URL =
+  process.env.NODE_ENV === 'production' ? '' : 'https://capstone-6.shop:8080/dagak/';
+
+
+const OV = ref(undefined);
+const OVMy = ref(undefined);
+const session = ref(undefined);
+const mySession = ref(store.loginUser.sub);
+const mainStreamManager = ref(undefined);
+const mainStreamManagerMySession = ref(undefined);
+const publisher = ref(undefined);
+const publisherMySession = ref(undefined);
+const subscribers = ref([]);
+
+// 초기 데이터(계정 세션 아이디, 계정 이름)
+const myUserName = ref(store.loginUser.id);
+
+// 방 입장
+const enterRoom = async (sessionId) => {
+    let token = await createSession(sessionId);
+    return token;
+  };
+  
+// 방 생성
+const createSession = async (sessionId) => {
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + "room",
+    { sign: "enterRandomroom", sessionName: sessionId, videoCodec: "VP8" },
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  
+  return response.data.data;
+};
+
+// 계정 방 입장
+const enterMyRoom = async () => {
+  let token = await createMyRoom();
+  return token;
+};
+
+// 계정 방 생성
+const createMyRoom = async () => {
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + "room",
+    { sign: "enterMyRoom", userId: myUserName.value },
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data.data;
+};
+
+const loginSession = () => {
+  OVMy.value = new OpenVidu();
+  // 전체 참여 세션
+  mySession.value = OVMy.value.initSession();
+  mySession.value.on("signal", async ({ stream }) => {
+    console.log(stream, "님이 로그인했습니다.");
+    alert("친구가 로그인했어요!");
+    await axios.post(
+      "https://capstone-6.shop:4443/openvidu/api/signal",
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
+        },
+        data: {
+          session: myUserName.value,
+          type: "login-callBack",
+          data: "yj",
+        },
       }
-    },
-    togglePause() {
-      this.isPause = !this.isPause;
-    },
-    handleScroll() {
-      const header = this.$refs.studyroomheader;
+    );
+  });
 
+  mySession.value.on("signal:login-callBack", ({ stream }) => {
+    console.log("[콜백] 친구 ", stream, "님이 로그인했습니다.");
+  });
 
-    },
-  }
+  mySession.value.on("exception", ({ exception }) => {
+    console.warn(exception);
+  });
+
+  enterMyRoom().then((token) => {
+    console.log("나의 방 토큰:", token);
+
+    mySession.value
+      .connect(token, { clientData: myUserName.value })
+      .then(() => {
+        let publisherMySession = OVMy.value.initPublisher(undefined, {
+          audioSource: undefined,
+          videoSource: undefined,
+          publishAudio: false,
+          publishVideo: false,
+          resolution: "640x480",
+          frameRate: 30,
+          insertMode: "APPEND",
+          mirror: false,
+        });
+
+        // Set the main video in the page to display our webcam and store our Publisher
+        mainStreamManagerMySession.value = publisherMySession;
+        publisherMySession.value = publisherMySession;
+
+        // --- 6) Publish your stream ---;
+        mySession.value.publish(publisherMySession.value);
+        console.log("mySession에 로그인했습니다.");
+        alert("로그인에 성공했습니다.");
+      })
+      .catch((error) => {
+        console.log(
+          "다음 세션에 로그인하는데 오류가 발생했습니다!:",
+          error.code,
+          error.message
+        );
+      });
+  });
+};
+
+const joinSession = () => {
+  OV.value = new OpenVidu();
+  session.value = OV.value.initSession();
+
+  session.value.on("streamCreated", ({ stream }) => {
+    const subscriber = session.value.subscribe(stream);
+    subscribers.value.push(subscriber);
+  });
+
+  session.value.on("streamDestroyed", ({ stream }) => {
+    const index = subscribers.value.indexOf(stream.streamManager, 0);
+    if (index >= 0) {
+      subscribers.value.splice(index, 1);
+    }
+  });
+
+  session.value.on("exception", ({ exception }) => {
+    console.warn(exception);
+  });
+
+  enterRoom(mySession.value).then((token) => {
+    session.value.connect(token, { clientData: myUserName.value }).then(() => {
+      publisher.value = OV.value.initPublisher(undefined, {
+        audioSource: undefined,
+        videoSource: undefined,
+        publishAudio: true,
+        publishVideo: true,
+        resolution: "640x480",
+        frameRate: 30,
+        insertMode: "APPEND",
+        mirror: false,
+      });
+
+      mainStreamManager.value = publisher.value;
+
+      session.value.publish(publisher.value);
+    }).catch((error) => {
+      console.log("There was an error connecting to the session:", error.code, error.message);
+    });
+  });
+
+  window.addEventListener("beforeunload", leaveSession);
+};
+
+const leaveSession = () => {
+  if (session.value) session.value.disconnect();
+
+  session.value = undefined;
+  mainStreamManager.value = undefined;
+  publisher.value = undefined;
+  subscribers.value = [];
+  OV.value = undefined;
+
+  window.removeEventListener("beforeunload", leaveSession);
+};
+  
+const updateMainVideoStreamManager = (stream) => {
+  if (mainStreamManager.value === stream) return;
+  mainStreamManager.value = stream;
 };
 
 
+const video1 = ref(null);
+const video2 = ref(null);
+const video3 = ref(null);
+const video4 = ref(null);
+const video5 = ref(null);
+const video6 = ref(null);
+const video7 = ref(null);
+const video8 = ref(null);
+const video9 = ref(null);
+const video10 = ref(null);
+const video11 = ref(null);
+const video12 = ref(null);
+const video13 = ref(null);
+
+const showRate = ref(true);
+const showQuestion = ref(true);
+const isPause = ref(false);
+
+const toggleRate = () => {
+  showRate.value = !showRate.value;
+};
+
+const toggleQuestion = () => {
+  showQuestion.value = !showQuestion.value;
+};
+
+const toggleMute = (video) => {
+  if (video && video.value instanceof HTMLVideoElement) {
+    video.value.muted = !video.value.muted;
+  }
+};
+
+const togglePause = () => {
+  isPause.value = !isPause.value;
+};
+
+onMounted(() => {
+  joinSession();
+});
 </script>
 
 <style>
@@ -178,11 +383,9 @@ export default {
   flex-direction: column;
   height: 100%;
 }
-
 .resttitle {
   font-size: 100px;
 }
-
 .resttime {
   font-size: 50px;
 }
@@ -227,7 +430,6 @@ export default {
   padding-left: 15px;
   padding-right: 15px;
 }
-
 .nametag {
   font-weight: 900;
   margin-right: 40px;
@@ -237,7 +439,6 @@ export default {
 .lastlater {
   display: flex;
 }
-
 .play {
   width: 40px;
   height: 40px;
@@ -270,7 +471,6 @@ export default {
   transform: rotate(90deg);
   /* 90도 회전 */
 }
-
 .column {
   flex: 4;
   display: flex;
@@ -304,7 +504,6 @@ export default {
   height: auto;
   border: 5px white solid;
   box-sizing: border-box;
-
 }
 
 .bigvideo {
@@ -351,8 +550,7 @@ export default {
   position: relative;
   z-index: 1;
 }
-
-.dagak polygon {
+.dagak img {
   width: 60%;
   height: auto;
   position: absolute;
@@ -378,7 +576,6 @@ export default {
   cursor: pointer;
   margin-top: 20px;
 }
-
 .pause {
   width: 25px;
   height: 25px;
@@ -386,7 +583,6 @@ export default {
   margin-top: 20px;
   margin-left: 20px;
 }
-
 .questiontoggle {
   background-color: rgb(200, 200, 200);
   width: 120px;
@@ -399,7 +595,6 @@ export default {
   z-index: 10;
   top: -40px;
 }
-
 .ratetoggle {
   background-color: gainsboro;
   width: 120px;

@@ -1,5 +1,7 @@
 package com.ssafy.backend.user.service;
 
+import com.ssafy.backend.alarm.model.domain.Alarm;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
 import com.ssafy.backend.friend.model.repository.FriendRepository;
@@ -30,6 +32,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_ALARM_ID;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
 
 @Service
@@ -86,7 +91,6 @@ public class UserServiceImpl implements UserService {
         String loginUserId = userLoginDto.getUserId();
         String loginSalt = securityMapper.getSalt(loginUserId);
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
-
 
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
@@ -236,5 +240,43 @@ public class UserServiceImpl implements UserService {
         javaMailSender.send(emailContent);
 
         return codeForAuth;
+    }
+
+    @Override
+    public boolean deleteUser(String deleteUserId, String deleteUserPassword) throws Exception {
+        String deleteUserSalt = securityMapper.getSalt(deleteUserId);
+        String encryptedDeletePassword = EncryptUtil.getSHA256(deleteUserPassword, deleteUserSalt);
+
+        User user = userRepository.findById(deleteUserId)
+                .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
+
+        boolean isMatch = user.checkPassword(encryptedDeletePassword);
+
+        if (isMatch){
+            // TODO : 뭘 지울 지 정해야 함...
+            userRepository.deleteById(deleteUserId);
+            securityMapper.deleteSalt(deleteUserId);
+            return isMatch;
+        } else {
+            return isMatch;
+        }
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    @Override
+    public void changePassword(String originUserId, String newPassword) throws Exception {
+        String newSalt = UUID.randomUUID().toString();
+        String newSafePassword = EncryptUtil.getSHA256(newPassword, newSalt);
+
+        securityMapper.changeSalt(originUserId, newSalt);
+        userMapper.changePassword(originUserId, newSafePassword);
+    }
+
+    @Override
+    public void changeNickname(String changeNicknameUserId, String newNickname) {
+        User user = userRepository.findById(changeNicknameUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        user.setUserNickname(newNickname);
+
+        userRepository.save(user);
     }
 }
