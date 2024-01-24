@@ -32,6 +32,24 @@
               :stream-manager="publisher"
               @click.native="updateMainVideoStreamManager(publisher)"
             />
+ <user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+	 <user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+		 <user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
             <user-video
               class="videog2"
               ref="video2"
@@ -44,21 +62,36 @@
         </div>
 
         <div class="video-player-2">
-          <video class="videog2" ref="video5">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video6">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video7">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video8">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
-          <video class="videog2" ref="video9">
-            <source src="@/assets/movie.mp4" type="video/mp4" />
-          </video>
+		<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+			<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+				<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+					<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+						<user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
         </div>
       </div>
       <div class="bar">
@@ -264,7 +297,7 @@ const joinSession = () => {
 
   enterRoom(mySession.value).then((token) => {
     session.value.connect(token, { clientData: myUserName.value }).then(() => {
-      let publisherValue = OV.value.initPublisher(undefined, {
+      publisher.value = OV.value.initPublisher(undefined, {
         audioSource: undefined,
         videoSource: undefined,
         publishAudio: true,
@@ -275,8 +308,7 @@ const joinSession = () => {
         mirror: false,
       });
 
-      mainStreamManager.value = publisherValue;
-      publisher.value = publisherValue;
+      mainStreamManager.value = publisher.value;
 
       session.value.publish(publisher.value);
     }).catch((error) => {

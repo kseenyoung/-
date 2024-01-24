@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', () => {
   const loginUser = ref('')
   const login = function () {
     const id = ref('yj')
-    const sub = ref('정보처리기사')
+    const sub = ref('SQLD')
     const user = ref({
       id: id.value,
       sub: sub.value
