@@ -1,20 +1,18 @@
 package com.ssafy.backend.user.controller;
 
-
 import com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.utils.HttpResponseBody;
 import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
+import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
-import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
-
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.UserService;
-import com.ssafy.backend.common.utils.HttpResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -22,15 +20,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.Base64;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.ALREADY_EXIST_USER;
