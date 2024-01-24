@@ -19,4 +19,13 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    https: {
+      key: fs.readFileSync('/etc/letsencrypt/live/capstone-6.shop/privkey.pem'),
+      cert: fs.readFileSync('/etc/letsencrypt/live/capstone-6.shop/cert.pem'),
+      ca: fs.readFileSync('/etc/letsencrypt/live/capstone-6.shop/chain.pem'),
+    },
+    hmr: true,
+    host: '0.0.0.0',
+  },
 });
