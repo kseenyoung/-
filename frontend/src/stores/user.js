@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
   const mainStreamManagerMySession = ref(undefined)
   const publisherMySession = ref(undefined)
   const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://capstone-6.shop:8080/dagak/';
+  process.env.NODE_ENV === 'production' ? '' : 'https://i10a404.p.ssafy.io/dagak/';
   const myUserName = ref(loginUser.value.id);
 
   // 계정 방 입장
@@ -61,7 +61,7 @@ export const useUserStore = defineStore('user', () => {
       console.log(stream, '님이 로그인했습니다.')
       alert('친구가 로그인했어요!')
       await axios.post(
-        'https://capstone-6.shop:4443/openvidu/api/signal',
+        'https://i10a404.p.ssafy.io/openvidu/api/signal',
         {},
         {
           headers: {
