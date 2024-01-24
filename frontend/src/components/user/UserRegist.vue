@@ -181,12 +181,17 @@ const duplicateIdCheck = async function(checkId) {
             "Content-Type": "application/json",
           },
         }
-  ).then((res) => {
-    isDuplicateId.value = true;
-  }).catch((res) => {
-      isDuplicateId.value = true;
-      id.value = ''; //아이디 텍스트 초기화
-  });
+  ).then((res) => res.data)
+    .then((json) => {
+      console.log(json.code)
+      if (json.code == 1002) {  // 중복 아님
+        isDuplicateId.value = true;
+      } else {  // 중복임
+        isDuplicateId.value = false;
+        alert("이미 존재하는 아이디입니다.");
+        id.value = ''; //아이디 텍스트 초기화
+      }
+    });
 
 
 }
@@ -278,12 +283,17 @@ const duplicateNicknameCheck = async function(checkNickname) {
             "Content-Type": "application/json",
           },
         }
-  ).then((res) => {
-    isDuplicateNickname.value = true;
-  }).catch((res) => {
-      isDuplicateNickname.value = true;
-      nickname.value = ''; //아이디 텍스트 초기화
-  });
+  ).then((res) => res.data)
+    .then((json) => {
+      console.log(json.code)
+      if (json.code == 1004) {  // 중복 아님
+        isDuplicateNickname.value = true;
+      } else {  // 중복임
+        isDuplicateNickname.value = false;
+        alert("이미 존재하는 닉네임입니다.");
+        nickname.value = ''; //닉네임 텍스트 초기화
+      }
+    });
 
 
 }
