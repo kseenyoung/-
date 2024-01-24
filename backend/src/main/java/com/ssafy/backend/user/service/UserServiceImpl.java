@@ -1,5 +1,7 @@
 package com.ssafy.backend.user.service;
 
+import com.ssafy.backend.alarm.model.domain.Alarm;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
 import com.ssafy.backend.friend.model.repository.FriendRepository;
@@ -30,6 +32,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_ALARM_ID;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
 
 @Service
@@ -265,5 +270,13 @@ public class UserServiceImpl implements UserService {
 
         securityMapper.changeSalt(originUserId, newSalt);
         userMapper.changePassword(originUserId, newSafePassword);
+    }
+
+    @Override
+    public void changeNickname(String changeNicknameUserId, String newNickname) {
+        User user = userRepository.findById(changeNicknameUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        user.setUserNickname(newNickname);
+
+        userRepository.save(user);
     }
 }
