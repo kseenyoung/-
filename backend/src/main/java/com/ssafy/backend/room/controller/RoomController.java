@@ -70,6 +70,7 @@ public class RoomController {
                 return new ResponseEntity<>(new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token),HttpStatus.OK);
             case "enterMyRoom":
                 userId = (String) body.get("userId");
+		System.out.println("userId :"+userId );
                 RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, "VP8");
                 token = roomService.enterDefaultroom(defaultRoomEnterDto);
                 return new ResponseEntity<>(new HttpResponseBody<>("기본방 토큰을 발급합니다.", token),HttpStatus.OK);
