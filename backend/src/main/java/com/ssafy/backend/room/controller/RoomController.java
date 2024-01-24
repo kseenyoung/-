@@ -63,6 +63,7 @@ public class RoomController {
             case "enterRandomroom": // 랜덤 방 입장
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
+		System.out.println("SessionName / VideoCodec"+sessionName+","+videoCodec);
 
                 RoomEnterDto randomRoomEnterDto = new RoomEnterDto(sessionName, videoCodec);
                 token = roomService.enterRandomroom(randomRoomEnterDto);
