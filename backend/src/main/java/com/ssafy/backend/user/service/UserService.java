@@ -43,4 +43,6 @@ public interface UserService {
     String sendEmail(String userEmailForAuth) throws MyException;
 
     boolean deleteUser(String deleteUserId, String deleteUserPassword) throws Exception;
+
+    void changePassword(String originUserId, String newPassword) throws Exception;
 }

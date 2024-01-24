@@ -10,4 +10,10 @@
         values(#{userId}, #{userPassword}, #{userBirthday}, #{userName}, #{userPhonenumber}, #{userNickname}, #{userEmail})
     </insert>
 
+    <update id="changePassword" parameterType="String">
+        update user
+        set user_password = #{newSafePassword}
+        where user_id = #{originUserId}
+    </update>
+
 </mapper>

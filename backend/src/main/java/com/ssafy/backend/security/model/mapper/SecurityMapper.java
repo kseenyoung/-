@@ -10,4 +10,5 @@ public interface SecurityMapper {
     void insertSalt(SecurityDto securityDto);
     String getSalt(String userId);
     void deleteSalt(String deleteUserId);
+    void changeSalt(String originUserId, String newSalt);
 }

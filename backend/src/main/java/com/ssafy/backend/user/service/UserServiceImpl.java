@@ -87,7 +87,6 @@ public class UserServiceImpl implements UserService {
         String loginSalt = securityMapper.getSalt(loginUserId);
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
 
-
         User user = userRepository.findById(loginUserId)
                 .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
         return user.checkPassword(encryptedLoginPassword);
@@ -256,5 +255,15 @@ public class UserServiceImpl implements UserService {
         } else {
             return isMatch;
         }
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    @Override
+    public void changePassword(String originUserId, String newPassword) throws Exception {
+        String newSalt = UUID.randomUUID().toString();
+        String newSafePassword = EncryptUtil.getSHA256(newPassword, newSalt);
+
+        securityMapper.changeSalt(originUserId, newSalt);
+        userMapper.changePassword(originUserId, newSafePassword);
     }
 }
