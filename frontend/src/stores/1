@@ -28,9 +28,6 @@ export const useUserStore = defineStore('user', () => {
   const mySession = ref(undefined)
   const mainStreamManagerMySession = ref(undefined)
   const publisherMySession = ref(undefined)
-  const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://capstone-6.shop:8080/dagak/';
-  const myUserName = ref(loginUser.value.id);
 
   // 계정 방 입장
   const enterMyRoom = async () => {
@@ -40,12 +37,9 @@ export const useUserStore = defineStore('user', () => {
 
   // 계정 방 생성
   const createMyRoom = async () => {
-    console.log("myUserNAme: ",myUserName);
-    console.log("loginUser : ", loginUser.value.id);
-    console.log("loginUser2 : ", loginUser.id);
     const response = await axios.post(
       APPLICATION_SERVER_URL + 'room',
-      { sign: 'enterMyRoom', userId: loginUser.value.id },
+      { sign: 'enterMyRoom', userId: myUserName.value },
       {
         headers: { 'Content-Type': 'application/json' }
       }
@@ -116,5 +110,5 @@ export const useUserStore = defineStore('user', () => {
     })
   }
 
-  return { myUserName, APPLICATION_SERVER_URL, loginUser, login,  OVMy, mySession, mainStreamManagerMySession, publisherMySession, enterMyRoom, createMyRoom, loginSession, }
+  return { loginUser, login,  OVMy, mySession, mainStreamManagerMySession, publisherMySession, enterMyRoom, createMyRoom, loginSession, }
 })

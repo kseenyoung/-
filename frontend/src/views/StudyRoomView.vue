@@ -112,6 +112,9 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import { useUserStore } from '@/stores/user';
+import QnAListView from "@/components/room/QnAListView.vue";
+import UserVideo from "@/components/room/UserVideo.vue";
+
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -124,7 +127,7 @@ const APPLICATION_SERVER_URL =
 const OV = ref(undefined);
 const OVMy = ref(undefined);
 const session = ref(undefined);
-const mySession = ref(undefined);
+const mySession = ref(store.loginUser.sub);
 const mainStreamManager = ref(undefined);
 const mainStreamManagerMySession = ref(undefined);
 const publisher = ref(undefined);
@@ -259,7 +262,7 @@ const joinSession = () => {
     console.warn(exception);
   });
 
-  enterRoom(mySessionId.value).then((token) => {
+  enterRoom(mySession.value).then((token) => {
     session.value.connect(token, { clientData: myUserName.value }).then(() => {
       let publisherValue = OV.value.initPublisher(undefined, {
         audioSource: undefined,
@@ -339,7 +342,7 @@ const togglePause = () => {
 };
 
 onMounted(() => {
-  console.log(video1.value); // Example: Accessing video1 element
+  joinSession();
 });
 </script>
 
