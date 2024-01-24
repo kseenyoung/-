@@ -50,6 +50,8 @@ public enum BaseResponseStatus {
 
 
 
+
+
     /**
      * 2500 : Request 성공
      */

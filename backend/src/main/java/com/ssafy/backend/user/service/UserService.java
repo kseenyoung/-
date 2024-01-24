@@ -45,4 +45,6 @@ public interface UserService {
     boolean deleteUser(String deleteUserId, String deleteUserPassword) throws Exception;
 
     void changePassword(String originUserId, String newPassword) throws Exception;
+
+    void changeNickname(String changeNicknameUserId, String newNickname);
 }
