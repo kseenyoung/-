@@ -339,7 +339,6 @@ const togglePause = () => {
 };
 
 onMounted(() => {
-  // Video element operations here
   console.log(video1.value); // Example: Accessing video1 element
 });
 </script>
