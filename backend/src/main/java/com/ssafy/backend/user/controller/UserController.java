@@ -14,8 +14,10 @@ import com.ssafy.backend.user.model.dto.UserLoginDto;
 
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.vo.UserViewVO;
+import com.ssafy.backend.user.service.KakaoOAuthService;
 import com.ssafy.backend.user.service.UserService;
 import com.ssafy.backend.common.utils.HttpResponseBody;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -31,6 +33,7 @@ import java.net.URI;
 import java.util.Base64;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
@@ -56,16 +59,21 @@ public class UserController {
     @Autowired
     LoginHistoryService loginHistoryService;
 
+    @Autowired
+    KakaoOAuthService kakaoOAuthService;
+
     @PostMapping("test")
-    public void test(@RequestBody Map<String, Object> body) throws Exception {
-        RegEx.isValidUserEmail("");
+    public void test(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
+        HttpSession session = request.getSession();
+        session.setAttribute("kakaoEmail", "");
     }
 
 
     @PostMapping("")
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
-        HttpSession session = null;
+        HttpSession session = request.getSession(false);
+        System.out.println((String)session.getAttribute("kakaoEmail"));
 
         if (sign != null) {
             switch (sign) {
@@ -90,6 +98,7 @@ public class UserController {
                         throw new BaseException(FAIL_SIGN_UP);
 //
                     }
+                    session.invalidate();
                     return new BaseResponse<>(SUCCESS_ID_SIGN_UP);
 
                 /*
@@ -106,6 +115,14 @@ public class UserController {
                         User user = new User(loginUserId);
                         session = request.getSession();
                         session.setAttribute("User", user);
+
+                        if (session.getAttribute("kakaoEmail") != null) {
+                            // 세션에 kakaoEmail 이 있으면 연동함.
+                            String kakaoEmail = (String) session.getAttribute("kakaoEmail");
+                            userService.linkKakao(loginUserId, kakaoEmail);
+                            return new BaseResponse<>(SUCCESS);
+                        }
+
 
                         // 로그인 성공시 친구들에게 시그널 전송
                         List<FriendVO> friendList = friendService.listFriends(loginUserId);
@@ -141,7 +158,6 @@ public class UserController {
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
                         return new BaseResponse<>(SUCCESS_LOGIN);
                     } else {  // 로그인 실패 시 카운트 시작.
-                        System.out.println(1);
                         int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
                         if (remainTime != 0) {
                             return new BaseResponse<>(remainTime+"초 뒤에 다시 시도해주세요");
@@ -302,5 +318,28 @@ public class UserController {
         }
         throw new BaseException(NOT_MATCH_SIGN);
     }
+
+    @GetMapping("kakaoOauth")
+    public void kakaoOauth(@RequestParam String code, HttpServletRequest request){
+        HttpSession session;
+
+        String access_Token = kakaoOAuthService.getKaKaoAccessToken(code);
+        String kakaoEmail = kakaoOAuthService.createKakaoUser(access_Token);
+
+        User kakaoUser = userService.isKakaoUser(kakaoEmail);
+        if (kakaoUser != null) {
+            session = request.getSession();
+            session.setAttribute("User", kakaoUser);
+        } else {
+            // TODO: 프론트에서 연동 할 건지 말 건지 화면 전환해줘야함. 연동한다고 하면 이메일에 세션 들고 로그인 화면으로,,
+            session = request.getSession();
+            session.setAttribute("kakaoEmail", kakaoEmail);
+            System.out.println((String)session.getAttribute("kakaoEmail"));
+            throw new BaseException(NEED_KAKAO_LINK);
+        }
+    }
+
+
+
 
 }
