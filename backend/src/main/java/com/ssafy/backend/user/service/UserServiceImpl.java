@@ -1,6 +1,5 @@
 package com.ssafy.backend.user.service;
 
-import com.ssafy.backend.alarm.model.domain.Alarm;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
@@ -11,7 +10,6 @@ import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.domain.UserRank;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
-
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.repository.UserRankRepository;
@@ -19,11 +17,10 @@ import com.ssafy.backend.user.model.repository.UserRepository;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -33,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_ALARM_ID;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
 

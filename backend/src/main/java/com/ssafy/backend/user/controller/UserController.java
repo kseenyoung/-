@@ -14,10 +14,8 @@ import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.UserService;
 import io.openvidu.java.client.OpenVidu;
-import io.openvidu.java.client.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -33,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -145,8 +142,6 @@ public class UserController {
                             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
                             ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
-
-
                         }
 
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
