@@ -290,4 +290,16 @@ public class UserServiceImpl implements UserService {
         user.setKakaoEmail(kakaoEmail);
         userRepository.save(user);
     }
+
+    @Override
+    public User isGoogleUser(String googleEamil) {
+        return userRepository.findByGoogleEmail(googleEamil);
+    }
+
+    @Override
+    public void linkGoogle(String loginUserId, String googleEmail) {
+        User user = userRepository.findUserByUserId(loginUserId);
+        user.setGoogleEmail(googleEmail);
+        userRepository.save(user);
+    }
 }
