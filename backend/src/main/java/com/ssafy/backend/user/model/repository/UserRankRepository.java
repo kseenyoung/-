@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRankRepository extends JpaRepository<UserRank, String> {
     UserRank findUserRankByUserId(String userId);
+
+
 }
