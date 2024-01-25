@@ -29,6 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = RuntimeException.class)
     public BaseResponse<BaseResponseStatus> baseException(RuntimeException e) {
         log.warn("Handle CommonException: {}", e.getCause());
+        e.printStackTrace();
         return new BaseResponse<>(BaseResponseStatus.OOPS);
     }
 
