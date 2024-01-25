@@ -47,4 +47,8 @@ public interface UserService {
     void changePassword(String originUserId, String newPassword) throws Exception;
 
     void changeNickname(String changeNicknameUserId, String newNickname);
+
+    User isKakaoUser(String kakaoEmail);
+
+    void linkKakao(String user, String kakaoEmail);
 }

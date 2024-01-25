@@ -1,6 +1,5 @@
 package com.ssafy.backend.user.service;
 
-import com.ssafy.backend.alarm.model.domain.Alarm;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
@@ -31,9 +30,9 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_ALARM_ID;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
 
@@ -277,6 +276,18 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(changeNicknameUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
         user.setUserNickname(newNickname);
 
+        userRepository.save(user);
+    }
+
+    @Override
+    public User isKakaoUser(String kakaoEmail) {
+        return userRepository.findByKakaoEmail(kakaoEmail);
+    }
+
+    @Override
+    public void linkKakao(String userId, String kakaoEmail) {
+        User user = userRepository.findUserByUserId(userId);
+        user.setKakaoEmail(kakaoEmail);
         userRepository.save(user);
     }
 }
