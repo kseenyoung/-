@@ -331,8 +331,18 @@ public class UserController {
         throw new BaseException(NOT_MATCH_SIGN);
     }
 
+    /*
+     * 카카오 로그인
+     * https://kauth.kakao.com/oauth/authorize?client_id=daad1a19aba64000fb178eb96ad2889d&redirect_uri=https://localhost:8080/dagak/user/kakaoOauth&response_type=code
+     *
+     * api 토큰
+     * daad1a19aba64000fb178eb96ad2889d
+     *
+     * redirect url
+     * https://localhost:8080/dagak/user/kakaoOauth
+     */
     @GetMapping("kakaoOauth")
-    public void kakaoOauth(@RequestParam String code, HttpServletRequest request){
+    public BaseResponse<?> kakaoOauth(@RequestParam String code, HttpServletRequest request){
         HttpSession session;
 
         String access_Token = kakaoOAuthService.getKaKaoAccessToken(code);
@@ -342,16 +352,19 @@ public class UserController {
         if (kakaoUser != null) {
             session = request.getSession();
             session.setAttribute("User", kakaoUser);
+            return new BaseResponse<>(SUCCESS);
         } else {
             // TODO: 프론트에서 연동 할 건지 말 건지 화면 전환해줘야함. 연동한다고 하면 이메일에 세션 들고 로그인 화면으로,,
             session = request.getSession();
             session.setAttribute("kakaoEmail", kakaoEmail);
-            System.out.println((String)session.getAttribute("kakaoEmail"));
             throw new BaseException(NEED_KAKAO_LINK);
         }
     }
 
+    @GetMapping("googleOauth")
+    public void googleOauth(@RequestParam("code") String code, HttpServletRequest request, HttpServletResponse response){
 
+    }
 
 
 }
