@@ -81,7 +81,7 @@ public class MokkojiController {
         //모꼬지 강퇴
         else if("kickMember".equals(sign)){
             String member = (String) body.get("member");
-            if(member == null) throw new MyException("강퇴할 유저 값이 없습니다", HttpStatus.BAD_REQUEST);
+            if(member == null) throw new BaseException(NOT_EXIST_KICK_USER);
             mokkojiFacade.kickUser(userId,member);
             return new BaseResponse<>(SUCCESS_KICK_MOKKOJI_MEMBER);
         }
