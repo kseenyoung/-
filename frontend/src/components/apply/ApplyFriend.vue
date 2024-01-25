@@ -67,7 +67,7 @@
 
 <style lang="scss" scoped>
 .apply-friend-wrapper {
-  padding: 10px 20px;
+  padding: 30px 30px;
   // .my-thead {
   //   tr {
   //     > th:nth-child(3) {

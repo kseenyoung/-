@@ -53,7 +53,7 @@
 
 <style lang="scss" scoped>
 .apply-mokkoji-wrapper {
-  padding: 10px 20px;
+  padding: 30px 30px;
   .apply-search {
     select {
       max-width: 100px;
