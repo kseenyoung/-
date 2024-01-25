@@ -60,3 +60,14 @@ server:
     key-store: classpath:keystore.p12
     key-store-type: PKCS12
     key-store-password: dongjae123
+
+google:
+  auth:
+    url: https://oauth2.googleapis.com
+    scope: email
+  login:
+    url: https://accounts.google.com
+  redirect.uri: https://localhost:8080/dagak/user/googleOauth
+  client:
+    id: 273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com
+  secret: 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

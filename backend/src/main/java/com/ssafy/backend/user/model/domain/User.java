@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
@@ -23,11 +24,10 @@ public class User {
     private Mokkoji mokkojiId;
 
 
-
     @Column
-    private String userPassword,  userName,
+    private String userPassword, userName,
             modifyUserPasswordTime, userPhonenumber, userBirthday,
-    userEmail, userNickname, userPicture,  todayDagakId, userStatusMessage, kakaoEmail;
+            userEmail, userNickname, userPicture, todayDagakId, userStatusMessage, kakaoEmail, googleEmail;
 
     @Column
     private LocalDateTime createdDate;
@@ -53,7 +53,7 @@ public class User {
     }
 
     public User(String userId) {
-        if (userId!=null){
+        if (userId != null) {
             this.userId = userId;
         } else {
             // do something...
@@ -62,5 +62,9 @@ public class User {
 
     public void setKakaoEmail(String kakaoEmail) {
         this.kakaoEmail = kakaoEmail;
+    }
+
+    public void setGoogleEmail(String googleEmail) {
+        this.googleEmail = googleEmail;
     }
 }

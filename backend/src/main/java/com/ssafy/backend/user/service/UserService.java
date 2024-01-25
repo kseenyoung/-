@@ -51,4 +51,8 @@ public interface UserService {
     User isKakaoUser(String kakaoEmail);
 
     void linkKakao(String user, String kakaoEmail);
+
+    User isGoogleUser(String googleEamil);
+
+    void linkGoogle(String loginUserId, String googleEmail);
 }

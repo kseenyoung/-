@@ -1,114 +1,47 @@
 package com.ssafy.backend.user.service;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
+import com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.user.model.vo.GoogleOAuthRequest;
+import org.json.simple.JSONObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_LOGIN;
 
 @Service
 public class GoogleOAuthService {
 
-    public String getAccessToken(String code){
-        String access_Token="";
-        String refresh_Token ="";
-        String reqURL = "https://kauth.kakao.com/oauth/token";
+    public String getGoogleAccessToken(String authCode) {
+        RestTemplate restTemplate = new RestTemplate();
 
-        try{
-            URL url = new URL(reqURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        GoogleOAuthRequest googleOAuthRequestParam = GoogleOAuthRequest
+                .builder()
+                .clientId("273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com")
+                .ㅎclientSecret("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")
+                .code(authCode)
+                .redirectUri("https://localhost:8080/dagak/user/googleOauth")
+                .grantType("authorization_code")
+                .build();
 
-            //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
+        ResponseEntity<JSONObject> apiResponse = restTemplate.postForEntity("https://oauth2.googleapis.com" + "/token", googleOAuthRequestParam, JSONObject.class);
+        JSONObject responseBody = apiResponse.getBody();
 
-            //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-            StringBuilder sb = new StringBuilder();
-            sb.append("grant_type=authorization_code");
-            sb.append("&client_id=daad1a19aba64000fb178eb96ad2889d"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=https://localhost:8080/dagak/user/kakaoOauth"); // TODO 인가코드 받은 redirect_uri 입력
-            sb.append("&code=" + code);
-            bw.write(sb.toString());
-            bw.flush();
+        //   id_token은 jwt 형식
+        String jwtToken = (String) responseBody.get("id_token");
+        String requestUrl = UriComponentsBuilder.fromHttpUrl("https://oauth2.googleapis.com" + "/tokeninfo").queryParam("id_token", jwtToken).toUriString();
 
-            //결과 코드가 200이라면 성공
-            int responseCode = conn.getResponseCode();
-            //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
+        JSONObject resultJson = restTemplate.getForObject(requestUrl, JSONObject.class);
 
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
+        // 구글 정보조회 성공
+        if (resultJson != null) {
+            String googleEmail = (String) resultJson.get("email");
+            return googleEmail;
 
-            //Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
-
-            access_Token = element.getAsJsonObject().get("access_token").getAsString();
-            refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
-
-            br.close();
-            bw.close();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return access_Token;
-    }
-
-    public String createKakaoUser(String token) {
-
-        String reqURL = "https://kapi.kakao.com/v2/user/me";
-
-        //access_token을 이용하여 사용자 정보 조회
-        try {
-            URL url = new URL(reqURL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-            conn.setRequestProperty("Authorization", "Bearer " + token); //전송할 header 작성, access_token전송
-
-            //결과 코드가 200이라면 성공
-            int responseCode = conn.getResponseCode();
-
-            //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line = "";
-            String result = "";
-
-            while ((line = br.readLine()) != null) {
-                result += line;
-            }
-
-            //Gson 라이브러리로 JSON파싱
-            JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
-
-            int id = element.getAsJsonObject().get("id").getAsInt();
-            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
-            String email = "";
-            if(hasEmail){
-                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
-            }
-
-            br.close();
-
-            return email;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            // 구글 정보조회 실패
+        } else {
+            throw new BaseException(FAIL_LOGIN);
         }
     }
 
