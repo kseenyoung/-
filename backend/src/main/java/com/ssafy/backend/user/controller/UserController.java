@@ -1,6 +1,5 @@
 package com.ssafy.backend.user.controller;
 
-
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.utils.RegEx;
@@ -14,6 +13,8 @@ import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.UserService;
+import io.openvidu.java.client.OpenVidu;
+import io.openvidu.java.client.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -27,15 +28,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.*;
-
 
 @RestController
 @RequestMapping("user")
@@ -55,6 +57,13 @@ public class UserController {
 
     @Autowired
     LoginHistoryService loginHistoryService;
+
+    private OpenVidu openvidu;
+
+    @PostConstruct
+    public void init() {
+        this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
+    }
 
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body) throws Exception {
@@ -109,11 +118,11 @@ public class UserController {
 
                         // 로그인 성공시 친구들에게 시그널 전송
                         List<FriendVO> friendList = friendService.listFriends(loginUserId);
-                        System.out.println("친구 목록: " + friendList);
 
                         for (FriendVO friend : friendList) {
-                            System.out.println(friend.getUserId() + "에게 친구요청");
-                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), loginUserId);
+                            System.out.println(friend.getUserId() + "에게 로그인 신호");
+
+                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), "login",loginUserId);
                             URI uri = UriComponentsBuilder
                                     .fromUriString(OPENVIDU_URL)
                                     .path("/openvidu/api/signal")
@@ -124,17 +133,19 @@ public class UserController {
                             String secret = "Basic " + OPENVIDU_SECRET;
                             secret = Base64.getEncoder().encodeToString(secret.getBytes());
 
-                            RequestEntity<OpenviduRequestDto> requestEntity = RequestEntity
+                            RequestEntity<String> requestEntity = RequestEntity
                                     .post(uri)
                                     .header("Content-Type", "application/json")
                                     .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
-                                    .body(openviduRequestDto);
+                                    .body(openviduRequestDto.toJson());
+
+                            System.out.println(openviduRequestDto.toJson());
 
                             RestTemplate restTemplate = new RestTemplate();
                             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-                            ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
-                                    uri, HttpMethod.POST, requestEntity, QuestionDto.class
-                            );
+
+                            ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
+
 
                         }
 
@@ -156,9 +167,9 @@ public class UserController {
                         session.invalidate();
                     }
                     return new BaseResponse<>("로그아웃 성공");
-                    /*
-                     * [POST] 아이디 중복 검사
-                     */
+                /*
+                 * [POST] 아이디 중복 검사
+                 */
                 case "isExistId":
                     String userTriedId = (String) body.get("userId");
 

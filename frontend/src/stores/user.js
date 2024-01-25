@@ -9,7 +9,7 @@ export const useUserStore = defineStore('user', () => {
   //로그인 세션 test
   const loginUser = ref('')
   const login = function () {
-    const id = ref('yj')
+    const id = ref('ssafy123')
     const sub = ref('SQLD')
     const user = ref({
       id: id.value,
@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
   const mainStreamManagerMySession = ref(undefined)
   const publisherMySession = ref(undefined)
   const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://i10a404.p.ssafy.io/dagak/';
+  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
   const myUserName = ref(loginUser.value.id);
 
   // 계정 방 입장
@@ -60,21 +60,21 @@ export const useUserStore = defineStore('user', () => {
     mySession.value.on('signal', async ({ stream }) => {
       console.log(stream, '님이 로그인했습니다.')
       alert('친구가 로그인했어요!')
-      await axios.post(
-        'https://i10a404.p.ssafy.io/openvidu/api/signal',
-        {},
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU'
-          },
-          data: {
-            session: myUserName.value,
-            type: 'login-callBack',
-            data: 'yj'
-          }
-        }
-      )
+      // await axios.post(
+      //   'https://i10a404.p.ssafy.io/openvidu/api/signal',
+      //   {},
+      //   {
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //       Authorization: 'Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU'
+      //     },
+      //     data: {
+      //       session: myUserName.value,
+      //       type: 'login-callBack',
+      //       data: 'yj'
+      //     }
+      //   }
+      // )
     })
 
     mySession.value.on('signal:login-callBack', ({ stream }) => {
