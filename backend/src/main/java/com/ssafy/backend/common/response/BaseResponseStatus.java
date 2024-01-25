@@ -71,7 +71,9 @@ public enum BaseResponseStatus {
     AVOID_DUPLICATE_ALARM(false,2101, "이미 상대방에게 요청을 보냈습니다."),
     ALREADY_EXIST_USER_MOKKOJI(false, 2100,"이미 회원은 모꼬지를 가입한 상태입니다."),
 
-
+    /* 친구 관련 에러 이넘 클래스 BAD REQUEST*/
+    ALREADY_EXIST_FRIEND(false,2200, "이미 상대방과 친구입니다."),
+    NOT_FRIEND(false,2200, "이미 상대방과 친구입니다."),
     
 
 
