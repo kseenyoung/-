@@ -43,7 +43,10 @@
           <div class="col-sm-10">
               <input class="form-control" type="text" id="nickname" placeholder="사용하실 닉네임을 입력하세요" required autocomplete="off" v-model="nickname"
               :class="{'is-valid' : isValidNickname, 'is-invalid' : !isValidNickname}">
-              <div v-if="!isValidNickname" class="form-text">특수문자를 제외한 2~8자리를 사용하세요</div>
+              <div v-if="!isValidNickname" class="form-text">올바른 닉네임을 사용해주세요.</div>
+              <button @click="duplicateNicknameCheck(nickname)" class="btn btn-sm btn-primary">중복 확인</button>
+                <span v-if="dupNicknameClicked && isDuplicateNickname" class="form-text">사용할 수 있는 닉네임입니다</span>
+                <span v-if="dupNicknameClicked && !isDuplicateNickname" class="form-text">중복된 닉네임입니다</span>
           </div>
       </div>
 
@@ -96,6 +99,7 @@
 import {ref, computed, watch, onMounted } from 'vue';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import axios from 'axios';
 
 const id = ref('');
 const password = ref('');
@@ -120,7 +124,13 @@ const format = (date) => {
 const isValidId = ref(false);
 const isDuplicateId = ref(false);
 const dupIdClicked = ref(false);
-const idFlag = computed(()=> isValidId.value && isDuplicateId.value)
+const idFlag = computed(() => isValidId.value && isDuplicateId.value)
+
+//닉네임 확인 
+const isValidNickname = ref(false);
+const isDuplicateNickname = ref(false);
+const dupNicknameClicked = ref(false);
+const nicknameFlag = computed(() => isValidNickname.value && isDuplicateNickname.value)
 
 //아이디 입력값 감시
 watch(id, (newId) => {
@@ -136,7 +146,7 @@ const checkId = function(id) {
 };
 
 //아이디 중복확인
-const duplicateIdCheck = function(checkId) {
+const duplicateIdCheck = async function(checkId) {
 	dupIdClicked.value = true;
 	const flag1 = ref(false);
   console.log('아이디 중복확인 클릭')
@@ -156,6 +166,34 @@ const duplicateIdCheck = function(checkId) {
       isDuplicateId.value = true;
     }
   */
+
+  const body = {
+    "sign" : "isExistId",
+    "userId" : checkId
+  }
+
+  /* code로 분기해야함 */
+  await axios.post( // 로그인 콜백
+        "https://localhost:8080/dagak/user",
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+  ).then((res) => res.data)
+    .then((json) => {
+      console.log(json.code)
+      if (json.code == 1002) {  // 중복 아님
+        isDuplicateId.value = true;
+      } else {  // 중복임
+        isDuplicateId.value = false;
+        alert("이미 존재하는 아이디입니다.");
+        id.value = ''; //아이디 텍스트 초기화
+      }
+    });
+
+
 }
 
 //비밀번호 확인
@@ -196,16 +234,70 @@ const checkName = function(name){
 	isValidName.value = validateName.test(name);
 }
 
-//닉네임 확인
-const isValidNickname = ref(false);
-watch(nickname, (newNick)=>{
-	checkNickname(newNick);
+
+watch(nickname, (newNickname) => {
+      dupNicknameClicked.value = false;
+      isDuplicateNickname.value = false;
+      checkNickname(newNickname)
 })
-//닉네임 검사(특수문자 불가능 2~8 글자)
+
+//닉네임 유효성 검사(특수문자 불가능 2~8 글자)
 const checkNickname = function(name){
 	const validateNickname = /^[a-zA-Z가-힣]{2,8}$/;
 	isValidNickname.value = validateNickname.test(name);
 }
+
+//닉네임 중복확인
+const duplicateNicknameCheck = async function(checkNickname) {
+    dupNicknameClicked.value = true;
+    const flag1 = ref(false);
+  console.log('닉네임 중복확인 클릭')
+  /*
+    axios 통신 -> 아이디 중복 확인 api -> data: 중복없음(0), 중복됨(1)
+    
+    중복없음(0) - flag1.value = false;
+    중복일때(1) - flag1.value = true;
+
+    flag1.value == true {
+      (중복o)
+      isDuplicateId.value = false;
+      alert("이미 존재하는 아이디입니다.");
+      id.value = ''; //아이디 텍스트 초기화
+    } else {
+      (중복x)
+      isDuplicateId.value = true;
+    }
+  */
+
+  const body = {
+    "sign" : "isExistNickname",
+    "userNickname" : checkNickname
+  }
+
+  /* code로 분기해야함 */
+  await axios.post( // 로그인 콜백
+        "https://localhost:8080/dagak/user",
+        body,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+  ).then((res) => res.data)
+    .then((json) => {
+      console.log(json.code)
+      if (json.code == 1004) {  // 중복 아님
+        isDuplicateNickname.value = true;
+      } else {  // 중복임
+        isDuplicateNickname.value = false;
+        alert("이미 존재하는 닉네임입니다.");
+        nickname.value = ''; //닉네임 텍스트 초기화
+      }
+    });
+
+
+}
+
 
 //이메일 확인 
 const isValidEmail = ref(false);
