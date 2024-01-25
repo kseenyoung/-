@@ -154,7 +154,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const store = useUserStore();
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://i10a404.p.ssafy.io/dagak/';
+  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
 
 
 const OV = ref(undefined);

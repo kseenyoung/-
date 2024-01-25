@@ -124,7 +124,7 @@ public class FriendController {
 //        HttpSession session = request.getSession(false);
             // User user = (User) session.getAttribute("User");
             // String userId = user.getUserId();
-            String listUserId = "yj";  // request session Id
+            String listUserId = "ssafy123";  // request session Id
 
             FriendListVO friendListVO = new FriendListVO(friendService.countFriend(listUserId), friendService.listFriends(listUserId));
 
