@@ -1,6 +1,5 @@
 package com.ssafy.backend.room.model.dto;
 
-import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.domain.Question;
 import lombok.*;
 

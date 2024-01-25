@@ -3,9 +3,9 @@ package com.ssafy.backend.user.service;
 
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
+import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
-import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 
 import java.util.List;

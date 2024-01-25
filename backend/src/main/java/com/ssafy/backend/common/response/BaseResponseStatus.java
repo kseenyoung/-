@@ -18,6 +18,8 @@ public enum BaseResponseStatus {
     SUCCESS_CHANGE_PASSWORD(true, 1008, "비밀번호 변경에 성공했습니다."),
     SUCCESS_CHANGE_NICKNAME(true, 1009, "닉네임 변경에 성공했습니다."),
 
+    SUCCESS_CREATE_TOKEN(true,1200,"토큰 발급에 성공했습니다."),
+
     /**
      * 2000 : Request 오류
      */

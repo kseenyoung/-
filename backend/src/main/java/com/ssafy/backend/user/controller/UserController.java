@@ -156,8 +156,6 @@ public class UserController {
                             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
                             ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
-
-
                         }
 
                         loginHistoryService.successLogin(loginUserId, loginUserIp);

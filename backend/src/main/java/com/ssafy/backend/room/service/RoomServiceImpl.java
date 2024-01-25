@@ -10,13 +10,7 @@ import com.ssafy.backend.room.model.repository.AnswerRepository;
 import com.ssafy.backend.room.model.repository.QuestionRepository;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -28,8 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -123,7 +115,7 @@ public class RoomServiceImpl implements RoomService {
         Session session;
         session = openvidu.getActiveSession(sessionId);
         if(session == null){
-//            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
 
         // DB에 질문 저장
@@ -137,9 +129,6 @@ public class RoomServiceImpl implements RoomService {
                 .encode()
                 .build()
                 .toUri();
-
-        String secret = "Basic "+OPENVIDU_SECRET;
-        secret = Base64.getEncoder().encodeToString(secret.getBytes());
 
         RequestEntity<QuestionDto> requestEntity = RequestEntity
                 .post(uri)
@@ -161,7 +150,7 @@ public class RoomServiceImpl implements RoomService {
         Session session;
         session = openvidu.getActiveSession(sessionId);
         if(session == null){
-//            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
 
         // DB에 대답 저장
@@ -177,9 +166,6 @@ public class RoomServiceImpl implements RoomService {
                 .build()
                 .toUri();
 
-        String secret = "Basic "+OPENVIDU_SECRET;
-        secret = Base64.getEncoder().encodeToString(secret.getBytes());
-
         RequestEntity<AnswerDto> requestEntity = RequestEntity
                 .post(uri)
                 .header("Content-Type", "application/json")
@@ -188,16 +174,9 @@ public class RoomServiceImpl implements RoomService {
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-
-        try{
-            ResponseEntity<AnswerDto> responseEntity = restTemplate.exchange(
-                    uri, HttpMethod.POST,requestEntity, AnswerDto.class
-            );
-        } catch (Exception e){
-            System.out.println("e: "+e.getCause());
-            System.out.println("e: "+e.getStackTrace());
-
-        }
+        ResponseEntity<AnswerDto> responseEntity = restTemplate.exchange(
+                uri, HttpMethod.POST,requestEntity, AnswerDto.class
+        );
 
         return answerDto;
     }
@@ -231,11 +210,5 @@ public class RoomServiceImpl implements RoomService {
         Random random = new Random();
         int roomNumber = random.nextInt( 3) + 1; // 1-3
         return sessionName+roomNumber;
-    }
-
-    public String encodeBase64(){
-        String basicSecret = "Basic "+OPENVIDU_SECRET;
-        byte[] encodedBytes = Base64.getEncoder().encode(basicSecret.getBytes());
-        return new String(encodedBytes);
     }
 }
