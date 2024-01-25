@@ -1,8 +1,11 @@
 package com.ssafy.backend.common.utils;
 
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_EMAIL;
 
 public class RegEx {
     // 아이디는 5글자 이상, 15글자 이하여야 하고 영문소문자와 숫자만 가능하다.
@@ -28,7 +31,7 @@ public class RegEx {
 
     public  static void isValidUserEmail(String user_email) throws MyException{
         if(!Pattern.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$", user_email)){
-            throw new MyException("알맞는 이메일 표현으로 작성해주세요.", HttpStatus.BAD_REQUEST);
+            throw new MyException("올바른 이메일 형식이 아닙니다.", HttpStatus.BAD_REQUEST);
         }
     }
 
