@@ -67,13 +67,15 @@ public enum BaseResponseStatus {
     FAIL_TO_DELETE_USER(false, 2041,"회원 탈퇴 실패."),
 
     NEED_LOGIN(false, 2042,"로그인이 필요한 서비스입니다."),
-
+    NEED_KAKAO_LINK(false, 2043,"기존 회원 로그인 후 카카오 서비스와 연동 하시겠습니까?"),
     
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/
     AVOID_DUPLICATE_ALARM(false,2101, "이미 상대방에게 요청을 보냈습니다."),
     ALREADY_EXIST_USER_MOKKOJI(false, 2100,"이미 회원은 모꼬지를 가입한 상태입니다."),
 
-
+    /* 친구 관련 에러 이넘 클래스 BAD REQUEST*/
+    ALREADY_EXIST_FRIEND(false,2200, "이미 상대방과 친구입니다."),
+    NOT_FRIEND(false,2200, "이미 상대방과 친구입니다."),
     
 
 

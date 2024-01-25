@@ -70,3 +70,46 @@ a {
   }
 }
 
+
+.apply-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  flex-basis: 10%;
+}
+.apply-search {
+  width: 70%;
+}
+.apply-content {
+  width: 100%;
+  flex-grow: 1;
+  margin: 0 auto;
+  text-align: center;
+  border-top: 2px solid #9DB2BF;
+  border-bottom: 2px solid #9DB2BF;
+  table {
+    .my-thead {
+      border-bottom: 1px solid #ccc;
+      padding: 2px 10px;
+      tr {
+        th {
+          background-color: #e5ecf2;
+        }
+      }
+    }
+    tbody {
+      tr.my-hover:hover {
+        td {
+          background-color: #f7fcff;
+        }
+      }
+      img {
+        width: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+    }
+  }
+}
+// .apply-pagenation {
+  
+// }

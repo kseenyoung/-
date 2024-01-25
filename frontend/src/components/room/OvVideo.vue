@@ -15,3 +15,11 @@ export default {
 	},
 };
 </script>
+<style>
+video {
+	width: 100%;
+	height: 100%;
+  object-fit: cover;
+}
+
+</style>

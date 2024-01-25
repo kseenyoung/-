@@ -27,7 +27,7 @@ public class User {
     @Column
     private String userPassword,  userName,
             modifyUserPasswordTime, userPhonenumber, userBirthday,
-    userEmail, userNickname, userPicture,  todayDagakId, userStatusMessage;
+    userEmail, userNickname, userPicture,  todayDagakId, userStatusMessage, kakaoEmail;
 
     @Column
     private LocalDateTime createdDate;
@@ -58,5 +58,9 @@ public class User {
         } else {
             // do something...
         }
+    }
+
+    public void setKakaoEmail(String kakaoEmail) {
+        this.kakaoEmail = kakaoEmail;
     }
 }

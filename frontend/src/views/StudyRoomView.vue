@@ -4,12 +4,7 @@
       <div class="nowname">
         <div class="nametag">Python 마스터</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
-        <img
-          class="pause"
-          @click="togglePause"
-          src="@/assets/img/studyroom/pause.png"
-          alt="휴식중"
-        />
+        <img class="pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중" />
       </div>
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
@@ -26,72 +21,30 @@
             </div>
           </div>
           <div class="video-player-1">
-            <user-video
-              class="videog1"
-              ref="video1"
-              :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)"
-            />
- <user-video
-              class="videog1"
-              ref="video1"
-              :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)"
-            />
-	 <user-video
-              class="videog1"
-              ref="video1"
-              :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)"
-            />
-		 <user-video
-              class="videog1"
-              ref="video1"
-              :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)"
-            />
-            <user-video
-              class="videog2"
-              ref="video2"
-              v-for="sub in subscribers"
-              :key="sub.stream.connection.connectionId"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
+            <user-video class="videog1" ref="video1" :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)" />
+            <user-video class="videog1" ref="video2" :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)" />
+            <user-video class="videog1" ref="video3" :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)" />
+            <user-video class="videog1" ref="video4" :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)" />
+            <!-- <user-video class="videog1" ref="video5" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
+              :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" /> -->
           </div>
         </div>
 
         <div class="video-player-2">
-		<user-video
-              class="videog1"
-              ref="video1"
-              :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)"
-            />
-			<user-video
-              class="videog1"
-              ref="video1"
-              :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)"
-            />
-				<user-video
-              class="videog1"
-              ref="video1"
-              :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)"
-            />
-					<user-video
-              class="videog1"
-              ref="video1"
-              :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)"
-            />
-						<user-video
-              class="videog1"
-              ref="video1"
-              :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)"
-            />
+          <user-video class="videog2" ref="video6" :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)" />
+          <user-video class="videog2" ref="video7" :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)" />
+          <user-video class="videog2" ref="video8" :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)" />
+          <user-video class="videog2" ref="video9" :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)" />
+          <user-video class="videog2" ref="video10" :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)" />
         </div>
       </div>
       <div class="bar">
@@ -106,11 +59,8 @@
             <hr />
             <p class="titletag">달성률</p>
             <div class="dagak">
-              <img
-                src="@/assets/img/studyroom/hexagon.png"
-                style="transform: rotate(30deg)"
-                alt=""
-              />
+              <!-- <img src="@/assets/img/studyroom/hexagon.png" style="transform: rotate(30deg)" alt="" /> -->
+              <Dagak />
             </div>
             <div class="ratedetail">
               java 마스터 --- <b>140%</b><br />
@@ -130,12 +80,7 @@
     <div class="black" v-if="isPause">
       <p class="resttitle">휴식중</p>
       <p class="resttime">~00:30</p>
-      <img
-        class="play"
-        @click="togglePause"
-        src="@/assets/img/studyroom/whiteplay.png"
-        alt="다시시작"
-      />
+      <img class="play" @click="togglePause" src="@/assets/img/studyroom/whiteplay.png" alt="다시시작" />
     </div>
   </div>
 </template>
@@ -147,6 +92,7 @@ import { OpenVidu } from 'openvidu-browser';
 import { useUserStore } from '@/stores/user';
 import QnAListView from "@/components/room/QnAListView.vue";
 import UserVideo from "@/components/room/UserVideo.vue";
+import Dagak from "@/components/dagak/Dagak.vue";
 
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -154,7 +100,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const store = useUserStore();
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
+  process.env.NODE_ENV === 'production' ? '' : 'https://i10a404.p.ssafy.io/dagak/';
 
 
 const OV = ref(undefined);
@@ -172,10 +118,10 @@ const myUserName = ref(store.loginUser.id);
 
 // 방 입장
 const enterRoom = async (sessionId) => {
-    let token = await createSession(sessionId);
-    return token;
-  };
-  
+  let token = await createSession(sessionId);
+  return token;
+};
+
 // 방 생성
 const createSession = async (sessionId) => {
   const response = await axios.post(
@@ -185,7 +131,7 @@ const createSession = async (sessionId) => {
       headers: { "Content-Type": "application/json" },
     }
   );
-  
+
   return response.data.data;
 };
 
@@ -330,7 +276,7 @@ const leaveSession = () => {
 
   window.removeEventListener("beforeunload", leaveSession);
 };
-  
+
 const updateMainVideoStreamManager = (stream) => {
   if (mainStreamManager.value === stream) return;
   mainStreamManager.value = stream;
@@ -380,12 +326,14 @@ onMounted(() => {
 
 <style>
 .room {
-  flex-direction: column;
-  height: 100%;
+  flex-direction: column;  
+  height: 60%;
 }
+
 .resttitle {
   font-size: 100px;
 }
+
 .resttime {
   font-size: 50px;
 }
@@ -430,6 +378,7 @@ onMounted(() => {
   padding-left: 15px;
   padding-right: 15px;
 }
+
 .nametag {
   font-weight: 900;
   margin-right: 40px;
@@ -439,6 +388,7 @@ onMounted(() => {
 .lastlater {
   display: flex;
 }
+
 .play {
   width: 40px;
   height: 40px;
@@ -471,6 +421,7 @@ onMounted(() => {
   transform: rotate(90deg);
   /* 90도 회전 */
 }
+
 .column {
   flex: 4;
   display: flex;
@@ -489,7 +440,10 @@ onMounted(() => {
 
 .video-player-1 {
   flex: 1;
+  display: flex;
   border-top: white solid 5px;
+  border-bottom: white solid 5px;
+  flex-direction: row;
 }
 
 .videog1 {
@@ -550,6 +504,7 @@ onMounted(() => {
   position: relative;
   z-index: 1;
 }
+
 .dagak img {
   width: 60%;
   height: auto;
@@ -576,6 +531,7 @@ onMounted(() => {
   cursor: pointer;
   margin-top: 20px;
 }
+
 .pause {
   width: 25px;
   height: 25px;
@@ -583,6 +539,7 @@ onMounted(() => {
   margin-top: 20px;
   margin-left: 20px;
 }
+
 .questiontoggle {
   background-color: rgb(200, 200, 200);
   width: 120px;
@@ -595,6 +552,7 @@ onMounted(() => {
   z-index: 10;
   top: -40px;
 }
+
 .ratetoggle {
   background-color: gainsboro;
   width: 120px;
