@@ -17,13 +17,15 @@ import com.ssafy.backend.user.service.GoogleOAuthService;
 import com.ssafy.backend.user.service.KakaoOAuthService;
 import com.ssafy.backend.user.service.UserService;
 import io.openvidu.java.client.OpenVidu;
+
 import io.openvidu.java.client.Session;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.json.simple.JSONObject;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -33,11 +35,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +88,7 @@ public class UserController {
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
         HttpSession session = request.getSession(false);
-        System.out.println((String)session.getAttribute("kakaoEmail"));
+//        System.out.println((String)session.getAttribute("kakaoEmail"));
 
         if (sign != null) {
             switch (sign) {
@@ -173,8 +175,6 @@ public class UserController {
                             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
                             ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
-
-
                         }
 
                         loginHistoryService.successLogin(loginUserId, loginUserIp);

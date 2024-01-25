@@ -1,6 +1,6 @@
 package com.ssafy.backend.mokkoji.service;
 
-import com.ssafy.backend.common.exception.MyException;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.repository.MokkojiRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,11 +9,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.IS_EXIST_MOKKOJI_NAME;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MOKKOJI;
 
 
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class MokkojiServiceImpl implements MokkojiService {
         log.info("모꼬지 이름을 체크합니다. {}",mokkoji.getMokkojiName());
         mokkojiRepository.findByMokkojiName(mokkoji.getMokkojiName())
                 .ifPresent(a -> {
-                    throw new MyException("이미 모꼬지 이름이 존재합니다", HttpStatus.BAD_REQUEST);
+                    throw new BaseException(IS_EXIST_MOKKOJI_NAME);
                 });
         return mokkojiRepository.save(mokkoji);
 
@@ -49,8 +51,7 @@ public class MokkojiServiceImpl implements MokkojiService {
     @Override
     public Mokkoji findByMokkojiId(int mokkojiId) {
         return mokkojiRepository.findMokkojiByMokkojiId(mokkojiId)
-                .orElseThrow(() -> new MyException("해당 모꼬지를 찾을 수 없습니다."
-                        ,HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_EXIST_MOKKOJI));
     }
 
 }
