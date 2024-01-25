@@ -378,7 +378,8 @@ public class UserController {
      *
      * 클라이언트 비밀번호 : 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
      *
-     * redirect url
+     * redirect urlq
+     *
      * https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com&redirect_uri=https://localhost:8080/dagak/user/googleOauth&response_type=code&scope=email
      */
     @RequestMapping("googleOauth")

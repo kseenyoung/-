@@ -19,7 +19,7 @@ public class GoogleOAuthService {
         GoogleOAuthRequest googleOAuthRequestParam = GoogleOAuthRequest
                 .builder()
                 .clientId("273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com")
-                .clientSecret("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")
+                .ㅎclientSecret("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")
                 .code(authCode)
                 .redirectUri("https://localhost:8080/dagak/user/googleOauth")
                 .grantType("authorization_code")
