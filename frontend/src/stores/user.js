@@ -32,7 +32,7 @@ export const useUserStore = defineStore('user', () => {
   process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
   const myUserName = ref(loginUser.value.id);
 
-  // 계정 방 입장
+  // 계정 방 입장 
   const enterMyRoom = async () => {
     let token = await createMyRoom()
     return token
@@ -40,9 +40,7 @@ export const useUserStore = defineStore('user', () => {
 
   // 계정 방 생성
   const createMyRoom = async () => {
-    console.log("myUserNAme: ",myUserName);
     console.log("loginUser : ", loginUser.value.id);
-    console.log("loginUser2 : ", loginUser.id);
     const response = await axios.post(
       APPLICATION_SERVER_URL + 'room',
       { sign: 'enterMyRoom', userId: loginUser.value.id },
@@ -50,36 +48,37 @@ export const useUserStore = defineStore('user', () => {
         headers: { 'Content-Type': 'application/json' }
       }
     )
-    return response.data.data
+    return response.data.result
   }
 
   const loginSession = () => {
     OVMy.value = new OpenVidu()
     // 전체 참여 세션
     mySession.value = OVMy.value.initSession()
-    mySession.value.on('signal', async ({ stream }) => {
-      console.log(stream, '님이 로그인했습니다.')
-      alert('친구가 로그인했어요!')
-      // await axios.post(
-      //   'https://i10a404.p.ssafy.io/openvidu/api/signal',
-      //   {},
-      //   {
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //       Authorization: 'Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU'
-      //     },
-      //     data: {
-      //       session: myUserName.value,
-      //       type: 'login-callBack',
-      //       data: 'yj'
-      //     }
-      //   }
-      // )
-    })
+    mySession.value.on("signal:login", async( stream ) => {  // 로그인 시그널 수신
+      console.log(stream.data, "님이 로그인했습니다.");
+      alert("친구가 로그인했어요!")
 
-    mySession.value.on('signal:login-callBack', ({ stream }) => {
-      console.log('[콜백] 친구 ', stream, '님이 로그인했습니다.')
-    })
+      await axios.post( // 로그인 콜백
+      "https://i10a404.p.ssafy.io/openvidu/api/signal",
+      {
+        session: stream.data,
+          type: "signal:login-callBack",
+          data: this.myUserName,
+        },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
+        }
+      }
+    );
+    });
+
+    mySession.value.on("signal:login-callBack", ({ stream }) => {
+      console.log("[콜백] 친구 ", stream, "님이 로그인했습니다.");
+      alert("콜백이 왔어요");
+    });
 
     mySession.value.on('exception', ({ exception }) => {
       console.warn(exception)
@@ -108,7 +107,6 @@ export const useUserStore = defineStore('user', () => {
           // --- 6) Publish your stream ---;
           mySession.value.publish(publisherMySession.value)
           console.log('mySession에 로그인했습니다.')
-          alert('로그인에 성공했습니다.')
         })
         .catch((error) => {
           console.log('다음 세션에 로그인하는데 오류가 발생했습니다!:', error.code, error.message)

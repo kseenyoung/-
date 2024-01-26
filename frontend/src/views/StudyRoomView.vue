@@ -27,10 +27,8 @@
               @click.native="updateMainVideoStreamManager(publisher)" />
             <user-video class="videog1" ref="video3" :stream-manager="publisher"
               @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video4" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <!-- <user-video class="videog1" ref="video5" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
-              :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" /> -->
+            <user-video class="videog1" ref="video5" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
+              :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
           </div>
         </div>
 
@@ -52,7 +50,7 @@
         <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
       </div>
       <div class="utility">
-        <div class="achievement" ref="achievementSection" v-if="showRate" @click="bringToFront($refs.achievementSection)">
+        <div class="achievement">
           <div class="rate" v-if="showRate">
             <p class="titletag">공부시간</p>
             <div class="studytime">01:30:32</div>
@@ -70,7 +68,7 @@
           </div>
         </div>
       </div>
-      <div class="QnA" v-if="showQuestion" ref="qnaSection" @click="bringToFront($refs.qnaSection)">
+      <div class="QnA">
         <div v-if="showQuestion">
           <QnAListView />
         </div>
@@ -95,20 +93,12 @@ import UserVideo from "@/components/room/UserVideo.vue";
 import Dagak from "@/components/dagak/Dagak.vue";
 
 
-const zIndex = ref(1); // Initial z-index value, you can adjust as needed
-
-const bringToFront = (section) => {
-  zIndex.value += 1;
-  section.style.zIndex = zIndex.value;
-};
-
-
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 
 const store = useUserStore();
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://i10a404.p.ssafy.io/dagak/';
+  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
 
 
 const OV = ref(undefined);
@@ -140,25 +130,7 @@ const createSession = async (sessionId) => {
     }
   );
 
-  return response.data.data;
-};
-
-// 계정 방 입장
-const enterMyRoom = async () => {
-  let token = await createMyRoom();
-  return token;
-};
-
-// 계정 방 생성
-const createMyRoom = async () => {
-  const response = await axios.post(
-    APPLICATION_SERVER_URL + "room",
-    { sign: "enterMyRoom", userId: myUserName.value },
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return response.data.data;
+  return response.data.result;
 };
 
 const loginSession = () => {
@@ -334,11 +306,8 @@ onMounted(() => {
 
 <style>
 .room {
-  display: flex;
-  flex-direction: column;
+  flex-direction: column;  
   height: 60%;
-  align-items: center;
-  justify-content: center;
 }
 
 .resttitle {
@@ -367,7 +336,7 @@ onMounted(() => {
   justify-content: space-around;
   height: 100px;
   /* border: 2px black dashed; */
-  width: 50%;
+  width: 62.5%;
   position: relative;
   top: 100px;
 }
@@ -407,7 +376,7 @@ onMounted(() => {
 }
 
 .containers {
-  width: 50%;
+  width: 100%;
   display: flex;
   margin-top: 110px;
 }
@@ -422,17 +391,15 @@ onMounted(() => {
 }
 
 .bar {
-  flex: 1;
-  position: absolute;
-  /* left:100px;*/
+  flex: 3;
+  position: relative;
   /* background-color: black; */
   width: 100%;
   display: flex;
   flex-direction: row;
-  transform-origin: right ;
+  transform-origin: left top;
   transform: rotate(90deg);
   /* 90도 회전 */
-  justify-content: flex-end;
 }
 
 .column {
@@ -493,16 +460,14 @@ onMounted(() => {
 }
 
 .QnA {
-  position: absolute; /* 변경된 부분 */
-  top: 20%; /* 변경된 부분 */
+  position: fixed;
   right: 0;
   bottom: 0%;
 }
 
 .achievement {
-  position: absolute; /* 변경된 부분 */
-  top: 20%; /* 변경된 부분 */
-  left: 0;
+  position: fixed;
+  right: 0;
   bottom: 5%;
   height: 60%;
   justify-content: center;
@@ -517,7 +482,7 @@ onMounted(() => {
   text-align: center;
   /* padding: 20px; */
   position: relative;
-  z-index: 0;
+  z-index: 1;
 }
 
 .dagak img {
@@ -526,7 +491,7 @@ onMounted(() => {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0;
+  z-index: -1;
 }
 
 .studytime {
