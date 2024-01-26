@@ -9,9 +9,16 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class QuestionDto {
+    private String questionId;
     private String userId;
     private String session;
     private String data;
+
+    public QuestionDto(String userId, String session, String data) {
+        this.userId = userId;
+        this.session = session;
+        this.data = data;
+    }
 
     public Question toEntity(){
         return Question.builder()

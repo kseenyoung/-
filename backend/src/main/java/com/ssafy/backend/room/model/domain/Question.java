@@ -14,7 +14,7 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash("question")
 public class Question {
     @Id
-    Integer questionId;
+    String questionId;
     String session;
     String question;
     String userId;
