@@ -55,4 +55,6 @@ public interface UserService {
     User isGoogleUser(String googleEamil);
 
     void linkGoogle(String loginUserId, String googleEmail);
+
+    void changeEmail(String originUserId, String newEmail);
 }

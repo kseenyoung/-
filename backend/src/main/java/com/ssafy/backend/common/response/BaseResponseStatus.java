@@ -14,7 +14,7 @@ public enum BaseResponseStatus {
     SUCCESS_NICKNAME_CHECK(true, 1004, "사용 가능한 닉네임입니다."),
     SUCCESS_SEND_EMAIL(true, 1005, "이메일 전송에 성공했습니다."),
     SUCCESS_AUTH(true, 1006, "인증에 성공했습니다."),
-    SUCCESS_DELETE_USER(true, 1007, "회원 탈퇴ㅇ 성공."),
+    SUCCESS_DELETE_USER(true, 1007, "회원 탈퇴 성공."),
     SUCCESS_CHANGE_PASSWORD(true, 1008, "비밀번호 변경에 성공했습니다."),
     SUCCESS_CHANGE_NICKNAME(true, 1009, "닉네임 변경에 성공했습니다."),
 

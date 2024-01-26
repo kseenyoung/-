@@ -300,4 +300,12 @@ public class UserServiceImpl implements UserService {
         user.setGoogleEmail(googleEmail);
         userRepository.save(user);
     }
+
+    @Override
+    public void changeEmail(String originUserId, String newEmail) {
+        User user = userRepository.findById(originUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        user.setUserEmail(newEmail);
+
+        userRepository.save(user);
+    }
 }

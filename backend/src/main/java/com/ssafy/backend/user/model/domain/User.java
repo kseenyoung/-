@@ -67,4 +67,7 @@ public class User {
     public void setGoogleEmail(String googleEmail) {
         this.googleEmail = googleEmail;
     }
+
+    public void setUserEmail(String newEmail) { this.userEmail=newEmail;
+    }
 }
