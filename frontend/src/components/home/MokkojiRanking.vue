@@ -63,9 +63,11 @@ onMounted(() => {
 onMounted(() => {
   store.login();
   rankstore.getMokkojiRank();
-  console.log("mokkojiRank.value: ", rankstore.mokkojiRank);
-  console.log("mokkojiRank.value: ", rankstore.mokkojiRank.value);
-  console.log("mokkojiRank.value.mokkojiName: ", rankstore.mokkojiRank.mokkojiName);
+  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
+  console.log('mokkojiRank.value: ', rankstore.mokkojiRank.value);
+  console.log(
+    'mokkojiRank.value.mokkojiName: ',
+    rankstore.mokkojiRank.mokkojiName,
   );
 });
 </script>
