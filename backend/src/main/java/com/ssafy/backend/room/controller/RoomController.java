@@ -3,6 +3,7 @@ package com.ssafy.backend.room.controller;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.room.model.dto.AnswerDto;
+import com.ssafy.backend.room.model.dto.ConnectionDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.service.RoomService;
@@ -52,9 +53,9 @@ public class RoomController {
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
                 RoomEnterDto randomRoomEnterDto = new RoomEnterDto(sessionName, videoCodec);
-                token = roomService.enterRandomroom(randomRoomEnterDto);
+                ConnectionDto connectionDto = roomService.enterRandomroom(randomRoomEnterDto);
 
-                return new BaseResponse<>(token);
+                return new BaseResponse<>(connectionDto);
             case "enterMyRoom":
                 userId = (String) body.get("userId");
                 RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, "VP8");
@@ -73,7 +74,7 @@ public class RoomController {
                 sessionName = (String) body.get("session");
                 String qustionData = (String) body.get("data");
 
-                System.out.println("sessionName: "+sessionName);
+                System.out.println("sessionName: " + sessionName);
                 QuestionDto questionDto = new QuestionDto(userId, sessionName, qustionData);
                 questionDto = roomService.askQuestion(questionDto);
 
@@ -82,6 +83,8 @@ public class RoomController {
                 sessionName = (String) body.get("session");
                 String answerData = (String) body.get("data");
                 String questionId = (String) body.get("questionId");
+
+                
                 AnswerDto answerDto = new AnswerDto(userId,sessionName,answerData,questionId);
                 answerDto = roomService.answerQuestion(answerDto);
 
