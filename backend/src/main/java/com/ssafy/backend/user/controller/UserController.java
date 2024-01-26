@@ -114,7 +114,9 @@ public class UserController {
 
                     userService.signup(userSignupDto);
 
-                    session.invalidate();
+                    if(session != null) {
+                        session.invalidate();
+                    }
                     return new BaseResponse<>(SUCCESS_ID_SIGN_UP);
 
                 /*
