@@ -169,6 +169,8 @@ const joinSession = () => {
   session.value.on("signal:question", ( stream ) => {
     alert("질문이 들어왔습니다!");
     console.log("질문 내용:"+ stream.data);
+    const data = JSON.parse(stream.data);
+    console.log(data.questionId)
   });
 
   session.value.on("signal:answer", ( stream ) => {
