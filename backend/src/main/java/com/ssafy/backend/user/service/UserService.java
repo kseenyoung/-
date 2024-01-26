@@ -6,6 +6,7 @@ import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
+import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 
 import java.util.List;
@@ -57,4 +58,6 @@ public interface UserService {
     void linkGoogle(String loginUserId, String googleEmail);
 
     void changeEmail(String originUserId, String newEmail);
+
+    MyPageVO viewMyPage(String viewUserId);
 }
