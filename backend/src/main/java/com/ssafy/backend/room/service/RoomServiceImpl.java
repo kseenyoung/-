@@ -4,10 +4,12 @@ import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.domain.Question;
 import com.ssafy.backend.room.model.dto.AnswerDto;
+import com.ssafy.backend.room.model.dto.ConnectionDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.model.repository.AnswerRepository;
 import com.ssafy.backend.room.model.repository.QuestionRepository;
+import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -64,7 +67,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public String enterRandomroom(RoomEnterDto roomEnterDto) throws Exception {
+    public ConnectionDto enterRandomroom(RoomEnterDto roomEnterDto) throws Exception {
         String sessionName = roomEnterDto.getSessionName();
         Session session;
 
@@ -87,7 +90,8 @@ public class RoomServiceImpl implements RoomService {
 
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
         Connection connection = session.createConnection(properties);
-        return connection.getToken();
+        ConnectionDto connectionDto = new ConnectionDto(sessionName,connection.getToken());
+        return connectionDto;
     }
 
     @Override
@@ -115,14 +119,15 @@ public class RoomServiceImpl implements RoomService {
         Session session;
         session = openvidu.getActiveSession(sessionId);
         if(session == null){
-            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+//            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
 
         // DB에 질문 저장
         Question question = saveQuestion(questionDto);
-        int questionId = question.getQuestionId();
-        questionDto.setData(questionId+"");
+        String questionId = question.getQuestionId();
+        questionDto.setQuestionId(questionId);
 
+        OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(sessionId,"question",questionId);
         URI uri = UriComponentsBuilder
                 .fromUriString(OPENVIDU_URL)
                 .path("/openvidu/api/signal")
@@ -130,17 +135,21 @@ public class RoomServiceImpl implements RoomService {
                 .build()
                 .toUri();
 
-        RequestEntity<QuestionDto> requestEntity = RequestEntity
+        String secret = "Basic " + OPENVIDU_SECRET;
+        secret = Base64.getEncoder().encodeToString(secret.getBytes());
+
+        RequestEntity<String> requestEntity = RequestEntity
                 .post(uri)
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
-                .body(questionDto);
+                .body(openviduRequestDto.toJson());
+
+        System.out.println(openviduRequestDto.toJson());
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-        ResponseEntity<QuestionDto> responseEntity = restTemplate.exchange(
-                uri, HttpMethod.POST,requestEntity, QuestionDto.class
-        );
+
+        ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
         return questionDto;
     }
 
@@ -148,17 +157,19 @@ public class RoomServiceImpl implements RoomService {
     public AnswerDto answerQuestion(AnswerDto answerDto) throws Exception {
         String sessionId = answerDto.getSession();
         Session session;
+        System.out.println("sessionId"+sessionId);
         session = openvidu.getActiveSession(sessionId);
         if(session == null){
-            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+//            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
         }
 
         // DB에 대답 저장
         Answer answer = saveAnswer(answerDto);
         String answerId = answer.getAnswerId();
-        answerDto.setData(answerId);
+        answerDto.setAnswerId(answerId);
 
         // 답변 문제번호 전송
+        OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(sessionId,"answer",answerDto.getQuestionId());
         URI uri = UriComponentsBuilder
                 .fromUriString(OPENVIDU_URL)
                 .path("/openvidu/api/signal")
@@ -166,17 +177,21 @@ public class RoomServiceImpl implements RoomService {
                 .build()
                 .toUri();
 
-        RequestEntity<AnswerDto> requestEntity = RequestEntity
+        String secret = "Basic " + OPENVIDU_SECRET;
+        secret = Base64.getEncoder().encodeToString(secret.getBytes());
+
+        RequestEntity<String> requestEntity = RequestEntity
                 .post(uri)
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
-                .body(answerDto);
+                .body(openviduRequestDto.toJson());
+
+        System.out.println(openviduRequestDto.toJson());
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-        ResponseEntity<AnswerDto> responseEntity = restTemplate.exchange(
-                uri, HttpMethod.POST,requestEntity, AnswerDto.class
-        );
+
+        ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
 
         return answerDto;
     }

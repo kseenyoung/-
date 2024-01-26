@@ -9,6 +9,10 @@
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
+        <textarea id="message" name="message" rows="4" cols="30" v-model="question" placeholder="-- 질문을 입력하세요--"></textarea>
+        <button @click="askQuestion">질문하기</button>
+        <textarea id="message" name="message" rows="4" cols="30" v-model="answer" placeholder="-- 답변을 입력하세요--"></textarea>
+        <button @click="answerQuestion">답변하기</button>
       </div>
     </div>
 
@@ -26,6 +30,8 @@
             <user-video class="videog1" ref="video2" :stream-manager="publisher"
               @click.native="updateMainVideoStreamManager(publisher)" />
             <user-video class="videog1" ref="video3" :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)" />
+            <user-video class="videog1" ref="video4" :stream-manager="publisher"
               @click.native="updateMainVideoStreamManager(publisher)" />
             <user-video class="videog1" ref="video5" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
               :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
@@ -63,7 +69,7 @@
             <div class="ratedetail">
               java 마스터 --- <b>140%</b><br />
               Python 마스터 --- <b>75%</b><br />
-              C++ 마스터 --- <b>0%</b>
+              C++ 마스터 ---- <b>0%</b>
             </div>
           </div>
         </div>
@@ -86,7 +92,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { OpenVidu } from 'openvidu-browser';
+import { OpenVidu, Stream } from 'openvidu-browser';
 import { useUserStore } from '@/stores/user';
 import QnAListView from "@/components/room/QnAListView.vue";
 import UserVideo from "@/components/room/UserVideo.vue";
@@ -100,16 +106,14 @@ const store = useUserStore();
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
 
-
 const OV = ref(undefined);
-const OVMy = ref(undefined);
 const session = ref(undefined);
 const mySession = ref(store.loginUser.sub);
 const mainStreamManager = ref(undefined);
-const mainStreamManagerMySession = ref(undefined);
 const publisher = ref(undefined);
-const publisherMySession = ref(undefined);
 const subscribers = ref([]);
+const question = ref("");
+const answer = ref("");
 
 // 초기 데이터(계정 세션 아이디, 계정 이름)
 const myUserName = ref(store.loginUser.id);
@@ -129,81 +133,48 @@ const createSession = async (sessionId) => {
       headers: { "Content-Type": "application/json" },
     }
   );
+  console.log(response.data.result.session);
+  mySession.value = response.data.result.session;
+  return response.data.result.token;
+};
 
+const askQuestion = async () => {
+  console.log(mySession.value+ "에서 질문합니다! ");
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + "room",
+    { sign: "askQuestion", session: mySession.value, data: question.value },
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
   return response.data.result;
 };
 
-const loginSession = () => {
-  OVMy.value = new OpenVidu();
-  // 전체 참여 세션
-  mySession.value = OVMy.value.initSession();
-  mySession.value.on("signal", async ({ stream }) => {
-    console.log(stream, "님이 로그인했습니다.");
-    alert("친구가 로그인했어요!");
-    await axios.post(
-      "https://i10a404.p.ssafy.io/openvidu/api/signal",
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU",
-        },
-        data: {
-          session: myUserName.value,
-          type: "login-callBack",
-          data: "yj",
-        },
-      }
-    );
-  });
-
-  mySession.value.on("signal:login-callBack", ({ stream }) => {
-    console.log("[콜백] 친구 ", stream, "님이 로그인했습니다.");
-  });
-
-  mySession.value.on("exception", ({ exception }) => {
-    console.warn(exception);
-  });
-
-  enterMyRoom().then((token) => {
-    console.log("나의 방 토큰:", token);
-
-    mySession.value
-      .connect(token, { clientData: myUserName.value })
-      .then(() => {
-        let publisherMySession = OVMy.value.initPublisher(undefined, {
-          audioSource: undefined,
-          videoSource: undefined,
-          publishAudio: false,
-          publishVideo: false,
-          resolution: "640x480",
-          frameRate: 30,
-          insertMode: "APPEND",
-          mirror: false,
-        });
-
-        // Set the main video in the page to display our webcam and store our Publisher
-        mainStreamManagerMySession.value = publisherMySession;
-        publisherMySession.value = publisherMySession;
-
-        // --- 6) Publish your stream ---;
-        mySession.value.publish(publisherMySession.value);
-        console.log("mySession에 로그인했습니다.");
-        alert("로그인에 성공했습니다.");
-      })
-      .catch((error) => {
-        console.log(
-          "다음 세션에 로그인하는데 오류가 발생했습니다!:",
-          error.code,
-          error.message
-        );
-      });
-  });
+const answerQuestion = async () => {
+  console.log(mySession.value+ "에서 답변합니다! ");
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + "room",
+    { sign: "answerQuestion", session: mySession.value, data: question.value },
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
+  return response.data.result;
 };
 
 const joinSession = () => {
   OV.value = new OpenVidu();
   session.value = OV.value.initSession();
+
+  session.value.on("signal:question", ( stream ) => {
+    alert("질문이 들어왔습니다!");
+    console.log("질문 내용:"+ stream.data);
+  });
+
+  session.value.on("signal:answer", ( stream ) => {
+    alert("답변이 달렸습니다!");
+    console.log("답변 내용:"+ stream.data);
+  });
 
   session.value.on("streamCreated", ({ stream }) => {
     const subscriber = session.value.subscribe(stream);
@@ -222,6 +193,7 @@ const joinSession = () => {
   });
 
   enterRoom(mySession.value).then((token) => {
+    console.log("token"+token);
     session.value.connect(token, { clientData: myUserName.value }).then(() => {
       publisher.value = OV.value.initPublisher(undefined, {
         audioSource: undefined,
