@@ -52,7 +52,7 @@
         <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
       </div>
       <div class="utility">
-        <div class="achievement">
+        <div class="achievement" ref="achievementSection" v-if="showRate" @click="bringToFront($refs.achievementSection)">
           <div class="rate" v-if="showRate">
             <p class="titletag">공부시간</p>
             <div class="studytime">01:30:32</div>
@@ -70,7 +70,7 @@
           </div>
         </div>
       </div>
-      <div class="QnA">
+      <div class="QnA" v-if="showQuestion" ref="qnaSection" @click="bringToFront($refs.qnaSection)">
         <div v-if="showQuestion">
           <QnAListView />
         </div>
@@ -93,6 +93,14 @@ import { useUserStore } from '@/stores/user';
 import QnAListView from "@/components/room/QnAListView.vue";
 import UserVideo from "@/components/room/UserVideo.vue";
 import Dagak from "@/components/dagak/Dagak.vue";
+
+
+const zIndex = ref(1); // Initial z-index value, you can adjust as needed
+
+const bringToFront = (section) => {
+  zIndex.value += 1;
+  section.style.zIndex = zIndex.value;
+};
 
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -326,8 +334,11 @@ onMounted(() => {
 
 <style>
 .room {
-  flex-direction: column;  
+  display: flex;
+  flex-direction: column;
   height: 60%;
+  align-items: center;
+  justify-content: center;
 }
 
 .resttitle {
@@ -356,7 +367,7 @@ onMounted(() => {
   justify-content: space-around;
   height: 100px;
   /* border: 2px black dashed; */
-  width: 62.5%;
+  width: 50%;
   position: relative;
   top: 100px;
 }
@@ -396,7 +407,7 @@ onMounted(() => {
 }
 
 .containers {
-  width: 100%;
+  width: 50%;
   display: flex;
   margin-top: 110px;
 }
@@ -411,15 +422,17 @@ onMounted(() => {
 }
 
 .bar {
-  flex: 3;
-  position: relative;
+  flex: 1;
+  position: absolute;
+  /* left:100px;*/
   /* background-color: black; */
   width: 100%;
   display: flex;
   flex-direction: row;
-  transform-origin: left top;
+  transform-origin: right ;
   transform: rotate(90deg);
   /* 90도 회전 */
+  justify-content: flex-end;
 }
 
 .column {
@@ -480,14 +493,16 @@ onMounted(() => {
 }
 
 .QnA {
-  position: fixed;
+  position: absolute; /* 변경된 부분 */
+  top: 20%; /* 변경된 부분 */
   right: 0;
   bottom: 0%;
 }
 
 .achievement {
-  position: fixed;
-  right: 0;
+  position: absolute; /* 변경된 부분 */
+  top: 20%; /* 변경된 부분 */
+  left: 0;
   bottom: 5%;
   height: 60%;
   justify-content: center;
@@ -502,7 +517,7 @@ onMounted(() => {
   text-align: center;
   /* padding: 20px; */
   position: relative;
-  z-index: 1;
+  z-index: 0;
 }
 
 .dagak img {
@@ -511,7 +526,7 @@ onMounted(() => {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 0;
 }
 
 .studytime {
