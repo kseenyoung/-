@@ -1,6 +1,6 @@
 package com.ssafy.backend.user.controller;
 
-import com.ssafy.backend.common.exception.BaseException;
+import  com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.friend.model.vo.FriendVO;
@@ -11,18 +11,11 @@ import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
-import com.ssafy.backend.user.model.vo.GoogleOAuthRequest;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.GoogleOAuthService;
 import com.ssafy.backend.user.service.KakaoOAuthService;
 import com.ssafy.backend.user.service.UserService;
 import io.openvidu.java.client.OpenVidu;
-
-import io.openvidu.java.client.Session;
-import com.ssafy.backend.common.utils.HttpResponseBody;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import org.json.simple.JSONObject;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -88,7 +81,6 @@ public class UserController {
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
         HttpSession session = request.getSession(false);
-//        System.out.println((String)session.getAttribute("kakaoEmail"));
 
         if (sign != null) {
             switch (sign) {
@@ -333,6 +325,56 @@ public class UserController {
 
                         userService.changeNickname(changeNicknameUserId, newNickname);
                         return new BaseResponse<>(SUCCESS_CHANGE_NICKNAME);
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+                /*
+                 * 이메일 변경을 위한 인증
+                 */
+                case "sendEmailForChangeEmail":
+                    String userEmailForChange = (String) body.get("userEmailforChange");
+                    RegEx.isValidUserEmail(userEmailForChange);
+
+                    String codeForChange = userService.sendEmail(userEmailForChange);
+                    session = request.getSession();
+                    session.setAttribute("codeForChange", codeForChange);
+                    System.out.println(codeForChange);
+                    return new BaseResponse<>(SUCCESS_SEND_EMAIL);
+
+                /*
+                 * [POST] 이메일 변경을 위한 인증번호 확인하기 ...
+                 */
+                case "confirmCodeforChange":
+                    String userCodeForChange = (String) body.get("userCodeForChange");
+                    if (userCodeForChange == null || "".equals(userCodeForChange)) {
+                        throw new BaseException(INVALID_AUTH_CODE);
+                    }
+                    session = request.getSession(false);
+                    if (session != null) {
+                        String originCodeForChange = (String) session.getAttribute("codeForChange");
+                        if (originCodeForChange != null) {
+                            if (userCodeForChange.equals(originCodeForChange)) {
+                                session.removeAttribute("codeForChange");
+                                return new BaseResponse<>(SUCCESS_AUTH);
+                            } else {
+                                throw new BaseException(INVALID_AUTH_CODE);
+                            }
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+                case "changeEmail":
+                    session = request.getSession(false);
+                    if(session!=null) {
+                        User originUser = (User) session.getAttribute("User");
+
+                        String originUserId = originUser.getUserId();
+                        String newEmail = (String) body.get("newEmail");
+
+                        userService.changeEmail(originUserId, newEmail);
+                        return new BaseResponse<>(SUCCESS);
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
