@@ -9,8 +9,29 @@
         </div>
 
         <div class="modal-body">
-          <div>1. 친구 신청~~</div>
-          <div>2. 길드 신청~~</div>
+          <div>dory 님이 친구 신청하셨습니다. </div>
+          <hr>
+          <div>도도 님의 길드 신청을 수락하시겠습니까? </div>
+          <hr>
+          <div>도리 님이 내 글에 댓글을 달았습니다. </div>
+          <hr>
+          <div>사각형 님이 내 질문에 답변했습니다. </div>
+          <hr>
+          <div>mory 님이 친구 신청하셨습니다. </div>
+          <hr>
+          <div>삼각형 님의 길드 신청을 수락하시겠습니까? </div>
+          <hr>
+          <div>mory 님이 친구 신청하셨습니다. </div>
+          <hr>
+          <div>오각형 님의 길드 신청을 수락하시겠습니까? </div>
+          <hr>
+          <div>오각형 님의 길드 신청을 수락하시겠습니까? </div>
+          <hr>
+          <div>오각형 님의 길드 신청을 수락하시겠습니까? </div>
+          <hr>
+          <div>오각형 님의 길드 신청을 수락하시겠습니까? </div>
+          <hr>
+          <div>오각형 님의 길드 신청을 수락하시겠습니까? </div>
         </div>
 
         <div class="modal-footer">

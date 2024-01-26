@@ -659,7 +659,8 @@ div[id^="bsquare"] {
   font-family: 'NanumSquareNeo';
   font-weight: 700;
   // background-image: url('@/assets/img/home/navymountain.jpg');
-  background-image: url('@/assets/img/home/square.png');
+  // background-image: url('@/assets/img/home/square.png');
+  background-image: url('@/assets/img/home/sky.jpg');
   background-size: cover;
   background-position: center;
 }

@@ -2,11 +2,11 @@
 <template>
   <div class="container d-flex flex-column">
     <nav class="mypage-wrapper-router">
-      <RouterLink :to="{ name : 'myPageSchedule' }">스케줄</RouterLink>
+      <RouterLink :to="{ name : 'myPageSchedule' }">일정</RouterLink>
       <RouterLink :to="{ name : 'myPageFriend' }">친구</RouterLink>
       <RouterLink :to="{ name : 'myPageQnA' }">질문</RouterLink>
       <RouterLink :to="{ name : 'myPageAlarm' }">알림</RouterLink>
-      <RouterLink :to="{ name : 'myPageInventory' }">인벤토리</RouterLink>
+      <RouterLink :to="{ name : 'myPageInventory' }">보관함</RouterLink>
       <RouterLink :to="{ name : 'myPageInformation' }">정보</RouterLink>
     </nav>
     <div class="mypage-wrapper-content d-flex">

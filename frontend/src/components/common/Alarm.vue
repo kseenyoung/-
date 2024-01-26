@@ -3,7 +3,7 @@
   <button class="position-relative alarm" data-bs-toggle="modal" data-bs-target="#exampleModal">
     <i class="bi bi-bell"></i>
     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-      1
+      12
     </span>
   </button>
 </template>
