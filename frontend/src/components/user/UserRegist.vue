@@ -99,10 +99,11 @@
             placeholder="사용하실 닉네임을 입력하세요"
             required
             autocomplete="off"
-            v-model="nickname"
+            :value="nickname"
+            @input="onInputNick"
             :class="{
-              'is-valid': isValidNickname,
-              'is-invalid': !isValidNickname,
+              'is-valid': nicknameFlag,
+              'is-invalid': !nicknameFlag,
             }"
           />
           <div v-if="!isValidNickname" class="form-text">
@@ -178,16 +179,23 @@
       </div>
 
       <div class="d-grid" @click="shake">
-        <button class="btn btn-primary" @click="registUser">가입</button>
-        <div class="form-text sub-text">입력 조건을 만족해주세요</div>
-        <!-- <div v-if="submitFlag" class="form-text sub-text">입력 조건을 만족해주세요</div> -->
+        <button
+          class="btn btn-primary"
+          @click="registUser"
+          :disabled="submitFlag"
+        >
+          가입
+        </button>
+        <div v-if="submitFlag" class="form-text sub-text">
+          입력 조건을 만족해주세요
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch } from 'vue';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import axios from 'axios';
@@ -217,14 +225,6 @@ const isDuplicateId = ref(false);
 const dupIdClicked = ref(false);
 const idFlag = computed(() => isValidId.value && isDuplicateId.value);
 
-//닉네임 확인
-const isValidNickname = ref(false);
-const isDuplicateNickname = ref(false);
-const dupNicknameClicked = ref(false);
-const nicknameFlag = computed(
-  () => isValidNickname.value && isDuplicateNickname.value,
-);
-
 //아이디 입력값 감시
 watch(id, (newId) => {
   dupIdClicked.value = false;
@@ -241,7 +241,7 @@ const checkId = function (id) {
 //아이디 중복확인
 const duplicateIdCheck = async function (checkId) {
   dupIdClicked.value = true;
-  const flag1 = ref(false);
+  // const flag1 = ref(false);
   console.log('아이디 중복확인 클릭');
   /*
     axios 통신 -> 아이디 중복 확인 api -> data: 중복없음(0), 중복됨(1)
@@ -310,7 +310,7 @@ const checkPw = function (pw) {
 
 //비밀번호 일치 확인
 const isSamePw = ref(false);
-watch(passwordCheck, (checkPw) => {
+watch(passwordCheck, () => {
   isSamePw.value = false;
   samePw();
 });
@@ -329,6 +329,19 @@ const checkName = function (name) {
   isValidName.value = validateName.test(name);
 };
 
+//한글 입력 이슈 -> v-model에서 v-bind로 변경
+const onInputNick = function (event) {
+  nickname.value = event.currentTarget.value;
+};
+
+//닉네임 확인
+const isValidNickname = ref(false);
+const isDuplicateNickname = ref(false);
+const dupNicknameClicked = ref(false);
+const nicknameFlag = computed(
+  () => isValidNickname.value && isDuplicateNickname.value,
+);
+
 watch(nickname, (newNickname) => {
   dupNicknameClicked.value = false;
   isDuplicateNickname.value = false;
@@ -344,8 +357,9 @@ const checkNickname = function (name) {
 //닉네임 중복확인
 const duplicateNicknameCheck = async function (checkNickname) {
   dupNicknameClicked.value = true;
-  const flag1 = ref(false);
+  // const flag1 = ref(false);
   console.log('닉네임 중복확인 클릭');
+  console.log(checkNickname);
 
   const body = {
     sign: 'isExistNickname',
@@ -366,6 +380,7 @@ const duplicateNicknameCheck = async function (checkNickname) {
     )
     .then((res) => res.data)
     .then((json) => {
+      console.log(json);
       console.log(json.code);
       if (json.code == 1004) {
         // 중복 아님
@@ -416,6 +431,22 @@ const registUser = function () {
   //api로 전송 -> router.push({name: 'login'})
   console.log(user.value);
 };
+
+//회원가입 버튼 flag
+const submitFlag = computed(() => {
+  return (
+    id.value === '' ||
+    name.value === '' ||
+    password.value === '' ||
+    passwordCheck.value === '' ||
+    idFlag.value === false ||
+    isValidPw.value === false ||
+    isSamePw.value === false ||
+    isValidName.value === false ||
+    nicknameFlag.value === false ||
+    isValidEmail.value === false
+  );
+});
 </script>
 
 <style lang="scss" scoped>
