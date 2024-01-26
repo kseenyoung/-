@@ -5,11 +5,15 @@ import com.ssafy.backend.board.model.dto.*;
 import com.ssafy.backend.board.service.BoardService;
 import com.ssafy.backend.board.service.CommentService;
 import com.ssafy.backend.board.service.TagService;
+import com.ssafy.backend.common.response.BaseResponse;
+import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.SUCCESS_TAG_CREATE;
 
 @RestController
 @RequestMapping("/boardTest")
@@ -21,13 +25,11 @@ public class TestController {
     private final CommentService commentService;
 
     @PostMapping("/tagCreate")
-    public ResponseEntity<HttpResponseBody<?>> Tagcreate(@RequestBody TagCreateRequestDto dto){
+    public BaseResponse<?> Tagcreate(@RequestBody TagCreateRequestDto dto){
         //when 원래 dto 말고 httpSession에서 관리자인지 체크해야됨
         //then
         int idx = tagService.tagCreate(dto);
-        HttpResponseBody<String> responseBody = new HttpResponseBody<>("OK",""+idx);
-
-        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+        return new BaseResponse<>(SUCCESS_TAG_CREATE);
     }
 
     @PostMapping("/boardCreate")

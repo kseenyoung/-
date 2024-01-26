@@ -10,7 +10,6 @@ import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.domain.UserRank;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
-
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.repository.UserRankRepository;
@@ -18,11 +17,10 @@ import com.ssafy.backend.user.model.repository.UserRepository;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;

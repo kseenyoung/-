@@ -1,8 +1,10 @@
 package com.ssafy.backend.room.model.dto;
 
-import com.google.gson.JsonObject;
 import com.ssafy.backend.room.model.domain.Answer;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
