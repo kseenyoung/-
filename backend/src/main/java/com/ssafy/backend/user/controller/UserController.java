@@ -1,16 +1,20 @@
 package com.ssafy.backend.user.controller;
 
-import  com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
 import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.room.model.dto.QuestionDto;
+import com.ssafy.backend.security.model.SecurityDto;
+import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
+import com.ssafy.backend.user.model.mapper.UserMapper;
+import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.GoogleOAuthService;
 import com.ssafy.backend.user.service.KakaoOAuthService;
@@ -22,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -63,17 +68,26 @@ public class UserController {
     public void init() {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
-    
+
     @Autowired
     KakaoOAuthService kakaoOAuthService;
 
     @Autowired
     GoogleOAuthService googleOAuthService;
 
+
+    // Transaction test
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    SecurityMapper securityMapper;
+
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
-        HttpSession session = request.getSession();
-        session.setAttribute("googleEmail", "kdn1030@gmail.com");
+        userMapper.signup(null);
+        securityMapper.insertSalt(new SecurityDto("userid", "PLZ"));
     }
 
 
@@ -98,13 +112,8 @@ public class UserController {
 
                     UserSignupDto userSignupDto = new UserSignupDto(userLoginId, userLoginBirthday, userLoginName, userLoginPassword, userLoginPhonenumber, userLoginEmail, userLoginNickname);
 
-                    try {
-                        userService.signup(userSignupDto);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new BaseException(FAIL_SIGN_UP);
-//
-                    }
+                    userService.signup(userSignupDto);
+
                     session.invalidate();
                     return new BaseResponse<>(SUCCESS_ID_SIGN_UP);
 
@@ -144,7 +153,7 @@ public class UserController {
                         for (FriendVO friend : friendList) {
                             System.out.println(friend.getUserId() + "에게 로그인 신호");
 
-                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), "login",loginUserId);
+                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), "login", loginUserId);
                             URI uri = UriComponentsBuilder
                                     .fromUriString(OPENVIDU_URL)
                                     .path("/openvidu/api/signal")
@@ -174,7 +183,7 @@ public class UserController {
                     } else {  // 로그인 실패 시 카운트 시작.
                         int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
                         if (remainTime != 0) {
-                            return new BaseResponse<>(remainTime+"초 뒤에 다시 시도해주세요");
+                            return new BaseResponse<>(remainTime + "초 뒤에 다시 시도해주세요");
                         } else {
                             return new BaseResponse<>("로그인 실패");
                         }
@@ -329,9 +338,9 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                /*
-                 * 이메일 변경을 위한 인증
-                 */
+                    /*
+                     * 이메일 변경을 위한 인증
+                     */
                 case "sendEmailForChangeEmail":
                     String userEmailForChange = (String) body.get("userEmailforChange");
                     RegEx.isValidUserEmail(userEmailForChange);
@@ -367,7 +376,7 @@ public class UserController {
 
                 case "changeEmail":
                     session = request.getSession(false);
-                    if(session!=null) {
+                    if (session != null) {
                         User originUser = (User) session.getAttribute("User");
 
                         String originUserId = originUser.getUserId();
@@ -378,10 +387,26 @@ public class UserController {
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
+
+                    /*
+                     * [POST] 마이페이지
+                     * userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint
+                     */
+                case "viewMyPage":
+                    session = request.getSession(false);
+                    if (session != null) {
+                        User user = (User) session.getAttribute("User");
+                        String viewUserId = user.getUserId();
+                        MyPageVO myPageVO = userService.viewMyPage(viewUserId);
+                        return new BaseResponse<>(myPageVO);
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
             }
         }
         throw new BaseException(NOT_MATCH_SIGN);
     }
+
 
     /*
      * 카카오 로그인
@@ -394,7 +419,7 @@ public class UserController {
      * https://localhost:8080/dagak/user/kakaoOauth
      */
     @GetMapping("kakaoOauth")
-    public BaseResponse<?> kakaoOauth(@RequestParam String code, HttpServletRequest request){
+    public BaseResponse<?> kakaoOauth(@RequestParam String code, HttpServletRequest request) {
         HttpSession session;
 
         String access_Token = kakaoOAuthService.getKaKaoAccessToken(code);
