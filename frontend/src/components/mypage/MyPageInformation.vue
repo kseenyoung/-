@@ -131,7 +131,7 @@
 
       <div class="info-detail-wrapper">
         <div class="info-label">이메일</div>
-        <div class="info-content">ssafy@gmail.com</div>
+        <div class="info-content">{{ maskedEmail }}</div>
       </div>
 
       <div class="info-detail-wrapper">
@@ -176,8 +176,8 @@ onMounted(() => {
   userAxios();
 });
 
-const userInfo = ref({});
 //유저정보 axios
+const userInfo = ref({});
 const userAxios = function () {
   const userBody = {
     sign: 'viewUserInformation',
@@ -195,6 +195,16 @@ const userAxios = function () {
       userInfo.value = json.result;
     });
 };
+
+//이메일 마스킹 처리
+const maskedEmail = computed(() => {
+  const email = 'ssafy123@gmail.com';
+  // const email = userInfo.value.email;
+  const [username, domain] = email.split('@');
+  const maskedUsername =
+    username.substring(0, 3) + '*'.repeat(username.length - 3);
+  return maskedUsername + '@' + domain;
+});
 
 //비밀번호 변경
 //백에서 session정보에서 userId를 가져오는 중이라 로그인 연동이 되어야 실행됨

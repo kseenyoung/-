@@ -5,32 +5,48 @@
         <RouterLink to="/">다각</RouterLink>
       </div>
       <div class="d-flex align-items-center">
-        <RouterLink to="/apply"><span class="underline">친구/모꼬지 신청</span></RouterLink>
-        <RouterLink to="/store"><span class="underline">상점</span></RouterLink>
-        <Alarm/>
-        <RouterLink to="/login"><span class="underline">로그인</span></RouterLink>
-        <div class="dropdown-toggle common-pointer" data-bs-toggle="dropdown" aria-expanded="false">
-          <img class="profile" src="@/assets/img/기본프로필_갈색.jpg">
+        <RouterLink to="/apply">
+          <span class="underline">친구/모꼬지 신청</span>
+        </RouterLink>
+        <RouterLink to="/store">
+          <span class="underline">상점</span>
+        </RouterLink>
+        <Alarm />
+        <RouterLink to="/login">
+          <span class="underline">로그인</span>
+        </RouterLink>
+        <div
+          class="dropdown-toggle common-pointer"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
         </div>
         <ul class="dropdown-menu">
           <div class="d-flex profile-info">
             <div>
-              <img class="profile" src="@/assets/img/기본프로필_갈색.jpg">
+              <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
             </div>
             <div>
               <div>이름</div>
               <div>아이디or이메일</div>
             </div>
           </div>
-          <RouterLink to="/mypage" class="dropdown-item"><span class="underline">마이페이지</span></RouterLink>
+          <RouterLink to="/mypage" class="dropdown-item">
+            <span class="underline">마이페이지</span>
+          </RouterLink>
           <!-- 모꼬지가 있을때는 길드페이지로, 없으면 친구/모꼬지 신청 페이지로 이동 -->
-          <RouterLink to="/mokkoji" class="dropdown-item"><span class="underline">모꼬지</span></RouterLink>
-          <li><a href="#" class="logout dropdown-item"><span>로그아웃</span></a></li>
+          <RouterLink :to="`/mokkoji/1`" class="dropdown-item">
+            <span class="underline">모꼬지</span>
+          </RouterLink>
+          <li>
+            <a href="#" class="logout dropdown-item"><span>로그아웃</span></a>
+          </li>
         </ul>
       </div>
     </nav>
   </header>
-  <AlarmModal/>
+  <AlarmModal />
 </template>
 
 <script setup>
@@ -55,7 +71,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll);
 });
-
 </script>
 
 <style lang="scss" scoped>
