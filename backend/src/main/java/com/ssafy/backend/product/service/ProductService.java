@@ -11,5 +11,7 @@ public interface ProductService {
 
     List<Product> searchList(int categoryId) throws BaseException;
 
-    void buyProduct(int productId, String userId);
+    void buyProduct(int productId, String userId) throws BaseException;
+
+    void sellProduct(int inventoryId, String userId) throws BaseException;
 }
