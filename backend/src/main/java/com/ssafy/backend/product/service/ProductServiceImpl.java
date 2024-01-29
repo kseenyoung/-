@@ -68,12 +68,13 @@ public class ProductServiceImpl implements ProductService {
         Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow(()-> new BaseException(NOT_EXIST_INVENTORY));
         int price = inventory.getProduct().getProductPrice();
         raisePoint(user, price);
-
+        inventoryRepository.deleteByInventoryId(inventory.getInventoryId());
     }
 
     private void raisePoint(User user, int price) {
         int prevPoint = user.getUserPoint();
         user.setUserPoint(prevPoint + price);
+        userRepository.save(user);
     }
 
     public void deductPoint(User user, int price){
