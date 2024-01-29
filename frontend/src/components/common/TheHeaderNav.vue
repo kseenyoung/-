@@ -57,8 +57,6 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import axios from 'axios';
 import Alarm from './Alarm.vue';
 import AlarmModal from './AlarmModal.vue';
-import { useRouter } from 'vue-router';
-const router = useRouter();
 
 //로그인할 때 생성한 sessionStorage의 정보
 const loginId = ref('');
@@ -78,7 +76,7 @@ const logout = function () {
       console.log(json);
       sessionStorage.removeItem('loginSession');
     });
-  window.location.reload(); //새로고침
+  window.location.reload(); //새로고침 or 홈으로 이동
 };
 
 // 헤더 스크롤

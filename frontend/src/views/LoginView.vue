@@ -92,6 +92,7 @@ const login = async function () {
         //로그인 성공
         alert('로그인에 성공했습니다.');
         sessionStorage.setItem('loginSession', id.value);
+        // window.location.reload(); //임시 새로고침 -> 나중에 home으로 이동하게
         // router.push({
         //   name: 'home',
         // });
@@ -101,11 +102,11 @@ const login = async function () {
   // password.value = '';
 };
 
-const test = function () {
+const test = async function () {
   const body = {
     sign: 'viewMyPage',
   };
-  axios
+  await axios
     .post('https://localhost:8080/dagak/user', body, {
       headers: {
         'Content-Type': 'application/json',
