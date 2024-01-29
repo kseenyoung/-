@@ -399,7 +399,7 @@ public class UserController {
                 case "changeEmail":
                     session = request.getSession(false);
                     if (session != null) {
-                        String emailChecked = (String) session.getAttribute("emailChecked");s
+                        String emailChecked = (String) session.getAttribute("emailChecked");
                         if (emailChecked!=null && emailChecked.equals("yes")){
                             User originUser = (User) session.getAttribute("User");
 
@@ -425,6 +425,7 @@ public class UserController {
                     if (session != null) {
                         User user = (User) session.getAttribute("User");
                         String viewUserId = user.getUserId();
+                        System.out.println(viewUserId);
                         MyPageVO myPageVO = userService.viewMyPage(viewUserId);
                         return new BaseResponse<>(myPageVO);
                     } else {

@@ -27,10 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
@@ -310,25 +307,30 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    //// userId, userName, userPicture, userNickname,userPicture, userEmail, userBirthday, userPhonenumber, userPoint,
     @Override
     public MyPageVO viewMyPage(String viewUserId) {
         User user = userRepository.findUserByUserId(viewUserId);
         MyPageVO myPageVO = new MyPageVO();
         myPageVO.setUserId(user.getUserId());
+        myPageVO.setUserName(user.getUserName());
         myPageVO.setUserNickname(user.getUserNickname());
         myPageVO.setUserPicture(user.getUserPicture());
+        myPageVO.setUserEmail(user.getUserEmail());
+        myPageVO.setUserBirthday(user.getUserBirthday());
+        myPageVO.setUserPoint(user.getUserPoint());
 
         if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
-//            myPageVO.setMokkoijiName(user.getMokkojiId().getMokkojiName());
+            myPageVO.setMokkojiName(user.getMokkojiId().getMokkojiName());
         }
 
         if (user.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
             UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
-//            myPageVO.setUserRank(userRank.getUserRank());
+            myPageVO.setUserRank(userRank.getUserRank());
         }
 
-//        System.out.println(userViewVO);
-        return null;
+        System.out.println(myPageVO);
+        return myPageVO;
     }
 
     @Override
