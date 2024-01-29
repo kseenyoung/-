@@ -29,6 +29,7 @@ public enum BaseResponseStatus {
 
 
     SUCCESS_CREATE_TOKEN(true, 1200, "토큰 발급에 성공했습니다."),
+    SUCCESS_CREATE_PRODUCT(true,1401, "상품 추가에 성공했습니다."),
 
     /**
      * 2000 : Request 오류
@@ -62,11 +63,10 @@ public enum BaseResponseStatus {
     NOT_EXIST_TAG_ID(false, 2031, "일치하는 태그 번호가 없습니다."),
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
     NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다"),
-
+    WRONG_TYPE(false,2041,"자료형이 일치하지 않습니다."),
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_DELETE_ALARM(false, 2033, "이미 삭제된 알람입니다"),
-
     ALREADY_EXIST_USER(false, 2034, "이미 존재하는 회원입니다."),
     ALREADY_EXIST_ID(false, 2035, "이미 존재하는 아이디입니다."),
     FAIL_LOGIN(false, 2036, "로그인에 실패했습니다."),

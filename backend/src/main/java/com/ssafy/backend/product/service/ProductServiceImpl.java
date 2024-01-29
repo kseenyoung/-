@@ -18,4 +18,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getList() throws MyException {
         return productRepository.findAll();
     }
+
+    @Override
+    public List<Product> searchList(int categoryId) throws MyException {
+        return productRepository.findByProductCategory_ProductCategoryId(categoryId);
+    }
 }
