@@ -49,7 +49,6 @@ public class ProductController {
                 int inventoryId = Integer.parseInt((String)body.get("inventoryId"));
                 productService.sellProduct(inventoryId,userId);
                 return new BaseResponse<>(SUCCESS_SELL_PRODUCT);
-
             case("buy"):
                 int productId = Integer.parseInt((String)body.get("productId"));
                 productService.buyProduct(productId,userId);
