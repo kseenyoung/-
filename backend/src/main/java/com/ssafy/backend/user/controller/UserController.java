@@ -114,7 +114,7 @@ public class UserController {
 
                     userService.signup(userSignupDto);
 
-                    if(session != null) {
+                    if (session != null) {
                         session.invalidate();
                     }
                     return new BaseResponse<>(SUCCESS_ID_SIGN_UP);
@@ -344,18 +344,36 @@ public class UserController {
                      * 이메일 변경을 위한 인증
                      */
                 case "sendEmailForChangeEmail":
-                    String userEmailForChange = (String) body.get("userEmailforChange");
-                    RegEx.isValidUserEmail(userEmailForChange);
+                    session = request.getSession(false);
+                    if (session != null) {
+                        User userEmailChange = (User) session.getAttribute("User");
+                        if (userEmailChange != null) {
+                            System.out.println(userEmailChange);
+                            String originTryUserEmail = (String) body.get("originTryUserEmail");
+                            String originUserEmail = userService.getUserEmail(userEmailChange);
 
-                    String codeForChange = userService.sendEmail(userEmailForChange);
-                    session = request.getSession();
-                    session.setAttribute("codeForChange", codeForChange);
-                    System.out.println(codeForChange);
-                    return new BaseResponse<>(SUCCESS_SEND_EMAIL);
+                            if (originTryUserEmail != null && originTryUserEmail.equals(originUserEmail)) {
+                                String userEmailForChange = (String) body.get("userEmailforChange");
+                                RegEx.isValidUserEmail(userEmailForChange);
+                                String codeForChange = userService.sendEmail(userEmailForChange);
 
-                /*
-                 * [POST] 이메일 변경을 위한 인증번호 확인하기 ...
-                 */
+                                session.setAttribute("codeForChange", codeForChange);
+                                System.out.println(codeForChange);
+                                return new BaseResponse<>(SUCCESS_SEND_EMAIL);
+                            } else {  // 이메일을 다시 입력해주세요.
+                                throw new BaseException(NOT_MATCH_EMAIL);
+                            }
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+
+                    /*
+                     * [POST] 이메일 변경을 위한 인증번호 확인하기 ...
+                     */
                 case "confirmCodeforChange":
                     String userCodeForChange = (String) body.get("userCodeForChange");
                     if (userCodeForChange == null || "".equals(userCodeForChange)) {
@@ -367,8 +385,10 @@ public class UserController {
                         if (originCodeForChange != null) {
                             if (userCodeForChange.equals(originCodeForChange)) {
                                 session.removeAttribute("codeForChange");
+                                session.setAttribute("emailChecked", "yes");
                                 return new BaseResponse<>(SUCCESS_AUTH);
                             } else {
+                                session.setAttribute("emailChecked", "no");
                                 throw new BaseException(INVALID_AUTH_CODE);
                             }
                         }
@@ -379,13 +399,19 @@ public class UserController {
                 case "changeEmail":
                     session = request.getSession(false);
                     if (session != null) {
-                        User originUser = (User) session.getAttribute("User");
+                        String emailChecked = (String) session.getAttribute("emailChecked");
+                        if (emailChecked!=null && emailChecked.equals("yes")){
+                            User originUser = (User) session.getAttribute("User");
 
-                        String originUserId = originUser.getUserId();
-                        String newEmail = (String) body.get("newEmail");
+                            String originUserId = originUser.getUserId();
+                            String newEmail = (String) body.get("newEmail");
 
-                        userService.changeEmail(originUserId, newEmail);
-                        return new BaseResponse<>(SUCCESS);
+                            userService.changeEmail(originUserId, newEmail);
+                            return new BaseResponse<>(SUCCESS);
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
@@ -399,11 +425,31 @@ public class UserController {
                     if (session != null) {
                         User user = (User) session.getAttribute("User");
                         String viewUserId = user.getUserId();
+                        System.out.println(viewUserId);
                         MyPageVO myPageVO = userService.viewMyPage(viewUserId);
                         return new BaseResponse<>(myPageVO);
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
+
+                /*
+                 * [POST] 유저 상태메세지 변경
+                 */
+                case "changeUserStatusMessage":
+                    User changeStatusUser = (User) session.getAttribute("User");
+                    if (changeStatusUser!=null){
+                        String changeStatusUserId = changeStatusUser.getUserId();
+                        if (changeStatusUserId!=null){
+                            String newStatusMessage = (String) body.get("newStatusMessage");
+                            userService.changeUserStatusMessage(changeStatusUserId, newStatusMessage);
+                            return new BaseResponse<>(SUCCESS);
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+                    
             }
         }
         throw new BaseException(NOT_MATCH_SIGN);

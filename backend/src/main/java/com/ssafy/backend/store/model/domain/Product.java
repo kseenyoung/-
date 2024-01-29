@@ -11,8 +11,8 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Product {
     @Id
