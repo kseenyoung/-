@@ -31,6 +31,7 @@ public enum BaseResponseStatus {
     SUCCESS_CREATE_TOKEN(true, 1200, "토큰 발급에 성공했습니다."),
     SUCCESS_CREATE_PRODUCT(true,1401, "상품 추가에 성공했습니다."),
     SUCCESS_BUY_PRODUCT(true, 1402,"상품 구매에 성공했습니다"),
+    SUCCESS_SELL_PRODUCT(true,1403 ,"상품 판매에 성공했습니다" ),
 
     /**
      * 2000 : Request 오류
@@ -63,7 +64,8 @@ public enum BaseResponseStatus {
     NOT_MATCH_SIGN(false, 2030, "일치하는 sign 정보가 없습니다."),
     NOT_EXIST_TAG_ID(false, 2031, "일치하는 태그 번호가 없습니다."),
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
-    NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다"),
+    NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다."),
+    NOT_EXIST_INVENTORY(false,2041,"일치하는 인벤토리가 없습니다."),
     WRONG_TYPE(false,2041,"자료형이 일치하지 않습니다."),
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
@@ -130,8 +132,8 @@ public enum BaseResponseStatus {
     /**
      * 5000 : 잡지 못 한 서버 오류
      */
-    OOPS(false, 5000, "Oops..."),
-    ;
+    OOPS(false, 5000, "Oops...");
+
 
     private final boolean isSuccess;
     private final int code;

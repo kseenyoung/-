@@ -16,6 +16,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.List;
 
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_INVENTORY;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_PRODUCT;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -45,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BaseException(BaseResponseStatus.NOT_EXIST_MEMBER);
         }
 
-        Product product = productRepository.findById(productId).orElseThrow(()-> new BaseException(BaseResponseStatus.NOT_EXIST_PRODUCT));
+        Product product = productRepository.findById(productId).orElseThrow(()-> new BaseException(NOT_EXIST_PRODUCT));
         int price = product.getProductPrice();
         deductPoint(user, price);
 
@@ -56,10 +59,26 @@ public class ProductServiceImpl implements ProductService {
                 .build());
     }
 
+    @Override
+    public void sellProduct(int inventoryId, String userId) throws BaseException {
+        User user = userRepository.findUserByUserId(userId);
+        if(user == null){
+            throw new BaseException(BaseResponseStatus.NOT_EXIST_MEMBER);
+        }
+        Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow(()-> new BaseException(NOT_EXIST_INVENTORY));
+        int price = inventory.getProduct().getProductPrice();
+        raisePoint(user, price);
+
+    }
+
+    private void raisePoint(User user, int price) {
+        int prevPoint = user.getUserPoint();
+        user.setUserPoint(prevPoint + price);
+    }
+
     public void deductPoint(User user, int price){
         int prevPoint = user.getUserPoint();
-        int updatedPoint = prevPoint - price;
-        user.setUserPoint(updatedPoint);
+        user.setUserPoint(prevPoint - price);
         userRepository.save(user);
     }
 }
