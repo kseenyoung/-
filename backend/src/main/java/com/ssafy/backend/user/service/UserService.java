@@ -62,4 +62,6 @@ public interface UserService {
     MyPageVO viewMyPage(String viewUserId);
 
     String getUserEmail(User userEmailChange);
+
+    void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage);
 }

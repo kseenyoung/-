@@ -431,6 +431,25 @@ public class UserController {
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
+
+                /*
+                 * [POST] 유저 상태메세지 변경
+                 */
+                case "changeUserStatusMessage":
+                    User changeStatusUser = (User) session.getAttribute("User");
+                    if (changeStatusUser!=null){
+                        String changeStatusUserId = changeStatusUser.getUserId();
+                        if (changeStatusUserId!=null){
+                            String newStatusMessage = (String) body.get("newStatusMessage");
+                            userService.changeUserStatusMessage(changeStatusUserId, newStatusMessage);
+                            return new BaseResponse<>(SUCCESS);
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+                    
             }
         }
         throw new BaseException(NOT_MATCH_SIGN);

@@ -70,4 +70,8 @@ public class User {
 
     public void setUserEmail(String newEmail) { this.userEmail=newEmail;
     }
+
+    public void setUserStatusMessage(String userStatusMessage) {
+        this.userStatusMessage = userStatusMessage;
+    }
 }
