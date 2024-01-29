@@ -1,15 +1,17 @@
 package com.ssafy.backend.inventory.model.domain;
 
 import com.ssafy.backend.category.model.domain.ProductCategory;
+import com.ssafy.backend.product.model.domain.Product;
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 public class Inventory {
 
     @Id
@@ -19,10 +21,11 @@ public class Inventory {
 
     private int isWearing;
 
-//    @ManyToOne()
-//    private Store store;
-
     @ManyToOne()
-    private ProductCategory productCategory;
+    @JoinColumn(name = "productId   ")
+    private Product product;
+
+    @CreatedDate
+    private LocalDateTime createdDate;
 
 }
