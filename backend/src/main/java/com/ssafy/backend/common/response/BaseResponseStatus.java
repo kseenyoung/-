@@ -30,6 +30,7 @@ public enum BaseResponseStatus {
 
     SUCCESS_CREATE_TOKEN(true, 1200, "토큰 발급에 성공했습니다."),
     SUCCESS_CREATE_PRODUCT(true,1401, "상품 추가에 성공했습니다."),
+    SUCCESS_BUY_PRODUCT(true, 1402,"상품 구매에 성공했습니다"),
 
     /**
      * 2000 : Request 오류
