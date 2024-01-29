@@ -338,4 +338,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserByUserId(userEmailChange.getUserId());
         return user.getUserEmail();
     }
+
+    @Override
+    public void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage) {
+        User user = userRepository.findById(changeStatusUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        user.setUserStatusMessage(newStatusMessage);
+
+        userRepository.save(user);
+    }
 }
