@@ -60,6 +60,7 @@ public class JpaDatasourceConfig {
         properties.put("hibernate.show_sql", true);  // 쿼리문 출력 설정
         properties.put("hibernate.use_sql_comments", true);  // 쿼리문 매개변수 값 출력 설정
         properties.put("hibernate.hbm2ddl.auto", "update");
+        properties.put("hibernate.format_sql",true);
         em.setJpaPropertyMap(properties);
 
         return em;
