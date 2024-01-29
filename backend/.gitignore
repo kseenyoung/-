@@ -35,3 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+backend/src/main/java/com/ssafy/backend/common/config/JasyptConfig.java

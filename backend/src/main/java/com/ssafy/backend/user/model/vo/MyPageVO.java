@@ -1,5 +1,7 @@
 package com.ssafy.backend.user.model.vo;
 
+import com.ssafy.backend.common.exception.BaseException;
+
 import java.util.Date;
 
 // userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint, userNickname

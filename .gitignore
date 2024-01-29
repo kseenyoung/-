@@ -720,3 +720,4 @@ yarn-error.log
 # End of https://www.toptal.com/developers/gitignore/api/vue,vuejs
 
 I10A404T.pem
+/backend/src/main/java/com/ssafy/backend/common/config/JasyptConfig.java
