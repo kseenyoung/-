@@ -1,8 +1,5 @@
 package com.ssafy.backend.inventory.service;
-
 import com.ssafy.backend.inventory.model.domain.Inventory;
-import com.ssafy.backend.inventory.model.dto.InventoryDto;
-import com.ssafy.backend.inventory.model.dto.InventoryResponseDto;
 import com.ssafy.backend.inventory.model.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
