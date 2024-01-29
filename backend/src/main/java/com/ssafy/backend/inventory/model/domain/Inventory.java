@@ -48,4 +48,7 @@ public class Inventory {
         }
     }
 
+    public void resetCloth() {
+        this.isWearing = 0;
+    }
 }

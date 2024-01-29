@@ -3,6 +3,7 @@ package com.ssafy.backend.inventory.controller;
 
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.inventory.model.domain.Inventory;
+import com.ssafy.backend.inventory.model.dto.InventoryResponseDto;
 import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDto;
 import com.ssafy.backend.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class InventoryTestController {
             @RequestParam String userId,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "category", defaultValue = "0") int category) {
-        List<Inventory> inventory = inventoryService.getInventory(userId, page, category);
+        InventoryResponseDto inventory = inventoryService.getInventory(userId, page, category);
 
         return new BaseResponse<>(inventory);
     }
