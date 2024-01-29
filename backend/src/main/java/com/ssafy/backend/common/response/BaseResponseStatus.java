@@ -80,6 +80,9 @@ public enum BaseResponseStatus {
     NEED_LOGIN(false, 2042,"로그인이 필요한 서비스입니다."),
     NEED_KAKAO_LINK(false, 2043,"기존 회원 로그인 후 카카오 서비스와 연동 하시겠습니까?"),
     NEED_GOOGLE_LINK(false, 2044,"기존 회원 로그인 후 구글 서비스와 연동 하시겠습니까?"),
+
+    NOT_MATCH_EMAIL(false, 2045,"기존 이메일이 일치하지 않습니다"),
+    NOT_MATCH_CODE(false, 2046,"인증코드가 일치하지 않습니다"),
     
 
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/
