@@ -38,8 +38,18 @@ public class ProductServiceImpl implements ProductService {
             throw new BaseException(BaseResponseStatus.NOT_EXIST_MEMBER);
         }
 
-        int userPoint = user.getUserPoint();
+        Product product = productRepository.findById(productId).orElseThrow(()-> new BaseException(BaseResponseStatus.NOT_EXIST_PRODUCT));
+        int price = product.getProductPrice();
+        deductPoint(user, price);
 
 
+
+    }
+
+    public void deductPoint(User user, int price){
+        int prevPoint = user.getUserPoint();
+        int updatedPoint = prevPoint - price;
+        user.setUserPoint(updatedPoint);
+        userRepository.save(user);
     }
 }
