@@ -3,12 +3,10 @@ package com.ssafy.backend.inventory.controller;
 
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.inventory.model.domain.Inventory;
+import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDto;
 import com.ssafy.backend.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +23,11 @@ public class InventoryTestController {
         List<Inventory> inventory = inventoryService.getInventory(userId, page, category);
 
         return new BaseResponse<>(inventory);
+    }
+
+    @PostMapping("/save")
+    private BaseResponse<?> saveInventory(@RequestBody InventorySaveRequestDto dto){
+        inventoryService.saveInventory(dto);
+        return new BaseResponse<>("저장 완료");
     }
 }
