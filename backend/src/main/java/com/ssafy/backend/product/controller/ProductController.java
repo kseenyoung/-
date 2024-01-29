@@ -45,8 +45,11 @@ public class ProductController {
         }
 
         switch (sign){
+            case("sell"):
+                int inventoryId = Integer.parseInt((String)body.get("inventoryId"));
+                productService.sellProduct(inventoryId,userId);
+                return new BaseResponse<>(SUCCESS_SELL_PRODUCT);
             case("buy"):
-                System.out.println(body.get("productId"));
                 int productId = Integer.parseInt((String)body.get("productId"));
                 productService.buyProduct(productId,userId);
                 return new BaseResponse<>(SUCCESS_BUY_PRODUCT);
@@ -54,7 +57,7 @@ public class ProductController {
                 List<Product> productList = productService.getList();
                 return new BaseResponse<>(productList);
             case("search"):
-                Integer categoryId = -1;
+                int categoryId = -1;
                 try{
                     categoryId = Integer.parseInt((String) body.get("categoryId"));
                 } catch (Exception e){
