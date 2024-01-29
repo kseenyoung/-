@@ -15,6 +15,7 @@
               placeholder="아이디"
               required
               autofocus
+              v-model="id"
             />
           </div>
         </div>
@@ -27,6 +28,7 @@
               id="password"
               placeholder="비밀번호"
               required
+              v-model="password"
             />
           </div>
         </div>
@@ -38,7 +40,10 @@
           />
           <label class="form-check-label" for="rememberId">아이디 저장</label>
         </div>
-        <button class="btn btn-primary common-btn">로그인</button>
+        <button class="btn btn-primary common-btn" @click="login">
+          로그인
+        </button>
+        <button @click="test">viewMyPage 테스트</button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
           <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" />
@@ -55,7 +60,63 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+const id = ref('');
+const password = ref('');
+// const rememberId = ref(false);
+
+const login = async function () {
+  const body = {
+    sign: 'login',
+    userId: id.value,
+    userPassword: password.value,
+  };
+  await axios
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then((json) => {
+      console.log(json);
+      if (json.code === 1000) {
+        //로그인 실패
+        alert('로그인에 실패했습니다.');
+      } else if (json.code === 1001) {
+        //로그인 성공
+        alert('로그인에 성공했습니다.');
+        sessionStorage.setItem('loginSession', id.value);
+        // router.push({
+        //   name: 'home',
+        // });
+      }
+    });
+  // id.value = '';
+  // password.value = '';
+};
+
+const test = function () {
+  const body = {
+    sign: 'viewMyPage',
+  };
+  axios
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then((json) => {
+      console.log(json);
+    });
+};
+</script>
 
 <style lang="scss" scoped>
 .container {

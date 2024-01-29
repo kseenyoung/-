@@ -13,12 +13,13 @@
         </RouterLink>
         <Alarm />
         <RouterLink to="/login">
-          <span class="underline">로그인</span>
+          <span class="underline" v-if="!loginId">로그인</span>
         </RouterLink>
         <div
           class="dropdown-toggle common-pointer"
           data-bs-toggle="dropdown"
           aria-expanded="false"
+          v-if="loginId"
         >
           <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
         </div>
@@ -40,7 +41,9 @@
             <span class="underline">모꼬지</span>
           </RouterLink>
           <li>
-            <a href="#" class="logout dropdown-item"><span>로그아웃</span></a>
+            <a href="#" class="logout dropdown-item" @click="logout">
+              <span>로그아웃</span>
+            </a>
           </li>
         </ul>
       </div>
@@ -50,10 +53,33 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import axios from 'axios';
 import Alarm from './Alarm.vue';
 import AlarmModal from './AlarmModal.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+//로그인할 때 생성한 sessionStorage의 정보
+const loginId = ref('');
+const getSessionId = function () {
+  loginId.value = sessionStorage.getItem('loginSession');
+};
+
+//로그아웃
+const logout = function () {
+  const body = {
+    sign: 'logout',
+  };
+  axios
+    .post('https://localhost:8080/dagak/user', body)
+    .then((res) => res.data)
+    .then((json) => {
+      console.log(json);
+      sessionStorage.removeItem('loginSession');
+    });
+  window.location.reload(); //새로고침
+};
 
 // 헤더 스크롤
 const headerHidden = ref(false);
@@ -67,6 +93,7 @@ const handleScroll = () => {
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
+  getSessionId();
 });
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll);
