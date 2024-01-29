@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @Builder
 public class Store {
     @Id
@@ -22,7 +22,7 @@ public class Store {
     @Column
     private String productName;
 
-    @Column
+//    @Column
     @ManyToOne()
     private ProductCategory productCategory;
 
