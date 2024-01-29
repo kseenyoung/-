@@ -138,6 +138,7 @@ public class UserController {
                             // 세션에 kakaoEmail 이 있으면 연동함.
                             String kakaoEmail = (String) session.getAttribute("kakaoEmail");
                             userService.linkKakao(loginUserId, kakaoEmail);
+                            session.removeAttribute("kakaoEmail");
                             return new BaseResponse<>(SUCCESS);
                         }
 
@@ -145,6 +146,7 @@ public class UserController {
                             // 세션에 googleEmail 이 있으면 연동함.
                             String googleEmail = (String) session.getAttribute("googleEmail");
                             userService.linkGoogle(loginUserId, googleEmail);
+                            session.removeAttribute("googleEmail");
                             return new BaseResponse<>(SUCCESS);
                         }
 
@@ -182,7 +184,19 @@ public class UserController {
 
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
                         return new BaseResponse<>(SUCCESS_LOGIN);
-                    } else {  // 로그인 실패 시 카운트 시작.
+                    } else {  // 로그인 실패 시
+                        if (session.getAttribute("kakaoEmail") != null) {
+                            session.removeAttribute("kakaoEmail");
+                            throw new BaseException(FAIL_TO_LINK);
+                        }
+
+                        if (session.getAttribute("googleEmail") != null) {
+                            // 세션에 googleEmail 이 있으면 연동함.
+                            session.removeAttribute("googleEmail");
+                            throw new BaseException(FAIL_TO_LINK);
+                        }
+
+                        // 로그인 실패 시 카운트 시작.
                         int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
                         if (remainTime != 0) {
                             return new BaseResponse<>(remainTime + "초 뒤에 다시 시도해주세요");
