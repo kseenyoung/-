@@ -3,6 +3,8 @@ package com.ssafy.backend.product.service;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.response.BaseResponseStatus;
+import com.ssafy.backend.inventory.model.domain.Inventory;
+import com.ssafy.backend.inventory.model.repository.InventoryRepository;
 import com.ssafy.backend.product.model.domain.Product;
 import com.ssafy.backend.product.model.repository.ProductRepository;
 import com.ssafy.backend.user.model.domain.User;
@@ -10,6 +12,8 @@ import com.ssafy.backend.user.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.List;
 
 @Service
@@ -20,6 +24,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    InventoryRepository inventoryRepository;
 
     @Override
     public List<Product> getList() throws MyException {
@@ -42,8 +49,11 @@ public class ProductServiceImpl implements ProductService {
         int price = product.getProductPrice();
         deductPoint(user, price);
 
-
-
+        inventoryRepository.save(Inventory.builder()
+                .isWearing(0)
+                .product(product)
+                .userId(userId)
+                .build());
     }
 
     public void deductPoint(User user, int price){

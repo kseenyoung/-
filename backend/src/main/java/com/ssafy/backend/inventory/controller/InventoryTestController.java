@@ -3,7 +3,6 @@ package com.ssafy.backend.inventory.controller;
 
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.inventory.model.domain.Inventory;
-import com.ssafy.backend.inventory.model.dto.InventoryResponseDto;
 import com.ssafy.backend.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

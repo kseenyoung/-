@@ -46,7 +46,8 @@ public class ProductController {
 
         switch (sign){
             case("buy"):
-                Integer productId = (Integer) body.get("productId");
+                System.out.println(body.get("productId"));
+                int productId = Integer.parseInt((String)body.get("productId"));
                 productService.buyProduct(productId,userId);
                 return new BaseResponse<>(SUCCESS_BUY_PRODUCT);
             case("getList"):
@@ -61,9 +62,6 @@ public class ProductController {
                 }
                 List<Product> searchList = productService.searchList(categoryId);
                 return new BaseResponse<>(searchList);
-
-
-
         }
         throw new BaseException(EMPTY_SIGN);
     }
