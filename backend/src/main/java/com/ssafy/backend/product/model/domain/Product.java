@@ -1,4 +1,4 @@
-package com.ssafy.backend.store.model.domain;
+package com.ssafy.backend.product.model.domain;
 
 import com.ssafy.backend.category.model.domain.ProductCategory;
 import lombok.*;

@@ -1,7 +1,7 @@
-package com.ssafy.backend.store.service;
+package com.ssafy.backend.product.service;
 
 import com.ssafy.backend.common.exception.MyException;
-import com.ssafy.backend.store.model.domain.Product;
+import com.ssafy.backend.product.model.domain.Product;
 
 import java.util.List;
 

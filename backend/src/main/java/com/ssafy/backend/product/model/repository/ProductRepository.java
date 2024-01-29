@@ -1,6 +1,6 @@
-package com.ssafy.backend.store.model.repository;
+package com.ssafy.backend.product.model.repository;
 
-import com.ssafy.backend.store.model.domain.Product;
+import com.ssafy.backend.product.model.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
