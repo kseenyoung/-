@@ -95,7 +95,14 @@ public enum BaseResponseStatus {
 
     /* 친구 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_EXIST_FRIEND(false, 2200, "이미 상대방과 친구입니다."),
-    NOT_FRIEND(false, 2200, "이미 상대방과 친구입니다."),
+    NOT_FRIEND(false, 2201, "이미 상대방과 친구입니다."),
+
+
+    /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
+    JSON_PARSING_ERROR(false, 2300, "이미 상대방과 친구입니다."),
+
+    /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
+    WRONG_TYPE(false,2400,"자료형이 일치하지 않습니다."),
 
 
     /**

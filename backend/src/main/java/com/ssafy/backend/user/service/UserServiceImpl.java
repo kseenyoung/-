@@ -28,9 +28,9 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_SIGN_UP;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
 
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
 
         User user = userRepository.findById(loginUserId)
-                .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> {throw new BaseException(FAIL_SIGN_UP);});
         return user.checkPassword(encryptedLoginPassword);
     }
 

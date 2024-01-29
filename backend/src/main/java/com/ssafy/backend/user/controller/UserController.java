@@ -98,13 +98,8 @@ public class UserController {
 
                     UserSignupDto userSignupDto = new UserSignupDto(userLoginId, userLoginBirthday, userLoginName, userLoginPassword, userLoginPhonenumber, userLoginEmail, userLoginNickname);
 
-                    try {
-                        userService.signup(userSignupDto);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new BaseException(FAIL_SIGN_UP);
-//
-                    }
+                    userService.signup(userSignupDto);
+
                     session.invalidate();
                     return new BaseResponse<>(SUCCESS_ID_SIGN_UP);
 
