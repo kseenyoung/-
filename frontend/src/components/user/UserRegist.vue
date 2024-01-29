@@ -195,10 +195,12 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
 import { ref, computed, watch } from 'vue';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import axios from 'axios';
+const router = useRouter();
 
 const id = ref('');
 const password = ref('');
@@ -241,42 +243,17 @@ const checkId = function (id) {
 //아이디 중복확인
 const duplicateIdCheck = async function (checkId) {
   dupIdClicked.value = true;
-  // const flag1 = ref(false);
-  console.log('아이디 중복확인 클릭');
-  /*
-    axios 통신 -> 아이디 중복 확인 api -> data: 중복없음(0), 중복됨(1)
-    
-    중복없음(0) - flag1.value = false;
-    중복일때(1) - flag1.value = true;
-
-    flag1.value == true {
-      (중복o)
-      isDuplicateId.value = false;
-      alert("이미 존재하는 아이디입니다.");
-      id.value = ''; //아이디 텍스트 초기화
-    } else {
-      (중복x)
-      isDuplicateId.value = true;
-    }
-  */
-
   const body = {
     sign: 'isExistId',
     userId: checkId,
   };
 
-  /* code로 분기해야함 */
   await axios
-    .post(
-      // 로그인 콜백
-      'https://localhost:8080/dagak/user',
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+    })
     .then((res) => res.data)
     .then((json) => {
       console.log(json.code);
@@ -357,16 +334,11 @@ const checkNickname = function (name) {
 //닉네임 중복확인
 const duplicateNicknameCheck = async function (checkNickname) {
   dupNicknameClicked.value = true;
-  // const flag1 = ref(false);
-  console.log('닉네임 중복확인 클릭');
-  console.log(checkNickname);
-
   const body = {
     sign: 'isExistNickname',
     userNickname: checkNickname,
   };
 
-  /* code로 분기해야함 */
   await axios
     .post(
       // 로그인 콜백
@@ -418,18 +390,32 @@ const formatPhoneNumber = function () {
 
 //유저등록
 const registUser = function () {
-  //if (isValidId.value && isDuplicateId.value) 확인 후
-  const user = ref({
-    id: id.value,
-    password: password.value,
-    name: name.value,
-    nickname: nickname.value,
-    birth: birth.value,
-    email: email.value,
-    tel: tel.value,
-  });
-  //api로 전송 -> router.push({name: 'login'})
-  console.log(user.value);
+  const body = {
+    sign: 'signup',
+    userId: id.value,
+    userBirthday: birth.value,
+    userName: name.value,
+    userPassword: password.value,
+    userPhonenumber: tel.value,
+    userEmail: email.value,
+    userNickname: nickname.value,
+  };
+  console.log(body);
+
+  axios
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then((json) => {
+      console.log(json);
+      alert('회원가입이 완료되었습니다.');
+      router.push({
+        name: 'login',
+      });
+    });
 };
 
 //회원가입 버튼 flag
