@@ -10,7 +10,6 @@ spring:
           starttls:
             enable: true
           auth: true
-
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -33,7 +32,7 @@ spring:
     password: ssafy
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     database: mysql
     properties:

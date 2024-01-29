@@ -61,6 +61,7 @@ public enum BaseResponseStatus {
     NOT_MATCH_SIGN(false, 2030, "일치하는 sign 정보가 없습니다."),
     NOT_EXIST_TAG_ID(false, 2031, "일치하는 태그 번호가 없습니다."),
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
+    NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다"),
 
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
