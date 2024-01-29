@@ -6,12 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
 
     Page<Inventory> findAllByUserId(Pageable pageable, String userId);
+
     Page<Inventory> findAllByUserIdAndProduct_ProductCategory_ProductCategoryId(Pageable pageable, String userId, int productCategoryId);
 
+    List<Inventory> findAllByUserId(String userId);
     @Transactional
     void deleteByInventoryId(int inventoryId);
 }

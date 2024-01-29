@@ -39,4 +39,16 @@ public class Inventory {
         this.isWearing = isWearing;
         this.product = product;
     }
+
+    public void changeCloth(){
+        if(isWearing == 1){
+            this.isWearing =0;
+        }else{
+            this.isWearing = 1;
+        }
+    }
+
+    public void resetCloth() {
+        this.isWearing = 0;
+    }
 }
