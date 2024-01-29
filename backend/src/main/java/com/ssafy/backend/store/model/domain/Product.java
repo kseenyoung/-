@@ -12,17 +12,15 @@ import javax.persistence.ManyToOne;
 @Getter
 @Setter
 @AllArgsConstructor
-@RequiredArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
 @Builder
-public class Store {
+public class Product {
     @Id
-    private int storeId;
+    private int productId;
 
     @Column
     private String productName;
 
-//    @Column
     @ManyToOne()
     private ProductCategory productCategory;
 
@@ -32,10 +30,6 @@ public class Store {
     @Column(columnDefinition = "varchar(200)")
     private String productImage;
 
-
-
-
-
-
-
+    @Column
+    private String productDescription;
 }
