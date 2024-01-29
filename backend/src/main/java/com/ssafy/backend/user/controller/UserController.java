@@ -138,6 +138,7 @@ public class UserController {
                             // 세션에 kakaoEmail 이 있으면 연동함.
                             String kakaoEmail = (String) session.getAttribute("kakaoEmail");
                             userService.linkKakao(loginUserId, kakaoEmail);
+                            session.removeAttribute("kakaoEmail");
                             return new BaseResponse<>(SUCCESS);
                         }
 
@@ -145,6 +146,7 @@ public class UserController {
                             // 세션에 googleEmail 이 있으면 연동함.
                             String googleEmail = (String) session.getAttribute("googleEmail");
                             userService.linkGoogle(loginUserId, googleEmail);
+                            session.removeAttribute("googleEmail");
                             return new BaseResponse<>(SUCCESS);
                         }
 
@@ -182,7 +184,19 @@ public class UserController {
 
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
                         return new BaseResponse<>(SUCCESS_LOGIN);
-                    } else {  // 로그인 실패 시 카운트 시작.
+                    } else {  // 로그인 실패 시
+                        if (session.getAttribute("kakaoEmail") != null) {
+                            session.removeAttribute("kakaoEmail");
+                            throw new BaseException(FAIL_TO_LINK);
+                        }
+
+                        if (session.getAttribute("googleEmail") != null) {
+                            // 세션에 googleEmail 이 있으면 연동함.
+                            session.removeAttribute("googleEmail");
+                            throw new BaseException(FAIL_TO_LINK);
+                        }
+
+                        // 로그인 실패 시 카운트 시작.
                         int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
                         if (remainTime != 0) {
                             return new BaseResponse<>(remainTime + "초 뒤에 다시 시도해주세요");
@@ -458,13 +472,6 @@ public class UserController {
 
     /*
      * 카카오 로그인
-     * https://kauth.kakao.com/oauth/authorize?client_id=daad1a19aba64000fb178eb96ad2889d&redirect_uri=https://localhost:8080/dagak/user/kakaoOauth&response_type=code
-     *
-     * api 토큰
-     * daad1a19aba64000fb178eb96ad2889d
-     *
-     * redirect url
-     * https://localhost:8080/dagak/user/kakaoOauth
      */
     @GetMapping("kakaoOauth")
     public BaseResponse<?> kakaoOauth(@RequestParam String code, HttpServletRequest request) {
@@ -488,14 +495,6 @@ public class UserController {
 
     /*
      * 구글 로그인
-     *
-     * 클라이언트 ID : 273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com
-     *
-     * 클라이언트 비밀번호 : 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
-     *
-     * redirect urlq
-     *
-     * https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com&redirect_uri=https://localhost:8080/dagak/user/googleOauth&response_type=code&scope=email
      */
     @RequestMapping("googleOauth")
     public BaseResponse<?> googleOauth(HttpServletRequest request, @RequestParam(value = "code") String authCode, HttpServletResponse response) throws Exception {

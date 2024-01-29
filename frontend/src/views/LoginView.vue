@@ -58,13 +58,19 @@
       <RouterLink to="/regist">회원가입</RouterLink>
     </div>
   </div>
+
+  <vue-recaptcha
+    v-show="true"
+    sitekey="6Lcufl8pAAAAAN7h2t1u9Dgm1_zo9wKoaYRX59H6"
+  ></vue-recaptcha>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
-const router = useRouter();
+import vueRecaptcha from 'vue3-recaptcha2';
+// import { useRouter } from 'vue-router';
+// const router = useRouter();
 
 const id = ref('');
 const password = ref('');

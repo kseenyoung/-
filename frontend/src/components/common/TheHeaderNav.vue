@@ -13,13 +13,12 @@
         </RouterLink>
         <Alarm />
         <RouterLink to="/login">
-          <span class="underline" v-if="!loginId">로그인</span>
+          <span class="underline">로그인</span>
         </RouterLink>
         <div
           class="dropdown-toggle common-pointer"
           data-bs-toggle="dropdown"
           aria-expanded="false"
-          v-if="loginId"
         >
           <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
         </div>
