@@ -20,15 +20,15 @@ public class GakDto {
     private Integer gakId;
 
     @Column
-    private Integer dagakId, categoryId, order, runningTime;
+    private Integer dagakId, categoryId, gakOrder, runningTime;
 
     @Column
     private String userId;
 
 
-    public GakDto(String categoryId, Integer order, String runningTime, String userId) {
+    public GakDto(String categoryId, Integer gakOrder, String runningTime, String userId) {
         setCategoryId(categoryId);
-        setOrder(order);
+        setGakOrder(gakOrder);
         setRunningTime(runningTime);
         setUserId(userId);
     }

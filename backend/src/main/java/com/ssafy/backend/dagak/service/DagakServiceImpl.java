@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class DagakServiceImpl implements DagakService {
 
     @Override
     public int createDagak(DagakDto dagakDto) {
-        log.info("dagak : ", dagakDto);
+        log.info("dagak : {}", dagakDto);
         return dagakRepository.save(
                 Dagak.builder()
                         .user_id(dagakDto.getUserId())
@@ -35,16 +36,18 @@ public class DagakServiceImpl implements DagakService {
 
     @Override
     public void createGak(List<GakDto> gaks) {
-        for (GakDto gak: gaks){
-            log.info("gak : ", gak);
-            gakRepository.save(
-                    Gak.builder()
-                            .userId(gak.getUserId())
-                            .order(gak.getOrder())
-                            .runningTime(gak.getRunningTime())
-                            .dagakId(gak.getDagakId())
-                            .build()
-            );
+        log.info("gak : {}", gaks);
+        List<Gak> gakEntities = new ArrayList<>();
+        for (GakDto gak : gaks) {
+            Gak build = Gak.builder()
+                    .userId(gak.getUserId())
+                    .gakOrder(gak.getGakOrder())
+                    .runningTime(gak.getRunningTime())
+                    .dagakId(gak.getDagakId())
+                    .build();
+            gakEntities.add(build);
         }
+
+        gakRepository.saveAll(gakEntities);
     }
 }

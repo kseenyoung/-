@@ -3,7 +3,7 @@ package com.ssafy.backend.dagak.controller;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
 import com.ssafy.backend.dagak.model.dto.GakDto;
-import com.ssafy.backend.dagak.service.DagakService;
+import com.ssafy.backend.dagak.service.DagakFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +22,7 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 public class DagakController {
 
     @Autowired
-    private DagakService dagakService;
+    private DagakFacade dagakFacade;
 
     @PostMapping("")
     public BaseResponse<?> dagak(@RequestBody Map<String, Object> body, HttpServletRequest request){
@@ -57,14 +57,7 @@ public class DagakController {
 
                 // 다각 생성
                 DagakDto dagakDto = new DagakDto(userId, totalTime);
-                int dagakId = dagakService.createDagak(dagakDto);
-
-                // 각 생성
-                for(GakDto gak: gaks){
-                    gak.setDagakId(dagakId);
-                }
-
-                dagakService.createGak(gaks);
+                dagakFacade.createDagak(dagakDto, gaks);
 
                 return new BaseResponse<>(SUCCESS);
 
