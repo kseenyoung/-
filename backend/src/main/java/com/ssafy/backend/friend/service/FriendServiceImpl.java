@@ -1,18 +1,20 @@
 package com.ssafy.backend.friend.service;
 
-import com.ssafy.backend.common.exception.MyException;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.friend.model.domain.Friend;
 import com.ssafy.backend.friend.model.domain.UserId;
 import com.ssafy.backend.friend.model.mapper.FriendMapper;
-import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.model.repository.FriendRepository;
+import com.ssafy.backend.friend.model.vo.FriendVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.ALREADY_EXIST_FRIEND;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_FRIEND;
 
 @Service
 @Slf4j
@@ -58,9 +60,8 @@ public class FriendServiceImpl implements FriendService {
         UserId PK = new UserId(quitUserId, quitUserId2);
 
         // 이미 친구인지 확인
-        if(!isFriend(PK)){
-            throw new MyException("친구아님 ㅇㅇ", HttpStatus.BAD_REQUEST);
-        }
+        if(!isFriend(PK))
+            throw new BaseException(ALREADY_EXIST_FRIEND);
 
         friendRepository.save(
                 Friend.builder()
@@ -87,7 +88,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     public boolean isFriend(UserId PK) {
-        Friend friend = friendRepository.findById(PK).orElseThrow(() -> new MyException("그런 정보 없음", HttpStatus.UNAUTHORIZED));
+        Friend friend = friendRepository.findById(PK).orElseThrow(() -> new BaseException(NOT_FRIEND));
 //        log.info("친구 존재 여부 {}", friend);
 
         if(friend.getIsFriend() == 0){

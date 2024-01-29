@@ -20,7 +20,7 @@
   
   export default {
     setup() {
-      const numSlices = ref(11);
+      const numSlices = ref(4);
   
       const pizzaSlices = computed(() => {
         const radius = 90;
@@ -58,7 +58,7 @@
   
           slicePolygons.push({
             points: slicePoints,
-            label: `Slice ${i + 1}`,
+            label: `과목 ${i + 1}`,
             labelX,
             labelY,
             color: colors[i % colors.length], // Assign colors in a circular manner

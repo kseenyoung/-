@@ -6,7 +6,6 @@ import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.model.dto.CategoryDto;
 import com.ssafy.backend.category.service.CategoryService;
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
 import com.ssafy.backend.mokkoji.model.dto.*;
@@ -16,7 +15,6 @@ import com.ssafy.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.ALREADY_EXIST_USER_MOKKOJI;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 //각 서비스를 끌어다 쓰기 위해서 퍼사드 형태로 모듈 분리
 //하나의 서비스에는 하나의 레포만 존재하도록 설정 -> 비지니스 로직 처리
@@ -125,9 +123,9 @@ public class MokkojiFacade {
     @Transactional
     public void leaveMokkoji(String userId) {
         User user = userService.isExistUser(userId);
-        if(user.getMokkojiId() == null) throw new MyException("회원 모꼬지가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
+        if(user.getMokkojiId() == null) throw new BaseException(NOT_EXIST_USER_MOKKOJI);
         if(user.getMokkojiId().getLeaderId().equals(user.getUserId()))
-            throw new MyException("길드장은 탈퇴할 수 없습니다.", HttpStatus.BAD_REQUEST);
+            throw new BaseException(NOT_LEAVE_MOKKOJI_KING);
         userService.kickMokkojiUser(user);
     }
 

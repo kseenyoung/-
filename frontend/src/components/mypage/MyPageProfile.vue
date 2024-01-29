@@ -11,7 +11,7 @@
       <span>10P</span>
     </div>
     <div>
-      <span>"상태메시지"</span>
+      <span>"내 상태"</span>
       <i class="bi bi-pencil-fill common-pointer" data-bs-toggle="collapse" data-bs-target="#statusmsg-accordion" aria-expanded="true" aria-controls="collapseOne"></i>
       <div id="statusmsg-accordion" class="accordion-collapse collapse" aria-labelledby="headingOne">
         <div class="accordion-body input-group">
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <div>길드: -</div>
+    <div>모꼬지: -</div>
   </div>
 </template>
 

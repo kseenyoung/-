@@ -30,8 +30,10 @@ module.exports = {
         },
       },
     ],
+
     'prettier/prettier': [
-      'error',
+      //error -> warn으로 수정
+      'warn',
       {
         singleQuote: true,
         semi: true,
@@ -40,6 +42,7 @@ module.exports = {
         printWidth: 80,
         bracketSpacing: true,
         arrowParens: 'always',
+        endOfLine: 'auto',
       },
     ],
   },

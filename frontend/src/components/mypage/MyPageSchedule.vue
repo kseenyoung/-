@@ -4,7 +4,7 @@
       <button @click="prevMonth" class="cal-btn"><i class="bi bi-caret-left-square-fill"></i></button>
       <span class="span-header">{{ currentMonth }}</span>
       <button @click="nextMonth" class="cal-btn"><i class="bi bi-caret-right-square-fill"></i></button>
-      <button @click="goToToday" class="btn common-btn">Today</button>
+      <button @click="goToToday" class="btn common-btn">오늘</button>
     </div>
     <table>
       <thead>

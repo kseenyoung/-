@@ -1,21 +1,23 @@
-
 <template>
   <div class="container d-flex flex-column">
     <nav class="mypage-wrapper-router">
-      <RouterLink :to="{ name : 'myPageSchedule' }">스케줄</RouterLink>
-      <RouterLink :to="{ name : 'myPageFriend' }">친구</RouterLink>
-      <RouterLink :to="{ name : 'myPageInformation' }">정보</RouterLink>
+      <RouterLink :to="{ name: 'myPageSchedule' }">일정</RouterLink>
+      <RouterLink :to="{ name: 'myPageFriend' }">친구</RouterLink>
+      <RouterLink :to="{ name: 'myPageQnA' }">질문</RouterLink>
+      <RouterLink :to="{ name: 'myPageAlarm' }">알림</RouterLink>
+      <RouterLink :to="{ name: 'myPageInventory' }">보관함</RouterLink>
+      <RouterLink :to="{ name: 'myPageInformation' }">정보</RouterLink>
     </nav>
     <div class="mypage-wrapper-content d-flex">
-      <MyPageProfile/>
+      <MyPageProfile />
       <div class="mypage-wrapper-spring">
-        <img src="@/assets/img/mypage/notespring2.png" class="notespring">
+        <img src="@/assets/img/mypage/notespring2.png" class="notespring" />
       </div>
       <transition name="flip" mode="out-in">
-      <div class="mypage-content flex-fill" :key="$route.fullPath">
-        <RouterView/>
-      </div>
-    </transition>
+        <div class="mypage-content flex-fill" :key="$route.fullPath">
+          <RouterView />
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -25,8 +27,7 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
 </script>
 
 <style lang="scss" scoped>
-
-.notespring { 
+.notespring {
   height: 580px;
   position: relative;
   top: 50px;
@@ -40,11 +41,11 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
   border-style: solid;
   border-color: #999;
   border-radius: 3px 3px 0px 0px;
-  margin: 0px 10px;
+  margin: 0px 5px;
   position: relative;
   top: -4px;
-  left: 65%;
-  padding: 5px 30px;
+  left: 40%;
+  padding: 5px 20px;
   // transition: none;
 }
 .router-link-exact-active {
@@ -69,6 +70,9 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
   padding: 20px 40px;
   border-radius: 10px;
   // box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  box-shadow:
+    rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+    rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 </style>
