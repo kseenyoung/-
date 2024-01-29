@@ -29,6 +29,7 @@ import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
@@ -328,5 +329,11 @@ public class UserServiceImpl implements UserService {
 
 //        System.out.println(userViewVO);
         return null;
+    }
+
+    @Override
+    public String getUserEmail(User userEmailChange) {
+        User user = userRepository.findUserByUserId(userEmailChange.getUserId());
+        return user.getUserEmail();
     }
 }
