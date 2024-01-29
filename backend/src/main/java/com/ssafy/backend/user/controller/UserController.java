@@ -458,13 +458,6 @@ public class UserController {
 
     /*
      * 카카오 로그인
-     * https://kauth.kakao.com/oauth/authorize?client_id=daad1a19aba64000fb178eb96ad2889d&redirect_uri=https://localhost:8080/dagak/user/kakaoOauth&response_type=code
-     *
-     * api 토큰
-     * daad1a19aba64000fb178eb96ad2889d
-     *
-     * redirect url
-     * https://localhost:8080/dagak/user/kakaoOauth
      */
     @GetMapping("kakaoOauth")
     public BaseResponse<?> kakaoOauth(@RequestParam String code, HttpServletRequest request) {
@@ -488,14 +481,6 @@ public class UserController {
 
     /*
      * 구글 로그인
-     *
-     * 클라이언트 ID : 273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com
-     *
-     * 클라이언트 비밀번호 : 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
-     *
-     * redirect urlq
-     *
-     * https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com&redirect_uri=https://localhost:8080/dagak/user/googleOauth&response_type=code&scope=email
      */
     @RequestMapping("googleOauth")
     public BaseResponse<?> googleOauth(HttpServletRequest request, @RequestParam(value = "code") String authCode, HttpServletResponse response) throws Exception {
