@@ -53,9 +53,18 @@
       <RouterLink to="/regist">회원가입</RouterLink>
     </div>
   </div>
+
+  <vue-recaptcha
+    v-show="true"
+    sitekey="6Lcufl8pAAAAAN7h2t1u9Dgm1_zo9wKoaYRX59H6"
+  ></vue-recaptcha>
+
 </template>
 
-<script setup></script>
+<script setup>
+import vueRecaptcha from 'vue3-recaptcha2'
+
+</script>
 
 <style lang="scss" scoped>
 .container {
