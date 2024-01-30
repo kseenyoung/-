@@ -9,14 +9,14 @@ import lombok.Setter;
 @Setter
 public class InventorySaveRequestDto {
     private String userId;
-    private List<IsWearingDto> isWearingDto;
+    private List<Integer> itemList;
 
     public InventorySaveRequestDto() {
     }
 
     @Builder
-    public InventorySaveRequestDto(String userId, List<IsWearingDto> isWearingDto) {
+    public InventorySaveRequestDto(String userId, List<Integer> itemList) {
         this.userId = userId;
-        this.isWearingDto = isWearingDto;
+        this.itemList = itemList;
     }
 }

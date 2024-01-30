@@ -1,11 +1,10 @@
 package com.ssafy.backend.inventory.service;
+
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.inventory.model.domain.Inventory;
 import com.ssafy.backend.inventory.model.dto.InventoryDto;
 import com.ssafy.backend.inventory.model.dto.InventoryResponseDto;
 import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDto;
-import com.ssafy.backend.inventory.model.dto.IsWearingDto;
 import com.ssafy.backend.inventory.model.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,12 +16,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.DUPLICATE_INVENTORY_ID;
-import static com.ssafy.backend.common.response.BaseResponseStatus.TWO_UP_PUT_ON_CLOTH;
+import static com.ssafy.backend.common.response.BaseResponseStatus.EMPTY_INVENTORY;
 
 @Service
 @RequiredArgsConstructor
@@ -56,41 +53,39 @@ public class InventoryServiceImpl implements InventoryService {
     @Override
     public void saveInventory(InventorySaveRequestDto dto) {
         //장비들 진짜 있는지 확인
-        List<Inventory> inventories = inventoryRepository.findAllByUserId(dto.getUserId());
+        List<Inventory> inventories = inventoryRepository.findAllByUserIdAndInventoryIdIn(dto.getUserId(),dto.getItemList());
         //size == 0 이면 아무 장비도 없음
-        if(inventories.size() == 0) return;
+        if(inventories.isEmpty()) throw new BaseException(EMPTY_INVENTORY);
+
+        //입력받은 착용할 장비들
+        List<Integer> isWearingDto = dto.getItemList();
 
         //실제 장착할 장비들을 초기화
-        inventories.forEach(Inventory::resetCloth);
-        //입력받은 착용할 장비들
-        List<IsWearingDto> isWearingDto = dto.getIsWearingDto();
-
-        //map으로 중복체크
-        Map<Integer, IsWearingDto> wearingDtoMap = isWearingDto.stream()
-                .collect(Collectors.toMap(IsWearingDto::getInventoryId, Function.identity(),
-                        (existing, replacement) -> {
-                            throw new BaseException(DUPLICATE_INVENTORY_ID);
-                        }));
-
-        HashSet<Integer> set = new HashSet<>();
-
-        //장비 착용 로직 ->
-        List<Inventory> list = inventories.stream()
-                .filter(inventory -> wearingDtoMap.containsKey(inventory.getInventoryId()))
-                .peek(inventory -> {
-                    IsWearingDto wearingDto = wearingDtoMap.get(inventory.getInventoryId());
-                    if (wearingDto.getIsWearing() == 1) {
-                        int categoryId = inventory.getProduct().getProductCategory().getProductCategoryId();
-                        if (set.contains(categoryId)) {
-                            throw new BaseException(TWO_UP_PUT_ON_CLOTH);
-                        }
-                        set.add(categoryId);
+        List<Inventory> saveItems = new ArrayList<Inventory>();
+        List<Integer> categories = new ArrayList<Integer>();
+        //현재 DB에서 장비 착용 벗겨야하는 애들 saveItems에 추가
+        inventories.stream().filter(
+                        inventory -> isWearingDto.contains(inventory.getInventoryId()))
+                .forEach(inventory ->{
+                    categories.add(inventory.getProduct().getProductCategory().getProductCategoryId());
+                });
+        inventories.stream().filter(inventory -> categories.contains(inventory.getProduct().getProductCategory().getProductCategoryId()))
+                .forEach(inventory ->  {
+                    inventory.resetCloth();
+                    saveItems.add(inventory);
+                });
+        //입력 중복체크 + 장비 착용할 애들 토글 하기
+        HashSet<Integer> checkItems = new HashSet<Integer>();
+        inventories.stream().filter(inventory -> isWearingDto.contains(inventory.getInventoryId()) && inventory.getIsWearing() == 0)
+                .forEach(inventory ->  {
+                    if (checkItems.contains(inventory.getProduct().getProductCategory().getProductCategoryId())) {
+                        throw new BaseException(DUPLICATE_INVENTORY_ID);
                     }
+                    checkItems.add(inventory.getProduct().getProductCategory().getProductCategoryId());
                     inventory.changeCloth();
-                })
-                .collect(Collectors.toList());
-
-        inventoryRepository.saveAll(list);
+                    saveItems.add(inventory);
+                });
+        inventoryRepository.saveAll(saveItems);
     }
 
 }

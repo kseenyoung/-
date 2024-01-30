@@ -1,13 +1,10 @@
 package com.ssafy.backend.inventory.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.inventory.model.dto.InventoryResponseDto;
 import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDto;
-import com.ssafy.backend.inventory.model.dto.IsWearingDto;
 import com.ssafy.backend.inventory.service.InventoryService;
 import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
@@ -27,8 +22,6 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 @RequestMapping("/inventory")
 public class InventoryController {
     private final InventoryService inventoryService;
-    private final ObjectMapper objectMapper;
-
     @PostMapping("")
     private BaseResponse<?> saveInventory(@RequestBody HashMap<String, Object> body,
                                           HttpServletRequest request) throws JsonProcessingException {
@@ -41,14 +34,11 @@ public class InventoryController {
         String sign = (String) body.get("sign");
 
         if ("save".equals(sign)) {
-            List<Map<String, Object>> mapList  = (List<Map<String, Object>>) body.get("list");
+            List<Integer> itemList  = (List<Integer>) body.get("itemList");
 
-            List<IsWearingDto> dtoList = mapList.stream()
-                    .map(map -> objectMapper.convertValue(map, IsWearingDto.class))
-                    .collect(Collectors.toList());
             inventoryService.saveInventory(InventorySaveRequestDto.builder()
                     .userId(userId)
-                    .isWearingDto(dtoList)
+                    .itemList(itemList)
                     .build());
             return new BaseResponse<>(SUCCESS);
         }
@@ -65,5 +55,10 @@ public class InventoryController {
 
         return new BaseResponse<>(inventory);
     }
+
+
+
+
+
 
 }
