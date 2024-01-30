@@ -41,7 +41,7 @@ public class MokkojiController {
     //탑텐 조회
     @GetMapping("/rank10")
     public BaseResponse<?> mokkojiRankings(){
-        List<MokkojiRankingsResponseDto> mokkojiRankingsResponseDto = mokkojiFacade.geTmokkojiTopTen();
+            List<MokkojiRankingsResponseDto> mokkojiRankingsResponseDto = mokkojiFacade.geTmokkojiTopTen();
         return new BaseResponse<>(mokkojiRankingsResponseDto);
     }
     //이름으로 순위 검색
