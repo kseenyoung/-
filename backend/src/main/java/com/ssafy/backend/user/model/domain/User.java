@@ -74,4 +74,7 @@ public class User {
     public void setUserStatusMessage(String userStatusMessage) {
         this.userStatusMessage = userStatusMessage;
     }
+    public void setUserPoint(int userPoint) {
+        this.userPoint = userPoint;
+    }
 }

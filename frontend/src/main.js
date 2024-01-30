@@ -5,8 +5,10 @@ import App from './App.vue';
 import router from './router';
 
 import axios from 'axios';
-axios.defaults.baseURL = 'https://localhost:8080/dagak';
+
+axios.defaults.baseURL = 'https://localhost:8080';
 axios.defaults.withCredentials = true;
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 // npm install bootstrap-vue-3
 import BootstrapVue3 from 'bootstrap-vue-3';

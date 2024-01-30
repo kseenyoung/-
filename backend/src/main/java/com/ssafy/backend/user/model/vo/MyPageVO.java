@@ -6,9 +6,9 @@ import java.util.Date;
 
 // userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint, userNickname
 public class MyPageVO {
-    private String userId, userName, userNickname, mokkojiId, userPicture, userEmail, userPhonenumber;
+    private String userId, userName, userNickname, userPicture, userEmail, userPhonenumber;
     private String userBirthday;
-    private Integer userPoint;
+    private Integer userPoint, mokkojiId;
 
     private String mokkojiName;
 
@@ -54,11 +54,11 @@ public class MyPageVO {
         this.userNickname = userNickname;
     }
 
-    public String getMokkojiId() {
+    public Integer getMokkojiId() {
         return mokkojiId;
     }
 
-    public void setMokkojiId(String mokkojiId) {
+    public void setMokkojiId(Integer mokkojiId) {
         this.mokkojiId = mokkojiId;
     }
 

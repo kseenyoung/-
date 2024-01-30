@@ -128,10 +128,10 @@ const enterRoom = async (sessionId) => {
 const createSession = async (sessionId) => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
-    { sign: "enterRandomroom", sessionName: sessionId, videoCodec: "VP8" },
+    { sign: "enterRandomroom", sessionName: sessionId, videoCodec: "VP8"},
     {
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
   console.log(response.data.result.session);
   mySession.value = response.data.result.session;

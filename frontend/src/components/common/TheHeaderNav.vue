@@ -81,11 +81,10 @@ const logout = function () {
       //유저정보 공백으로
       userStore.loginUserInfo = {};
     });
-  window.location.reload(); //새로고침(임시)
   //성공 시 홈으로
-  // router.push({
-  //   name: 'home',
-  // });
+  router.push({
+    name: 'home',
+  });
 };
 
 // 헤더 스크롤

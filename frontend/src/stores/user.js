@@ -11,7 +11,7 @@ export const useUserStore = defineStore(
     //로그인 세션 test
     const loginUser = ref('');
     const login = function () {
-      const id = ref('ssafy123');
+      const id = ref('ssafy1234');
       const sub = ref('SQLD');
       const user = ref({
         id: id.value,

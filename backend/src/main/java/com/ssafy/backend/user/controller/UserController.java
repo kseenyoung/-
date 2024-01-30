@@ -18,6 +18,7 @@ import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.GoogleOAuthService;
 import com.ssafy.backend.user.service.KakaoOAuthService;
+import com.ssafy.backend.user.service.ReCaptchaService;
 import com.ssafy.backend.user.service.UserService;
 import io.openvidu.java.client.OpenVidu;
 
@@ -36,7 +37,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +79,9 @@ public class UserController {
     @Autowired
     GoogleOAuthService googleOAuthService;
 
+    @Autowired
+    ReCaptchaService reCaptchaService;
+
 
     // Transaction test
     @Autowired
@@ -95,6 +102,8 @@ public class UserController {
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
         HttpSession session = request.getSession(false);
+        System.out.println(sign);
+        System.out.println(session);
 
         if (sign != null) {
             switch (sign) {
@@ -130,6 +139,7 @@ public class UserController {
 
                     UserLoginDto userLoginDto = new UserLoginDto(loginUserId, loginUserPassword);
                     if (userService.login(userLoginDto)) {  // 로그인 성공 시...
+
                         User user = new User(loginUserId);
                         session = request.getSession();
                         session.setAttribute("User", user);
@@ -185,17 +195,9 @@ public class UserController {
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
                         return new BaseResponse<>(SUCCESS_LOGIN);
                     } else {  // 로그인 실패 시
-                        if (session.getAttribute("kakaoEmail") != null) {
-                            session.removeAttribute("kakaoEmail");
-                            throw new BaseException(FAIL_TO_LINK);
+                        if (session!=null){
+                            session.invalidate();
                         }
-
-                        if (session.getAttribute("googleEmail") != null) {
-                            // 세션에 googleEmail 이 있으면 연동함.
-                            session.removeAttribute("googleEmail");
-                            throw new BaseException(FAIL_TO_LINK);
-                        }
-
                         // 로그인 실패 시 카운트 시작.
                         int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
                         if (remainTime != 0) {
@@ -329,7 +331,7 @@ public class UserController {
 
                         if (isMatched) {
                             userService.changePassword(originUserId, newPassword);
-                            session.invalidate();
+                            // session.invalidate(); 
                             return new BaseResponse<>(SUCCESS_CHANGE_PASSWORD);
                         } else {
                             throw new BaseException(NOT_MATCH_PASSWORD);
@@ -512,7 +514,23 @@ public class UserController {
             session.setAttribute("googleEamil", googleEamil);
             throw new BaseException(NEED_GOOGLE_LINK);
         }
+    }
+
+    /*
+     * reCAPTCHA
+     */
+    @PostMapping("recaptcha")
+    public void isRobot(@RequestBody Map response, HttpServletRequest request) {
+        String recaptchaResponse = (String) response.get("recaptchaResponse");
+        if ("만료".equals(recaptchaResponse)) {
+            boolean isNotRobot = false;
+            System.out.println("만료됨");
+        } else {
+            boolean isNotRobot = ReCaptchaService.isRobot(recaptchaResponse);
+            System.out.println(isNotRobot);
+        }
 
     }
+
 
 }
