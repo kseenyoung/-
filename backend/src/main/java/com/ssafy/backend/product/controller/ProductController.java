@@ -9,6 +9,10 @@ import com.ssafy.backend.product.service.ProductService;
 import com.ssafy.backend.user.model.domain.User;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.Session;
@@ -55,6 +59,10 @@ public class ProductController {
                 int productId = Integer.parseInt((String)body.get("productId"));
                 productService.buyProduct(productId,userId);
                 return new BaseResponse<>(SUCCESS_BUY_PRODUCT);
+            case("getList"):
+                List<Product> productList = productService.getList();
+                return new BaseResponse<>(productList);
+
             case("search"):
                 int categoryId = -1;
                 try{

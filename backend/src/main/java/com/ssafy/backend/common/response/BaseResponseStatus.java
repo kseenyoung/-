@@ -70,6 +70,7 @@ public enum BaseResponseStatus {
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_DELETE_ALARM(false, 2033, "이미 삭제된 알람입니다"),
+
     ALREADY_EXIST_USER(false, 2034, "이미 존재하는 회원입니다."),
     ALREADY_EXIST_ID(false, 2035, "이미 존재하는 아이디입니다."),
     FAIL_LOGIN(false, 2036, "로그인에 실패했습니다."),
@@ -90,7 +91,7 @@ public enum BaseResponseStatus {
 
     FAIL_TO_LINK(false, 2047,"연동에 실패했습니다."),
     FAIL_TO_CONNECT(false, 2048,"통신에 실패했습니다."),
-    
+
 
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/
     AVOID_DUPLICATE_ALARM(false, 2101, "이미 상대방에게 요청을 보냈습니다."),
@@ -115,7 +116,7 @@ public enum BaseResponseStatus {
     JSON_PARSING_ERROR(false, 2300, "이미 상대방과 친구입니다."),
 
     /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
-    WRONG_TYPE(false,2400,"자료형이 일치하지 않습니다."),
+//    WRONG_TYPE(false,2400,"자료형이 일치하지 않습니다."),
 
 
     /**

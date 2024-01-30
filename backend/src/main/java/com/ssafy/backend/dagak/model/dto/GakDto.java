@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-
 import static com.ssafy.backend.common.response.BaseResponseStatus.WRONG_TYPE;
 
 @Getter
@@ -15,14 +12,10 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.WRONG_TYPE;
 @ToString
 public class GakDto {
 
-    @Id
-    @Column
     private Integer gakId;
 
-    @Column
     private Integer dagakId, categoryId, gakOrder, runningTime;
 
-    @Column
     private String userId;
 
 
@@ -31,6 +24,13 @@ public class GakDto {
         setGakOrder(gakOrder);
         setRunningTime(runningTime);
         setUserId(userId);
+    }
+
+    public GakDto(Integer categoryId, Integer gakOrder, Integer runningTime, String userId){
+        this.categoryId = categoryId;
+        this.gakOrder = gakOrder;
+        this.runningTime = runningTime;
+        this.userId = userId;
     }
 
     public void setGakId(Integer gakId) {

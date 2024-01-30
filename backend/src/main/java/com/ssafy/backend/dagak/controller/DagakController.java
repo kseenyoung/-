@@ -3,12 +3,10 @@ package com.ssafy.backend.dagak.controller;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
 import com.ssafy.backend.dagak.model.dto.GakDto;
+import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
 import com.ssafy.backend.dagak.service.DagakFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -73,16 +71,28 @@ public class DagakController {
 
             case "updateEndTime":
                 break;
-
-            case "getCalendarAll":
-                break;
-
-            case "getGaks":
-                break;
-
         }
 
 
         return new BaseResponse(NOT_MATCH_SIGN);
     }
+
+    @GetMapping("calendar")
+    public BaseResponse<?> getCalendarDagaks(HttpServletRequest request){
+        //        HttpSession session = request.getSession(false);
+//
+//        User user = (User) session.getAttribute("User");
+//        if(session == null)
+//            return new BaseResponse<>(EMPTY_SESSION);
+
+//        String userId = user.getUserId();
+        String userId = "ssafy";
+        System.out.println("들어오나?");
+
+        List<CalendarDagakVO> calendarDagakVOS = dagakFacade.getCalendarDagaks(userId);
+
+
+        return new BaseResponse<>(calendarDagakVOS);
+    }
+
 }

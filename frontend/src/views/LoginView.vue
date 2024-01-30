@@ -66,7 +66,7 @@
 		@expire="recaptchaExpired"
 	  @fail="recaptchaFailed"
 		@error="recaptchaError"
-  ></vue-recaptcha> 
+  ></vue-recaptcha>
 </template>
 
 <script setup>
@@ -91,7 +91,7 @@ const login = async function () {
     .post('https://localhost:8080/dagak/user', body, {
       headers: {
         'Content-Type': 'application/json',
-      }, 
+      },
     })
     .then((res) => res.data)
     .then((json) => {
@@ -152,7 +152,7 @@ const recaptchaVerified = async function (response) {
         'Content-Type': 'application/json',
       },
     })
-}; 
+};
 
 </script>
 
@@ -296,4 +296,5 @@ label {
   position: relative;
   top: -2.5px;
 }
+
 </style>
