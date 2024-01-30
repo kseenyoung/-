@@ -94,6 +94,7 @@ public class UserServiceImpl implements UserService {
 //        User user = userRepository.findById(loginUserId)
 //                .orElseThrow(() -> new BaseException(FAIL_LOGIN));
         User user = userRepository.findUserByUserId(loginUserId);
+//        System.out.println(user);
         if (user == null) {
             return false;
         } else {
@@ -330,8 +331,10 @@ public class UserServiceImpl implements UserService {
         myPageVO.setUserEmail(user.getUserEmail());
         myPageVO.setUserBirthday(user.getUserBirthday());
         myPageVO.setUserPoint(user.getUserPoint());
+        myPageVO.setUserPhonenumber(user.getUserPhonenumber());
 
         if (user.getMokkojiId() != null) {  // 모꼬지가 있는 회원일 때
+            myPageVO.setMokkojiId(user.getMokkojiId().getMokkojiId());
             myPageVO.setMokkojiName(user.getMokkojiId().getMokkojiName());
         }
 
