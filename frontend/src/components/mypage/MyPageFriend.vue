@@ -7,11 +7,11 @@
       <div class="friend-list-detail">
         <img src="@/assets/img/기본프로필_갈색.jpg">
         <div class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">hong</div>
-        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>온라인</div>
+        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>접속중</div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
         <ul class="dropdown-menu">
           <li>hong</li>
-          <li>길드명</li>
+          <li>모꼬지</li>
           <li>"오늘도 파이팅!!"</li>
         </ul>
       </div>
@@ -19,43 +19,43 @@
       <div class="friend-list-detail">
         <img src="@/assets/img/기본프로필_갈색.jpg">
         <div>닉네임1</div>
-        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>온라인</div>
+        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>접속중</div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
       </div>
       <div class="friend-list-detail">
         <img src="@/assets/img/기본프로필_갈색.jpg">
         <div>닉네임1</div>
-        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>온라인</div>
+        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>접속중</div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
       </div>
       <div class="friend-list-detail">
         <img src="@/assets/img/기본프로필_갈색.jpg">
         <div>닉네임1</div>
-        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>온라인</div>
+        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>접속중</div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
       </div>
       <div class="friend-list-detail">
         <img src="@/assets/img/기본프로필_갈색.jpg">
         <div>닉네임2</div>
-        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>오프라인</div>
+        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>접속해제</div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
       </div>
       <div class="friend-list-detail">
         <img src="@/assets/img/기본프로필_갈색.jpg">
         <div>닉네임2</div>
-        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>오프라인</div>
+        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>접속해제</div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
       </div>
       <div class="friend-list-detail">
         <img src="@/assets/img/기본프로필_갈색.jpg">
         <div>닉네임2</div>
-        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>오프라인</div>
+        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>접속해제</div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
       </div>
       <div class="friend-list-detail">
         <img src="@/assets/img/기본프로필_갈색.jpg">
         <div>닉네임2</div>
-        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>오프라인</div>
+        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>접속해제</div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
       </div>
 

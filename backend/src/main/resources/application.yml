@@ -1,4 +1,16 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: kimssafy1030@gmail.com
+    password: vzxkizmiaqcjrknm
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -33,13 +45,13 @@ spring:
       console:
         enabled: true
   redis:
-    host: 3.143.74.33
+    host: 43.202.55.218
     port: 6379
   mybatis:
     mapper-locations: classpath:mybatis/mappers/**/*.xml
 openvidu:
   secret: MY_SECRET
-  url: https://capstone-6.shop:4443/
+  url: https://i10a404.p.ssafy.io/
 server:
   servlet:
     context-path: /dagak
@@ -48,3 +60,14 @@ server:
     key-store: classpath:keystore.p12
     key-store-type: PKCS12
     key-store-password: dongjae123
+
+google:
+  auth:
+    url: https://oauth2.googleapis.com
+    scope: email
+  login:
+    url: https://accounts.google.com
+  redirect.uri: https://localhost:8080/dagak/user/googleOauth
+  client:
+    id: 273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com
+  secret: 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

@@ -1,4 +1,4 @@
-package com.ssafy.backend.user.model;
+package com.ssafy.backend.user.model.dto;
 
 
 import com.ssafy.backend.common.exception.MyException;
@@ -29,7 +29,7 @@ public class UserSignupDto {
         if (userId == null) {
             throw new MyException("유저 아이디가 없습니다.", HttpStatus.BAD_REQUEST);
         }
-        RegEx.isValidUserId(userId);
+//        RegEx.isValidUserId(userId);
         this.userId = userId;
     }
 

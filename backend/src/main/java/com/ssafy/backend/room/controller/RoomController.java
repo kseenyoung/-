@@ -1,20 +1,23 @@
 package com.ssafy.backend.room.controller;
 
-import com.ssafy.backend.common.utils.HttpResponseBody;
+import com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.room.model.dto.AnswerDto;
+import com.ssafy.backend.room.model.dto.ConnectionDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.service.RoomService;
 import io.openvidu.java.client.OpenVidu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.EMPTY_SIGN;
 
 @RestController
 @RequestMapping("room")
@@ -38,23 +41,27 @@ public class RoomController {
     }
 
     @PostMapping("")
-    public ResponseEntity<HttpResponseBody<?>> room(@RequestBody Map<String, Object> body) throws Exception {
+    public BaseResponse<?> room(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
-        ResponseEntity<HttpResponseBody<?>> response = null;
+        String userId="yj";
         String sessionName;
         String videoCodec;
         String token;
-        int questionNumber;
 
         switch (sign){
             case "enterRandomroom": // 랜덤 방 입장
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
-
                 RoomEnterDto randomRoomEnterDto = new RoomEnterDto(sessionName, videoCodec);
-                token = roomService.enterRandomroom(randomRoomEnterDto);
+                ConnectionDto connectionDto = roomService.enterRandomroom(randomRoomEnterDto);
 
-                return new ResponseEntity<>(new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token),HttpStatus.OK);
+                return new BaseResponse<>(connectionDto);
+            case "enterMyRoom":
+                userId = (String) body.get("userId");
+                RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, "VP8");
+                token = roomService.enterDefaultroom(defaultRoomEnterDto);
+
+                return new BaseResponse<>(token);
             case "enterMoccojiroom": // 모꼬지(길드) 방 입장
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
@@ -62,25 +69,32 @@ public class RoomController {
                 RoomEnterDto moccojiRoomEnterDto = new RoomEnterDto(sessionName, videoCodec);
                 token = roomService.enterMoccojiroom(moccojiRoomEnterDto);
 
-                return new ResponseEntity<>(new HttpResponseBody<>(sessionName+"방 토큰을 발급합니다.", token),HttpStatus.OK);
+                return new BaseResponse<>(token);
             case "askQuestion": // 질문하기
-                sessionName = (String) body.get("sessionName");
-                String question = (String) body.get("question");
+                sessionName = (String) body.get("session");
+                String qustionData = (String) body.get("data");
 
-                QuestionDto questionDto = new QuestionDto(sessionName, question);
-                roomService.askQuestion(questionDto);
+                System.out.println("sessionName: " + sessionName);
+                QuestionDto questionDto = new QuestionDto(userId, sessionName, qustionData);
+                questionDto = roomService.askQuestion(questionDto);
+
+                return new BaseResponse<>(questionDto);
             case "answerQuestion": // 답변하기
-                sessionName = (String) body.get("sessionName");
-                String answer = (String) body.get("answer");
-                questionNumber = (int) body.get("questionNumber");
+                sessionName = (String) body.get("session");
+                String answerData = (String) body.get("data");
+                String questionId = (String) body.get("questionId");
 
-                AnswerDto answerDto = new AnswerDto(sessionName, answer, questionNumber);
-                roomService.answerQuestion(answerDto);
+                
+                AnswerDto answerDto = new AnswerDto(userId,sessionName,answerData,questionId);
+                answerDto = roomService.answerQuestion(answerDto);
+
+                return new BaseResponse<>(answerDto);
             case "findAnswer": // 답변 찾기
-                questionNumber = (int) body.get("answer");
-                List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionNumber);
-                return new ResponseEntity<>(new HttpResponseBody<>("답변을 불러옵니다.",answerDtos),HttpStatus.OK);
+                questionId = (String) body.get("questionId");
+                List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionId);
+
+                return new BaseResponse<>(answerDtos);
         }
-        return null;
+        throw new BaseException(EMPTY_SIGN);
     }
 }

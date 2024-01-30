@@ -3,10 +3,7 @@ package com.ssafy.backend.room.model.domain;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import org.springframework.data.redis.core.index.Indexed;
 
 
 @Getter
@@ -14,12 +11,15 @@ import javax.persistence.GenerationType;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 @RedisHash("answer")
 public class Answer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer answerId;
-    String sessionName;
-    Integer questionId;
+    String answerId;
+
+    @Indexed
+    String questionId;
     String answer;
+    String session;
+    String userId;
 }

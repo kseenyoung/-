@@ -1,14 +1,12 @@
 package com.ssafy.backend.user.model.domain;
 
-import com.ssafy.backend.user.model.UserSignupDto;
+import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
+import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.*;
-import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
+
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
@@ -17,16 +15,19 @@ import java.util.Date;
 @Getter
 public class User {
 
-    @Column
-    private Integer guildId;
 
     @Column
-    private Integer userPoint;
+    private Integer userPoint, userTotalStudyTime;
+
+    @ManyToOne
+    @JoinColumn(name = "mokkojiId")
+    private Mokkoji mokkojiId;
+
 
     @Column
-    private String userPassword,  userName,
+    private String userPassword, userName,
             modifyUserPasswordTime, userPhonenumber, userBirthday,
-    userEmail, userNickname, userPicture,  todayDagakId, userStatusMessage;
+            userEmail, userNickname, userPicture, todayDagakId, userStatusMessage, kakaoEmail, googleEmail;
 
     @Column
     private LocalDateTime createdDate;
@@ -39,4 +40,34 @@ public class User {
         return this.userPassword.equals(encryptedPassword);
     }
 
+    public void usePoint(int userPoint) {
+        this.userPoint -= userPoint;
+    }
+
+    public void saveMokkoji(Mokkoji mokkoji) {
+        this.mokkojiId = mokkoji;
+    }
+
+    public void setUserNickname(String userNickname) {
+        this.userNickname = userNickname;
+    }
+
+    public User(String userId) {
+        if (userId != null) {
+            this.userId = userId;
+        } else {
+            // do something...
+        }
+    }
+
+    public void setKakaoEmail(String kakaoEmail) {
+        this.kakaoEmail = kakaoEmail;
+    }
+
+    public void setGoogleEmail(String googleEmail) {
+        this.googleEmail = googleEmail;
+    }
+
+    public void setUserEmail(String newEmail) { this.userEmail=newEmail;
+    }
 }
