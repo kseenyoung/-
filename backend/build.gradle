@@ -47,8 +47,13 @@ dependencies {
 
     implementation group: 'org.javassist', name: 'javassist', version: '3.15.0-GA'
 
+    // Jasypt
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 
+    // reCAPTCHA
+    implementation 'net.tanesha.recaptcha4j:recaptcha4j:0.0.7'
+    implementation 'javax.json:javax.json-api:1.1.2'
+    implementation 'org.glassfish:javax.json:1.1'
 }
 
 tasks.named('test') {

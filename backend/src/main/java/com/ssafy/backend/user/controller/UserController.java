@@ -18,6 +18,7 @@ import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.GoogleOAuthService;
 import com.ssafy.backend.user.service.KakaoOAuthService;
+import com.ssafy.backend.user.service.ReCaptchaService;
 import com.ssafy.backend.user.service.UserService;
 import io.openvidu.java.client.OpenVidu;
 
@@ -36,7 +37,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -75,10 +79,22 @@ public class UserController {
     @Autowired
     GoogleOAuthService googleOAuthService;
 
+    @Autowired
+    ReCaptchaService reCaptchaService;
+
+
+    // Transaction test
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    SecurityMapper securityMapper;
+
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
-        HttpSession session = request.getSession();
-        session.setAttribute("googleEmail", "kdn1030@gmail.com");
+        userMapper.signup(null);
+        securityMapper.insertSalt(new SecurityDto("userid", "PLZ"));
     }
 
 
@@ -86,6 +102,8 @@ public class UserController {
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
         HttpSession session = request.getSession(false);
+        System.out.println(sign);
+        System.out.println(session);
 
         if (sign != null) {
             switch (sign) {
@@ -121,6 +139,7 @@ public class UserController {
 
                     UserLoginDto userLoginDto = new UserLoginDto(loginUserId, loginUserPassword);
                     if (userService.login(userLoginDto)) {  // 로그인 성공 시...
+
                         User user = new User(loginUserId);
                         session = request.getSession();
                         session.setAttribute("User", user);
@@ -129,6 +148,7 @@ public class UserController {
                             // 세션에 kakaoEmail 이 있으면 연동함.
                             String kakaoEmail = (String) session.getAttribute("kakaoEmail");
                             userService.linkKakao(loginUserId, kakaoEmail);
+                            session.removeAttribute("kakaoEmail");
                             return new BaseResponse<>(SUCCESS);
                         }
 
@@ -136,6 +156,7 @@ public class UserController {
                             // 세션에 googleEmail 이 있으면 연동함.
                             String googleEmail = (String) session.getAttribute("googleEmail");
                             userService.linkGoogle(loginUserId, googleEmail);
+                            session.removeAttribute("googleEmail");
                             return new BaseResponse<>(SUCCESS);
                         }
 
@@ -146,7 +167,7 @@ public class UserController {
                         for (FriendVO friend : friendList) {
                             System.out.println(friend.getUserId() + "에게 로그인 신호");
 
-                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), "login",loginUserId);
+                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), "login", loginUserId);
                             URI uri = UriComponentsBuilder
                                     .fromUriString(OPENVIDU_URL)
                                     .path("/openvidu/api/signal")
@@ -173,10 +194,14 @@ public class UserController {
 
                         loginHistoryService.successLogin(loginUserId, loginUserIp);
                         return new BaseResponse<>(SUCCESS_LOGIN);
-                    } else {  // 로그인 실패 시 카운트 시작.
+                    } else {  // 로그인 실패 시
+                        if (session!=null){
+                            session.invalidate();
+                        }
+                        // 로그인 실패 시 카운트 시작.
                         int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
                         if (remainTime != 0) {
-                            return new BaseResponse<>(remainTime+"초 뒤에 다시 시도해주세요");
+                            return new BaseResponse<>(remainTime + "초 뒤에 다시 시도해주세요");
                         } else {
                             return new BaseResponse<>("로그인 실패");
                         }
@@ -331,22 +356,40 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                /*
-                 * 이메일 변경을 위한 인증
-                 */
+                    /*
+                     * 이메일 변경을 위한 인증
+                     */
                 case "sendEmailForChangeEmail":
-                    String userEmailForChange = (String) body.get("userEmailforChange");
-                    RegEx.isValidUserEmail(userEmailForChange);
+                    session = request.getSession(false);
+                    if (session != null) {
+                        User userEmailChange = (User) session.getAttribute("User");
+                        if (userEmailChange != null) {
+                            System.out.println(userEmailChange);
+                            String originTryUserEmail = (String) body.get("originTryUserEmail");
+                            String originUserEmail = userService.getUserEmail(userEmailChange);
 
-                    String codeForChange = userService.sendEmail(userEmailForChange);
-                    session = request.getSession();
-                    session.setAttribute("codeForChange", codeForChange);
-                    System.out.println(codeForChange);
-                    return new BaseResponse<>(SUCCESS_SEND_EMAIL);
+                            if (originTryUserEmail != null && originTryUserEmail.equals(originUserEmail)) {
+                                String userEmailForChange = (String) body.get("userEmailforChange");
+                                RegEx.isValidUserEmail(userEmailForChange);
+                                String codeForChange = userService.sendEmail(userEmailForChange);
 
-                /*
-                 * [POST] 이메일 변경을 위한 인증번호 확인하기 ...
-                 */
+                                session.setAttribute("codeForChange", codeForChange);
+                                System.out.println(codeForChange);
+                                return new BaseResponse<>(SUCCESS_SEND_EMAIL);
+                            } else {  // 이메일을 다시 입력해주세요.
+                                throw new BaseException(NOT_MATCH_EMAIL);
+                            }
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+
+                    /*
+                     * [POST] 이메일 변경을 위한 인증번호 확인하기 ...
+                     */
                 case "confirmCodeforChange":
                     String userCodeForChange = (String) body.get("userCodeForChange");
                     if (userCodeForChange == null || "".equals(userCodeForChange)) {
@@ -358,8 +401,10 @@ public class UserController {
                         if (originCodeForChange != null) {
                             if (userCodeForChange.equals(originCodeForChange)) {
                                 session.removeAttribute("codeForChange");
+                                session.setAttribute("emailChecked", "yes");
                                 return new BaseResponse<>(SUCCESS_AUTH);
                             } else {
+                                session.setAttribute("emailChecked", "no");
                                 throw new BaseException(INVALID_AUTH_CODE);
                             }
                         }
@@ -369,34 +414,69 @@ public class UserController {
 
                 case "changeEmail":
                     session = request.getSession(false);
-                    if(session!=null) {
-                        User originUser = (User) session.getAttribute("User");
+                    if (session != null) {
+                        String emailChecked = (String) session.getAttribute("emailChecked");
+                        if (emailChecked!=null && emailChecked.equals("yes")){
+                            User originUser = (User) session.getAttribute("User");
 
-                        String originUserId = originUser.getUserId();
-                        String newEmail = (String) body.get("newEmail");
+                            String originUserId = originUser.getUserId();
+                            String newEmail = (String) body.get("newEmail");
 
-                        userService.changeEmail(originUserId, newEmail);
-                        return new BaseResponse<>(SUCCESS);
+                            userService.changeEmail(originUserId, newEmail);
+                            return new BaseResponse<>(SUCCESS);
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
+
+                    /*
+                     * [POST] 마이페이지
+                     * userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint
+                     */
+                case "viewMyPage":
+                    session = request.getSession(false);
+                    if (session != null) {
+                        User user = (User) session.getAttribute("User");
+                        String viewUserId = user.getUserId();
+                        System.out.println(viewUserId);
+                        MyPageVO myPageVO = userService.viewMyPage(viewUserId);
+                        return new BaseResponse<>(myPageVO);
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+
+                /*
+                 * [POST] 유저 상태메세지 변경
+                 */
+                case "changeUserStatusMessage":
+                    User changeStatusUser = (User) session.getAttribute("User");
+                    if (changeStatusUser!=null){
+                        String changeStatusUserId = changeStatusUser.getUserId();
+                        if (changeStatusUserId!=null){
+                            String newStatusMessage = (String) body.get("newStatusMessage");
+                            userService.changeUserStatusMessage(changeStatusUserId, newStatusMessage);
+                            return new BaseResponse<>(SUCCESS);
+                        } else {
+                            throw new BaseException(NEED_LOGIN);
+                        }
+                    } else {
+                        throw new BaseException(NEED_LOGIN);
+                    }
+                    
             }
         }
         throw new BaseException(NOT_MATCH_SIGN);
     }
 
+
     /*
      * 카카오 로그인
-     * https://kauth.kakao.com/oauth/authorize?client_id=daad1a19aba64000fb178eb96ad2889d&redirect_uri=https://localhost:8080/dagak/user/kakaoOauth&response_type=code
-     *
-     * api 토큰
-     * daad1a19aba64000fb178eb96ad2889d
-     *
-     * redirect url
-     * https://localhost:8080/dagak/user/kakaoOauth
      */
     @GetMapping("kakaoOauth")
-    public BaseResponse<?> kakaoOauth(@RequestParam String code, HttpServletRequest request){
+    public BaseResponse<?> kakaoOauth(@RequestParam String code, HttpServletRequest request) {
         HttpSession session;
 
         String access_Token = kakaoOAuthService.getKaKaoAccessToken(code);
@@ -417,14 +497,6 @@ public class UserController {
 
     /*
      * 구글 로그인
-     *
-     * 클라이언트 ID : 273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com
-     *
-     * 클라이언트 비밀번호 : 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
-     *
-     * redirect urlq
-     *
-     * https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com&redirect_uri=https://localhost:8080/dagak/user/googleOauth&response_type=code&scope=email
      */
     @RequestMapping("googleOauth")
     public BaseResponse<?> googleOauth(HttpServletRequest request, @RequestParam(value = "code") String authCode, HttpServletResponse response) throws Exception {
@@ -442,7 +514,23 @@ public class UserController {
             session.setAttribute("googleEamil", googleEamil);
             throw new BaseException(NEED_GOOGLE_LINK);
         }
+    }
+
+    /*
+     * reCAPTCHA
+     */
+    @PostMapping("recaptcha")
+    public void isRobot(@RequestBody Map response, HttpServletRequest request) {
+        String recaptchaResponse = (String) response.get("recaptchaResponse");
+        if ("만료".equals(recaptchaResponse)) {
+            boolean isNotRobot = false;
+            System.out.println("만료됨");
+        } else {
+            boolean isNotRobot = ReCaptchaService.isRobot(recaptchaResponse);
+            System.out.println(isNotRobot);
+        }
 
     }
+
 
 }

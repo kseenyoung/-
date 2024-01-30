@@ -26,8 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackOn = Exception.class)
     @Override
     public void signup(UserSignupDto userSignupDto) throws Exception {
         SecurityDto securityDto = new SecurityDto();
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
 
         User user = userRepository.findById(loginUserId)
-                .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> {throw new BaseException(FAIL_SIGN_UP);});
         return user.checkPassword(encryptedLoginPassword);
     }
 
@@ -222,18 +222,18 @@ public class UserServiceImpl implements UserService {
         MimeMessage emailContent = javaMailSender.createMimeMessage();
 
         try {
-        emailContent.setFrom(new InternetAddress(senderEmail, "다각", "UTF-8"));
-        emailContent.setRecipients(MimeMessage.RecipientType.TO, userEmailForAuth);
-        emailContent.setSubject("다각 이메일 인증");
+            emailContent.setFrom(new InternetAddress(senderEmail, "다각", "UTF-8"));
+            emailContent.setRecipients(MimeMessage.RecipientType.TO, userEmailForAuth);
+            emailContent.setSubject("다각 이메일 인증");
 
-        String body = "";
-        body += "<h3>" + "요청하신 인증번호 입니다." + "</h3>";
-        body += "<h1>" + "인증 번호 : " + codeForAuth + "</h1>";
-        body += "<h3>" + "인증번호를 정확하게 입력해주세요." + "</h3>";
-        body += "<h3>" + "위 인증번호의 유효시간은 30분 입니다." + "</h3>";
-        body += "<h3>" + "감사합니다." + "</h3>";
-        emailContent.setText(body, "UTF-8", "html"); }
-        catch (Exception e){
+            String body = "";
+            body += "<h3>" + "요청하신 인증번호 입니다." + "</h3>";
+            body += "<h1>" + "인증 번호 : " + codeForAuth + "</h1>";
+            body += "<h3>" + "인증번호를 정확하게 입력해주세요." + "</h3>";
+            body += "<h3>" + "위 인증번호의 유효시간은 30분 입니다." + "</h3>";
+            body += "<h3>" + "감사합니다." + "</h3>";
+            emailContent.setText(body, "UTF-8", "html");
+        } catch (Exception e) {
             throw new MyException("메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
         javaMailSender.send(emailContent);
@@ -251,7 +251,7 @@ public class UserServiceImpl implements UserService {
 
         boolean isMatch = user.checkPassword(encryptedDeletePassword);
 
-        if (isMatch){
+        if (isMatch) {
             // TODO : 뭘 지울 지 정해야 함...
             userRepository.deleteById(deleteUserId);
             securityMapper.deleteSalt(deleteUserId);
@@ -273,7 +273,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeNickname(String changeNicknameUserId, String newNickname) {
-        User user = userRepository.findById(changeNicknameUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        User user = userRepository.findById(changeNicknameUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
         user.setUserNickname(newNickname);
 
         userRepository.save(user);
@@ -305,7 +305,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeEmail(String originUserId, String newEmail) {
-        User user = userRepository.findById(originUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        User user = userRepository.findById(originUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
         user.setUserEmail(newEmail);
 
         userRepository.save(user);
@@ -324,11 +324,11 @@ public class UserServiceImpl implements UserService {
         myPageVO.setUserBirthday(user.getUserBirthday());
         myPageVO.setUserPoint(user.getUserPoint());
 
-        if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
+        if (user.getMokkojiId() != null) {  // 모꼬지가 있는 회원일 때
             myPageVO.setMokkojiName(user.getMokkojiId().getMokkojiName());
         }
 
-        if (user.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
+        if (user.getUserTotalStudyTime() != null) {  // 총 공부시간이 존재하는 회원일 때
             UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
             myPageVO.setUserRank(userRank.getUserRank());
         }
@@ -345,7 +345,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage) {
-        User user = userRepository.findById(changeStatusUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        User user = userRepository.findById(changeStatusUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
         user.setUserStatusMessage(newStatusMessage);
 
         userRepository.save(user);

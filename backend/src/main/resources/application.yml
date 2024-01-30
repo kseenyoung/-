@@ -10,6 +10,7 @@ spring:
           starttls:
             enable: true
           auth: true
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -32,7 +33,7 @@ spring:
     password: ssafy
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     database: mysql
     properties:
@@ -54,6 +55,10 @@ openvidu:
 server:
   servlet:
     context-path: /dagak
+    session:
+      cookie:
+        same-site: none
+        http-only: false
   ssl:
     enabled: true
     key-store: classpath:keystore.p12
@@ -70,7 +75,7 @@ google:
   client:
     id: ENC(tp1c63jVBYQIRFiP2bwwUGIONiskvDMHTGdo+ljhAPdCdmSxbQG0ObNU3oVoi83J0+BSRB6WPpT8JIW4AHL6WcNG0T0aQm5oDRajvJwVGrhsD+LXNXsW0A==)
   secret: ENC(mOXhqgPNISKfS9rHypLRVJI/iBKZVWzTJn9wFHfAS0N8tfSGiFo6cGzh685eKCQa)
-
-
+  recaptcha:
+    key: ENC(+BPdv7+fhUK5QBtSeR3kgNHHPj85XBxEITc6VZZCsHrRqWwQj8XfjvpliHvehsiUbwqzkP1o6Ak=)
 kakao:
   rest-api-key: ENC(elg++M1l38fYXRyoDJ28XlhK8SjI5ZABIBQvQzOCotYb5KYFk/ReukpOEh3mNgY/)

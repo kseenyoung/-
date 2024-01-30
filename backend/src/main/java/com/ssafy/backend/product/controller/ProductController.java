@@ -4,6 +4,7 @@ import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.product.model.domain.Product;
+import com.ssafy.backend.product.model.dto.ProductListResDto;
 import com.ssafy.backend.product.service.ProductService;
 import com.ssafy.backend.user.model.domain.User;
 import io.swagger.models.auth.In;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
@@ -24,11 +26,15 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("product")
-
 public class ProductController {
 
     @Autowired
     ProductService productService;
+
+    @GetMapping("list") BaseResponse<?> store(@RequestParam(value = "page", defaultValue = "0") int page){
+        ProductListResDto productList = productService.getList(page);
+        return new BaseResponse<>(productList);
+    }
 
     @PostMapping("")
     public BaseResponse<?> store(@RequestBody Map<String, Object> body, HttpServletRequest httpServletRequest) throws MyException {
@@ -56,6 +62,7 @@ public class ProductController {
             case("getList"):
                 List<Product> productList = productService.getList();
                 return new BaseResponse<>(productList);
+
             case("search"):
                 int categoryId = -1;
                 try{

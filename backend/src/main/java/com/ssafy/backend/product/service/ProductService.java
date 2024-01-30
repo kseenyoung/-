@@ -2,12 +2,14 @@ package com.ssafy.backend.product.service;
 
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.product.model.domain.Product;
+import com.ssafy.backend.product.model.dto.ProductListResDto;
 
 import java.util.List;
 
 
 public interface ProductService {
     List<Product> getList() throws BaseException;
+    ProductListResDto getList(int page) throws BaseException;
 
     List<Product> searchList(int categoryId) throws BaseException;
 
