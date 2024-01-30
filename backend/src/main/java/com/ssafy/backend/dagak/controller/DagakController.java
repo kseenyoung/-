@@ -71,6 +71,13 @@ public class DagakController {
 
             case "updateEndTime":
                 break;
+
+            case "getCalendarAll":
+                break;
+
+            case "getGaks":
+                break;
+
         }
 
 
@@ -94,5 +101,6 @@ public class DagakController {
 
         return new BaseResponse<>(calendarDagakVOS);
     }
+
 
 }
