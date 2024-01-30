@@ -181,7 +181,7 @@ const userInfo = ref({});
 const userAxios = function () {
   const userBody = {
     sign: 'viewUserInformation',
-    userNickname: 'johndoe',
+    userNickname: 'hongaaa',
   };
   axios
     .post('https://localhost:8080/dagak/user', userBody, {

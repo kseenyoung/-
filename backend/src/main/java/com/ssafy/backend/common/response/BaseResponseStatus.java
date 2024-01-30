@@ -89,6 +89,7 @@ public enum BaseResponseStatus {
     NOT_MATCH_CODE(false, 2046,"인증코드가 일치하지 않습니다"),
 
     FAIL_TO_LINK(false, 2047,"연동에 실패했습니다."),
+    FAIL_TO_CONNECT(false, 2048,"통신에 실패했습니다."),
     
 
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/

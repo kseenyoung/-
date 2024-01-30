@@ -29,7 +29,7 @@ import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 
 @Service
@@ -80,23 +80,30 @@ public class UserServiceImpl implements UserService {
     public boolean isExistId(String userLoginId) throws Exception {
         return userRepository.existsById(userLoginId);
     }
+
     @Override
     public boolean login(UserLoginDto userLoginDto) throws Exception {
         String loginPassword = userLoginDto.getUserPassword();
         String loginUserId = userLoginDto.getUserId();
         String loginSalt = securityMapper.getSalt(loginUserId);
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
+        System.out.println(loginUserId);
+//        User user = userRepository.findById(loginUserId)
+//                .orElseThrow(() -> new BaseException(FAIL_LOGIN));
+        User user = userRepository.findUserByUserId(loginUserId);
+        if (user == null) {
+            return false;
+        } else {
+            return user.checkPassword(encryptedLoginPassword);
+        }
 
-        User user = userRepository.findById(loginUserId)
-                .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
-        return user.checkPassword(encryptedLoginPassword);
     }
 
     @Override
     public boolean isExistNickname(String userTriedNickname) {
         User user = userRepository.findUserByUserNickname(userTriedNickname);
         System.out.println(user);
-        if (user!=null){
+        if (user != null) {
             return true;
         } else {
             return false;
@@ -107,9 +114,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User canCreateMokkoji(String userId, int point) {
         User user = isExistUser(userId);
-        log.info("모꼬지가 있는지 확인합니다. mokkojiId : {}",user.getMokkojiId());
-        if(user.getMokkojiId() != null ) throw new MyException("이미 유저는 길드가 존재합니다.", HttpStatus.BAD_REQUEST);
-        if(user.getUserPoint() - point <0) throw new MyException("포인트가 부족합니다." , HttpStatus.BAD_REQUEST);
+        log.info("모꼬지가 있는지 확인합니다. mokkojiId : {}", user.getMokkojiId());
+        if (user.getMokkojiId() != null) throw new MyException("이미 유저는 길드가 존재합니다.", HttpStatus.BAD_REQUEST);
+        if (user.getUserPoint() - point < 0) throw new MyException("포인트가 부족합니다.", HttpStatus.BAD_REQUEST);
         user.usePoint(point);
         return user;
     }
@@ -148,7 +155,7 @@ public class UserServiceImpl implements UserService {
     //길드장인지 체크
     public User leaderCheck(String userId) {
         User user = isExistUser(userId);
-        if(user.getMokkojiId() == null) throw new MyException("해당 회원은 모꼬지가 현재 없습니다", HttpStatus.BAD_REQUEST);
+        if (user.getMokkojiId() == null) throw new MyException("해당 회원은 모꼬지가 현재 없습니다", HttpStatus.BAD_REQUEST);
         if (!user.getMokkojiId().getLeaderId().equals(user.getUserId()))
             throw new MyException("모꼬지장이 아닙니다.", HttpStatus.BAD_REQUEST);
         return user;
@@ -180,11 +187,11 @@ public class UserServiceImpl implements UserService {
         userViewVO.setUserNickname(user.getUserNickname());
         userViewVO.setUserPicture(user.getUserPicture());
         userViewVO.setUserStatusMessage(user.getUserStatusMessage());
-        if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
+        if (user.getMokkojiId() != null) {  // 모꼬지가 있는 회원일 때
             userViewVO.setMokkoijiName(user.getMokkojiId().getMokkojiName());
         }
 
-        if (user.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
+        if (user.getUserTotalStudyTime() != null) {  // 총 공부시간이 존재하는 회원일 때
             UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
             userViewVO.setUserRank(userRank.getUserRank());
         }
@@ -197,13 +204,13 @@ public class UserServiceImpl implements UserService {
     public List<UserViewVO> viewUserInformationByMokkoji(Mokkoji mokkoji) {
         List<User> user = userRepository.findAllByMokkojiId(mokkoji);
         List<UserViewVO> data = new ArrayList<UserViewVO>();
-        for(User u : user){
+        for (User u : user) {
             UserViewVO userViewVO = new UserViewVO();
             userViewVO.setUserId(u.getUserId());
             userViewVO.setUserNickname(u.getUserNickname());
             userViewVO.setUserPicture(u.getUserPicture());
             userViewVO.setUserStatusMessage(u.getUserStatusMessage());
-            if (u.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
+            if (u.getUserTotalStudyTime() != null) {  // 총 공부시간이 존재하는 회원일 때
                 UserRank userRank = userRankRepository.findUserRankByUserId(u.getUserId());
                 userViewVO.setUserRank(userRank.getUserRank());
             }
@@ -218,18 +225,18 @@ public class UserServiceImpl implements UserService {
         MimeMessage emailContent = javaMailSender.createMimeMessage();
 
         try {
-        emailContent.setFrom(new InternetAddress(senderEmail, "다각", "UTF-8"));
-        emailContent.setRecipients(MimeMessage.RecipientType.TO, userEmailForAuth);
-        emailContent.setSubject("다각 이메일 인증");
+            emailContent.setFrom(new InternetAddress(senderEmail, "다각", "UTF-8"));
+            emailContent.setRecipients(MimeMessage.RecipientType.TO, userEmailForAuth);
+            emailContent.setSubject("다각 이메일 인증");
 
-        String body = "";
-        body += "<h3>" + "요청하신 인증번호 입니다." + "</h3>";
-        body += "<h1>" + "인증 번호 : " + codeForAuth + "</h1>";
-        body += "<h3>" + "인증번호를 정확하게 입력해주세요." + "</h3>";
-        body += "<h3>" + "위 인증번호의 유효시간은 30분 입니다." + "</h3>";
-        body += "<h3>" + "감사합니다." + "</h3>";
-        emailContent.setText(body, "UTF-8", "html"); }
-        catch (Exception e){
+            String body = "";
+            body += "<h3>" + "요청하신 인증번호 입니다." + "</h3>";
+            body += "<h1>" + "인증 번호 : " + codeForAuth + "</h1>";
+            body += "<h3>" + "인증번호를 정확하게 입력해주세요." + "</h3>";
+            body += "<h3>" + "위 인증번호의 유효시간은 30분 입니다." + "</h3>";
+            body += "<h3>" + "감사합니다." + "</h3>";
+            emailContent.setText(body, "UTF-8", "html");
+        } catch (Exception e) {
             throw new MyException("메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
         javaMailSender.send(emailContent);
@@ -247,7 +254,7 @@ public class UserServiceImpl implements UserService {
 
         boolean isMatch = user.checkPassword(encryptedDeletePassword);
 
-        if (isMatch){
+        if (isMatch) {
             // TODO : 뭘 지울 지 정해야 함...
             userRepository.deleteById(deleteUserId);
             securityMapper.deleteSalt(deleteUserId);
@@ -269,7 +276,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeNickname(String changeNicknameUserId, String newNickname) {
-        User user = userRepository.findById(changeNicknameUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        User user = userRepository.findById(changeNicknameUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
         user.setUserNickname(newNickname);
 
         userRepository.save(user);
@@ -301,7 +308,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeEmail(String originUserId, String newEmail) {
-        User user = userRepository.findById(originUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        User user = userRepository.findById(originUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
         user.setUserEmail(newEmail);
 
         userRepository.save(user);
@@ -320,11 +327,11 @@ public class UserServiceImpl implements UserService {
         myPageVO.setUserBirthday(user.getUserBirthday());
         myPageVO.setUserPoint(user.getUserPoint());
 
-        if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
+        if (user.getMokkojiId() != null) {  // 모꼬지가 있는 회원일 때
             myPageVO.setMokkojiName(user.getMokkojiId().getMokkojiName());
         }
 
-        if (user.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
+        if (user.getUserTotalStudyTime() != null) {  // 총 공부시간이 존재하는 회원일 때
             UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
             myPageVO.setUserRank(userRank.getUserRank());
         }
@@ -341,7 +348,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage) {
-        User user = userRepository.findById(changeStatusUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        User user = userRepository.findById(changeStatusUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
         user.setUserStatusMessage(newStatusMessage);
 
         userRepository.save(user);

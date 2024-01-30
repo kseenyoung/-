@@ -40,7 +40,9 @@
             <span class="underline">모꼬지</span>
           </RouterLink>
           <li>
-            <a href="#" class="logout dropdown-item"><span>로그아웃</span></a>
+            <a href="#" class="logout dropdown-item" @click="logout">
+              <span>로그아웃</span>
+            </a>
           </li>
         </ul>
       </div>
@@ -50,10 +52,32 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import axios from 'axios';
 import Alarm from './Alarm.vue';
 import AlarmModal from './AlarmModal.vue';
 
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+//로그인할 때 생성한 sessionStorage의 정보
+const loginId = ref('');
+const getSessionId = function () {
+  loginId.value = sessionStorage.getItem('loginSession');
+};
+
+//로그아웃
+const logout = function () {
+  const body = {
+    sign: 'logout',
+  };
+  axios
+    .post('https://localhost:8080/dagak/user', body)
+    .then((res) => res.data)
+    .then((json) => {
+      console.log(json);
+      sessionStorage.removeItem('loginSession');
+      console.log("로그아웃!! 로그아웃!! 로그아웃 !!1");
+    });
+  window.location.reload(); //새로고침 or 홈으로 이동
+};
 
 // 헤더 스크롤
 const headerHidden = ref(false);
@@ -67,6 +91,7 @@ const handleScroll = () => {
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
+  getSessionId();
 });
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll);
