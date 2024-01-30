@@ -1,31 +1,48 @@
 <template>
   <div class="container">
     <div class="card">
-    <div class="card-header">
-      <div>로고</div>
-    </div>
-    <div class="card-body">
-      <div class="mb-3">
+      <div class="card-header">
+        <div>로고</div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-person"></i></span>
-            <input type="text" class="form-control no-outline" id="id" placeholder="아이디" required autofocus>
+            <input
+              type="text"
+              class="form-control no-outline"
+              id="id"
+              placeholder="아이디"
+              required
+              autofocus
+            />
           </div>
         </div>
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-lock"></i></span>
-            <input type="password" class="form-control no-outline" id="password" placeholder="비밀번호" required>
+            <input
+              type="password"
+              class="form-control no-outline"
+              id="password"
+              placeholder="비밀번호"
+              required
+            />
           </div>
         </div>
         <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input no-outline" id="rememberId">
+          <input
+            type="checkbox"
+            class="form-check-input no-outline"
+            id="rememberId"
+          />
           <label class="form-check-label" for="rememberId">아이디 저장</label>
         </div>
         <button class="btn btn-primary common-btn">로그인</button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
-          <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인">
-          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인">
+          <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" />
+          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인" />
         </div>
       </div>
     </div>
@@ -38,9 +55,7 @@
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .container {
@@ -103,7 +118,7 @@ img {
   }
 
   .btn-primary {
-    background: #FEE500;
+    background: #fee500;
   }
 
   .btn-danger {
@@ -182,5 +197,4 @@ label {
   position: relative;
   top: -2.5px;
 }
-
 </style>

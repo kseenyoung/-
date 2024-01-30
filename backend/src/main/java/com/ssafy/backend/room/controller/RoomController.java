@@ -84,7 +84,6 @@ public class RoomController {
                 String answerData = (String) body.get("data");
                 String questionId = (String) body.get("questionId");
 
-                
                 AnswerDto answerDto = new AnswerDto(userId,sessionName,answerData,questionId);
                 answerDto = roomService.answerQuestion(answerDto);
 

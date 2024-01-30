@@ -14,6 +14,7 @@ import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.repository.UserRankRepository;
 import com.ssafy.backend.user.model.repository.UserRepository;
+import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void signup(UserSignupDto userSignupDto) throws Exception {
         SecurityDto securityDto = new SecurityDto();
@@ -90,7 +92,7 @@ public class UserServiceImpl implements UserService {
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
 
         User user = userRepository.findById(loginUserId)
-                .orElseThrow(() -> {throw new BaseException(FAIL_SIGN_UP);});
+                .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
         return user.checkPassword(encryptedLoginPassword);
     }
 
@@ -259,7 +261,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void changePassword(String originUserId, String newPassword) throws Exception {
         String newSalt = UUID.randomUUID().toString();
@@ -305,6 +307,46 @@ public class UserServiceImpl implements UserService {
     public void changeEmail(String originUserId, String newEmail) {
         User user = userRepository.findById(originUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
         user.setUserEmail(newEmail);
+
+        userRepository.save(user);
+    }
+
+    //// userId, userName, userPicture, userNickname,userPicture, userEmail, userBirthday, userPhonenumber, userPoint,
+    @Override
+    public MyPageVO viewMyPage(String viewUserId) {
+        User user = userRepository.findUserByUserId(viewUserId);
+        MyPageVO myPageVO = new MyPageVO();
+        myPageVO.setUserId(user.getUserId());
+        myPageVO.setUserName(user.getUserName());
+        myPageVO.setUserNickname(user.getUserNickname());
+        myPageVO.setUserPicture(user.getUserPicture());
+        myPageVO.setUserEmail(user.getUserEmail());
+        myPageVO.setUserBirthday(user.getUserBirthday());
+        myPageVO.setUserPoint(user.getUserPoint());
+
+        if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
+            myPageVO.setMokkojiName(user.getMokkojiId().getMokkojiName());
+        }
+
+        if (user.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
+            UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
+            myPageVO.setUserRank(userRank.getUserRank());
+        }
+
+        System.out.println(myPageVO);
+        return myPageVO;
+    }
+
+    @Override
+    public String getUserEmail(User userEmailChange) {
+        User user = userRepository.findUserByUserId(userEmailChange.getUserId());
+        return user.getUserEmail();
+    }
+
+    @Override
+    public void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage) {
+        User user = userRepository.findById(changeStatusUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        user.setUserStatusMessage(newStatusMessage);
 
         userRepository.save(user);
     }

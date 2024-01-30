@@ -27,4 +27,14 @@ public class QuestionDto {
                 .question(this.data)
                 .build();
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                " questionId : '" + questionId + '\'' +
+                ", userId : '" + userId + '\'' +
+                ", session: '" + session + '\'' +
+                ", data : '" + data + '\'' +
+                '}';
+    }
 }

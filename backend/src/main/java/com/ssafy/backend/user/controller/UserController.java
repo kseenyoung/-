@@ -1,16 +1,20 @@
 package com.ssafy.backend.user.controller;
 
-import  com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
 import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.room.model.dto.QuestionDto;
+import com.ssafy.backend.security.model.SecurityDto;
+import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
+import com.ssafy.backend.user.model.mapper.UserMapper;
+import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.GoogleOAuthService;
 import com.ssafy.backend.user.service.KakaoOAuthService;
@@ -22,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -63,7 +68,7 @@ public class UserController {
     public void init() {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
-    
+
     @Autowired
     KakaoOAuthService kakaoOAuthService;
 
@@ -100,7 +105,9 @@ public class UserController {
 
                     userService.signup(userSignupDto);
 
-                    session.invalidate();
+                    if (session != null) {
+                        session.invalidate();
+                    }
                     return new BaseResponse<>(SUCCESS_ID_SIGN_UP);
 
                 /*

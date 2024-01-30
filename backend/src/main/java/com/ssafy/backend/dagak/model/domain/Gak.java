@@ -1,5 +1,6 @@
 package com.ssafy.backend.dagak.model.domain;
 
+import com.ssafy.backend.dagak.model.dto.GakDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -33,6 +34,11 @@ public class Gak {
         this.runningTime = runningTime;
         this.userId = userId;
     }
+
+    public GakDto entiryToGakDto(){
+        return new GakDto(categoryId, gakOrder, runningTime, userId);
+    }
+
 
 
 }
