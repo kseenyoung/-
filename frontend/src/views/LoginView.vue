@@ -43,8 +43,6 @@
         <button class="btn btn-primary common-btn" @click="login">
           로그인
         </button>
-        <button @click="test">viewMyPage 테스트</button>
-        <button @click="cookieTest">쿠키 가져오기 테스트</button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
           <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" />
@@ -79,56 +77,12 @@ const id = ref('');
 const password = ref('');
 // const rememberId = ref(false);
 
-//쿠키 테스트
-import { useCookies } from 'vue3-cookies';
-const { cookies } = useCookies();
-const cookieTest = function () {
-  console.log(cookies.get('JSESSIONID'));
-  cookies.set('testCookieJS', cookies.get('JSESSIONID'));
-  console.log(cookies.get('testCookieJS'));
-};
-
 //로그인
 const login = async function () {
   const body = {
     sign: 'login',
     userId: id.value,
     userPassword: password.value,
-  };
-  await axios
-    .post(
-      'https://localhost:8080/dagak/user',
-      body,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-      // { withCredentials: true }, //전역으로 설정했음
-    )
-    .then((res) => res.data)
-    .then((json) => {
-      console.log(json);
-      if (json.code === 1000) {
-        //로그인 실패
-        alert('로그인에 실패했습니다.');
-      } else if (json.code === 1001) {
-        //로그인 성공
-        alert('로그인에 성공했습니다.');
-        userStore.getLoginUserInfo();
-        //성공 시 홈으로
-        // router.push({
-        //   name: 'home',
-        // });
-      }
-    });
-  id.value = '';
-  password.value = '';
-};
-
-const test = async function () {
-  const body = {
-    sign: 'viewMyPage',
   };
   await axios
     .post('https://localhost:8080/dagak/user', body, {
@@ -138,8 +92,22 @@ const test = async function () {
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
+      if (json.code === 1000) {
+        //로그인 실패
+        alert('로그인에 실패했습니다.');
+      } else if (json.code === 1001) {
+        //로그인 성공
+        alert('로그인에 성공했습니다.');
+        //로그인 하자마자 유저정보 저장
+        userStore.getLoginUserInfo();
+        //성공 시 홈으로
+        // router.push({
+        //   name: 'home',
+        // });
+      }
     });
+  id.value = '';
+  password.value = '';
 };
 </script>
 

@@ -76,7 +76,6 @@ const getUserProfileInfo = function () {
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
       userStatusMessage.value = json.result.userStatusMessage;
       userTotalStudyTime.value = json.result.userTotalStudyTime;
     });
@@ -99,7 +98,6 @@ const changeStatus = function () {
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
       if (json.code === 1000) {
         //성공
         alert('수정되었습니다.');

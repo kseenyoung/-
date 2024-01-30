@@ -30,12 +30,12 @@
 
       <div class="info-detail-wrapper">
         <div class="info-label">이름</div>
-        <div class="info-content">김싸피</div>
+        <div class="info-content">{{ userStore.loginUserInfo.userName }}</div>
       </div>
 
       <div class="info-detail-wrapper">
         <div class="info-label">아이디</div>
-        <div class="info-content">{{ userInfo.userId }}</div>
+        <div class="info-content">{{ userStore.loginUserInfo.userId }}</div>
       </div>
 
       <div class="info-detail-wrapper">
@@ -106,7 +106,9 @@
 
       <div class="info-detail-wrapper">
         <div class="info-label">닉네임</div>
-        <div class="info-content">ssafykim</div>
+        <div class="info-content">
+          {{ userStore.loginUserInfo.userNickname }}
+        </div>
         <i
           class="bi bi-pencil-fill common-pointer"
           data-bs-toggle="collapse"
@@ -122,11 +124,25 @@
         aria-labelledby="headingOne"
       >
         <div class="form-floating">
-          <input type="text" id="nickname" class="form-control" />
+          <input
+            type="text"
+            id="nickname"
+            class="form-control"
+            :value="nickname"
+            @input="onInputNick"
+          />
           <label for="floatingInput">닉네임 변경</label>
         </div>
-        <button class="btn common-btn">중복확인</button>
-        <button class="btn common-btn">수정</button>
+        <button class="btn common-btn" @click="existNickname(nickname)">
+          중복확인
+        </button>
+        <button
+          class="btn common-btn"
+          @click="changeNickname"
+          :disabled="!nicknameFlag"
+        >
+          수정
+        </button>
       </div>
 
       <div class="info-detail-wrapper">
@@ -136,17 +152,21 @@
 
       <div class="info-detail-wrapper">
         <div class="info-label">생년월일</div>
-        <div class="info-content">1950-01-01</div>
+        <div class="info-content">
+          {{ userStore.loginUserInfo.userBirthday }}
+        </div>
       </div>
 
       <div class="info-detail-wrapper">
         <div class="info-label">전화번호</div>
-        <div class="info-content">010-1111-1111</div>
+        <div class="info-content">
+          {{ userStore.loginUserInfo.userPhonenumber }}
+        </div>
       </div>
 
       <div class="info-detail-wrapper">
         <div class="info-label">포인트</div>
-        <div class="info-content">10P</div>
+        <div class="info-content">{{ userStore.loginUserInfo.userPoint }}P</div>
       </div>
 
       <div class="info-detail-wrapper">
@@ -169,36 +189,15 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 import MyPageDeleteUserModal from './MyPageDeleteUserModal.vue';
+import { useUserStore } from '@/stores/user';
 
-onMounted(() => {
-  userAxios();
-});
-
-//유저정보 axios
-const userInfo = ref({});
-const userAxios = function () {
-  const userBody = {
-    sign: 'viewUserInformation',
-    userNickname: 'hongaaa',
-  };
-  axios
-    .post('https://localhost:8080/dagak/user', userBody, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((res) => res.data)
-    .then((json) => {
-      console.log(json);
-      userInfo.value = json.result;
-    });
-};
+const userStore = useUserStore();
 
 //이메일 마스킹 처리
 const maskedEmail = computed(() => {
-  const email = 'ssafy123@gmail.com';
+  const email = userStore.loginUserInfo.userEmail;
   // const email = userInfo.value.email;
   const [username, domain] = email.split('@');
   const maskedUsername =
@@ -207,7 +206,6 @@ const maskedEmail = computed(() => {
 });
 
 //비밀번호 변경
-//백에서 session정보에서 userId를 가져오는 중이라 로그인 연동이 되어야 실행됨
 const curPassword = ref('');
 const newPassword = ref('');
 const passwordCheck = ref('');
@@ -244,10 +242,6 @@ const changePWFlag = computed(() => {
 
 //비빌번호 변경 axios
 const changePw = function () {
-  console.log(
-    '현재 pw: ' + curPassword.value + ', 변경 pw: ' + newPassword.value,
-  );
-  console.log(newPassword.value);
   const userBody = {
     sign: 'changePassword',
     userPassword: curPassword.value,
@@ -261,7 +255,93 @@ const changePw = function () {
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
+      if (json.code === 1008) {
+        //성공
+        alert(json.message);
+      } else {
+        //실패
+        alert(json.message);
+      }
+    });
+};
+
+//닉네임 변경
+const nickname = ref('');
+const isValidNickname = ref(false);
+const isDuplicateNickname = ref(false);
+const dupNicknameClicked = ref(false);
+const nicknameFlag = computed(
+  () => isValidNickname.value && isDuplicateNickname.value,
+);
+
+//닉네임 한글이슈
+const onInputNick = function (event) {
+  nickname.value = event.currentTarget.value;
+};
+
+watch(nickname, (newNickname) => {
+  dupNicknameClicked.value = false;
+  isDuplicateNickname.value = false;
+  checkNickname(newNickname);
+});
+
+//닉네임 유효성 검사(특수문자 불가능 2~8 글자)
+const checkNickname = function (name) {
+  const validateNickname = /^[a-zA-Z가-힣]{2,8}$/;
+  isValidNickname.value = validateNickname.test(name);
+};
+
+//닉네임 중복확인
+const existNickname = async function (checkNickname) {
+  dupNicknameClicked.value = true;
+  const body = {
+    sign: 'isExistNickname',
+    userNickname: checkNickname,
+  };
+
+  await axios
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then((json) => {
+      if (json.code == 1004) {
+        // 중복 아님
+        isDuplicateNickname.value = true;
+        alert('사용 가능한 닉네임입니다.');
+      } else {
+        // 중복임
+        isDuplicateNickname.value = false;
+        alert('이미 존재하는 닉네임입니다.');
+        nickname.value = ''; //닉네임 텍스트 초기화
+      }
+    });
+};
+
+const changeNickname = function () {
+  const body = {
+    sign: 'changeNickname',
+    newNickname: nickname.value,
+  };
+
+  axios
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then((json) => {
+      if (json.code == 1009) {
+        // 성공
+        alert(json.message);
+        userStore.getLoginUserInfo();
+      } else {
+        // 실패
+        alert(json.message);
+      }
     });
 };
 </script>
