@@ -331,7 +331,7 @@ public class UserController {
 
                         if (isMatched) {
                             userService.changePassword(originUserId, newPassword);
-                            session.invalidate();
+                            // session.invalidate(); 
                             return new BaseResponse<>(SUCCESS_CHANGE_PASSWORD);
                         } else {
                             throw new BaseException(NOT_MATCH_PASSWORD);

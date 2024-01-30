@@ -56,6 +56,8 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const password = ref('');
 
@@ -73,7 +75,6 @@ const deleteUser = function () {
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
       if (json.code == 2042) {
         //로그인 이슈
         alert(json.message);
@@ -83,6 +84,9 @@ const deleteUser = function () {
       } else if (json.code == 1007) {
         //탈퇴 성공
         alert(json.message);
+        router.push({
+          name: 'home',
+        });
       }
       password.value = '';
     });

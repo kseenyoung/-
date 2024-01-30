@@ -1,17 +1,21 @@
 <template>
   <!-- 알림 아이콘 -->
-  <button class="position-relative alarm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button
+    class="position-relative alarm"
+    data-bs-toggle="modal"
+    data-bs-target="#exampleModal"
+  >
     <i class="bi bi-bell"></i>
-    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    <span
+      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+    >
       12
     </span>
   </button>
 </template>
 
 <script>
-  export default {
-    
-  }
+export default {};
 </script>
 
 <style lang="scss" scoped>

@@ -256,7 +256,6 @@ const duplicateIdCheck = async function (checkId) {
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json.code);
       if (json.code == 1002) {
         // 중복 아님
         isDuplicateId.value = true;
@@ -352,7 +351,6 @@ const duplicateNicknameCheck = async function (checkNickname) {
     )
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
       console.log(json.code);
       if (json.code == 1004) {
         // 중복 아님
@@ -400,7 +398,6 @@ const registUser = function () {
     userEmail: email.value,
     userNickname: nickname.value,
   };
-  console.log(body);
 
   axios
     .post('https://localhost:8080/dagak/user', body, {
@@ -409,8 +406,7 @@ const registUser = function () {
       },
     })
     .then((res) => res.data)
-    .then((json) => {
-      console.log(json);
+    .then(() => {
       alert('회원가입이 완료되었습니다.');
       router.push({
         name: 'login',

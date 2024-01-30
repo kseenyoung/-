@@ -11,14 +11,15 @@
         <RouterLink to="/store">
           <span class="underline">상점</span>
         </RouterLink>
-        <Alarm />
-        <RouterLink to="/login">
+        <Alarm v-if="userStore.loginUserInfo.userId" />
+        <RouterLink to="/login" v-if="!userStore.loginUserInfo.userId">
           <span class="underline">로그인</span>
         </RouterLink>
         <div
           class="dropdown-toggle common-pointer"
           data-bs-toggle="dropdown"
           aria-expanded="false"
+          v-if="userStore.loginUserInfo.userId"
         >
           <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
         </div>
@@ -28,8 +29,8 @@
               <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
             </div>
             <div>
-              <div>이름</div>
-              <div>아이디or이메일</div>
+              <div>{{ userStore.loginUserInfo.userId }}</div>
+              <div>{{ userStore.loginUserInfo.userEmail }}</div>
             </div>
           </div>
           <RouterLink to="/mypage" class="dropdown-item">
@@ -56,6 +57,11 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import axios from 'axios';
 import Alarm from './Alarm.vue';
 import AlarmModal from './AlarmModal.vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
+const router = useRouter();
 
 //로그인할 때 생성한 sessionStorage의 정보
 const loginId = ref('');
@@ -71,12 +77,14 @@ const logout = function () {
   axios
     .post('https://localhost:8080/dagak/user', body)
     .then((res) => res.data)
-    .then((json) => {
-      console.log(json);
-      sessionStorage.removeItem('loginSession');
-      console.log("로그아웃!! 로그아웃!! 로그아웃 !!1");
+    .then(() => {
+      //유저정보 공백으로
+      userStore.loginUserInfo = {};
     });
-  window.location.reload(); //새로고침 or 홈으로 이동
+  //성공 시 홈으로
+  router.push({
+    name: 'home',
+  });
 };
 
 // 헤더 스크롤

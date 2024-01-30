@@ -43,7 +43,6 @@
         <button class="btn btn-primary common-btn" @click="login">
           로그인
         </button>
-        <button @click="test">viewMyPage 테스트</button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
           <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" />
@@ -59,103 +58,84 @@
     </div>
 
     <vue-recaptcha
-    v-show="true"
-    sitekey="6Lcufl8pAAAAAN7h2t1u9Dgm1_zo9wKoaYRX59H6"
-    @verify="recaptchaVerified"
-		@expire="recaptchaExpired"
-	  @fail="recaptchaFailed"
-		@error="recaptchaError"
-  ></vue-recaptcha>
+      v-show="true"
+      sitekey="6Lcufl8pAAAAAN7h2t1u9Dgm1_zo9wKoaYRX59H6"
+      @verify="recaptchaVerified"
+      @expire="recaptchaExpired"
+      @fail="recaptchaFailed"
+      @error="recaptchaError"
+    ></vue-recaptcha>
   </div>
-
-
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
 import vueRecaptcha from 'vue3-recaptcha2';
-// import { useRouter } from 'vue-router';
-// const router = useRouter();
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
+const userStore = useUserStore();
+const router = useRouter();
 const id = ref('');
 const password = ref('');
 // const rememberId = ref(false);
 
+//로그인
 const login = async function () {
   const body = {
     sign: 'login',
     userId: id.value,
     userPassword: password.value,
   };
-  console.log(body)
+  console.log(body);
   await axios
     .post('https://localhost:8080/dagak/user', body, {
       headers: {
         'Content-Type': 'application/json',
-      }, 
+      },
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
-      console.log("로그인하는중 ....");
       if (json.code === 1000) {
         //로그인 실패
         alert(json.result);
       } else if (json.code === 1001) {
         //로그인 성공
         alert('로그인에 성공했습니다.');
-        sessionStorage.setItem('loginSession', id.value);
-        // window.location.reload(); //임시 새로고침 -> 나중에 home으로 이동하게
-        // router.push({
-        //   name: 'home',
-        // });
+        //로그인 하자마자 유저정보 저장
+        userStore.getLoginUserInfo();
+        //성공 시 홈으로
+        router.push({
+          name: 'home',
+        });
       }
     });
-  // id.value = '';
-  // password.value = '';
-};
-
-const test = async function () {
-  const body = {
-    sign: 'viewMyPage',
-  };
-  await axios
-    .post('https://localhost:8080/dagak/user', body, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((res) => res.data)
-    .then((json) => {
-      console.log(json);
-    });
+  id.value = '';
+  password.value = '';
 };
 
 const recaptchaExpired = async function (response) {
   const body = {
-    "recaptchaResponse" : "만료",
+    recaptchaResponse: '만료',
   };
-  await axios
-    .post('https://localhost:8080/dagak/user/recaptcha', body, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+  await axios.post('https://localhost:8080/dagak/user/recaptcha', body, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };
 
 const recaptchaVerified = async function (response) {
   const body = {
-    "recaptchaResponse" : response,
+    recaptchaResponse: response,
   };
-  await axios
-    .post('https://localhost:8080/dagak/user/recaptcha', body, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-}; 
-
+  await axios.post('https://localhost:8080/dagak/user/recaptcha', body, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -298,5 +278,4 @@ label {
   position: relative;
   top: -2.5px;
 }
-
 </style>
