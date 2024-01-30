@@ -44,6 +44,7 @@
           로그인
         </button>
         <button @click="test">viewMyPage 테스트</button>
+        <button @click="cookieTest">쿠키 가져오기 테스트</button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
           <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" />
@@ -69,13 +70,25 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import vueRecaptcha from 'vue3-recaptcha2';
-// import { useRouter } from 'vue-router';
-// const router = useRouter();
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
+const userStore = useUserStore();
+const router = useRouter();
 const id = ref('');
 const password = ref('');
 // const rememberId = ref(false);
 
+//쿠키 테스트
+import { useCookies } from 'vue3-cookies';
+const { cookies } = useCookies();
+const cookieTest = function () {
+  console.log(cookies.get('JSESSIONID'));
+  cookies.set('testCookieJS', cookies.get('JSESSIONID'));
+  console.log(cookies.get('testCookieJS'));
+};
+
+//로그인
 const login = async function () {
   const body = {
     sign: 'login',
@@ -83,11 +96,16 @@ const login = async function () {
     userPassword: password.value,
   };
   await axios
-    .post('https://localhost:8080/dagak/user', body, {
-      headers: {
-        'Content-Type': 'application/json',
+    .post(
+      'https://localhost:8080/dagak/user',
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    })
+      // { withCredentials: true }, //전역으로 설정했음
+    )
     .then((res) => res.data)
     .then((json) => {
       console.log(json);
@@ -97,15 +115,15 @@ const login = async function () {
       } else if (json.code === 1001) {
         //로그인 성공
         alert('로그인에 성공했습니다.');
-        sessionStorage.setItem('loginSession', id.value);
-        // window.location.reload(); //임시 새로고침 -> 나중에 home으로 이동하게
+        userStore.getLoginUserInfo();
+        //성공 시 홈으로
         // router.push({
         //   name: 'home',
         // });
       }
     });
-  // id.value = '';
-  // password.value = '';
+  id.value = '';
+  password.value = '';
 };
 
 const test = async function () {

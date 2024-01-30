@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
-import StudyRoomView from '../views/StudyRoomView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,7 +6,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: () => import('@/views/HomeView.vue'),
     },
     {
       path: '/login',
@@ -75,17 +73,17 @@ const router = createRouter({
     {
       path: '/studyroom',
       name: 'studyroom',
-      component: StudyRoomView
+      component: () => import('@/views/StudyRoomView.vue'),
     },
     {
       // :모꼬지pk 나중에 넣자
       path: '/mokkoji/:id',
-      name: 'Mokkoji',
+      name: 'mokkoji',
       component: () => import('@/views/MokkojiView.vue'),
     },
     {
       path: '/apply',
-      name: 'Apply',
+      name: 'apply',
       component: () => import('@/views/ApplyView.vue'),
     },
   ],
