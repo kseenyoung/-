@@ -27,9 +27,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.*;
+import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_SIGN_UP;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
 
 @Service
@@ -97,6 +100,9 @@ public class UserServiceImpl implements UserService {
             return user.checkPassword(encryptedLoginPassword);
         }
 
+        User user = userRepository.findById(loginUserId)
+                .orElseThrow(() -> {throw new BaseException(FAIL_SIGN_UP);});
+        return user.checkPassword(encryptedLoginPassword);
     }
 
     @Override
