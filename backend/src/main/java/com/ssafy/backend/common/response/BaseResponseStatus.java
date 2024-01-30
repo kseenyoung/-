@@ -29,6 +29,9 @@ public enum BaseResponseStatus {
 
 
     SUCCESS_CREATE_TOKEN(true, 1200, "토큰 발급에 성공했습니다."),
+    SUCCESS_CREATE_PRODUCT(true,1401, "상품 추가에 성공했습니다."),
+    SUCCESS_BUY_PRODUCT(true, 1402,"상품 구매에 성공했습니다"),
+    SUCCESS_SELL_PRODUCT(true,1403 ,"상품 판매에 성공했습니다" ),
 
     /**
      * 2000 : Request 오류
@@ -61,12 +64,12 @@ public enum BaseResponseStatus {
     NOT_MATCH_SIGN(false, 2030, "일치하는 sign 정보가 없습니다."),
     NOT_EXIST_TAG_ID(false, 2031, "일치하는 태그 번호가 없습니다."),
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
-    NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다"),
-
+    NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다."),
+    NOT_EXIST_INVENTORY(false,2041,"일치하는 인벤토리가 없습니다."),
+    WRONG_TYPE(false,2041,"자료형이 일치하지 않습니다."),
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_DELETE_ALARM(false, 2033, "이미 삭제된 알람입니다"),
-
     ALREADY_EXIST_USER(false, 2034, "이미 존재하는 회원입니다."),
     ALREADY_EXIST_ID(false, 2035, "이미 존재하는 아이디입니다."),
     FAIL_LOGIN(false, 2036, "로그인에 실패했습니다."),
@@ -99,6 +102,9 @@ public enum BaseResponseStatus {
     IS_EXIST_MOKKOJI_NAME(false, 2106, "이미 존재하는 모꼬지 이름입니다"),
     NOT_EXIST_MOKKOJI(false, 2107, "해당 모꼬지를 찾을 수 없습니다"),
 
+    /* 이벤토리 BAD REQUEST  */
+    TWO_UP_PUT_ON_CLOTH(false, 2120, "같은 카테고리의 옷을 두 개 이상 입을 수 없습니다"),
+    DUPLICATE_INVENTORY_ID(false, 2121, "중복된 아이템 착용 요청입니다."),
 
     /* 친구 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_EXIST_FRIEND(false, 2200, "이미 상대방과 친구입니다."),
@@ -130,8 +136,8 @@ public enum BaseResponseStatus {
     /**
      * 5000 : 잡지 못 한 서버 오류
      */
-    OOPS(false, 5000, "Oops..."),
-    ;
+    OOPS(false, 5000, "Oops...");
+
 
     private final boolean isSuccess;
     private final int code;
