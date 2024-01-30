@@ -2,15 +2,16 @@ package com.ssafy.backend.dagak.model.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.time.LocalDateTime;
 
 @Entity
 @Builder
 @Getter
+@ToString
 public class Calendar {
 
     @Id
@@ -24,12 +25,12 @@ public class Calendar {
     private String userId;
 
     @Column
-    private LocalDateTime calendarDate;
+    private String calendarDate;
 
     public Calendar() {
     }
 
-    public Calendar(Integer calendarDagakId, Integer dagakId, String userId, LocalDateTime calendarDate) {
+    public Calendar(Integer calendarDagakId, Integer dagakId, String userId, String calendarDate) {
         this.calendarDagakId = calendarDagakId;
         this.dagakId = dagakId;
         this.userId = userId;

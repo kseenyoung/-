@@ -94,10 +94,9 @@ public class DagakController {
 
 //        String userId = user.getUserId();
         String userId = "ssafy";
-        System.out.println("들어오나?");
 
         List<CalendarDagakVO> calendarDagakVOS = dagakFacade.getCalendarDagaks(userId);
-
+//        System.out.println("최최초치ㅗ치ㅗ치ㅗ치쵳 최종 " + calendarDagakVOS);
 
         return new BaseResponse<>(calendarDagakVOS);
     }

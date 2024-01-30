@@ -37,10 +37,10 @@ public class DagakFacade {
         // dagakId로 gak들 정보 가져오기
         dagakService.getCalendarGaks(calendarDagaks);
 
-        for(CalendarDagakVO vo : calendarDagaks){
-            log.info("===== CalendarDagakVO : {}", vo);
-        }
-        log.info("CalendarDagakVOS : {}" , calendarDagaks);
+//        for(CalendarDagakVO vo : calendarDagaks){
+//            log.info("===== CalendarDagakVO : {}", vo);
+//        }
+//        log.info("최종 CalendarDagakVOS : {}" , calendarDagaks);
 
         return calendarDagaks;
 
