@@ -24,6 +24,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
@@ -89,10 +90,17 @@ public class UserServiceImpl implements UserService {
         String loginUserId = userLoginDto.getUserId();
         String loginSalt = securityMapper.getSalt(loginUserId);
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
+        System.out.println(loginUserId);
+//        User user = userRepository.findById(loginUserId)
+//                .orElseThrow(() -> new BaseException(FAIL_LOGIN));
+        User user = userRepository.findUserByUserId(loginUserId);
+        if (user == null) {
+            return false;
+        } else {
+            return user.checkPassword(encryptedLoginPassword);
+        }
 
-        User user = userRepository.findById(loginUserId)
-                .orElseThrow(() -> {throw new BaseException(FAIL_SIGN_UP);});
-        return user.checkPassword(encryptedLoginPassword);
+
     }
 
     @Override

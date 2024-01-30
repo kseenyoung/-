@@ -57,9 +57,8 @@
       <RouterLink to="/findpw">비밀번호 찾기</RouterLink><span>&nbsp;|&nbsp;</span>
       <RouterLink to="/regist">회원가입</RouterLink>
     </div>
-  </div>
 
-  <vue-recaptcha
+    <vue-recaptcha
     v-show="true"
     sitekey="6Lcufl8pAAAAAN7h2t1u9Dgm1_zo9wKoaYRX59H6"
     @verify="recaptchaVerified"
@@ -67,6 +66,9 @@
 	  @fail="recaptchaFailed"
 		@error="recaptchaError"
   ></vue-recaptcha>
+  </div>
+
+
 </template>
 
 <script setup>
@@ -91,7 +93,7 @@ const login = async function () {
     .post('https://localhost:8080/dagak/user', body, {
       headers: {
         'Content-Type': 'application/json',
-      },
+      }, 
     })
     .then((res) => res.data)
     .then((json) => {
@@ -152,7 +154,7 @@ const recaptchaVerified = async function (response) {
         'Content-Type': 'application/json',
       },
     })
-};
+}; 
 
 </script>
 
