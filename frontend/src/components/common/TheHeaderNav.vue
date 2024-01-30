@@ -74,6 +74,7 @@ const logout = function () {
     .then((json) => {
       console.log(json);
       sessionStorage.removeItem('loginSession');
+      console.log("로그아웃!! 로그아웃!! 로그아웃 !!1");
     });
   window.location.reload(); //새로고침 or 홈으로 이동
 };
