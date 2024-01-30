@@ -34,10 +34,10 @@ public class DagakServiceImpl implements DagakService {
         //log.info("dagak : {}", dagakDto);
         return dagakRepository.save(
                 Dagak.builder()
-                        .user_id(dagakDto.getUserId())
-                        .total_time(dagakDto.getTotalTime())
+                        .userId(dagakDto.getUserId())
+                        .totalTime(dagakDto.getTotalTime())
                         .build()
-        ).getDagak_id();
+        ).getDagakId();
     }
 
     @Override
@@ -63,9 +63,10 @@ public class DagakServiceImpl implements DagakService {
 
         List<Calendar> byUserId = calendarRepository.findByUserId(userId);
         for(Calendar calendar: byUserId){
-            CalendarDagakVO calendarDagakVO = new CalendarDagakVO(calendar.getCalendarDagakId(), calendar.getCalendarDate());
+            CalendarDagakVO calendarDagakVO = new CalendarDagakVO(calendar.getCalendarDagakId(), calendar.getDagakId(), calendar.getCalendarDate());
             result.add(calendarDagakVO);
         }
+//            log.info("**********calendarDagakVO : {}", result);
         return result;
     }
 
@@ -73,10 +74,10 @@ public class DagakServiceImpl implements DagakService {
     public List<CalendarDagakVO> getCalendarGaks(List<CalendarDagakVO> calendarDagaks) {
 
         for(CalendarDagakVO calendarDagakVO: calendarDagaks){
-            log.info("dagakId : {}", calendarDagakVO.getDagakId());
+//            log.info("dagakId : {}", calendarDagakVO.getDagakId());
             List<Gak> allByDagakId = gakRepository.findAllByDagakId(calendarDagakVO.getDagakId());
             calendarDagakVO.setGaks(allByDagakId);
-            log.info("calendarDagakVO : {}", calendarDagakVO);
+//            log.info("gaks : {}", allByDagakId);
         }
 
         return calendarDagaks;
