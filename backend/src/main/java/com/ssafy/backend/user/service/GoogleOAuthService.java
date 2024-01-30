@@ -3,6 +3,7 @@ package com.ssafy.backend.user.service;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.user.model.vo.GoogleOAuthRequest;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,13 +14,20 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_LOGIN;
 @Service
 public class GoogleOAuthService {
 
+    @Value("${google.client.id}")
+    private String clientId;
+
+    @Value("${google.secret}")
+    private String clientSecret;
+
+
     public String getGoogleAccessToken(String authCode) {
         RestTemplate restTemplate = new RestTemplate();
 
         GoogleOAuthRequest googleOAuthRequestParam = GoogleOAuthRequest
                 .builder()
-                .clientId("273219571369-bdo0hmfdde3j8olh6i5j20ln6iulph9h.apps.googleusercontent.com")
-                .clientSecret("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")
+                .clientId(clientId)
+                .clientSecret(clientSecret)
                 .code(authCode)
                 .redirectUri("https://localhost:8080/dagak/user/googleOauth")
                 .grantType("authorization_code")

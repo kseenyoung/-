@@ -1,5 +1,6 @@
 package com.ssafy.backend.common.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.common.utils.HttpResponseBody;
@@ -13,16 +14,23 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(value = JsonProcessingException.class)
+    public BaseResponse<BaseResponseStatus> baseException(JsonProcessingException exception) {
+        log.warn("Handle JsonProcessingException : {}", exception.getCause());
+        return new BaseResponse<>(BaseResponseStatus.JSON_PROCESSING_ERROR);
+    }
 
     @ExceptionHandler(value = MyException.class)
     public ResponseEntity<HttpResponseBody<?>> catchMyException(MyException e) {
         log.info(e.getMessage());
+        e.printStackTrace();
         return new ResponseEntity(new HttpResponseBody<>("FAIL", e.getMessage()), e.getStatus());
     }
 
     @ExceptionHandler(BaseException.class)
     public BaseResponse<BaseResponseStatus> baseException(BaseException e) {
         log.warn("Handle CommonException: {}", e.getStatus());
+        e.printStackTrace();
         return new BaseResponse<>(e.getStatus());
     }
 

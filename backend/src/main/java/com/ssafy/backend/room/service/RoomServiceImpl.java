@@ -1,5 +1,6 @@
 package com.ssafy.backend.room.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.domain.Question;
@@ -127,7 +128,8 @@ public class RoomServiceImpl implements RoomService {
         String questionId = question.getQuestionId();
         questionDto.setQuestionId(questionId);
 
-        OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(sessionId,"question",questionId);
+        ObjectMapper om = new ObjectMapper();
+        OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(sessionId,"question",om.writeValueAsString(questionDto));
         URI uri = UriComponentsBuilder
                 .fromUriString(OPENVIDU_URL)
                 .path("/openvidu/api/signal")
@@ -167,9 +169,10 @@ public class RoomServiceImpl implements RoomService {
         Answer answer = saveAnswer(answerDto);
         String answerId = answer.getAnswerId();
         answerDto.setAnswerId(answerId);
+        ObjectMapper om = new ObjectMapper();
 
         // 답변 문제번호 전송
-        OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(sessionId,"answer",answerDto.getQuestionId());
+        OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(sessionId,"answer",om.writeValueAsString(answerDto));
         URI uri = UriComponentsBuilder
                 .fromUriString(OPENVIDU_URL)
                 .path("/openvidu/api/signal")

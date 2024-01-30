@@ -9,12 +9,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 @Service
 public class KakaoOAuthService {
+
+    @Value("${kakao.rest-api-key}")
+    private String REST_API_KEY;
 
     public String getKaKaoAccessToken(String code){
         String access_Token="";
@@ -33,7 +37,8 @@ public class KakaoOAuthService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=daad1a19aba64000fb178eb96ad2889d"); // TODO REST_API_KEY 입력
+            sb.append("&client_id="); // TODO REST_API_KEY 입력
+            sb.append(REST_API_KEY);
             sb.append("&redirect_uri=https://localhost:8080/dagak/user/kakaoOauth"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());

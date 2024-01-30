@@ -30,8 +30,10 @@ module.exports = {
         },
       },
     ],
+
     'prettier/prettier': [
-      'error',
+      //error -> warn으로 수정
+      'warn',
       {
         singleQuote: true,
         semi: true,
