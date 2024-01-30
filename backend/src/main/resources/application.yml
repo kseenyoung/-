@@ -54,6 +54,10 @@ openvidu:
 server:
   servlet:
     context-path: /dagak
+    session:
+      cookie:
+        same-site: none
+        http-only: false
   ssl:
     enabled: true
     key-store: classpath:keystore.p12
