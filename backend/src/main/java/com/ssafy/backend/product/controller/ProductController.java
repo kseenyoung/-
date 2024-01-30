@@ -59,10 +59,6 @@ public class ProductController {
                 int productId = Integer.parseInt((String)body.get("productId"));
                 productService.buyProduct(productId,userId);
                 return new BaseResponse<>(SUCCESS_BUY_PRODUCT);
-            case("getList"):
-                List<Product> productList = productService.getList();
-                return new BaseResponse<>(productList);
-
             case("search"):
                 int categoryId = -1;
                 try{

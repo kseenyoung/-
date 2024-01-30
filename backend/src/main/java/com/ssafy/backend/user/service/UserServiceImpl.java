@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void signup(UserSignupDto userSignupDto) throws Exception {
         SecurityDto securityDto = new SecurityDto();
