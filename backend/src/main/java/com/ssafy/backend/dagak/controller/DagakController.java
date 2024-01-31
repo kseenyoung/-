@@ -79,7 +79,15 @@ public class DagakController {
             case "modifyDagak":
                 break;
 
+            /*
+             * [POST] 다각 삭제하기
+             * 그와 관련된 모든 정보도 삭제됩니다.
+             * Dagak과 gak 테이블의 데이터, Calendar는 현재 날짜 이후 데이터,
+             * gak_history 의 데이터는 삭제되지 않습니다.
+             */
             case "deleteDagak":
+                Integer deleteDagakId = (Integer) body.get("deleteDagakId");
+
                 break;
 
             case "updateEndTime":
@@ -87,9 +95,6 @@ public class DagakController {
 
             /*
              * [POST] 다각의 상세정보들 수정
-             * 바뀌어야 할 부분:
-             * 다각 테이블의 총 시간 원래 시간이랑 비교해서 바꾸고...
-             * category_id, setting_time
              */
             case "updateGak":
                 Integer updateDagakId = (Integer) body.get("dagakId");
@@ -108,18 +113,8 @@ public class DagakController {
              */
             case "deleteGak":
                 Integer deleteGakId = (Integer) body.get("gakId");
-                dagakService.deleteGak(deleteGakId);
-
                 List<Map<String, Integer>> remainGakInformation = (List<Map<String, Integer>>) body.get("remainGakInformation");
-                List<GakDto> remainGaks = new ArrayList<>();
-                if (!remainGakInformation.isEmpty()){
-                    for(Map<String, Integer> gak: remainGakInformation){
-                        Integer remainGakId = gak.get("gakId");
-                        Integer remainOrder = gak.get("gakOrder");
-                        remainGaks.add(new GakDto(remainGakId, remainOrder));
-                    }
-                    dagakService.updateGakOrder(remainGaks);
-                }
+                dagakFacade.deleteGak(deleteGakId, remainGakInformation);
                 return new BaseResponse<>(SUCCESS);
 
             /*
