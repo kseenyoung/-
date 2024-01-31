@@ -134,7 +134,19 @@ public class MokkojiFacade {
         Mokkoji mokkoji = mokkojiService.findByMokkojiId(mokkojiId);
         List<UserViewVO> user = userService.viewUserInformationByMokkoji(mokkoji);
         List<Category> categories = mokkojiCategoryService.findByMokkoji(mokkoji);
-
+        if("".equals(userId) || userId == null) {
+            dto.setUserId("");
+            dto.setMyMokkojiId(0);
+        }
+        else{
+            User existUser = userService.isExistUser(userId);
+            if(existUser.getMokkojiId() == null){
+                dto.setMyMokkojiId(0);
+            }else{
+                dto.setMyMokkojiId(existUser.getMokkojiId().getMokkojiId());
+            }
+            dto.setUserId(userId);
+        }
         if(userId != null && userId.equals(mokkoji.getLeaderId())) dto.setLeader(true);
         dto.setMokkojiData(mokkoji, user, categories);
         return dto;

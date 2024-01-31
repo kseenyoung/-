@@ -17,6 +17,8 @@ public class MokkojiDetailResponseDto {
     private List<UserViewVO> user;
     List<Category> categories;
     private boolean isLeader = false;
+    private String userId;
+    private int myMokkojiId;
 
     public void setMokkojiData(Mokkoji mokkoji, List<UserViewVO> user, List<Category> categories) {
         this.mokkoji = mokkoji;
