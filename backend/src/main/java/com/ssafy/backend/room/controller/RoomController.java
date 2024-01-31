@@ -7,12 +7,13 @@ import com.ssafy.backend.room.model.dto.ConnectionDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.service.RoomService;
-import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.OpenVidu;
-import io.openvidu.java.client.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,8 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.*;
+import static com.ssafy.backend.common.response.BaseResponseStatus.EMPTY_SIGN;
+import static com.ssafy.backend.common.response.BaseResponseStatus.SUCCESS_LEAVE_SESSION;
 
 @RestController
 @RequestMapping("room")
@@ -49,30 +51,36 @@ public class RoomController {
         String sessionName;
         String videoCodec;
         String token;
+        String connectionId;
 
         switch (sign){
             case "enterRandomroom": // 랜덤 방 입장
+                userId = (String) body.get("userId");
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
-                RoomEnterDto randomRoomEnterDto = new RoomEnterDto(sessionName, videoCodec);
+
+                RoomEnterDto randomRoomEnterDto = new RoomEnterDto(userId,sessionName,videoCodec);
                 ConnectionDto connectionDto = roomService.enterRandomroom(randomRoomEnterDto);
 
                 return new BaseResponse<>(connectionDto);
             case "enterMyRoom":
+                System.out.println("call enterMyRoom");
                 userId = (String) body.get("userId");
-                RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, "VP8");
+                System.out.println("userId: "+userId);
+                RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, userId,"VP8");
                 token = roomService.enterDefaultroom(defaultRoomEnterDto);
-                HttpSession session = request.getSession(false);
+                HttpSession session = request.getSession();
                 if (session != null) {
                     session.setAttribute("token", token);
                 }
-
+                System.out.println(session.getAttribute("token"));
                 return new BaseResponse<>(token);
             case "enterMoccojiroom": // 모꼬지(길드) 방 입장
+                userId = (String) body.get("userId");
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
 
-                RoomEnterDto moccojiRoomEnterDto = new RoomEnterDto(sessionName, videoCodec);
+                RoomEnterDto moccojiRoomEnterDto = new RoomEnterDto(userId,sessionName, videoCodec);
                 token = roomService.enterMoccojiroom(moccojiRoomEnterDto);
 
                 return new BaseResponse<>(token);
@@ -100,10 +108,13 @@ public class RoomController {
 
                 return new BaseResponse<>(answerDtos);
             case "leaveRoom":
-                session = request.getSession(false);
+                System.out.println("call leaveroom");
+                System.out.println("request: "+request.getSession(false));
+                session = request.getSession();
                 if(session!=null){
+                    System.out.println("session이 존재합니다");
                     token = (String) session.getAttribute("token");
-                    roomService.leaveSession(userId,token);
+                    roomService.leaveSession("ssafy12345","wss://i10a404.p.ssafy.io?sessionId=ssafy12345&token=tok_LU5E0G0Ec3OeMzEJ");
                 }
                 return new BaseResponse<>(SUCCESS_LEAVE_SESSION);
         }

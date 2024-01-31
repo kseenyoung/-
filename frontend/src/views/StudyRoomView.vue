@@ -115,6 +115,7 @@ const subscribers = ref([]);
 const question = ref("");
 const answer = ref("");
 
+console.log("STORE USER  :  ", store.loginUser);
 // 초기 데이터(계정 세션 아이디, 계정 이름)
 const myUserName = ref(store.loginUser.id);
 
@@ -128,7 +129,7 @@ const enterRoom = async (sessionId) => {
 const createSession = async (sessionId) => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
-    { sign: "enterRandomroom", sessionName: sessionId, videoCodec: "VP8"},
+    { sign: "enterRandomroom", userId: store.loginUser.id, sessionName: sessionId, videoCodec: "VP8"},
     {
       headers: { "Content-Type": "application/json" },
     },
@@ -192,11 +193,13 @@ const joinSession = () => {
 
   session.value.on("exception", ({ exception }) => {
     console.warn(exception);
+    console.log("새로고침!!!!!");
   });
 
   enterRoom(mySession.value).then((token) => {
     console.log("token"+token);
-    session.value.connect(token, { clientData: myUserName.value }).then(() => {
+    store.studyRoomSessionToken = token;
+    session.value.connect(token, myUserName.value).then(() => {
       publisher.value = OV.value.initPublisher(undefined, {
         audioSource: undefined,
         videoSource: undefined,
@@ -273,8 +276,13 @@ const togglePause = () => {
   isPause.value = !isPause.value;
 };
 
-onMounted(() => {
-  joinSession();
+onMounted(async() => {
+  console.log("store.mySessionToken"+store.studyRoomSessionToken);
+  if(store.studyRoomSessionToken=='') {
+    console.log("이미 방에 들어가 있습니다.");
+    joinSession();
+  }
+  
 });
 </script>
 

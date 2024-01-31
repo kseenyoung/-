@@ -143,6 +143,7 @@ public class UserController {
                         User user = new User(loginUserId);
                         session = request.getSession();
                         session.setAttribute("User", user);
+                        System.out.println("session : " + session);
 
                         if (session.getAttribute("kakaoEmail") != null) {
                             // 세션에 kakaoEmail 이 있으면 연동함.

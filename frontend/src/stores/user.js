@@ -8,8 +8,17 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 export const useUserStore = defineStore(
   'user',
   () => {
+    const mySessionToken = ref('');
+    const studyRoomSessionToken = ref('');
+    const id = ref('ssafy12345');
+    const sub = ref('SQLD');
+    const loginUser = ref({
+      id: id.value,
+      sub: sub.value,
+    });
+    localStorage.setItem('userStore', JSON.stringify(loginUser.value));
+
     //로그인 세션 test
-    const loginUser = ref('');
     const login = function () {
       const id = ref('ssafy12345');
       const sub = ref('SQLD');
@@ -94,7 +103,7 @@ export const useUserStore = defineStore(
         console.log('나의 방 토큰:', token);
 
         mySession.value
-          .connect(token, { clientData: myUserName.value })
+          .connect(token, myUserName.value )
           .then(() => {
             publisherMySession.value = OVMy.value.initPublisher(undefined, {
               audioSource: undefined,
@@ -112,7 +121,7 @@ export const useUserStore = defineStore(
 
             // --- 6) Publish your stream ---;
             mySession.value.publish(publisherMySession.value);
-            console.log('mySession에 로그인했습니다.');
+            console.log(loginUser.value.id+'에 로그인했습니다.');
           })
           .catch((error) => {
             console.log(
@@ -157,6 +166,8 @@ export const useUserStore = defineStore(
       loginSession,
       loginUserInfo,
       getLoginUserInfo,
+      mySessionToken,
+      studyRoomSessionToken
     };
   },
   //store를 localStorage에 저장하기 위해서(새로고침 시 데이터 날라감 방지)

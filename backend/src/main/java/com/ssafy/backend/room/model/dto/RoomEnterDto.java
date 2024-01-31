@@ -3,10 +3,12 @@ package com.ssafy.backend.room.model.dto;
 import java.util.HashMap;
 
 public class RoomEnterDto {
+    private String userId;
     private String sessionName;
     private String videoCodec;
 
-    public RoomEnterDto(String sessionName, String videoCodec) {
+    public RoomEnterDto(String userId, String sessionName, String videoCodec) {
+        this.userId = userId;
         this.sessionName = sessionName;
         this.videoCodec = videoCodec;
     }
