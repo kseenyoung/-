@@ -159,7 +159,7 @@ public class MokkojiFacade {
             throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
         Mokkoji mokkoji = mokkojiService.findByMokkojiId(dto.getMokkojiId());
         ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
-                .tagId(1)
+                .tagId(2)
                 .userId(user.getUserId())
                 .requestedUserId(mokkoji.getLeaderId())
                 .build();
@@ -181,7 +181,7 @@ public class MokkojiFacade {
 
         //alarm save
         ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
-                .tagId(2)
+                .tagId(3)
                 .userId(leader.getUserId())
                 .requestedUserId(member.getUserId())
                 .build();
@@ -190,7 +190,7 @@ public class MokkojiFacade {
 
     public void deleteAlarm(String leaderId, String memberId) {
         ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
-                .tagId(1)
+                .tagId(2)
                 .userId(memberId)
                 .requestedUserId(leaderId)
                 .build();
