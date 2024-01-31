@@ -46,4 +46,8 @@ public class Gak {
     public void setRunningTime(Integer runningTime) {
         this.runningTime = runningTime;
     }
+
+    public void setGakOrder(Integer gakOrder) {
+        this.gakOrder = gakOrder;
+    }
 }
