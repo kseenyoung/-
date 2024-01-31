@@ -26,6 +26,6 @@ public interface DagakService {
     CalendarDagakVO getDagak(String userId, LocalDate today);
 
 
-    void updateGak(Integer gakId, Integer categoryId, Integer runningTime);
+    void updateGak(Integer dagakId, Integer gakId, Integer categoryId, Integer runningTime);
 }
 
