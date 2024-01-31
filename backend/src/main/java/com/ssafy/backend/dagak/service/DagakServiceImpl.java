@@ -1,5 +1,7 @@
 package com.ssafy.backend.dagak.service;
 
+import com.ssafy.backend.category.model.domain.Category;
+import com.ssafy.backend.category.model.repository.CategoryRepository;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.domain.Calendar;
@@ -29,6 +31,9 @@ public class DagakServiceImpl implements DagakService {
 
     @Autowired
     CalendarRepository calendarRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @Override
     public int createDagak(DagakDto dagakDto) {

@@ -24,6 +24,11 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
+    public List<Category> getAllCategories(){
+        return categoryRepository.findAll();
+    }
+
+    @Override
     public Page<Mokkoji> getMokkojiList(List<Integer> categories, int page, String keyword) {
         ArrayList<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdDate"));

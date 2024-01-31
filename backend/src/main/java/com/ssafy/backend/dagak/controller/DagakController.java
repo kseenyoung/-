@@ -1,13 +1,13 @@
 package com.ssafy.backend.dagak.controller;
 
+import com.ssafy.backend.category.model.domain.Category;
+import com.ssafy.backend.category.service.CategoryService;
 import com.ssafy.backend.common.response.BaseResponse;
-import com.ssafy.backend.dagak.model.domain.Calendar;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
 import com.ssafy.backend.dagak.model.dto.GakDto;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
-import com.ssafy.backend.dagak.model.vo.CalendarGakVO;
 import com.ssafy.backend.dagak.service.DagakFacade;
 import com.ssafy.backend.dagak.service.DagakService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +30,9 @@ public class DagakController {
 
     @Autowired
     private DagakService dagakService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @PostMapping("")
     public BaseResponse<?> dagak(@RequestBody Map<String, Object> body, HttpServletRequest request){
@@ -133,5 +135,13 @@ public class DagakController {
         CalendarDagakVO todayDagakVO = dagakService.getDagak(userId, today);
         return new BaseResponse<>(todayDagakVO);
     }
+    @GetMapping("categories")
+    public BaseResponse<?> getCategories(){
+
+        List<Category> categories = categoryService.getAllCategories();
+
+        return new BaseResponse<>(categories);
+    }
+
 
 }
