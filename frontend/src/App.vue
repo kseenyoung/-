@@ -12,8 +12,23 @@ import { RouterView } from 'vue-router';
 import TheHeaderNav from './components/common/TheHeaderNav.vue';
 import TheFooter from './components/common/TheFooter.vue';
 
-const leave = function (event) {
-  console.log('이곳에 메서드 작성');
+const leave = async (event) => {
+  await axios.post(
+          // 로그인 콜백
+          'https://i10a404.p.ssafy.io/openvidu/api/signal',
+          {
+            session: stream.data,
+            type: 'signal:login-callBack',
+            data: this.myUserName,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU',
+            },
+          },
+        );
+
   event.preventDefault();
   event.returnValue = '';
 };

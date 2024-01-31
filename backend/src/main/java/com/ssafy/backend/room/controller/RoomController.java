@@ -7,17 +7,20 @@ import com.ssafy.backend.room.model.dto.ConnectionDto;
 import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.room.model.dto.RoomEnterDto;
 import com.ssafy.backend.room.service.RoomService;
+import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.OpenVidu;
+import io.openvidu.java.client.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.EMPTY_SIGN;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("room")
@@ -59,6 +62,10 @@ public class RoomController {
                 userId = (String) body.get("userId");
                 RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, "VP8");
                 token = roomService.enterDefaultroom(defaultRoomEnterDto);
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    session.setAttribute("token", token);
+                }
 
                 return new BaseResponse<>(token);
             case "enterMoccojiroom": // 모꼬지(길드) 방 입장
@@ -92,6 +99,13 @@ public class RoomController {
                 List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionId);
 
                 return new BaseResponse<>(answerDtos);
+            case "leaveRoom":
+                session = request.getSession(false);
+                if(session!=null){
+                    token = (String) session.getAttribute("token");
+                    roomService.leaveSession(userId,token);
+                }
+                return new BaseResponse<>(SUCCESS_LEAVE_SESSION);
         }
         throw new BaseException(EMPTY_SIGN);
     }

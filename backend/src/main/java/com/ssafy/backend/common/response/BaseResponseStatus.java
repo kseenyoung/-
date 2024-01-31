@@ -32,6 +32,7 @@ public enum BaseResponseStatus {
     SUCCESS_CREATE_PRODUCT(true,1401, "상품 추가에 성공했습니다."),
     SUCCESS_BUY_PRODUCT(true, 1402,"상품 구매에 성공했습니다"),
     SUCCESS_SELL_PRODUCT(true,1403 ,"상품 판매에 성공했습니다" ),
+    SUCCESS_LEAVE_SESSION(true, 1404, "세션을 나가는데 성공했습니다"),
 
     /**
      * 2000 : Request 오류

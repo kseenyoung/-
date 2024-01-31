@@ -53,7 +53,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public String enterDefaultroom(RoomEnterDto roomEnterDto) throws Exception {
-        Session session = openvidu.getActiveSession("default");
+        Session session = openvidu.getActiveSession(roomEnterDto.getSessionName());
         if(session == null){
             // 방이 존재하지 않다면 생성하라
             HashMap<String,String> SessionPropertyJson = roomEnterDto.toSessionPropertyJson();
@@ -78,15 +78,21 @@ public class RoomServiceImpl implements RoomService {
         // 세션에 해당하는 방이 존재하는지 확인
         sessionName = getRandomroom(sessionName);
         roomEnterDto.setSessionName(sessionName);
+        System.out.println("세션이름: "+sessionName);
+
+
         session = openvidu.getActiveSession(sessionName);
 
         if(session == null){
             // 방이 존재하지 않다면 생성하라
+            System.out.println("없었던방!");
             HashMap<String,String> SessionPropertyJson = roomEnterDto.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             session = openvidu.createSession(properties);
-        } else if (session.getActiveConnections().size() > 20) {
-            // 방에 20명이상이 있다면
+        } else{
+            System.out.println("있는방!");
+            // 내가 이미 연결되어있던 방인지 확인
+
         }
 
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
@@ -151,7 +157,7 @@ public class RoomServiceImpl implements RoomService {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
-        ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
+        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
         return questionDto;
     }
 
@@ -194,7 +200,7 @@ public class RoomServiceImpl implements RoomService {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 
-        ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
+        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
 
         return answerDto;
     }
@@ -222,6 +228,19 @@ public class RoomServiceImpl implements RoomService {
                 .map(a -> new AnswerDto(a.getUserId(),a.getSession(),a.getAnswer(),a.getQuestionId()))
                 .collect(Collectors.toList());
         return answerDtos;
+    }
+
+    @Override
+    public void leaveSession(String userId, String token) throws Exception {
+        Session session = openvidu.getActiveSession(userId);
+        if(session!=null){
+            List<Connection> connections = session.getActiveConnections();
+            for (Connection connection : connections){
+                if(token.equals(connection.getToken())){
+                    session.forceDisconnect(connection);
+                }
+            }
+        }
     }
 
     public String getRandomroom(String sessionName){
