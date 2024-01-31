@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_GAK;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
@@ -120,14 +121,23 @@ public class DagakServiceImpl implements DagakService {
             gak.setCategoryId(categoryId);
         }
         if (runningTime!=null){
-            Integer diffRunningTime = runningTime-gak.getRunningTime();
-            Dagak dagak = dagakRepository.findByDagakId(dagakId);
-            Integer updatedRunningTime = dagak.getTotalTime()+diffRunningTime;
-            dagak.setTotalTime(updatedRunningTime);
             gak.setRunningTime(runningTime);
-            dagakRepository.save(dagak);
         }
         gakRepository.save(gak);
+    }
+
+    @Override
+    public void deleteGak(Integer deleteGakId) {
+        gakRepository.deleteById(deleteGakId);
+    }
+
+    @Override
+    public void updateRemainGakOrder(List<GakDto> remainGaks) {
+        for(GakDto remainGak: remainGaks){
+            Gak gak = gakRepository.findById(remainGak.getGakId()).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
+            gak.setGakOrder(remainGak.getGakOrder());
+            gakRepository.save(gak);
+        }
     }
 
 

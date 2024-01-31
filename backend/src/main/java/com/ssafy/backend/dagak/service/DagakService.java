@@ -27,5 +27,10 @@ public interface DagakService {
 
 
     void updateGak(Integer dagakId, Integer gakId, Integer categoryId, Integer runningTime);
+
+
+    void deleteGak(Integer deleteGakId);
+
+    void updateRemainGakOrder(List<GakDto> remainGaks);
 }
 

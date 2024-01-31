@@ -33,6 +33,11 @@ public class GakDto {
         this.userId = userId;
     }
 
+    public GakDto(Integer remainGakId, Integer remainOrder) {
+        this.gakId = remainGakId;
+        this.gakOrder = remainOrder;
+    }
+
     public void setGakId(Integer gakId) {
         this.gakId = gakId;
     }
