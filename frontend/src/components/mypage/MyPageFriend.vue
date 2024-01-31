@@ -2,69 +2,59 @@
   <div class="common-mypage-wrapper">
     <div class="common-mypage-title">친구 목록</div>
     <div class="friend-list-wrapper">
-      <div><i class="bi bi-people-fill"></i> 10명</div>
+      <div><i class="bi bi-people-fill"></i> {{ totalFriend }}명</div>
 
-      <div class="friend-list-detail">
-        <img src="@/assets/img/기본프로필_갈색.jpg">
-        <div class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">hong</div>
-        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>접속중</div>
+      <div
+        v-for="(friend, index) in listFriend"
+        :key="index"
+        class="friend-list-detail"
+      >
+        <img src="@/assets/img/기본프로필_갈색.jpg" />
+        <div
+          class="dropdown-toggle"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          {{ friend.userNickname }}
+        </div>
+        <div class="friend-onoff friend-online">
+          <!-- <div class="friend-onoff friend-offline"> -->
+          <i class="bi bi-circle-fill"></i>접속중
+        </div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
         <ul class="dropdown-menu">
-          <li>hong</li>
+          <li>{{ friend.userNickname }}</li>
           <li>모꼬지</li>
           <li>"오늘도 파이팅!!"</li>
         </ul>
       </div>
-
-      <div class="friend-list-detail">
-        <img src="@/assets/img/기본프로필_갈색.jpg">
-        <div>닉네임1</div>
-        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>접속중</div>
-        <button class="btn common-btn"><i class="bi bi-send"></i></button>
-      </div>
-      <div class="friend-list-detail">
-        <img src="@/assets/img/기본프로필_갈색.jpg">
-        <div>닉네임1</div>
-        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>접속중</div>
-        <button class="btn common-btn"><i class="bi bi-send"></i></button>
-      </div>
-      <div class="friend-list-detail">
-        <img src="@/assets/img/기본프로필_갈색.jpg">
-        <div>닉네임1</div>
-        <div class="friend-onoff friend-online"><i class="bi bi-circle-fill"></i>접속중</div>
-        <button class="btn common-btn"><i class="bi bi-send"></i></button>
-      </div>
-      <div class="friend-list-detail">
-        <img src="@/assets/img/기본프로필_갈색.jpg">
-        <div>닉네임2</div>
-        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>접속해제</div>
-        <button class="btn common-btn"><i class="bi bi-send"></i></button>
-      </div>
-      <div class="friend-list-detail">
-        <img src="@/assets/img/기본프로필_갈색.jpg">
-        <div>닉네임2</div>
-        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>접속해제</div>
-        <button class="btn common-btn"><i class="bi bi-send"></i></button>
-      </div>
-      <div class="friend-list-detail">
-        <img src="@/assets/img/기본프로필_갈색.jpg">
-        <div>닉네임2</div>
-        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>접속해제</div>
-        <button class="btn common-btn"><i class="bi bi-send"></i></button>
-      </div>
-      <div class="friend-list-detail">
-        <img src="@/assets/img/기본프로필_갈색.jpg">
-        <div>닉네임2</div>
-        <div class="friend-onoff friend-offline"><i class="bi bi-circle-fill"></i>접속해제</div>
-        <button class="btn common-btn"><i class="bi bi-send"></i></button>
-      </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
+const totalFriend = ref('');
+const listFriend = ref([]);
+
+onMounted(() => {
+  getFriends();
+});
+
+const getFriends = function () {
+  axios.get('https://localhost:8080/dagak/friend/list').then((res) => {
+    console.log(res.data);
+    if (res.data.code === 1000) {
+      console.log(res.data);
+      //성공
+      totalFriend.value = res.data.result.countFriend;
+      listFriend.value = res.data.result.friends;
+      console.log(listFriend.value);
+    }
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -126,14 +116,14 @@
       top: -3px;
       padding-right: 6px;
     }
-  } 
+  }
 
   .friend-online {
     i {
       color: rgb(0, 176, 0);
     }
   }
-  
+
   .friend-offline {
     i {
       color: rgb(228, 0, 0);
