@@ -3,6 +3,8 @@ package com.ssafy.backend.dagak.controller;
 import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.service.CategoryService;
 import com.ssafy.backend.common.response.BaseResponse;
+import com.ssafy.backend.dagak.model.domain.Dagak;
+import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
 import com.ssafy.backend.dagak.model.dto.GakDto;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -110,6 +113,28 @@ public class DagakController {
         return new BaseResponse<>(calendarDagakVOS);
     }
 
+    /*
+     * [GET] 사용자의 모든 다각 반환
+     * request :
+     */
+    @GetMapping("dagaks")
+    public BaseResponse<?> getDagaks(@RequestParam String userId){
+        List<Dagak> dagakList = dagakService.getDagakList(userId);
+        return new BaseResponse<>(dagakList);
+    }
+
+    @GetMapping("gaks")
+    public BaseResponse<?> getDagakInformation(@RequestParam Integer dagakId){
+        List<Gak> dagakInformation = dagakService.getGakInformation(dagakId);
+        return new BaseResponse<>(dagakInformation);
+    }
+
+    @GetMapping("today")
+    public BaseResponse<?> getTodayDagak(@RequestParam String userId){
+        LocalDate today = LocalDate.now();
+        CalendarDagakVO todayDagakVO = dagakService.getDagak(userId, today);
+        return new BaseResponse<>(todayDagakVO);
+    }
     @GetMapping("categories")
     public BaseResponse<?> getCategories(){
 
