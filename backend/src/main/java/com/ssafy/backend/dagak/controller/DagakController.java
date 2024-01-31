@@ -91,17 +91,32 @@ public class DagakController {
              * 다각 테이블의 총 시간 원래 시간이랑 비교해서 바꾸고...
              * category_id, setting_time
              */
-            case "updateGaks":
-                Integer dagakId = (Integer) body.get("dagakId");
-                Integer gakId = (Integer) body.get("gakId");
-                Integer categoryId = (Integer) body.get("categoryId");
-                Integer runningTime = (Integer) body.get("runningTime");
-                System.out.println(gakId+" "+categoryId+" "+runningTime);
-                if (categoryId==null && runningTime==null){
+            case "updateGak":
+                Integer updateDagakId = (Integer) body.get("dagakId");
+                Integer updateGakId = (Integer) body.get("gakId");
+                Integer updateCategoryId = (Integer) body.get("categoryId");
+                Integer updateRunningTime = (Integer) body.get("runningTime");
+                Integer updateOrder = (Integer) body.get("updateOrder");
+                if (updateCategoryId==null && updateRunningTime==null){
                     throw new BaseException(DATA_NOT_CHANGED);
                 }
-                dagakService.updateGak(dagakId, gakId, categoryId, runningTime);
+                dagakService.updateGak(updateDagakId, updateGakId, updateCategoryId, updateRunningTime);
                 return new BaseResponse<>(SUCCESS);
+
+            case "deleteGak":
+                Integer deleteGakId = (Integer) body.get("gakId");
+                dagakService.deleteGak(deleteGakId);
+
+                List<Map<String, Integer>> remainGakInformation = (List<Map<String, Integer>>) body.get("remainGakInformation");
+                List<GakDto> remainGaks = new ArrayList<>();
+                if (!remainGakInformation.isEmpty()){
+                    for(Map<String, Integer> gak: remainGakInformation){
+                        Integer remainGakId = gak.get("gakId");
+                        Integer remainOrder = gak.get("gakOrder");
+                        remainGaks.add(new GakDto(remainGakId, remainOrder));
+                    }
+                    dagakService.updateRemainGakOrder(remainGaks);
+                }
 
 
         }
