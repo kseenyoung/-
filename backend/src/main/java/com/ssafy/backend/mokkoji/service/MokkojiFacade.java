@@ -134,7 +134,19 @@ public class MokkojiFacade {
         Mokkoji mokkoji = mokkojiService.findByMokkojiId(mokkojiId);
         List<UserViewVO> user = userService.viewUserInformationByMokkoji(mokkoji);
         List<Category> categories = mokkojiCategoryService.findByMokkoji(mokkoji);
-
+        if("".equals(userId) || userId == null) {
+            dto.setUserId("");
+            dto.setMyMokkojiId(0);
+        }
+        else{
+            User existUser = userService.isExistUser(userId);
+            if(existUser.getMokkojiId() == null){
+                dto.setMyMokkojiId(0);
+            }else{
+                dto.setMyMokkojiId(existUser.getMokkojiId().getMokkojiId());
+            }
+            dto.setUserId(userId);
+        }
         if(userId != null && userId.equals(mokkoji.getLeaderId())) dto.setLeader(true);
         dto.setMokkojiData(mokkoji, user, categories);
         return dto;
@@ -147,7 +159,7 @@ public class MokkojiFacade {
             throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
         Mokkoji mokkoji = mokkojiService.findByMokkojiId(dto.getMokkojiId());
         ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
-                .tagId(1)
+                .tagId(2)
                 .userId(user.getUserId())
                 .requestedUserId(mokkoji.getLeaderId())
                 .build();
@@ -169,7 +181,7 @@ public class MokkojiFacade {
 
         //alarm save
         ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
-                .tagId(2)
+                .tagId(3)
                 .userId(leader.getUserId())
                 .requestedUserId(member.getUserId())
                 .build();
@@ -178,7 +190,7 @@ public class MokkojiFacade {
 
     public void deleteAlarm(String leaderId, String memberId) {
         ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
-                .tagId(1)
+                .tagId(2)
                 .userId(memberId)
                 .requestedUserId(leaderId)
                 .build();

@@ -4,31 +4,21 @@
     <div class="mok-content-wrapper">
       <div class="mok-content-left">
         <div class="mok-left-action">
-          <div class="mok-subtitle">모꼬지명</div>
-          <button class="btn common-btn">모꼬지 신청</button>
-          <button class="btn common-btn">모꼬지 탈퇴</button>
-          <button class="btn common-btn">모꼬지 삭제</button>
+          <div class="mok-subtitle">{{mokkoji.mokkojiName}}</div>
+          <button v-if="myMokkoji ==0 && userId != '' " class="btn common-btn">모꼬지 신청</button>
+          <button v-if="myMokkoji == mokkoji.mokkojiId" class="btn common-btn">모꼬지 탈퇴</button>
+          <button v-if="leaderCheck" class="btn common-btn">모꼬지 삭제</button>
         </div>
         <div class="mok-left-list">
           <div class="mok-subtitle">모꼬지원 목록</div>
           <div class="mok-list-wrapper">
-
+          <div v-for="item in user" :key="item.userId">
             <div class="mok-list-detail">
-              <img src="@/assets/img/기본프로필_갈색.jpg">
-              <div>hong</div>
-              <button class="btn btn-sm btn-danger">강퇴</button>
+              <img v-if="item.userPicture =='' || item.userPicture ==null" src="@/assets/img/기본프로필_갈색.jpg">
+              <div>{{item.userNickname}}</div>
+              <button v-if="leaderCheck" class="btn btn-sm btn-danger">강퇴</button>
             </div>
-            <div class="mok-list-detail">
-              <img src="@/assets/img/기본프로필_갈색.jpg">
-              <div>hong</div>
-              <button class="btn btn-sm btn-danger">강퇴</button>
-            </div>
-            <div class="mok-list-detail">
-              <img src="@/assets/img/기본프로필_갈색.jpg">
-              <div>hong</div>
-              <button class="btn btn-sm btn-danger">강퇴</button>
-            </div>
-            
+          </div>
           </div>
         </div>
       </div>
@@ -37,15 +27,15 @@
         <div class="mok-right-info">
           <div class="mok-right-info-subtitle">길드 정보</div>
           <div class="mok-right-info-content">
-            <div>길드명</div>
-            <div>길드장</div>
-            <div>길드 생성일</div>
-            <div>인사말</div>
-            <div>카테고리</div>
-            <div>순위</div>
+            <div>{{mokkoji.mokkojiName}}</div>
+            <div>{{mokkoji.leaderId}}</div>
+            <div>{{mokkoji.mokkojiStatus}}</div>
+            <div v-for="item in categories" :key="item.categoryId">
+              <div>{{item.categoryName}}</div>
+            </div>
           </div>
         </div>
-        <div class="mok-right-info">
+        <div v-if="leaderCheck"  class="mok-right-info">
           <div class="mok-right-info-subtitle">길드 수정</div>
           <div class="mok-right-info-content">
             <div>길드장만 보임</div>
@@ -58,6 +48,42 @@
 </template>
 
 <script setup>
+import axios from 'axios';
+import {useRoute, useRouter } from 'vue-router'
+import {ref, onMounted} from "vue";
+
+const mokkoji = ref([]);
+const user = ref([]);
+const categories = ref();
+const leaderCheck = ref();
+const myMokkoji = ref();
+const userId = ref();
+
+// Vue Router 인스턴스 생성
+const route = useRoute(); // route 객체 생성
+const id = route.params.id;
+const getMokkojiDetail = async function () {
+  const id = route.params.id; // id 값을 route.params에서 가져옵니다.
+  return await axios.get(`${import.meta.env.VITE_API_BASE_URL}mokkoji/detail/${id}`);
+};
+onMounted(async () => {
+    const response = await getMokkojiDetail(id);
+    
+    if(response.data.code === 1000){
+      console.log(response.data);
+      mokkoji.value = response.data.result.mokkoji;
+      user.value = response.data.result.user;
+      categories.value = response.data.result.categories;
+      leaderCheck.value = response.data.result.leaderCheck;
+      myMokkoji.value = response.data.result.myMokkoji;
+      userId.value = response.data.result.userId;
+    }
+    else{
+      alert(response.data.message);
+    }
+})
+
+
 
 </script>
 

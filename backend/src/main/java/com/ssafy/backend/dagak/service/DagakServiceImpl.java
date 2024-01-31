@@ -132,10 +132,10 @@ public class DagakServiceImpl implements DagakService {
     }
 
     @Override
-    public void updateRemainGakOrder(List<GakDto> remainGaks) {
-        for(GakDto remainGak: remainGaks){
-            Gak gak = gakRepository.findById(remainGak.getGakId()).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
-            gak.setGakOrder(remainGak.getGakOrder());
+    public void updateGakOrder(List<GakDto> Gaks) {
+        for(GakDto Gak: Gaks){
+            Gak gak = gakRepository.findById(Gak.getGakId()).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
+            gak.setGakOrder(Gak.getGakOrder());
             gakRepository.save(gak);
         }
     }
