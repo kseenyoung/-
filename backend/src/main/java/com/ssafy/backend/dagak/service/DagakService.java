@@ -24,5 +24,8 @@ public interface DagakService {
     List<Gak> getGakInformation(Integer dagakId);
 
     CalendarDagakVO getDagak(String userId, LocalDate today);
+
+
+    void updateGak(Integer gakId, Integer categoryId, Integer runningTime);
 }
 
