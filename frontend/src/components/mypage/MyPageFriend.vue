@@ -14,6 +14,7 @@
           class="dropdown-toggle"
           data-bs-toggle="dropdown"
           aria-expanded="false"
+          @click="friendDetail(friend.userNickname)"
         >
           {{ friend.userNickname }}
         </div>
@@ -23,9 +24,17 @@
         </div>
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
         <ul class="dropdown-menu">
-          <li>{{ friend.userNickname }}</li>
-          <li>모꼬지</li>
-          <li>"오늘도 파이팅!!"</li>
+          <li>{{ friendDetailInfo.userNickname }}</li>
+          <li>모꼬지: {{ friendDetailInfo.mokkoijiName }}</li>
+          <li v-if="friendDetailInfo.userRank != null">
+            랭크: {{ friendDetailInfo.userRank }} 위
+          </li>
+          <li v-else>랭크: -</li>
+          <li v-if="friendDetailInfo.userTotalStudyTime != null">
+            공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
+          </li>
+          <li v-else>공부시간: -</li>
+          <li>"{{ friendDetailInfo.userStatusMessage }}"</li>
         </ul>
       </div>
     </div>
@@ -54,6 +63,32 @@ const getFriends = function () {
       console.log(listFriend.value);
     }
   });
+};
+
+const friendDetailInfo = ref({});
+const friendDetail = function (nickname) {
+  console.log('상세 클릭: ' + nickname);
+  const body = {
+    sign: 'viewUserInformation',
+    userNickname: nickname,
+  };
+  axios
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then((json) => {
+      console.log(json);
+      if (json.code === 1000) {
+        //성공
+        friendDetailInfo.value = json.result;
+        console.log(friendDetailInfo.value);
+      } else {
+        alert('닉네임이 비어있습니다.');
+      }
+    });
 };
 </script>
 
@@ -99,6 +134,9 @@ const getFriends = function () {
   .dropdown-menu {
     padding: 10px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    > li:nth-child(1) {
+      font-weight: 500;
+    }
   }
 
   @mixin friend-status {
