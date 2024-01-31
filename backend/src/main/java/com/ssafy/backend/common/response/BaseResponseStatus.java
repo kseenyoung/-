@@ -110,8 +110,9 @@ public enum BaseResponseStatus {
     EMPTY_INVENTORY(false, 2122, "존재하는 아이템이 인벤토리에 없습니다"),
 
     /* 친구 관련 에러 이넘 클래스 BAD REQUEST*/
-    ALREADY_EXIST_FRIEND(false, 2200, "이미 상대방과 친구입니다."),
-    NOT_FRIEND(false, 2201, "이미 상대방과 친구입니다."),
+    ALREADY_EXIST_FRIEND(false, 2200, "이미 친구입니다."),
+    NOT_REQUESTED_FRIEND(false, 2201, "친구 요청이 없으므로 승인할 수 없습니다."),
+    ALREADY_EXIST_ALARM(false, 2200, "이미 상대방에게 친구 요청 하였습니다."),
 
 
     /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/

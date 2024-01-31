@@ -21,4 +21,6 @@ public interface AlarmService {
     void aVoidDuplicateAlaram(ReqestAlarmDto reqestAlarmDto);
 
     void deleteAlarm(ReqestAlarmDto alarmDto);
+
+    boolean isAlreadyRequestFriend(String userId, String requestedUserId);
 }

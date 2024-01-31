@@ -14,7 +14,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.ALREADY_EXIST_FRIEND;
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_FRIEND;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_REQUESTED_FRIEND;
 
 @Service
 @Slf4j
@@ -87,8 +87,9 @@ public class FriendServiceImpl implements FriendService {
 
     }
 
+    @Override
     public boolean isFriend(UserId PK) {
-        Friend friend = friendRepository.findById(PK).orElseThrow(() -> new BaseException(NOT_FRIEND));
+        Friend friend = friendRepository.findById(PK).orElseThrow(() -> new BaseException(NOT_REQUESTED_FRIEND));
 //        log.info("친구 존재 여부 {}", friend);
 
         if(friend.getIsFriend() == 0){
@@ -96,7 +97,6 @@ public class FriendServiceImpl implements FriendService {
         }
         return true;
     }
-
 
 
 
