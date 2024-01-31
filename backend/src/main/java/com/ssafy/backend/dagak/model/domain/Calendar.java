@@ -8,6 +8,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import java.time.LocalDate;
+
+
 @Entity
 @Builder
 @Getter
@@ -25,12 +28,12 @@ public class Calendar {
     private String userId;
 
     @Column
-    private String calendarDate;
+    private LocalDate calendarDate;
 
     public Calendar() {
     }
 
-    public Calendar(Integer calendarDagakId, Integer dagakId, String userId, String calendarDate) {
+    public Calendar(Integer calendarDagakId, Integer dagakId, String userId, LocalDate calendarDate) {
         this.calendarDagakId = calendarDagakId;
         this.dagakId = dagakId;
         this.userId = userId;
