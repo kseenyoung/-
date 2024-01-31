@@ -59,8 +59,10 @@ import Alarm from './Alarm.vue';
 import AlarmModal from './AlarmModal.vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
+import { useAlarmStore } from '@/stores/alarm';
 
 const userStore = useUserStore();
+const alarmStore = useAlarmStore();
 const router = useRouter();
 
 //로그인할 때 생성한 sessionStorage의 정보
@@ -101,6 +103,7 @@ const handleScroll = () => {
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
   getSessionId();
+  alarmStore.getUnReadAlarmList();
 });
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll);

@@ -2,7 +2,9 @@
   <div class="common-mypage-wrapper">
     <div class="common-mypage-title">친구 목록</div>
     <div class="friend-list-wrapper">
-      <div><i class="bi bi-people-fill"></i> {{ totalFriend }}명</div>
+      <div class="friend-list-total">
+        <i class="bi bi-people-fill"></i> {{ totalFriend }}명
+      </div>
 
       <div
         v-for="(friend, index) in listFriend"
@@ -100,6 +102,9 @@ const friendDetail = function (nickname) {
   max-height: 430px;
   margin: 0px 80px;
   padding: 0px 20px;
+  .friend-list-total {
+    font-size: 1.5rem;
+  }
 }
 .friend-list-detail {
   display: flex;

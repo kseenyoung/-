@@ -9,13 +9,14 @@
     <span
       class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
     >
-      12
+      {{ alarmStore.alarmUnReadTotal }}
     </span>
   </button>
 </template>
 
-<script>
-export default {};
+<script setup>
+import { useAlarmStore } from '@/stores/alarm';
+const alarmStore = useAlarmStore();
 </script>
 
 <style lang="scss" scoped>

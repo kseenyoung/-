@@ -43,6 +43,7 @@
             v-if="alarm.tagId === 2 || alarm.tagId === 4"
             class="btn common-btn"
             :disabled="alarm.isChecked != 0"
+            @click="accessAlarm(alarm.tagId, alarm.requestedUserId)"
           >
             수락
           </button>
@@ -71,6 +72,9 @@
 // 게시글(1), 모꼬지 신청(2), 모꼬지 승인(3),  친구 신청(4), 친구 승인(5),  답변(6), DM(7)
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useAlarmStore } from '@/stores/alarm';
+
+const alarmStore = useAlarmStore();
 
 const alarmTotal = ref();
 const alarmList = ref([]);
@@ -79,6 +83,7 @@ onMounted(() => {
   getAlarmList();
 });
 
+//전체 알람 목록 불러오기
 const getAlarmList = function () {
   axios.get('https://localhost:8080/dagak/alarms/listOfAll').then((res) => {
     console.log(res.data);
@@ -86,6 +91,37 @@ const getAlarmList = function () {
     alarmList.value = res.data.result;
   });
 };
+
+//알림 확인
+const checkAlarm = async function (alarmId) {
+  const body = {
+    sign: 'check',
+    alarmId: alarmId,
+  };
+  await axios
+    .post('https://localhost:8080/dagak/alarms', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then(() => {});
+  getAlarmList();
+  alarmStore.getUnReadAlarmList();
+};
+
+const accessAlarm = function (tagId, requestedUserId) {
+  console.log(tagId + ':' + requestedUserId);
+  if (tagId === 2) {
+    //모꼬지 승인 API
+  } else if (tagId === 4) {
+    //친구 승인 API
+  } else {
+    alert(tagId + ': tagId가 잘못되었습니다.');
+  }
+  //승인 후 확인(0->1)되는 지 확인 필요
+};
+
 const getAlarmTag = (tagId) => {
   switch (tagId) {
     case 1:
@@ -121,24 +157,6 @@ const getAlarmMessage = (tagId) => {
     case 7:
       return 'DM이 왔습니다';
   }
-};
-
-const checkAlarm = function (alarmId) {
-  const body = {
-    sign: 'check',
-    alarmId: alarmId,
-  };
-  axios
-    .post('https://localhost:8080/dagak/alarms', body, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((res) => res.data)
-    .then((json) => {
-      console.log(json);
-    });
-  getAlarmList();
 };
 </script>
 
