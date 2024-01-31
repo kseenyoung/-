@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
@@ -12,7 +12,6 @@ export const useAlarmStore = defineStore(
       axios
         .get('https://localhost:8080/dagak/alarms/listOfUnchecked')
         .then((res) => {
-          console.log(res.data);
           alarmUnReadTotal.value = res.data.result.length;
           alarmUnReadList.value = res.data.result;
         });

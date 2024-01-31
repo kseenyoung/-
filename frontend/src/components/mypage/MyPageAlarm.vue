@@ -59,6 +59,7 @@
             v-else
             class="btn common-btn"
             @click="checkAlarm(alarm.alarmId)"
+            :disabled="alarm.isChecked != 0"
           >
             <i class="bi bi-check2"></i>
           </button>
@@ -86,7 +87,6 @@ onMounted(() => {
 //전체 알람 목록 불러오기
 const getAlarmList = function () {
   axios.get('https://localhost:8080/dagak/alarms/listOfAll').then((res) => {
-    console.log(res.data);
     alarmTotal.value = res.data.result.length;
     alarmList.value = res.data.result;
   });
@@ -110,16 +110,52 @@ const checkAlarm = async function (alarmId) {
   alarmStore.getUnReadAlarmList();
 };
 
-const accessAlarm = function (tagId, requestedUserId) {
-  console.log(tagId + ':' + requestedUserId);
+const accessAlarm = async function (tagId, requestedUserId) {
+  console.log(requestedUserId);
   if (tagId === 2) {
     //모꼬지 승인 API
+    const body = {
+      sign: 'AcceptMokkoji',
+      memberId: requestedUserId,
+    };
+    await axios
+      .post('https://localhost:8080/dagak/mokkoji', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        if (res.data.code === 1105) {
+          //성공
+          alert(res.data.message);
+        } else if (res.data.code === 2100) {
+          //이미 모꼬지가 있는 유저
+          alert(res.data.message);
+        }
+      });
   } else if (tagId === 4) {
     //친구 승인 API
+    const body = {
+      sign: 'accessFriend',
+      userId: requestedUserId,
+    };
+    await axios
+      .post('https://localhost:8080/dagak/friend', body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        if (res.data.code === 1000) {
+          //성공
+          alert('친구가 되었습니다');
+        }
+      });
   } else {
     alert(tagId + ': tagId가 잘못되었습니다.');
   }
-  //승인 후 확인(0->1)되는 지 확인 필요
+  getAlarmList();
+  alarmStore.getUnReadAlarmList();
 };
 
 const getAlarmTag = (tagId) => {

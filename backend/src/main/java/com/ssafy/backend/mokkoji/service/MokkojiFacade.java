@@ -182,8 +182,8 @@ public class MokkojiFacade {
         //alarm save
         ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
                 .tagId(3)
-                .userId(leader.getUserId())
-                .requestedUserId(member.getUserId())
+                .userId(member.getUserId())
+                .requestedUserId(leader.getUserId())
                 .build();
         alarmService.requestAlarm(alarmDto);
     }
