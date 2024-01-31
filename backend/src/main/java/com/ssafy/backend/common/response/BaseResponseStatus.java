@@ -71,6 +71,7 @@ public enum BaseResponseStatus {
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_DELETE_ALARM(false, 2033, "이미 삭제된 알람입니다"),
 
+    /* User */
     ALREADY_EXIST_USER(false, 2034, "이미 존재하는 회원입니다."),
     ALREADY_EXIST_ID(false, 2035, "이미 존재하는 아이디입니다."),
     FAIL_LOGIN(false, 2036, "로그인에 실패했습니다."),
@@ -118,6 +119,8 @@ public enum BaseResponseStatus {
 
     /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
 //    WRONG_TYPE(false,2400,"자료형이 일치하지 않습니다."),
+    DATA_NOT_CHANGED(false,2400,"변경된 데이터가 없습니다."),
+    NOT_EXIST_GAK(false,2401,"데이터가 존재하지 않습니다."),
 
 
     /**

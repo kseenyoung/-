@@ -2,6 +2,7 @@ package com.ssafy.backend.dagak.controller;
 
 import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.service.CategoryService;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
@@ -84,11 +85,23 @@ public class DagakController {
             case "updateEndTime":
                 break;
 
-            case "getCalendarAll":
-                break;
+            /*
+             * [POST] 다각의 상세정보들 수정
+             * 바뀌어야 할 부분:
+             * 다각 테이블의 총 시간 원래 시간이랑 비교해서 바꾸고...
+             * category_id, setting_time
+             */
+            case "updateGaks":
+                Integer gakId = (Integer) body.get("gakId");
+                Integer categoryId = (Integer) body.get("categoryId");
+                Integer runningTime = (Integer) body.get("runningTime");
+                System.out.println(gakId+" "+categoryId+" "+runningTime);
+                if (categoryId==null && runningTime==null){
+                    throw new BaseException(DATA_NOT_CHANGED);
+                }
+                dagakService.updateGak(gakId, categoryId, runningTime);
+                return new BaseResponse<>(SUCCESS);
 
-            case "getGaks":
-                break;
 
         }
 
@@ -115,20 +128,25 @@ public class DagakController {
 
     /*
      * [GET] 사용자의 모든 다각 반환
-     * request :
      */
     @GetMapping("dagaks")
     public BaseResponse<?> getDagaks(@RequestParam String userId){
         List<Dagak> dagakList = dagakService.getDagakList(userId);
         return new BaseResponse<>(dagakList);
     }
-
+    
+    /*
+     * [GET] 사용자의 다각의 상세 정보 반환
+     */
     @GetMapping("gaks")
     public BaseResponse<?> getDagakInformation(@RequestParam Integer dagakId){
         List<Gak> dagakInformation = dagakService.getGakInformation(dagakId);
         return new BaseResponse<>(dagakInformation);
     }
-
+    
+    /*
+     * [GET] 오늘의 다각 정보 반환
+     */
     @GetMapping("today")
     public BaseResponse<?> getTodayDagak(@RequestParam String userId){
         LocalDate today = LocalDate.now();
