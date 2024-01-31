@@ -78,8 +78,9 @@ const logout = function () {
     .post('https://localhost:8080/dagak/user', body)
     .then((res) => res.data)
     .then(() => {
-      //유저정보 공백으로
+      //유저정보 공백 & 로컬스토리지에 저장한 것 삭제
       userStore.loginUserInfo = {};
+      localStorage.removeItem('user');
     });
   //성공 시 홈으로
   router.push({
