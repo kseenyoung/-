@@ -69,7 +69,7 @@ public class MokkojiController {
         if (session == null) {
             throw new BaseException(EMPTY_SESSION);
         }
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
 //        sign 체크
         String sign = (String) body.get("sign");

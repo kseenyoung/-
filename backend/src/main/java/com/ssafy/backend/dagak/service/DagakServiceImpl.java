@@ -1,5 +1,8 @@
 package com.ssafy.backend.dagak.service;
 
+import com.ssafy.backend.category.model.domain.Category;
+import com.ssafy.backend.category.model.repository.CategoryRepository;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.domain.Calendar;
@@ -9,12 +12,17 @@ import com.ssafy.backend.dagak.model.repository.CalendarRepository;
 import com.ssafy.backend.dagak.model.repository.DagakRepository;
 import com.ssafy.backend.dagak.model.repository.GakRepository;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
+import com.ssafy.backend.user.model.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_GAK;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
 @Service
 @Slf4j
@@ -28,6 +36,9 @@ public class DagakServiceImpl implements DagakService {
 
     @Autowired
     CalendarRepository calendarRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @Override
     public int createDagak(DagakDto dagakDto) {
@@ -81,6 +92,42 @@ public class DagakServiceImpl implements DagakService {
         }
 
         return calendarDagaks;
+    }
+
+    @Override
+    public List<Dagak> getDagakList(String userId) {
+        return dagakRepository.findDagaksByUserId(userId);
+    }
+
+    @Override
+    public List<Gak> getGakInformation(Integer dagakId) {
+        return gakRepository.findAllByDagakId(dagakId);
+    }
+
+    @Override
+    public CalendarDagakVO getDagak(String userId, LocalDate today) {
+        Calendar todayCalender = calendarRepository.findCalendarByCalendarDate(today);
+        CalendarDagakVO todayCalendarDagakVO = new CalendarDagakVO();
+        todayCalendarDagakVO.setUserId(todayCalender.getUserId());
+        todayCalendarDagakVO.setDagakId(todayCalender.getDagakId());
+        return todayCalendarDagakVO;
+    }
+
+    @Override
+    public void updateGak(Integer dagakId, Integer gakId, Integer categoryId, Integer runningTime) {
+        Gak gak = gakRepository.findById(gakId).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
+        if (categoryId!=null){
+            gak.setCategoryId(categoryId);
+        }
+        if (runningTime!=null){
+            Integer diffRunningTime = runningTime-gak.getRunningTime();
+            Dagak dagak = dagakRepository.findByDagakId(dagakId);
+            Integer updatedRunningTime = dagak.getTotalTime()+diffRunningTime;
+            dagak.setTotalTime(updatedRunningTime);
+            gak.setRunningTime(runningTime);
+            dagakRepository.save(dagak);
+        }
+        gakRepository.save(gak);
     }
 
 
