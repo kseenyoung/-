@@ -1,10 +1,13 @@
 package com.ssafy.backend.dagak.controller;
 
+import com.ssafy.backend.category.model.domain.Category;
+import com.ssafy.backend.category.service.CategoryService;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
 import com.ssafy.backend.dagak.model.dto.GakDto;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
 import com.ssafy.backend.dagak.service.DagakFacade;
+import com.ssafy.backend.dagak.service.DagakService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +24,12 @@ public class DagakController {
 
     @Autowired
     private DagakFacade dagakFacade;
+
+    @Autowired
+    private DagakService dagakService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @PostMapping("")
     public BaseResponse<?> dagak(@RequestBody Map<String, Object> body, HttpServletRequest request){
@@ -99,6 +108,14 @@ public class DagakController {
 //        System.out.println("최최초치ㅗ치ㅗ치ㅗ치쵳 최종 " + calendarDagakVOS);
 
         return new BaseResponse<>(calendarDagakVOS);
+    }
+
+    @GetMapping("categories")
+    public BaseResponse<?> getCategories(){
+
+        List<Category> categories = categoryService.getAllCategories();
+
+        return new BaseResponse<>(categories);
     }
 
 
