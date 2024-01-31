@@ -1,5 +1,6 @@
 package com.ssafy.backend.friend.service;
 
+import com.ssafy.backend.friend.model.domain.UserId;
 import com.ssafy.backend.friend.model.vo.FriendVO;
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface FriendService {
     int countFriend(String countUserId);
 
     List<FriendVO> listFriends(String listUserId);
+
+    boolean isFriend(UserId PK);
+
 }

@@ -85,4 +85,14 @@ public class AlarmServiceImpl implements  AlarmService {
         alarmRepository.delete(alarm);
 
     }
+
+    @Override
+    public boolean isAlreadyRequestFriend(String userId, String requestedUserId) {
+        Alarm byUserIdAndRequestedUserIdAndTagIdAndIsChecked
+                = alarmRepository.findByUserIdAndRequestedUserIdAndTagIdAndIsChecked(userId, requestedUserId, 4, 0);
+
+        if(byUserIdAndRequestedUserIdAndTagIdAndIsChecked != null)
+            return true;
+        return false;
+    }
 }
