@@ -114,13 +114,18 @@ public class DagakServiceImpl implements DagakService {
     }
 
     @Override
-    public void updateGak(Integer gakId, Integer categoryId, Integer runningTime) {
+    public void updateGak(Integer dagakId, Integer gakId, Integer categoryId, Integer runningTime) {
         Gak gak = gakRepository.findById(gakId).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
         if (categoryId!=null){
             gak.setCategoryId(categoryId);
         }
         if (runningTime!=null){
+            Integer diffRunningTime = runningTime-gak.getRunningTime();
+            Dagak dagak = dagakRepository.findByDagakId(dagakId);
+            Integer updatedRunningTime = dagak.getTotalTime()+diffRunningTime;
+            dagak.setTotalTime(updatedRunningTime);
             gak.setRunningTime(runningTime);
+            dagakRepository.save(dagak);
         }
         gakRepository.save(gak);
     }

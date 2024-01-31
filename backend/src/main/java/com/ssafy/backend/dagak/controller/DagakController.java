@@ -92,6 +92,7 @@ public class DagakController {
              * category_id, setting_time
              */
             case "updateGaks":
+                Integer dagakId = (Integer) body.get("dagakId");
                 Integer gakId = (Integer) body.get("gakId");
                 Integer categoryId = (Integer) body.get("categoryId");
                 Integer runningTime = (Integer) body.get("runningTime");
@@ -99,7 +100,7 @@ public class DagakController {
                 if (categoryId==null && runningTime==null){
                     throw new BaseException(DATA_NOT_CHANGED);
                 }
-                dagakService.updateGak(gakId, categoryId, runningTime);
+                dagakService.updateGak(dagakId, gakId, categoryId, runningTime);
                 return new BaseResponse<>(SUCCESS);
 
 
