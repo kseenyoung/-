@@ -96,13 +96,16 @@ public class DagakController {
                 Integer updateGakId = (Integer) body.get("gakId");
                 Integer updateCategoryId = (Integer) body.get("categoryId");
                 Integer updateRunningTime = (Integer) body.get("runningTime");
-                Integer updateOrder = (Integer) body.get("updateOrder");
                 if (updateCategoryId==null && updateRunningTime==null){
                     throw new BaseException(DATA_NOT_CHANGED);
                 }
                 dagakService.updateGak(updateDagakId, updateGakId, updateCategoryId, updateRunningTime);
                 return new BaseResponse<>(SUCCESS);
 
+            /*
+             * [POST] 각 삭제하기
+             * 각 삭제 후, 남은 각의 순서를 다시 업데이트
+             */
             case "deleteGak":
                 Integer deleteGakId = (Integer) body.get("gakId");
                 dagakService.deleteGak(deleteGakId);
@@ -115,10 +118,25 @@ public class DagakController {
                         Integer remainOrder = gak.get("gakOrder");
                         remainGaks.add(new GakDto(remainGakId, remainOrder));
                     }
-                    dagakService.updateRemainGakOrder(remainGaks);
+                    dagakService.updateGakOrder(remainGaks);
                 }
+                return new BaseResponse<>(SUCCESS);
 
-
+            /*
+             * [POST] 다각 순서 업데이트
+             */
+            case "updateGakOrder":
+                List<Map<String, Integer>> GakInformation = (List<Map<String, Integer>>) body.get("GakInformation");
+                List<GakDto> updateOrderGaks = new ArrayList<>();
+                if (!GakInformation.isEmpty()){
+                    for(Map<String, Integer> gak: GakInformation){
+                        Integer updateOrderGakId = gak.get("gakId");
+                        Integer updateOrder = gak.get("gakOrder");
+                        updateOrderGaks.add(new GakDto(updateOrderGakId, updateOrder));
+                    }
+                    dagakService.updateGakOrder(updateOrderGaks);
+                }
+                return new BaseResponse<>(SUCCESS);
         }
 
 
