@@ -16,23 +16,23 @@ public class Dagak {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private Integer dagak_id;
+    private Integer dagakId;
 
     @Column
-    private String user_id;
+    private String userId;
 
     @Column
-    private Integer total_time;
+    private Integer totalTime;
 
     @Column
-    private LocalDateTime created_date, updated_date;
+    private LocalDateTime createdDate, updatedDate;
 
     public Dagak(Integer dagak_id, String user_id, Integer total_time, LocalDateTime created_date, LocalDateTime updated_date) {
-        this.dagak_id = dagak_id;
-        this.user_id = user_id;
-        this.total_time = total_time;
-        this.created_date = created_date;
-        this.updated_date = updated_date;
+        this.dagakId = dagak_id;
+        this.userId = user_id;
+        this.totalTime = total_time;
+        this.createdDate = created_date;
+        this.updatedDate = updated_date;
     }
 
     public Dagak() {

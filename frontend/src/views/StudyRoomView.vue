@@ -128,10 +128,10 @@ const enterRoom = async (sessionId) => {
 const createSession = async (sessionId) => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
-    { sign: "enterRandomroom", sessionName: sessionId, videoCodec: "VP8" },
+    { sign: "enterRandomroom", sessionName: sessionId, videoCodec: "VP8"},
     {
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
   console.log(response.data.result.session);
   mySession.value = response.data.result.session;
@@ -169,6 +169,8 @@ const joinSession = () => {
   session.value.on("signal:question", ( stream ) => {
     alert("질문이 들어왔습니다!");
     console.log("질문 내용:"+ stream.data);
+    const data = JSON.parse(stream.data);
+    console.log(data.questionId)
   });
 
   session.value.on("signal:answer", ( stream ) => {

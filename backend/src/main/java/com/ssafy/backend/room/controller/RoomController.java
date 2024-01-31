@@ -21,7 +21,6 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.EMPTY_SIGN;
 
 @RestController
 @RequestMapping("room")
-@CrossOrigin(origins = "*")
 public class RoomController {
 
     @Autowired
@@ -84,7 +83,6 @@ public class RoomController {
                 String answerData = (String) body.get("data");
                 String questionId = (String) body.get("questionId");
 
-                
                 AnswerDto answerDto = new AnswerDto(userId,sessionName,answerData,questionId);
                 answerDto = roomService.answerQuestion(answerDto);
 

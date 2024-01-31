@@ -1,31 +1,52 @@
 <template>
   <div class="container">
     <div class="card">
-    <div class="card-header">
-      <div>로고</div>
-    </div>
-    <div class="card-body">
-      <div class="mb-3">
+      <div class="card-header">
+        <div>로고</div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-person"></i></span>
-            <input type="text" class="form-control no-outline" id="id" placeholder="아이디" required autofocus>
+            <input
+              type="text"
+              class="form-control no-outline"
+              id="id"
+              placeholder="아이디"
+              required
+              autofocus
+              v-model="id"
+            />
           </div>
         </div>
         <div class="mb-3">
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-lock"></i></span>
-            <input type="password" class="form-control no-outline" id="password" placeholder="비밀번호" required>
+            <input
+              type="password"
+              class="form-control no-outline"
+              id="password"
+              placeholder="비밀번호"
+              required
+              v-model="password"
+            />
           </div>
         </div>
         <div class="mb-3 form-check">
-          <input type="checkbox" class="form-check-input no-outline" id="rememberId">
+          <input
+            type="checkbox"
+            class="form-check-input no-outline"
+            id="rememberId"
+          />
           <label class="form-check-label" for="rememberId">아이디 저장</label>
         </div>
-        <button class="btn btn-primary common-btn">로그인</button>
+        <button class="btn btn-primary common-btn" @click="login">
+          로그인
+        </button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
-          <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인">
-          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인">
+          <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" />
+          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인" />
         </div>
       </div>
     </div>
@@ -35,11 +56,86 @@
       <RouterLink to="/findpw">비밀번호 찾기</RouterLink><span>&nbsp;|&nbsp;</span>
       <RouterLink to="/regist">회원가입</RouterLink>
     </div>
+
+    <vue-recaptcha
+      v-show="true"
+      sitekey="6Lcufl8pAAAAAN7h2t1u9Dgm1_zo9wKoaYRX59H6"
+      @verify="recaptchaVerified"
+      @expire="recaptchaExpired"
+      @fail="recaptchaFailed"
+      @error="recaptchaError"
+    ></vue-recaptcha>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+import vueRecaptcha from 'vue3-recaptcha2';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
+const userStore = useUserStore();
+const router = useRouter();
+const id = ref('');
+const password = ref('');
+// const rememberId = ref(false);
+
+//로그인
+const login = async function () {
+  const body = {
+    sign: 'login',
+    userId: id.value,
+    userPassword: password.value,
+  };
+  console.log(body);
+  await axios
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then((json) => {
+      if (json.code === 1000) {
+        //로그인 실패
+        alert(json.result);
+      } else if (json.code === 1001) {
+        //로그인 성공
+        alert('로그인에 성공했습니다.');
+        //로그인 하자마자 유저정보 저장
+        userStore.getLoginUserInfo();
+        //성공 시 홈으로
+        router.push({
+          name: 'home',
+        });
+      }
+    });
+  id.value = '';
+  password.value = '';
+};
+
+const recaptchaExpired = async function (response) {
+  const body = {
+    recaptchaResponse: '만료',
+  };
+  await axios.post('https://localhost:8080/dagak/user/recaptcha', body, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
+const recaptchaVerified = async function (response) {
+  const body = {
+    recaptchaResponse: response,
+  };
+  await axios.post('https://localhost:8080/dagak/user/recaptcha', body, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -103,7 +199,7 @@ img {
   }
 
   .btn-primary {
-    background: #FEE500;
+    background: #fee500;
   }
 
   .btn-danger {
@@ -182,5 +278,4 @@ label {
   position: relative;
   top: -2.5px;
 }
-
 </style>

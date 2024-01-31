@@ -30,7 +30,7 @@ public class RegEx {
     }
 
     public  static void isValidUserEmail(String user_email) throws MyException{
-        if(!Pattern.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$", user_email)){
+        if(!Pattern.matches("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,9}\\.[a-zA-Z]{2,3}$", user_email)){
             throw new MyException("올바른 이메일 형식이 아닙니다.", HttpStatus.BAD_REQUEST);
         }
     }

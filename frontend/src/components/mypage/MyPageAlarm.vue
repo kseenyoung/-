@@ -2,10 +2,9 @@
   <div class="common-mypage-wrapper">
     <div class="common-mypage-title">내 알림</div>
     <div class="alarm-content-wrapper">
-
       <!-- 
-        게시글, 질문은 확인 버튼 1개만,
-        길드, 친구는 수락, 거절 버튼 2개
+        게시글(0), 모꼬지 요청(1), 모꼬지 승인(2),  친구 요청(3), 친구 승인(4),  답변(5), DM(6)
+        모꼬지, 친구 승인은 수락, 거절 버튼 2개. 나머지 확인버튼 1개
       -->
       <div class="alarm-wrapper alarm-new">
         <div class="alarm-check">
@@ -77,17 +76,17 @@
           </div>
         </div>
         <div class="alarm-btn">
-          <button class="btn common-btn" disabled><i class="bi bi-check2"></i></button>
+          <button class="btn common-btn" disabled>
+            <i class="bi bi-check2"></i>
+          </button>
         </div>
       </div>
-
     </div>
-
   </div>
 </template>
 
 <script setup>
-
+// 게시글(0), 모꼬지 요청(1), 모꼬지 승인(2),  친구 요청(3), 친구 승인(4),  답변(5), DM(6)
 </script>
 
 <style lang="scss" scoped>

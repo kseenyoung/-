@@ -1,31 +1,112 @@
 <template>
   <div class="mypage-profile">
     <div>
-      <img src="@/assets/img/기본프로필_갈색.jpg">
-      <div>ssafy</div>
-      <div>ssafy123@gmail.com</div>
+      <img src="@/assets/img/기본프로필_갈색.jpg" />
+      <div>{{ userStore.loginUserInfo.userId }}</div>
+      <div>{{ userStore.loginUserInfo.userEmail }}</div>
     </div>
     <div>
-      <span>10시간 | </span>
-      <span>10위 | </span>
-      <span>10P</span>
+      <span v-if="userTotalStudyTime != null">
+        {{ userTotalStudyTime }}분 |
+      </span>
+      <span v-else>&nbsp;- 분 | </span>
+
+      <span v-if="userStore.loginUserInfo.userRank != null">
+        {{ userStore.loginUserInfo.userRank }}위 |
+      </span>
+      <span v-else>&nbsp;- 위 | </span>
+
+      <span>{{ userStore.loginUserInfo.userPoint }}P</span>
     </div>
     <div>
-      <span>"내 상태"</span>
-      <i class="bi bi-pencil-fill common-pointer" data-bs-toggle="collapse" data-bs-target="#statusmsg-accordion" aria-expanded="true" aria-controls="collapseOne"></i>
-      <div id="statusmsg-accordion" class="accordion-collapse collapse" aria-labelledby="headingOne">
+      <span>{{ userStatusMessage }}</span>
+      <i
+        class="bi bi-pencil-fill common-pointer"
+        data-bs-toggle="collapse"
+        data-bs-target="#statusmsg-accordion"
+        aria-expanded="true"
+        aria-controls="collapseOne"
+      ></i>
+      <div
+        id="statusmsg-accordion"
+        class="accordion-collapse collapse"
+        aria-labelledby="headingOne"
+      >
         <div class="accordion-body input-group">
-          <input type="text" id="statusmsg">
-          <button class="btn common-btn">수정</button>
+          <input
+            type="text"
+            id="statusmsg"
+            :value="userStatusMessage"
+            @input="onInputStatus"
+          />
+          <button class="btn common-btn" @click="changeStatus">수정</button>
         </div>
       </div>
     </div>
-    <div>모꼬지: -</div>
+    <div v-if="userStore.loginUserInfo.mokkojiName != null">
+      모꼬지: {{ userStore.loginUserInfo.mokkojiName }}
+    </div>
+    <div v-else>가입된 모꼬지가 없습니다</div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { useUserStore } from '@/stores/user';
 
+const userStore = useUserStore();
+const userStatusMessage = ref('');
+const userTotalStudyTime = ref('');
+
+onMounted(() => {
+  getUserProfileInfo();
+});
+
+const getUserProfileInfo = function () {
+  const body = {
+    sign: 'viewUserInformation',
+    userNickname: userStore.loginUserInfo.userNickname,
+  };
+  axios
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then((json) => {
+      userStatusMessage.value = json.result.userStatusMessage;
+      userTotalStudyTime.value = json.result.userTotalStudyTime;
+    });
+};
+
+const onInputStatus = function (event) {
+  userStatusMessage.value = event.currentTarget.value;
+};
+
+const changeStatus = function () {
+  const body = {
+    sign: 'changeUserStatusMessage',
+    newStatusMessage: userStatusMessage.value,
+  };
+  axios
+    .post('https://localhost:8080/dagak/user', body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data)
+    .then((json) => {
+      if (json.code === 1000) {
+        //성공
+        alert('수정되었습니다.');
+      } else {
+        //실패
+        alert('실패');
+      }
+    });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -36,16 +117,23 @@
   margin: 20px 0px;
   border-radius: 10px;
   // box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  box-shadow:
+    rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+    rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   padding: 120px 0px;
 
-    > div {
-      margin-bottom: 30px;
-    }
+  > div {
+    margin-bottom: 30px;
+  }
 }
 img {
   width: 120px;
   border-radius: 50%;
+}
+
+i {
+  margin: 0px 5px;
 }
 
 .accordion-collapse {
@@ -64,7 +152,7 @@ img {
     border-bottom-left-radius: var(--bs-border-radius);
   }
   > input:focus {
-    outline:none;
+    outline: none;
   }
 }
 </style>

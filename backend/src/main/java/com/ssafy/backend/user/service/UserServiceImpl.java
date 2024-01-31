@@ -14,6 +14,7 @@ import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.repository.UserRankRepository;
 import com.ssafy.backend.user.model.repository.UserRepository;
+import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void signup(UserSignupDto userSignupDto) throws Exception {
         SecurityDto securityDto = new SecurityDto();
@@ -88,10 +90,18 @@ public class UserServiceImpl implements UserService {
         String loginUserId = userLoginDto.getUserId();
         String loginSalt = securityMapper.getSalt(loginUserId);
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
+        System.out.println(loginUserId);
+//        User user = userRepository.findById(loginUserId)
+//                .orElseThrow(() -> new BaseException(FAIL_LOGIN));
+        User user = userRepository.findUserByUserId(loginUserId);
+//        System.out.println(user);
+        if (user == null) {
+            return false;
+        } else {
+            return user.checkPassword(encryptedLoginPassword);
+        }
 
-        User user = userRepository.findById(loginUserId)
-                .orElseThrow(() -> {throw new BaseException(FAIL_SIGN_UP);});
-        return user.checkPassword(encryptedLoginPassword);
+
     }
 
     @Override
@@ -220,18 +230,18 @@ public class UserServiceImpl implements UserService {
         MimeMessage emailContent = javaMailSender.createMimeMessage();
 
         try {
-        emailContent.setFrom(new InternetAddress(senderEmail, "다각", "UTF-8"));
-        emailContent.setRecipients(MimeMessage.RecipientType.TO, userEmailForAuth);
-        emailContent.setSubject("다각 이메일 인증");
+            emailContent.setFrom(new InternetAddress(senderEmail, "다각", "UTF-8"));
+            emailContent.setRecipients(MimeMessage.RecipientType.TO, userEmailForAuth);
+            emailContent.setSubject("다각 이메일 인증");
 
-        String body = "";
-        body += "<h3>" + "요청하신 인증번호 입니다." + "</h3>";
-        body += "<h1>" + "인증 번호 : " + codeForAuth + "</h1>";
-        body += "<h3>" + "인증번호를 정확하게 입력해주세요." + "</h3>";
-        body += "<h3>" + "위 인증번호의 유효시간은 30분 입니다." + "</h3>";
-        body += "<h3>" + "감사합니다." + "</h3>";
-        emailContent.setText(body, "UTF-8", "html"); }
-        catch (Exception e){
+            String body = "";
+            body += "<h3>" + "요청하신 인증번호 입니다." + "</h3>";
+            body += "<h1>" + "인증 번호 : " + codeForAuth + "</h1>";
+            body += "<h3>" + "인증번호를 정확하게 입력해주세요." + "</h3>";
+            body += "<h3>" + "위 인증번호의 유효시간은 30분 입니다." + "</h3>";
+            body += "<h3>" + "감사합니다." + "</h3>";
+            emailContent.setText(body, "UTF-8", "html");
+        } catch (Exception e) {
             throw new MyException("메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST);
         }
         javaMailSender.send(emailContent);
@@ -249,7 +259,7 @@ public class UserServiceImpl implements UserService {
 
         boolean isMatch = user.checkPassword(encryptedDeletePassword);
 
-        if (isMatch){
+        if (isMatch) {
             // TODO : 뭘 지울 지 정해야 함...
             userRepository.deleteById(deleteUserId);
             securityMapper.deleteSalt(deleteUserId);
@@ -259,7 +269,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void changePassword(String originUserId, String newPassword) throws Exception {
         String newSalt = UUID.randomUUID().toString();
@@ -271,7 +281,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeNickname(String changeNicknameUserId, String newNickname) {
-        User user = userRepository.findById(changeNicknameUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        User user = userRepository.findById(changeNicknameUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
         user.setUserNickname(newNickname);
 
         userRepository.save(user);
@@ -303,8 +313,50 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeEmail(String originUserId, String newEmail) {
-        User user = userRepository.findById(originUserId).orElseThrow(()->new BaseException(NOT_EXIST_MEMBER));
+        User user = userRepository.findById(originUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
         user.setUserEmail(newEmail);
+
+        userRepository.save(user);
+    }
+
+    //// userId, userName, userPicture, userNickname,userPicture, userEmail, userBirthday, userPhonenumber, userPoint,
+    @Override
+    public MyPageVO viewMyPage(String viewUserId) {
+        User user = userRepository.findUserByUserId(viewUserId);
+        MyPageVO myPageVO = new MyPageVO();
+        myPageVO.setUserId(user.getUserId());
+        myPageVO.setUserName(user.getUserName());
+        myPageVO.setUserNickname(user.getUserNickname());
+        myPageVO.setUserPicture(user.getUserPicture());
+        myPageVO.setUserEmail(user.getUserEmail());
+        myPageVO.setUserBirthday(user.getUserBirthday());
+        myPageVO.setUserPoint(user.getUserPoint());
+        myPageVO.setUserPhonenumber(user.getUserPhonenumber());
+
+        if (user.getMokkojiId() != null) {  // 모꼬지가 있는 회원일 때
+            myPageVO.setMokkojiId(user.getMokkojiId().getMokkojiId());
+            myPageVO.setMokkojiName(user.getMokkojiId().getMokkojiName());
+        }
+
+        if (user.getUserTotalStudyTime() != null) {  // 총 공부시간이 존재하는 회원일 때
+            UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
+            myPageVO.setUserRank(userRank.getUserRank());
+        }
+
+        System.out.println(myPageVO);
+        return myPageVO;
+    }
+
+    @Override
+    public String getUserEmail(User userEmailChange) {
+        User user = userRepository.findUserByUserId(userEmailChange.getUserId());
+        return user.getUserEmail();
+    }
+
+    @Override
+    public void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage) {
+        User user = userRepository.findById(changeStatusUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
+        user.setUserStatusMessage(newStatusMessage);
 
         userRepository.save(user);
     }
