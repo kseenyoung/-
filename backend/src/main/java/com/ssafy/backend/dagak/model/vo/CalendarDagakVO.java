@@ -1,17 +1,27 @@
 package com.ssafy.backend.dagak.model.vo;
 
 import com.ssafy.backend.dagak.model.domain.Gak;
+import lombok.Data;
 
+
+import java.time.LocalDate;
 import java.util.List;
 
+@Data
 public class CalendarDagakVO {
     private Integer calendarDagakId;
     private Integer dagakId;
     private String calendarDate;
     private List<Gak> gaks;
+    private String userId;
+
+    public CalendarDagakVO(Integer calendarDagakId, Integer dagakId, LocalDate calendarDate) {
+    }
 
     public Integer getCalendarDagakId() {
         return calendarDagakId;
+    }
+    public CalendarDagakVO() {
     }
 
     public Integer getDagakId() {
@@ -30,11 +40,7 @@ public class CalendarDagakVO {
         this.gaks = gaks;
     }
 
-    public CalendarDagakVO(Integer calendarDagakId, Integer dagakId, String calendarDate) {
-        this.calendarDagakId = calendarDagakId;
-        this.calendarDate = calendarDate;
-        this.dagakId = dagakId;
-    }
+
 
     @Override
     public String toString() {
