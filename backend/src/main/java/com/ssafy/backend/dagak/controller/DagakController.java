@@ -87,8 +87,8 @@ public class DagakController {
              */
             case "deleteDagak":
                 Integer deleteDagakId = (Integer) body.get("deleteDagakId");
-
-                break;
+                dagakFacade.deleteDagak(deleteDagakId);
+                return new BaseResponse<>(SUCCESS);
 
             case "updateEndTime":
                 break;

@@ -63,4 +63,7 @@ public class DagakFacade {
                     dagakService.updateGakOrder(remainGaks);
         }
     }
+
+    public void deleteDagak(Integer deleteDagakId) {
+    }
 }
