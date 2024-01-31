@@ -15,4 +15,6 @@ public interface AlarmRepository extends JpaRepository<Alarm, Integer> {
     public List<Alarm> findByUserIdAndIsChecked(String userId, Integer isChecked);
 
     Optional<Alarm> findAlarmByUserIdAndRequestedUserIdAndTagId(String userId, String requestUserId, int tagId);
+
+    Alarm findByUserIdAndRequestedUserIdAndTagIdAndIsChecked(String userId, String requestedUserId, Integer tagId, Integer isChecked);
 }
