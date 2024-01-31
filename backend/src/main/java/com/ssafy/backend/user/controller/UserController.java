@@ -148,7 +148,8 @@ public class UserController {
                             // 세션에 kakaoEmail 이 있으면 연동함.
                             String kakaoEmail = (String) session.getAttribute("kakaoEmail");
                             userService.linkKakao(loginUserId, kakaoEmail);
-                            session.removeAttribute("kakaoEmail");
+//                            session.removeAttribute("kakaoEmail");
+                            session.invalidate();
                             return new BaseResponse<>(SUCCESS);
                         }
 
@@ -156,7 +157,8 @@ public class UserController {
                             // 세션에 googleEmail 이 있으면 연동함.
                             String googleEmail = (String) session.getAttribute("googleEmail");
                             userService.linkGoogle(loginUserId, googleEmail);
-                            session.removeAttribute("googleEmail");
+//                            session.removeAttribute("googleEmail");
+                            session.invalidate();
                             return new BaseResponse<>(SUCCESS);
                         }
 

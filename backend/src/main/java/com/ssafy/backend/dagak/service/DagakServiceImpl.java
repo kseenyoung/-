@@ -1,5 +1,7 @@
 package com.ssafy.backend.dagak.service;
 
+import com.ssafy.backend.category.model.domain.Category;
+import com.ssafy.backend.category.model.repository.CategoryRepository;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.domain.Calendar;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +31,9 @@ public class DagakServiceImpl implements DagakService {
 
     @Autowired
     CalendarRepository calendarRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @Override
     public int createDagak(DagakDto dagakDto) {
@@ -81,6 +87,25 @@ public class DagakServiceImpl implements DagakService {
         }
 
         return calendarDagaks;
+    }
+
+    @Override
+    public List<Dagak> getDagakList(String userId) {
+        return dagakRepository.findDagaksByUserId(userId);
+    }
+
+    @Override
+    public List<Gak> getGakInformation(Integer dagakId) {
+        return gakRepository.findAllByDagakId(dagakId);
+    }
+
+    @Override
+    public CalendarDagakVO getDagak(String userId, LocalDate today) {
+        Calendar todayCalender = calendarRepository.findCalendarByCalendarDate(today);
+        CalendarDagakVO todayCalendarDagakVO = new CalendarDagakVO();
+        todayCalendarDagakVO.setUserId(todayCalender.getUserId());
+        todayCalendarDagakVO.setDagakId(todayCalender.getDagakId());
+        return todayCalendarDagakVO;
     }
 
 

@@ -6,6 +6,8 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @Entity
 @ToString
@@ -25,14 +27,14 @@ public class Dagak {
     private Integer totalTime;
 
     @Column
-    private LocalDateTime createdDate, updatedDate;
+    private String createdDate, updatedDate;
 
-    public Dagak(Integer dagak_id, String user_id, Integer total_time, LocalDateTime created_date, LocalDateTime updated_date) {
-        this.dagakId = dagak_id;
-        this.userId = user_id;
-        this.totalTime = total_time;
-        this.createdDate = created_date;
-        this.updatedDate = updated_date;
+    public Dagak(Integer dagakId, String userId, Integer totalTime, String createdDate, String updatedDate) {
+        this.dagakId = dagakId;
+        this.userId = userId;
+        this.totalTime = totalTime;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
     }
 
     public Dagak() {
