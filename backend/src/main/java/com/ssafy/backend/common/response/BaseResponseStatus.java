@@ -95,6 +95,13 @@ public enum BaseResponseStatus {
     FAIL_TO_LINK(false, 2047,"연동에 실패했습니다."),
     FAIL_TO_CONNECT(false, 2048,"통신에 실패했습니다."),
 
+    INVALID_ID(false, 2049,"올바른 아이디를 입력해주세요."),
+    INVALID_PASSWORD(false, 2050,"올바른 비밀번호를 입력해주세요."),
+    INVALID_BIRTHDAY(false, 2051,"올바른 생일을 입력해주세요."),
+    INVALID_NAME(false, 2052,"올바른 이름을 입력해주세요."),
+    INVALID_PHONENUMBER(false, 2053,"올바른 핸드폰 번호를 입력해주세요."),
+    INVALID_EMAIL(false, 2054,"올바른 이메일을 입력해주세요."),
+    INVALID_NICKNAME(false, 2055,"올바른 닉네임을 입력해주세요."),
 
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/
     AVOID_DUPLICATE_ALARM(false, 2101, "이미 상대방에게 요청을 보냈습니다."),

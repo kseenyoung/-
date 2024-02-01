@@ -1,10 +1,14 @@
 package com.ssafy.backend.user.model.dto;
 
 
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
+import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.user.model.domain.User;
 import org.springframework.http.HttpStatus;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 
 // 나중에 유효성 검사 주석 풀어야 함.
@@ -26,8 +30,8 @@ public class UserSignupDto {
     }
 
     public void setUserId(String userId) throws MyException {
-        if (userId == null) {
-            throw new MyException("유저 아이디가 없습니다.", HttpStatus.BAD_REQUEST);
+        if (userId == null || "".equals(userId)) {
+            throw new BaseException(INVALID_ID);
         }
 //        RegEx.isValidUserId(userId);
         this.userId = userId;
@@ -39,7 +43,7 @@ public class UserSignupDto {
 
     public void setUserBirthday(String userBirthday) throws MyException {
         if (userBirthday == null) {
-            throw new MyException("생일이 없습니다.", HttpStatus.BAD_REQUEST);
+            throw new BaseException(INVALID_BIRTHDAY);
         }
         this.userBirthday = userBirthday;
     }
@@ -50,7 +54,7 @@ public class UserSignupDto {
 
     public void setUserName(String userName) throws MyException {
         if (userName == null) {
-            throw new MyException("이름이 없습니다.", HttpStatus.BAD_REQUEST);
+            throw new BaseException(INVALID_NAME);
         }
         this.userName = userName;
     }
