@@ -2,15 +2,11 @@ package com.ssafy.backend.dagak.model.dto;
 
 import com.ssafy.backend.common.exception.BaseException;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.WRONG_TYPE;
 
 @Getter
-@Setter
-@ToString
-public class GakDto {
+public class GakDTO {
 
     private Integer gakId;
 
@@ -19,23 +15,35 @@ public class GakDto {
     private String userId;
 
 
-    public GakDto(String categoryId, Integer gakOrder, String runningTime, String userId) {
+    public GakDTO(String categoryId, Integer gakOrder, String runningTime, String userId) {
         setCategoryId(categoryId);
         setGakOrder(gakOrder);
         setRunningTime(runningTime);
         setUserId(userId);
     }
 
-    public GakDto(Integer categoryId, Integer gakOrder, Integer runningTime, String userId){
+    public GakDTO(Integer categoryId, Integer gakOrder, Integer runningTime, String userId){
         this.categoryId = categoryId;
         this.gakOrder = gakOrder;
         this.runningTime = runningTime;
         this.userId = userId;
     }
 
-    public GakDto(Integer remainGakId, Integer remainOrder) {
+    public GakDTO(Integer remainGakId, Integer remainOrder) {
         this.gakId = remainGakId;
         this.gakOrder = remainOrder;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setGakOrder(Integer gakOrder) {
+        this.gakOrder = gakOrder;
+    }
+
+    public void setRunningTime(Integer runningTime) {
+        this.runningTime = runningTime;
     }
 
     public void setGakId(Integer gakId) {
@@ -64,5 +72,17 @@ public class GakDto {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "GakDTO{" +
+                "gakId=" + gakId +
+                ", dagakId=" + dagakId +
+                ", categoryId=" + categoryId +
+                ", gakOrder=" + gakOrder +
+                ", runningTime=" + runningTime +
+                ", userId='" + userId + '\'' +
+                '}';
     }
 }

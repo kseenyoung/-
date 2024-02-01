@@ -1,7 +1,7 @@
 package com.ssafy.backend.friend.service;
 
-import com.ssafy.backend.alarm.model.dto.CheckAlarmDto;
-import com.ssafy.backend.alarm.model.dto.ReqestAlarmDto;
+import com.ssafy.backend.alarm.model.dto.CheckAlarmDTO;
+import com.ssafy.backend.alarm.model.dto.ReqestAlarmDTO;
 import com.ssafy.backend.alarm.service.AlarmService;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.friend.model.domain.UserId;
@@ -33,7 +33,7 @@ public class FriendFacade {
             throw new BaseException(ALREADY_EXIST_ALARM);
 
         friendService.requestFriend(userId, userId2);
-        alarmService.requestAlarm(new ReqestAlarmDto(userId, userId2, 4));
+        alarmService.requestAlarm(new ReqestAlarmDTO(userId, userId2, 4));
     }
 
     @Transactional
@@ -41,10 +41,10 @@ public class FriendFacade {
         // 친구 됨
         friendService.accessFriend(userId, userId2);
         // 친구 요청 승인 알람 보내기
-        alarmService.requestAlarm(new ReqestAlarmDto(userId2, userId, 5));
+        alarmService.requestAlarm(new ReqestAlarmDTO(userId2, userId, 5));
         // 체크 표시 할 친구 요청 '알람 아이디' 찾기
         int alarmId = alarmService.findAlarmId(userId, userId2, 4);
         // 해당 '알람 아이디' 삭제?? 체크표시??
-        alarmService.checkAlarm(new CheckAlarmDto(userId, alarmId));
+        alarmService.checkAlarm(new CheckAlarmDTO(userId, alarmId));
     }
 }
