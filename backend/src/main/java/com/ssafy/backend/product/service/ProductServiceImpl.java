@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_INVENTORY;
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_PRODUCT;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -81,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
     public void buyProduct(int productId, String userId) {
         User user = userRepository.findUserByUserId(userId);
         if(user == null){
-            throw new BaseException(BaseResponseStatus.NOT_EXIST_MEMBER);
+            throw new BaseException(NOT_EXIST_USER);
         }
 
         Product product = productRepository.findById(productId).orElseThrow(()-> new BaseException(NOT_EXIST_PRODUCT));
@@ -99,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
     public void sellProduct(int inventoryId, String userId) throws BaseException {
         User user = userRepository.findUserByUserId(userId);
         if(user == null){
-            throw new BaseException(BaseResponseStatus.NOT_EXIST_MEMBER);
+            throw new BaseException(NOT_EXIST_USER);
         }
         Inventory inventory = inventoryRepository.findById(inventoryId).orElseThrow(()-> new BaseException(NOT_EXIST_INVENTORY));
         int price = inventory.getProduct().getProductPrice();

@@ -1,14 +1,14 @@
 package com.ssafy.backend.security.model.mapper;
 
-import com.ssafy.backend.security.model.SecurityDto;
+import com.ssafy.backend.security.model.dto.SecurityDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 @Mapper
 @Repository
 public interface SecurityMapper {
-    void insertSalt(SecurityDto securityDto);
+    void addSalt(SecurityDTO securityDTO);
     String getSalt(String userId);
     void deleteSalt(String deleteUserId);
-    void changeSalt(String originUserId, String newSalt);
+    void modifySalt(String originUserId, String newSalt);
 }
