@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @MapperScan(value = {"com.ssafy.backend.user.model.mapper",
-        "com.ssafy.backend.friend.model.mapper", "com.ssafy.backend.loginhistory.model.mapper", "com.ssafy.backend.dagak.model.mapper"}, sqlSessionFactoryRef="dagakSqlSessionFactory")
+        "com.ssafy.backend.friend.model.mapper", "com.ssafy.backend.loginhistory.model.mapper"}, sqlSessionFactoryRef="dagakSqlSessionFactory")
 public class DagakDatabaseConfig {
 
 

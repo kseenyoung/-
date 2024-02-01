@@ -9,6 +9,7 @@ import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
 import com.ssafy.backend.dagak.model.dto.GakDto;
 import com.ssafy.backend.dagak.model.dto.RegisterDagakDto;
+import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDto;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
 import com.ssafy.backend.dagak.service.DagakFacade;
 import com.ssafy.backend.dagak.service.DagakService;
@@ -81,16 +82,11 @@ public class DagakController {
 
                 for(List<Integer> calendarDate : calendarDates){
                     RegisterDagakDto registerDagakDto = new RegisterDagakDto(userId, registerDagakId, LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)));
-//                    log.info("===-=0=-90-90-90 LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)) : {}", LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)));
-//                    log.info("registerDagak : {}", registerDagakDto);
 
                     dagakService.registerDagak(registerDagakDto);
                 }
 
                 return new BaseResponse<>(SUCCESS);
-
-            case "modifyDagak":
-                break;
 
             /*
              * [POST] 다각 삭제하기
@@ -103,9 +99,16 @@ public class DagakController {
                 dagakFacade.deleteDagak(deleteDagakId);
                 return new BaseResponse<>(SUCCESS);
 
-            case "updateEndTime":
-                break;
+            case "updateMemoryTime":
+                String gakId = (String) body.get("gakId");
+                Integer memoryTime = (Integer) body.get("memoryTime");
+                String categoryId = (String) body.get("categoryId");
+                String calendarId = (String) body.get("calendarId");
+                UpdateMemoryTimeDto updateStartTimeDto = new UpdateMemoryTimeDto(gakId, categoryId, calendarId, memoryTime, userId);
 
+                dagakService.updateMemoryTime(updateStartTimeDto);
+
+                return new BaseResponse<>(SUCCESS);
             /*
              * [POST] 다각의 상세정보들 수정
              */
@@ -146,7 +149,6 @@ public class DagakController {
                 }
                 return new BaseResponse<>(SUCCESS);
         }
-
 
         return new BaseResponse(NOT_MATCH_SIGN);
     }
