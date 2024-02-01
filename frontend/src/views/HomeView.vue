@@ -98,6 +98,7 @@ const navigateToStudyRoom = () => {
 onMounted(async () => {
   store.login();
   await rankstore.getMokkojiRank();
+  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
 });
 </script>
 

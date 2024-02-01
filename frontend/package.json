@@ -18,6 +18,7 @@
     "cors": "^2.8.5",
     "openvidu-browser": "^2.20.0",
     "pinia": "^2.1.7",
+    "pinia-plugin-persist": "^1.0.0",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5",
@@ -37,12 +38,11 @@
     "sass-loader": "^13.3.3",
     "vite": "^5.0.10"
   },
-  "options" : {
+  "options": {
     "allowedHosts": [
       "localhost",
       ".localhost"
     ],
     "proxy": "주소"
   }
-  
 }

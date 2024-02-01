@@ -6,7 +6,7 @@ import { OpenVidu } from 'openvidu-browser';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const useUserStore = defineStore(
-  'user',
+  'useStore',
   () => {
     const mySessionToken = ref('');
     const studyRoomSessionToken = ref('');
@@ -16,7 +16,6 @@ export const useUserStore = defineStore(
       id: id.value,
       sub: sub.value,
     });
-    localStorage.setItem('userStore', JSON.stringify(loginUser.value));
 
     //로그인 세션 test
     const login = function () {
@@ -28,7 +27,7 @@ export const useUserStore = defineStore(
       });
 
       const userString = JSON.stringify(user.value);
-      sessionStorage.setItem('login-user', userString);
+      // sessionStorage.setItem('login-user', userString);
       loginUser.value = JSON.parse(sessionStorage.getItem('login-user'));
       alert('로그인 성공');
       loginSession();
@@ -100,8 +99,6 @@ export const useUserStore = defineStore(
       });
 
       enterMyRoom().then((token) => {
-        console.log('나의 방 토큰:', token);
-
         mySession.value
           .connect(token, myUserName.value )
           .then(() => {
@@ -136,11 +133,11 @@ export const useUserStore = defineStore(
     //로그인 즉시 유저정보 저장
     //userId, userName, userNickname, userPicture, userEmail, userPhonenumber, userBirthday, userPoint, mokkojiId, mokkojiName, userRank
     const loginUserInfo = ref({});
-    const getLoginUserInfo = function () {
+    const getLoginUserInfo = async function () {
       const body = {
         sign: 'viewMyPage',
       };
-      axios
+      await axios
         .post('https://localhost:8080/dagak/user', body, {
           headers: {
             'Content-Type': 'application/json',
@@ -149,9 +146,10 @@ export const useUserStore = defineStore(
         .then((res) => res.data)
         .then((json) => {
           loginUserInfo.value = json.result;
+          console.log("회원정보: "+loginUserInfo.value);
+          // localStorage.setItem('userStore', JSON.stringify(loginUserInfo.value));
         });
     };
-
     return {
       myUserName,
       APPLICATION_SERVER_URL,
@@ -167,11 +165,9 @@ export const useUserStore = defineStore(
       loginUserInfo,
       getLoginUserInfo,
       mySessionToken,
-      studyRoomSessionToken
-    };
+      studyRoomSessionToken,
+    }
   },
   //store를 localStorage에 저장하기 위해서(새로고침 시 데이터 날라감 방지)
-  {
-    persist: true,
-  },
+  { persist: true },
 );

@@ -99,7 +99,7 @@ const login = async function () {
     .then(
       (res) => res.data
       )
-    .then((json) => {
+    .then(async (json) => {
       if (json.code === 1000) {
         //로그인 실패
         alert(json.result);
@@ -109,9 +109,9 @@ const login = async function () {
         //로그인 하자마자 유저정보 저장
         userStore.getLoginUserInfo();
         //성공 시 홈으로
-        router.push({
-          name: 'home',
-        });
+        // router.push({
+        //   name: 'home',
+        // });
       }
     });
   id.value = '';
