@@ -45,7 +45,7 @@ public class MokkojiFacade {
     @Transactional(rollbackFor = Exception.class)
     public void saveMokkoji(MokkojiCreateRequestDto dto){
 
-        User user = userService.canCreateMokkoji(dto.getLeaderId(), CREATE_MOKKOJI_POINT);
+        User user = userService.canAddMokkoji(dto.getLeaderId(), CREATE_MOKKOJI_POINT);
         Mokkoji mokkoji = mokkojiService.addMokkoji(dto.toEntity());
         List<Category> categories = categoryService.getCategories(dto.getMokkojiCategories());
         //이거 나중에 saveAll로 바꿔야함
