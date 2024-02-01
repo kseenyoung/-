@@ -79,14 +79,11 @@ const logout = function () {
   axios
     .post('https://localhost:8080/dagak/user', body)
     .then((res) => res.data)
-    .then(() => {
-      //유저정보 공백 & 로컬스토리지에 저장한 것 삭제
-      userStore.loginUserInfo = {};
-      localStorage.removeItem('user');
-    });
+  userStore.loginUserInfo = {};
+  localStorage.removeItem('useStore');
   //성공 시 홈으로
   router.push({
-    name: 'home',
+    name: 'login',
   });
 };
 

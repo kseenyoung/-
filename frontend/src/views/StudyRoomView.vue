@@ -110,7 +110,7 @@ const APPLICATION_SERVER_URL =
 
 const OV = ref(undefined);
 const session = ref(undefined);
-const mySession = ref(store.loginUser.sub);
+const mySession = ref(store.loginUserInfo.sub);
 const mainStreamManager = ref(undefined);
 const publisher = ref(undefined);
 const subscribers = ref([]);
@@ -119,7 +119,7 @@ const answer = ref("");
 
 console.log("STORE USER  :  ", store.loginUser);
 // 초기 데이터(계정 세션 아이디, 계정 이름)
-const myUserName = ref(store.loginUser.id);
+const myUserName = ref(store.myUserName);
 
 // 방 입장
 const enterRoom = async (sessionId) => {
@@ -131,7 +131,7 @@ const enterRoom = async (sessionId) => {
 const createSession = async (sessionId) => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
-    { sign: "enterRandomroom", userId: store.loginUser.id, sessionName: sessionId, videoCodec: "VP8"},
+    { sign: "enterRandomroom", userId: store.myUserName, sessionName: sessionId, videoCodec: "VP8"},
     {
       headers: { "Content-Type": "application/json" },
     },
