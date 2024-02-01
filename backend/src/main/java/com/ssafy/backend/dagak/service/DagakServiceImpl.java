@@ -8,7 +8,6 @@ import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
 import com.ssafy.backend.dagak.model.dto.GakDto;
 import com.ssafy.backend.dagak.model.dto.RegisterDagakDto;
-import com.ssafy.backend.dagak.model.mapper.DagakMapper;
 import com.ssafy.backend.dagak.model.repository.CalendarRepository;
 import com.ssafy.backend.dagak.model.repository.DagakRepository;
 import com.ssafy.backend.dagak.model.repository.GakRepository;
@@ -40,9 +39,6 @@ public class DagakServiceImpl implements DagakService {
 
     @Autowired
     CategoryRepository categoryRepository;
-
-    @Autowired
-    DagakMapper dagakMapper;
 
     @Override
     public int createDagak(DagakDto dagakDto) {
@@ -77,7 +73,7 @@ public class DagakServiceImpl implements DagakService {
         List<CalendarDagakVO> result = new ArrayList<>();
 
         List<Calendar> byUserId = calendarRepository.findByUserId(userId);
-        for (Calendar calendar : byUserId) {
+        for(Calendar calendar: byUserId){
             CalendarDagakVO calendarDagakVO = new CalendarDagakVO(calendar.getCalendarDagakId(), calendar.getDagakId(), calendar.getCalendarDate());
             result.add(calendarDagakVO);
         }
@@ -88,7 +84,7 @@ public class DagakServiceImpl implements DagakService {
     @Override
     public List<CalendarDagakVO> getCalendarGaks(List<CalendarDagakVO> calendarDagaks) {
 
-        for (CalendarDagakVO calendarDagakVO : calendarDagaks) {
+        for(CalendarDagakVO calendarDagakVO: calendarDagaks){
 //            log.info("dagakId : {}", calendarDagakVO.getDagakId());
             List<Gak> allByDagakId = gakRepository.findAllByDagakId(calendarDagakVO.getDagakId());
             calendarDagakVO.setGaks(allByDagakId);
@@ -120,10 +116,10 @@ public class DagakServiceImpl implements DagakService {
     @Override
     public void updateGak(Integer dagakId, Integer gakId, Integer categoryId, Integer runningTime) {
         Gak gak = gakRepository.findById(gakId).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
-        if (categoryId != null) {
+        if (categoryId!=null){
             gak.setCategoryId(categoryId);
         }
-        if (runningTime != null) {
+        if (runningTime!=null){
             gak.setRunningTime(runningTime);
         }
         gakRepository.save(gak);
@@ -136,9 +132,14 @@ public class DagakServiceImpl implements DagakService {
 
     @Override
     public void updateRemainGakOrder(List<GakDto> remainGaks) {
-        for (GakDto remainGak : remainGaks) {
-            Gak gak = gakRepository.findById(remainGak.getGakId()).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
-            gak.setGakOrder(remainGak.getGakOrder());
+
+    }
+
+    @Override
+    public void updateGakOrder(List<GakDto> Gaks) {
+        for(GakDto Gak: Gaks){
+            Gak gak = gakRepository.findById(Gak.getGakId()).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
+            gak.setGakOrder(Gak.getGakOrder());
             gakRepository.save(gak);
         }
     }
@@ -187,6 +188,19 @@ public class DagakServiceImpl implements DagakService {
         if (byDagakId.isPresent())
             return true;
         return false;
+    }
+
+    @Override
+    public void deleteDagak(Integer deleteDagakId) {
+        dagakRepository.deleteById(deleteDagakId);
+        List<Calendar> dagaksOfCalendar = calendarRepository.findAllByDagakId(deleteDagakId);
+        boolean isAfter;
+        for (Calendar dagakOfCalendar : dagaksOfCalendar){
+            isAfter = dagakOfCalendar.getCalendarDate().isAfter(LocalDate.now());
+            if (isAfter) {
+                calendarRepository.deleteById(dagakOfCalendar.getCalendarDagakId());
+            }
+        }
     }
 
 

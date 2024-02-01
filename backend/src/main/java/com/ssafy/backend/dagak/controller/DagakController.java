@@ -92,46 +92,59 @@ public class DagakController {
             case "modifyDagak":
                 break;
 
+            /*
+             * [POST] 다각 삭제하기
+             * 그와 관련된 모든 정보도 삭제됩니다.
+             * Dagak과 gak 테이블의 데이터, Calendar는 현재 날짜 이후 데이터,
+             * gak_history 의 데이터는 삭제되지 않습니다.
+             */
             case "deleteDagak":
-                break;
+                Integer deleteDagakId = (Integer) body.get("deleteDagakId");
+                dagakFacade.deleteDagak(deleteDagakId);
+                return new BaseResponse<>(SUCCESS);
 
             case "updateEndTime":
                 break;
 
             /*
              * [POST] 다각의 상세정보들 수정
-             * 바뀌어야 할 부분:
-             * 다각 테이블의 총 시간 원래 시간이랑 비교해서 바꾸고...
-             * category_id, setting_time
              */
             case "updateGak":
                 Integer updateDagakId = (Integer) body.get("dagakId");
                 Integer updateGakId = (Integer) body.get("gakId");
                 Integer updateCategoryId = (Integer) body.get("categoryId");
                 Integer updateRunningTime = (Integer) body.get("runningTime");
-                Integer updateOrder = (Integer) body.get("updateOrder");
                 if (updateCategoryId==null && updateRunningTime==null){
                     throw new BaseException(DATA_NOT_CHANGED);
                 }
                 dagakService.updateGak(updateDagakId, updateGakId, updateCategoryId, updateRunningTime);
                 return new BaseResponse<>(SUCCESS);
 
+            /*
+             * [POST] 각 삭제하기
+             * 각 삭제 후, 남은 각의 순서를 다시 업데이트
+             */
             case "deleteGak":
                 Integer deleteGakId = (Integer) body.get("gakId");
-                dagakService.deleteGak(deleteGakId);
-
                 List<Map<String, Integer>> remainGakInformation = (List<Map<String, Integer>>) body.get("remainGakInformation");
-                List<GakDto> remainGaks = new ArrayList<>();
-                if (!remainGakInformation.isEmpty()){
-                    for(Map<String, Integer> gak: remainGakInformation){
-                        Integer remainGakId = gak.get("gakId");
-                        Integer remainOrder = gak.get("gakOrder");
-                        remainGaks.add(new GakDto(remainGakId, remainOrder));
+                dagakFacade.deleteGak(deleteGakId, remainGakInformation);
+                return new BaseResponse<>(SUCCESS);
+
+            /*
+             * [POST] 다각 순서 업데이트
+             */
+            case "updateGakOrder":
+                List<Map<String, Integer>> GakInformation = (List<Map<String, Integer>>) body.get("GakInformation");
+                List<GakDto> updateOrderGaks = new ArrayList<>();
+                if (!GakInformation.isEmpty()){
+                    for(Map<String, Integer> gak: GakInformation){
+                        Integer updateOrderGakId = gak.get("gakId");
+                        Integer updateOrder = gak.get("gakOrder");
+                        updateOrderGaks.add(new GakDto(updateOrderGakId, updateOrder));
                     }
-                    dagakService.updateRemainGakOrder(remainGaks);
+                    dagakService.updateGakOrder(updateOrderGaks);
                 }
-
-
+                return new BaseResponse<>(SUCCESS);
         }
 
 

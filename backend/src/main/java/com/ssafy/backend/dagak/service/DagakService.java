@@ -1,5 +1,6 @@
 package com.ssafy.backend.dagak.service;
 
+import com.ssafy.backend.dagak.model.domain.Calendar;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
@@ -36,5 +37,8 @@ public interface DagakService {
     void registerDagak(RegisterDagakDto registerDagakDto);
 
     boolean isExistDagakId(Integer dagakId);
+    void updateGakOrder(List<GakDto> remainGaks);
+
+    void deleteDagak(Integer deleteDagakId);
 }
 
