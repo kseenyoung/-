@@ -6,6 +6,7 @@
         class="btn common-btn"
         data-bs-toggle="modal"
         data-bs-target="#createMokkoji"
+        v-show="userStore.loginUserInfo.mokkojiId === null"
       >
         새로 만들기
       </button>
@@ -110,10 +111,12 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useUserStore } from '@/stores/user';
 import { useCategoryStore } from '@/stores/category';
 import axios from 'axios';
 import ApplyMokkojiCreateModal from '@/components/apply/ApplyMokkojiCreateModal.vue';
 
+const userStore = useUserStore();
 const categoryStore = useCategoryStore();
 
 const mokkojiList = ref([]);
@@ -121,7 +124,6 @@ const mokkojiListPage = ref();
 const currentPage = ref(0);
 const searchText = ref('');
 const searchChoose = ref('keyword');
-// const searchPage = ref(0);
 
 onMounted(() => {
   getMokkojiList();
@@ -134,7 +136,6 @@ const changePage = (newPage) => {
 };
 
 const getMokkojiList = function () {
-  console.log('리스트불러와');
   axios.get(`${import.meta.env.VITE_API_BASE_URL}mokkoji/list`).then((res) => {
     mokkojiList.value = res.data.result.list;
     mokkojiListPage.value = res.data.result.totalPages;
