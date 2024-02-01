@@ -56,20 +56,16 @@ onMounted(() => {
 
 const getFriends = function () {
   axios.get(`${import.meta.env.VITE_API_BASE_URL}friend/list`).then((res) => {
-    console.log(res.data);
     if (res.data.code === 1000) {
-      console.log(res.data);
       //성공
       totalFriend.value = res.data.result.countFriend;
       listFriend.value = res.data.result.friends;
-      console.log(listFriend.value);
     }
   });
 };
 
 const friendDetailInfo = ref({});
 const friendDetail = function (nickname) {
-  console.log('상세 클릭: ' + nickname);
   const body = {
     sign: 'viewUserInformation',
     userNickname: nickname,
@@ -82,11 +78,9 @@ const friendDetail = function (nickname) {
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
       if (json.code === 1000) {
         //성공
         friendDetailInfo.value = json.result;
-        console.log(friendDetailInfo.value);
       } else {
         alert('닉네임이 비어있습니다.');
       }
