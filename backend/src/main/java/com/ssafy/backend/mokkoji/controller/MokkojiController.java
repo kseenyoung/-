@@ -119,7 +119,7 @@ public class MokkojiController {
         //모꼬지 가입 승인
         else if ("AcceptMokkoji".equals(sign)) {
             String memberId = (String) body.get("memberId");
-            mokkojiFacade.deleteAlarm(userId,memberId);
+            mokkojiFacade.deleteAlarm(memberId,userId);
             mokkojiFacade.acceptForMokkoji(userId, memberId);
             return new BaseResponse<>(SUCCESS_ACCEPT_MOKKOJI);
         }

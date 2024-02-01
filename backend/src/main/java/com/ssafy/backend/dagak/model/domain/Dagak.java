@@ -39,4 +39,8 @@ public class Dagak {
 
     public Dagak() {
     }
+
+    public void setTotalTime(Integer totalTime) {
+        this.totalTime = totalTime;
+    }
 }

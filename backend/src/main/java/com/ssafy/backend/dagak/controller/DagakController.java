@@ -2,6 +2,7 @@ package com.ssafy.backend.dagak.controller;
 
 import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.service.CategoryService;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
@@ -78,18 +79,59 @@ public class DagakController {
             case "modifyDagak":
                 break;
 
+            /*
+             * [POST] 다각 삭제하기
+             * 그와 관련된 모든 정보도 삭제됩니다.
+             * Dagak과 gak 테이블의 데이터, Calendar는 현재 날짜 이후 데이터,
+             * gak_history 의 데이터는 삭제되지 않습니다.
+             */
             case "deleteDagak":
-                break;
+                Integer deleteDagakId = (Integer) body.get("deleteDagakId");
+                dagakFacade.deleteDagak(deleteDagakId);
+                return new BaseResponse<>(SUCCESS);
 
             case "updateEndTime":
                 break;
 
-            case "getCalendarAll":
-                break;
+            /*
+             * [POST] 다각의 상세정보들 수정
+             */
+            case "updateGak":
+                Integer updateDagakId = (Integer) body.get("dagakId");
+                Integer updateGakId = (Integer) body.get("gakId");
+                Integer updateCategoryId = (Integer) body.get("categoryId");
+                Integer updateRunningTime = (Integer) body.get("runningTime");
+                if (updateCategoryId==null && updateRunningTime==null){
+                    throw new BaseException(DATA_NOT_CHANGED);
+                }
+                dagakService.updateGak(updateDagakId, updateGakId, updateCategoryId, updateRunningTime);
+                return new BaseResponse<>(SUCCESS);
 
-            case "getGaks":
-                break;
+            /*
+             * [POST] 각 삭제하기
+             * 각 삭제 후, 남은 각의 순서를 다시 업데이트
+             */
+            case "deleteGak":
+                Integer deleteGakId = (Integer) body.get("gakId");
+                List<Map<String, Integer>> remainGakInformation = (List<Map<String, Integer>>) body.get("remainGakInformation");
+                dagakFacade.deleteGak(deleteGakId, remainGakInformation);
+                return new BaseResponse<>(SUCCESS);
 
+            /*
+             * [POST] 다각 순서 업데이트
+             */
+            case "updateGakOrder":
+                List<Map<String, Integer>> GakInformation = (List<Map<String, Integer>>) body.get("GakInformation");
+                List<GakDto> updateOrderGaks = new ArrayList<>();
+                if (!GakInformation.isEmpty()){
+                    for(Map<String, Integer> gak: GakInformation){
+                        Integer updateOrderGakId = gak.get("gakId");
+                        Integer updateOrder = gak.get("gakOrder");
+                        updateOrderGaks.add(new GakDto(updateOrderGakId, updateOrder));
+                    }
+                    dagakService.updateGakOrder(updateOrderGaks);
+                }
+                return new BaseResponse<>(SUCCESS);
         }
 
 
@@ -115,20 +157,25 @@ public class DagakController {
 
     /*
      * [GET] 사용자의 모든 다각 반환
-     * request :
      */
     @GetMapping("dagaks")
     public BaseResponse<?> getDagaks(@RequestParam String userId){
         List<Dagak> dagakList = dagakService.getDagakList(userId);
         return new BaseResponse<>(dagakList);
     }
-
+    
+    /*
+     * [GET] 사용자의 다각의 상세 정보 반환
+     */
     @GetMapping("gaks")
     public BaseResponse<?> getDagakInformation(@RequestParam Integer dagakId){
         List<Gak> dagakInformation = dagakService.getGakInformation(dagakId);
         return new BaseResponse<>(dagakInformation);
     }
-
+    
+    /*
+     * [GET] 오늘의 다각 정보 반환
+     */
     @GetMapping("today")
     public BaseResponse<?> getTodayDagak(@RequestParam String userId){
         LocalDate today = LocalDate.now();
