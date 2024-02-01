@@ -1,7 +1,9 @@
 package com.ssafy.backend.dagak.service;
 
+import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
 import com.ssafy.backend.dagak.model.dto.GakDto;
+import com.ssafy.backend.dagak.model.repository.GakRepository;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class DagakFacade {
 
     @Autowired
     private DagakService dagakService;
+
+    @Autowired
+    GakRepository gakRepository;
 
     @Transactional
     public void createDagak(DagakDto dagakDto, List<GakDto> gaks){
@@ -64,6 +69,12 @@ public class DagakFacade {
         }
     }
 
+    @Transactional
     public void deleteDagak(Integer deleteDagakId) {
+        dagakService.deleteDagak(deleteDagakId);
+        List<Gak> gaks = gakRepository.findAllByDagakId(deleteDagakId);
+        for (Gak gak : gaks){
+            dagakService.deleteGak(gak.getGakId());
+        }
     }
 }

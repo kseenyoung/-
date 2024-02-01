@@ -5,14 +5,15 @@
         <div class="nametag">Python 마스터</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
         <img class="pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중" />
+        <button @click="leaveStudyRoom">나가기</button>
       </div>
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
-        <textarea id="message" name="message" rows="4" cols="30" v-model="question" placeholder="-- 질문을 입력하세요--"></textarea>
+        <!-- <textarea id="message" name="message" rows="4" cols="30" v-model="question" placeholder="-- 질문을 입력하세요--"></textarea>
         <button @click="askQuestion">질문하기</button>
         <textarea id="message" name="message" rows="4" cols="30" v-model="answer" placeholder="-- 답변을 입력하세요--"></textarea>
-        <button @click="answerQuestion">답변하기</button>
+        <button @click="answerQuestion">답변하기</button> -->
       </div>
     </div>
 
@@ -97,26 +98,28 @@ import { useUserStore } from '@/stores/user';
 import QnAListView from "@/components/room/QnAListView.vue";
 import UserVideo from "@/components/room/UserVideo.vue";
 import Dagak from "@/components/dagak/Dagak.vue";
+import { useRouter } from 'vue-router';
 
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-
+const router = useRouter();
 const store = useUserStore();
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
 
 const OV = ref(undefined);
 const session = ref(undefined);
-const mySession = ref(store.loginUser.sub);
+const mySession = ref(store.loginUserInfo.sub);
 const mainStreamManager = ref(undefined);
 const publisher = ref(undefined);
 const subscribers = ref([]);
 const question = ref("");
 const answer = ref("");
 
+console.log("STORE USER  :  ", store.loginUser);
 // 초기 데이터(계정 세션 아이디, 계정 이름)
-const myUserName = ref(store.loginUser.id);
+const myUserName = ref(store.myUserName);
 
 // 방 입장
 const enterRoom = async (sessionId) => {
@@ -128,7 +131,7 @@ const enterRoom = async (sessionId) => {
 const createSession = async (sessionId) => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
-    { sign: "enterRandomroom", sessionName: sessionId, videoCodec: "VP8"},
+    { sign: "enterRandomroom", userId: store.myUserName, sessionName: sessionId, videoCodec: "VP8"},
     {
       headers: { "Content-Type": "application/json" },
     },
@@ -192,11 +195,13 @@ const joinSession = () => {
 
   session.value.on("exception", ({ exception }) => {
     console.warn(exception);
+    console.log("새로고침!!!!!");
   });
 
   enterRoom(mySession.value).then((token) => {
     console.log("token"+token);
-    session.value.connect(token, { clientData: myUserName.value }).then(() => {
+    store.studyRoomSessionToken = token;
+    session.value.connect(token, myUserName.value).then(() => {
       publisher.value = OV.value.initPublisher(undefined, {
         audioSource: undefined,
         videoSource: undefined,
@@ -218,6 +223,13 @@ const joinSession = () => {
 
   window.addEventListener("beforeunload", leaveSession);
 };
+
+const leaveStudyRoom = async() => {
+  console.log("스터디룸을 나갑니다.");
+  await leaveSession;
+  console.log("홈화면으로 돌아갑니다.");
+  router.push('/');
+}
 
 const leaveSession = () => {
   if (session.value) session.value.disconnect();
@@ -274,6 +286,7 @@ const togglePause = () => {
 };
 
 onMounted(() => {
+  console.log("방에 입장합니다.");
   joinSession();
 });
 </script>

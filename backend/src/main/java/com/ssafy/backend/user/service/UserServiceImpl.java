@@ -3,7 +3,10 @@ package com.ssafy.backend.user.service;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
+import com.ssafy.backend.friend.model.domain.Friend;
+import com.ssafy.backend.friend.model.mapper.FriendMapper;
 import com.ssafy.backend.friend.model.repository.FriendRepository;
+import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.security.model.SecurityDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
@@ -15,6 +18,7 @@ import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.repository.UserRankRepository;
 import com.ssafy.backend.user.model.repository.UserRepository;
 import com.ssafy.backend.user.model.vo.MyPageVO;
+import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_SIGN_UP;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
 
 
@@ -57,6 +60,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JavaMailSender javaMailSender;
+
+    @Autowired
+    private FriendMapper friendMapper;
 
     @Value("${spring.mail.username}")
     private String senderEmail;
@@ -185,41 +191,41 @@ public class UserServiceImpl implements UserService {
      * 유저아이디, 유저닉네임, 유저사진, 유저상태메세지, 유저모꼬지이름, 유저누적공부시간, 유저랭크
      */
     @Override
-    public UserViewVO viewUserInformation(String viewUserNickname) {
+    public UserInformationVO viewUserInformation(String viewUserNickname) {
         User user = userRepository.findUserByUserNickname(viewUserNickname);
-        UserViewVO userViewVO = new UserViewVO();
-        userViewVO.setUserId(user.getUserId());
-        userViewVO.setUserNickname(user.getUserNickname());
-        userViewVO.setUserPicture(user.getUserPicture());
-        userViewVO.setUserStatusMessage(user.getUserStatusMessage());
+        UserInformationVO userInformationVO = new UserInformationVO();
+        userInformationVO.setUserId(user.getUserId());
+        userInformationVO.setUserNickname(user.getUserNickname());
+        userInformationVO.setUserPicture(user.getUserPicture());
+        userInformationVO.setUserStatusMessage(user.getUserStatusMessage());
         if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
-            userViewVO.setMokkoijiName(user.getMokkojiId().getMokkojiName());
+            userInformationVO.setMokkoijiName(user.getMokkojiId().getMokkojiName());
         }
 
         if (user.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
             UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
-            userViewVO.setUserRank(userRank.getUserRank());
+            userInformationVO.setUserRank(userRank.getUserRank());
         }
 
-        System.out.println(userViewVO);
-        return userViewVO;
+        System.out.println(userInformationVO);
+        return userInformationVO;
     }
 
     @Override
-    public List<UserViewVO> viewUserInformationByMokkoji(Mokkoji mokkoji) {
+    public List<UserInformationVO> viewUserInformationByMokkoji(Mokkoji mokkoji) {
         List<User> user = userRepository.findAllByMokkojiId(mokkoji);
-        List<UserViewVO> data = new ArrayList<UserViewVO>();
+        List<UserInformationVO> data = new ArrayList<UserInformationVO>();
         for(User u : user){
-            UserViewVO userViewVO = new UserViewVO();
-            userViewVO.setUserId(u.getUserId());
-            userViewVO.setUserNickname(u.getUserNickname());
-            userViewVO.setUserPicture(u.getUserPicture());
-            userViewVO.setUserStatusMessage(u.getUserStatusMessage());
+            UserInformationVO userInformationVO = new UserInformationVO();
+            userInformationVO.setUserId(u.getUserId());
+            userInformationVO.setUserNickname(u.getUserNickname());
+            userInformationVO.setUserPicture(u.getUserPicture());
+            userInformationVO.setUserStatusMessage(u.getUserStatusMessage());
             if (u.getUserTotalStudyTime()!=null){  // 총 공부시간이 존재하는 회원일 때
                 UserRank userRank = userRankRepository.findUserRankByUserId(u.getUserId());
-                userViewVO.setUserRank(userRank.getUserRank());
+                userInformationVO.setUserRank(userRank.getUserRank());
             }
-            data.add(userViewVO);
+            data.add(userInformationVO);
         }
         return data;
     }
@@ -365,5 +371,11 @@ public class UserServiceImpl implements UserService {
     public void saveProfile(User user,String url) {
         user.changeImage(url);
         userRepository.save(user);
+    }
+
+    @Override
+    public List<UserViewVO> viewAllUser(String userId) {
+        List<UserViewVO> userListAtFriendBoard = userMapper.viewAllUser(userId);
+        return userListAtFriendBoard;
     }
 }
