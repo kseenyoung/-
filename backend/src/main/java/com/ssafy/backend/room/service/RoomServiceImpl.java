@@ -1,6 +1,7 @@
 package com.ssafy.backend.room.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.domain.Question;
@@ -30,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_SESSION;
 
 @Service
 @RequiredArgsConstructor
@@ -75,32 +78,25 @@ public class RoomServiceImpl implements RoomService {
         sessionName = getRandomroom(sessionName);
         roomEnterDto.setSessionName(sessionName);
         System.out.println("세션이름: "+sessionName);
+        openvidu.fetch();
         session = openvidu.getActiveSession(sessionName);
 
-        if(session == null){
-            // 방이 존재하지 않다면 생성하라
-            System.out.println("없었던방!");
+        if(session == null){    // 방이 존재하지 않다면 생성하라
             HashMap<String,String> SessionPropertyJson = roomEnterDto.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             session = openvidu.createSession(properties);
-        } else{
-            System.out.println("있는방!");
+        } else{                 // 새로고침할떄 다른 세션에 있는 나의 연결을 삭제한다.
             openvidu.fetch();
-            List<Connection> connections = session.getConnections();
-            System.out.println("connections:"+connections);
-            for(Connection connection : connections){
-                System.out.println(connection.getStatus() + " - connectionId");
-                if(connection.getStatus().equals("pending")){
-                    System.out.println("기존에 있는 연결을 끊습니다");
+            List<Session> activeSessions = openvidu.getActiveSessions();
+            String prevSession = roomEnterDto.getPrevSession();
+            String prevConnectionId = roomEnterDto.getPrevConnectionId();
+            for(Session s : activeSessions){ // 기존의 연결을 찾아서 삭제한다
+                if(s.getSessionId().equals(prevSession)){ // 세션을 찾았다면
                     try{
-                        session.forceDisconnect(connection.getConnectionId());
-                    }catch (Exception e){
-                        System.out.println("Exception: "+e);
+                        s.forceDisconnect(prevConnectionId);
+                    } catch (Exception e){
+                        System.out.println("이미 연결이 끊어져있습니다.");
                     }
-
-                    connections = session.getConnections();
-                    System.out.println("connections:"+connections);
-                    break;
                 }
             }
         }
@@ -139,7 +135,7 @@ public class RoomServiceImpl implements RoomService {
         openvidu.fetch();
         session = openvidu.getActiveSession(sessionId);
         if(session == null){
-//            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+            throw new BaseException(NOT_EXIST_SESSION);
         }
 
         // DB에 질문 저장
@@ -182,7 +178,7 @@ public class RoomServiceImpl implements RoomService {
         openvidu.fetch();
         session = openvidu.getActiveSession(sessionId);
         if(session == null){
-//            throw new MyException("존재하지 않는 세션입니다", HttpStatus.NOT_FOUND);
+            throw new BaseException(NOT_EXIST_SESSION);
         }
 
         // DB에 대답 저장
@@ -251,13 +247,8 @@ public class RoomServiceImpl implements RoomService {
         System.out.println(userId + " user ID  " + token + " token");
         if(session!=null){
             List<Connection> connections = session.getActiveConnections();
-            System.out.println(session + "  getActiveSession ddd" );
-            System.out.println(connections+ "  connections ddd");
             for (Connection connection : connections){
-                System.out.println(connection.getToken() + " get Token ");
-                System.out.println(token + " get MY Token ");
                 if(token.equals(connection.getToken())){
-                        System.out.println("----------------------------");
                         session.forceDisconnect(connection);
                 }
             }
