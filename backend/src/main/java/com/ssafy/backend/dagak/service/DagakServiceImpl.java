@@ -64,6 +64,7 @@ public class DagakServiceImpl implements DagakService {
             Gak build = Gak.builder()
                     .userId(gak.getUserId())
                     .gakOrder(gak.getGakOrder())
+                    .categoryId(gak.getCategoryId())
                     .runningTime(gak.getRunningTime())
                     .dagakId(gak.getDagakId())
                     .build();
