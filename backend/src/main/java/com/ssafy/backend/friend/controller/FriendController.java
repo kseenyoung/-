@@ -64,7 +64,7 @@ public class FriendController {
                 String accessUserId2 = body.get("userId");
 
                 // 이미 요청 승인을 눌렀는지 확인
-                alarmService.aVoidDuplicateAlaram(new ReqestAlarmDto(accessUserId, accessUserId2, 4));
+                alarmService.aVoidDuplicateAlaram(new ReqestAlarmDto(accessUserId2, accessUserId, 5));
 
                 friendFacade.accessFriend(accessUserId, accessUserId2);
 

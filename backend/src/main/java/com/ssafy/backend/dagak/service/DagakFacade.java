@@ -6,9 +6,12 @@ import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -44,5 +47,23 @@ public class DagakFacade {
 
         return calendarDagaks;
 
+    }
+
+
+    @Transactional
+    public void deleteGak(Integer deleteGakId, List<Map<String, Integer>> remainGakInformation) {
+        dagakService.deleteGak(deleteGakId);
+        List<GakDto> remainGaks = new ArrayList<>();
+        if (!remainGakInformation.isEmpty()){
+            for(Map<String, Integer> gak: remainGakInformation){
+                Integer remainGakId = gak.get("gakId");
+                Integer remainOrder = gak.get("gakOrder");
+                remainGaks.add(new GakDto(remainGakId, remainOrder));
+            }
+                    dagakService.updateGakOrder(remainGaks);
+        }
+    }
+
+    public void deleteDagak(Integer deleteDagakId) {
     }
 }

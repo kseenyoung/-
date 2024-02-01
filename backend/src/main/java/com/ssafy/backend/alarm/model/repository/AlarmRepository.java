@@ -10,9 +10,11 @@ import java.util.Optional;
 @Repository
 public interface AlarmRepository extends JpaRepository<Alarm, Integer> {
 
-    public List<Alarm> findAllByUserId(String userId);
+    public List<Alarm> findAllByUserIdOrderByIsCheckedAscCreatedDateDesc(String userId);
 
     public List<Alarm> findByUserIdAndIsChecked(String userId, Integer isChecked);
 
     Optional<Alarm> findAlarmByUserIdAndRequestedUserIdAndTagId(String userId, String requestUserId, int tagId);
+
+    Alarm findByUserIdAndRequestedUserIdAndTagIdAndIsChecked(String userId, String requestedUserId, Integer tagId, Integer isChecked);
 }

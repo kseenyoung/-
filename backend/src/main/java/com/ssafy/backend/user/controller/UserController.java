@@ -93,8 +93,7 @@ public class UserController {
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
-        userMapper.signup(null);
-        securityMapper.insertSalt(new SecurityDto("userid", "PLZ"));
+
     }
 
 

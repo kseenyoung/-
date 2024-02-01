@@ -50,17 +50,27 @@ public class RoomController {
         String userId="yj";
         String sessionName;
         String videoCodec;
-        String token;
-        String connectionId;
+        String connectionId="";
+        String studyRoom="";
+        String token="";
+        HttpSession session = request.getSession();
 
         switch (sign){
             case "enterRandomroom": // 랜덤 방 입장
+                if (session != null) { // 토큰 불러오기
+                    connectionId = (String) session.getAttribute("connectionId");
+                    studyRoom = (String) session.getAttribute("studyRoom");
+                }
                 userId = (String) body.get("userId");
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
 
-                RoomEnterDto randomRoomEnterDto = new RoomEnterDto(userId,sessionName,videoCodec);
+                RoomEnterDto randomRoomEnterDto = new RoomEnterDto(userId,sessionName,videoCodec,connectionId,studyRoom);
                 ConnectionDto connectionDto = roomService.enterRandomroom(randomRoomEnterDto);
+                if (session != null) { // 토큰이랑, 현재 내가 참여하고 있는 스터디룸 들어감
+                    session.setAttribute("connectionId",connectionDto.getToken());
+                    session.setAttribute("studyRoom",connectionDto.getSession());
+                }
 
                 return new BaseResponse<>(connectionDto);
             case "enterMyRoom":
@@ -69,7 +79,6 @@ public class RoomController {
                 System.out.println("userId: "+userId);
                 RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, userId,"VP8");
                 token = roomService.enterDefaultroom(defaultRoomEnterDto);
-                HttpSession session = request.getSession();
                 if (session != null) {
                     session.setAttribute("token", token);
                 }

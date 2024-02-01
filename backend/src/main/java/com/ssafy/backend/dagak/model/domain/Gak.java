@@ -39,6 +39,15 @@ public class Gak {
         return new GakDto(categoryId, gakOrder, runningTime, userId);
     }
 
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
 
+    public void setRunningTime(Integer runningTime) {
+        this.runningTime = runningTime;
+    }
 
+    public void setGakOrder(Integer gakOrder) {
+        this.gakOrder = gakOrder;
+    }
 }

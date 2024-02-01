@@ -50,7 +50,13 @@ public class AlarmServiceImpl implements  AlarmService {
     @Override
     public List<Alarm> listofAllAlarm(String userId) {
 
-        List<Alarm> allByUserId = alarmRepository.findAllByUserId(userId);
+//        Sort sort = Sort.by(
+//                Sort.Order.asc("isChecked"),
+//                Sort.Order.desc("createdDate")
+//                );
+//        log.info("====== sort : {}", sort);
+
+        List<Alarm> allByUserId = alarmRepository.findAllByUserIdOrderByIsCheckedAscCreatedDateDesc(userId);
 
         return allByUserId;
     }
@@ -84,5 +90,15 @@ public class AlarmServiceImpl implements  AlarmService {
         ).orElseThrow(() -> new BaseException(ALREADY_DELETE_ALARM));
         alarmRepository.delete(alarm);
 
+    }
+
+    @Override
+    public boolean isAlreadyRequestFriend(String userId, String requestedUserId) {
+        Alarm byUserIdAndRequestedUserIdAndTagIdAndIsChecked
+                = alarmRepository.findByUserIdAndRequestedUserIdAndTagIdAndIsChecked(userId, requestedUserId, 4, 0);
+
+        if(byUserIdAndRequestedUserIdAndTagIdAndIsChecked != null)
+            return true;
+        return false;
     }
 }

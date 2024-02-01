@@ -29,6 +29,7 @@
               placeholder="비밀번호"
               required
               v-model="password"
+              @keyup.enter="login"
             />
           </div>
         </div>

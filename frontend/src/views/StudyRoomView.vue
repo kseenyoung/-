@@ -276,13 +276,9 @@ const togglePause = () => {
   isPause.value = !isPause.value;
 };
 
-onMounted(async() => {
-  console.log("store.mySessionToken"+store.studyRoomSessionToken);
-  if(store.studyRoomSessionToken=='') {
-    console.log("이미 방에 들어가 있습니다.");
-    joinSession();
-  }
-  
+onMounted(() => {
+  console.log("방에 입장합니다.");
+  joinSession();
 });
 </script>
 
