@@ -116,6 +116,11 @@ public enum BaseResponseStatus {
     NOT_MOKKOJI_LEADER(false, 2109, "모꼬지장이 아닙니다."),
     NOT_MOKKOJI_MEMBER(false, 2110, "해당 회원을 찾을 수 없습니다."),
 
+    /* 보드 관련 BAD REQUEST */
+    NOT_FOUND_TAG(false, 2110, "태그가 존재하지 않습니다."),
+    NOT_FOUND_BOARD(false, 2111, "글이 존재하지 않습니다."),
+    NOT_FOUND_COMMENT(false, 2112, "댓글이 존재하지 않습니다."),
+
     /* 이벤토리 BAD REQUEST  */
     TWO_UP_PUT_ON_CLOTH(false, 2120, "같은 카테고리의 옷을 두 개 이상 입을 수 없습니다"),
     DUPLICATE_INVENTORY_ID(false, 2121, "중복된 아이템 착용 요청입니다."),

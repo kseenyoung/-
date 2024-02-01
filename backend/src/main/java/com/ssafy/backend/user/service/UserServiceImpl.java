@@ -21,6 +21,7 @@ import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -226,6 +227,7 @@ public class UserServiceImpl implements UserService {
     public String sendEmail(String userEmailForAuth) throws MyException {
         String codeForAuth = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
         MimeMessage emailContent = javaMailSender.createMimeMessage();
+
         try {
             emailContent.setFrom(new InternetAddress(senderEmail, "다각", "UTF-8"));
             emailContent.setRecipients(MimeMessage.RecipientType.TO, userEmailForAuth);
@@ -350,6 +352,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(changeStatusUserId).orElseThrow(() -> new BaseException(NOT_EXIST_USER));
         user.setUserStatusMessage(newStatusMessage);
 
+        userRepository.save(user);
+    }
+
+    @Override
+    public void saveProfile(User user,String url) {
+        user.changeImage(url);
         userRepository.save(user);
     }
 

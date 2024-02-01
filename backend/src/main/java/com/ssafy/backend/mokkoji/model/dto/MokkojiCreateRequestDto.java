@@ -4,13 +4,11 @@ import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class MokkojiCreateRequestDto {
     private String mokkojiName;
@@ -30,6 +28,22 @@ public class MokkojiCreateRequestDto {
         this.mokkojiName = mokkojiName;
         this.leaderId = leaderId;
         this.mokkojiCategories = mokkojiCategories;
+        this.mokkojiStatus = mokkojiStatus;
+    }
+
+    public void setMokkojiName(String mokkojiName) {
+        this.mokkojiName = mokkojiName;
+    }
+
+    public void setLeaderId(String leaderId) {
+        this.leaderId = leaderId;
+    }
+
+    public void setMokkojiCategories(List<Integer> mokkojiCategories) {
+        this.mokkojiCategories = mokkojiCategories;
+    }
+
+    public void setMokkojiStatus(String mokkojiStatus) {
         this.mokkojiStatus = mokkojiStatus;
     }
 }
