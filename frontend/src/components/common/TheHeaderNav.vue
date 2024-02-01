@@ -81,11 +81,9 @@ const logout = function () {
     .then((res) => res.data)
   userStore.loginUserInfo = {};
   localStorage.removeItem('useStore');
-  console.log("hi");
   //성공 시 홈으로
-
   router.push({
-    name: 'home',
+    name: 'login',
   });
 };
 
