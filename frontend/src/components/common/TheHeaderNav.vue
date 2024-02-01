@@ -72,14 +72,20 @@ const getSessionId = function () {
 };
 
 //로그아웃
-const logout = function () {
+const logout = async function () {
+  console.log('로그아웃 클릭');
   const body = {
     sign: 'logout',
   };
-  axios
-    .post(` ${import.meta.env.VITE_API_BASE_URL}user`, body)
-    .then((res) => res.data)
-    .then(() => {
+  await axios
+    .post(` ${import.meta.env.VITE_API_BASE_URL}user`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => {
+      console.log(res);
+      console.log('로그아웃 클릭1');
       //유저정보 공백 & 로컬스토리지에 저장한 것 삭제
       userStore.loginUserInfo = {};
       localStorage.removeItem('user');

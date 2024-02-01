@@ -3,8 +3,15 @@
     <div class="apply-title">친구 신청</div>
     <!-- 검색 -->
     <div class="apply-search input-group mb-3">
-      <input type="text" class="form-control" placeholder="친구 검색" aria-describedby="button-addon2">
-      <button class="btn common-btn" type="button" id="button-addon2">검색</button>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="친구 검색"
+        aria-describedby="button-addon2"
+      />
+      <button class="btn common-btn" type="button" id="button-addon2">
+        검색
+      </button>
     </div>
 
     <!-- 목록 -->
@@ -19,9 +26,13 @@
         </thead>
         <tbody>
           <tr class="my-hover">
-            <td><img src="@/assets/img/기본프로필_갈색.jpg"></td>
+            <td><img src="@/assets/img/기본프로필_갈색.jpg" /></td>
             <td class="dropdown">
-              <div class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <div
+                class="dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
                 ssafy
               </div>
               <ul class="dropdown-menu">
@@ -33,22 +44,22 @@
             <td><button class="btn common-btn">신청</button></td>
           </tr>
           <tr class="my-hover">
-            <td><img src="@/assets/img/기본프로필_갈색.jpg"></td>
+            <td><img src="@/assets/img/기본프로필_갈색.jpg" /></td>
             <td>ssafy2</td>
             <td><button class="btn common-btn">신청</button></td>
           </tr>
           <tr class="my-hover">
-            <td><img src="@/assets/img/기본프로필_갈색.jpg"></td>
+            <td><img src="@/assets/img/기본프로필_갈색.jpg" /></td>
             <td>ssafy3</td>
             <td><button class="btn common-btn">신청</button></td>
           </tr>
           <tr class="my-hover">
-            <td><img src="@/assets/img/기본프로필_갈색.jpg"></td>
+            <td><img src="@/assets/img/기본프로필_갈색.jpg" /></td>
             <td>ssafy4</td>
             <td><button class="btn common-btn disabled">신청</button></td>
           </tr>
           <tr class="my-hover">
-            <td><img src="@/assets/img/기본프로필_갈색.jpg"></td>
+            <td><img src="@/assets/img/기본프로필_갈색.jpg" /></td>
             <td>ssafy5</td>
             <td><button class="btn common-btn disabled">신청</button></td>
           </tr>
@@ -61,9 +72,7 @@
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .apply-friend-wrapper {

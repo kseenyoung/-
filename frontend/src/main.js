@@ -6,7 +6,7 @@ import router from './router';
 
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://localhost:8080';
+// axios.defaults.baseURL = 'https://localhost:8080'; //env로 바꾸니까 충돌나서 주석처리
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 

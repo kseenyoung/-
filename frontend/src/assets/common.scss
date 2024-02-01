@@ -110,6 +110,54 @@ a {
     }
   }
 }
-// .apply-pagenation {
-  
-// }
+.apply-pagenation {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+
+  .pagination {
+    list-style-type: none;
+    display: flex;
+    gap: 8px;
+
+    .page-item {
+      cursor: pointer;
+
+      &.disabled {
+        cursor: not-allowed;
+      }
+
+      &.active {
+        .page-link {
+          background-color: $vt-c-text-light-1;
+          color: white;
+
+          &:hover {
+            color: white;
+          }
+        }
+      }
+
+      .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        color: var(--greyDark);
+        transition: background-color 0.3s;
+        background-color: transparent;
+
+        &:hover {
+          color: $vt-c-text-light-2;
+        }
+
+        .bi {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+}
