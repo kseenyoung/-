@@ -2,12 +2,10 @@ package com.ssafy.backend.dagak.model.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
+import javax.persistence.*;
 import java.time.LocalDate;
 
 
@@ -15,9 +13,10 @@ import java.time.LocalDate;
 @Builder
 @Getter
 @ToString
+@Setter
 public class Calendar {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer calendarDagakId;
 

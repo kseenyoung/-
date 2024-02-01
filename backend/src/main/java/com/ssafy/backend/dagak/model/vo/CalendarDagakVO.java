@@ -3,7 +3,6 @@ package com.ssafy.backend.dagak.model.vo;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import lombok.Data;
 
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
 public class CalendarDagakVO {
     private Integer calendarDagakId;
     private Integer dagakId;
-    private String calendarDate;
+    private LocalDate calendarDate;
     private List<Gak> gaks;
     private String userId;
 
@@ -28,7 +27,7 @@ public class CalendarDagakVO {
         return dagakId;
     }
 
-    public String getCalendarDate() {
+    public LocalDate getCalendarDate() {
         return calendarDate;
     }
 
