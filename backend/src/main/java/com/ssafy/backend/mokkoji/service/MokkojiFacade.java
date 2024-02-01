@@ -10,7 +10,7 @@ import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
 import com.ssafy.backend.mokkoji.model.dto.*;
 import com.ssafy.backend.user.model.domain.User;
-import com.ssafy.backend.user.model.vo.UserViewVO;
+import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -132,7 +132,7 @@ public class MokkojiFacade {
     public MokkojiDetailResponseDto getDetailMokkoji(int mokkojiId, String userId) {
         MokkojiDetailResponseDto dto = new MokkojiDetailResponseDto();
         Mokkoji mokkoji = mokkojiService.findByMokkojiId(mokkojiId);
-        List<UserViewVO> user = userService.viewUserInformationByMokkoji(mokkoji);
+        List<UserInformationVO> user = userService.viewUserInformationByMokkoji(mokkoji);
         List<Category> categories = mokkojiCategoryService.findByMokkoji(mokkoji);
         if("".equals(userId) || userId == null) {
             dto.setUserId("");

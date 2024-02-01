@@ -7,7 +7,6 @@ import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
 import com.ssafy.backend.loginhistory.service.LoginHistoryService;
 import com.ssafy.backend.room.model.dto.QuestionDto;
-import com.ssafy.backend.security.model.SecurityDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
@@ -15,6 +14,7 @@ import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.vo.MyPageVO;
+import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.GoogleOAuthService;
 import com.ssafy.backend.user.service.KakaoOAuthService;
@@ -37,10 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
@@ -105,8 +102,6 @@ public class UserController {
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
         HttpSession session = request.getSession(false);
-        System.out.println(sign);
-        System.out.println(session);
 
         if (sign != null) {
             switch (sign) {
@@ -254,8 +249,8 @@ public class UserController {
                     if (viewUserNickname != null) {
                         boolean isExistNicknameForView = userService.isExistNickname(viewUserNickname);
                         if (isExistNicknameForView) {
-                            UserViewVO userViewVO = userService.viewUserInformation(viewUserNickname);
-                            return new BaseResponse<>(userViewVO);
+                            UserInformationVO userInformationVO = userService.viewUserInformation(viewUserNickname);
+                            return new BaseResponse<>(userInformationVO);
                         } else {
                             throw new BaseException(PLZ_ENTER_NICKNAME);
                         }
@@ -472,7 +467,14 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-
+                /*
+                 * [POST] 친구 게시판에서 모든 유저 보기.
+                 * 유저 아이디, 유저 아이콘, 유저 닉네임, 친구 여부
+                 */
+                case "viewAllUser":
+                    String userIdForFriendBoard = (String) body.get("userId");
+                    List<UserViewVO> userListAtFriendBoard = userService.viewAllUser(userIdForFriendBoard);
+                    return new BaseResponse<>(userListAtFriendBoard);
             }
         }
         throw new BaseException(NOT_MATCH_SIGN);
