@@ -89,7 +89,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import axios from 'axios';
 
@@ -100,6 +100,7 @@ const mokkojiCategories = ref([]);
 const tagSelectList = ref([]);
 const selectedCategory = ref('');
 const categorySearch = ref('');
+const emit = defineEmits(['updateList']);
 
 //태그 검색 메서드
 const filteredCategoryList = computed(() => {
@@ -150,6 +151,8 @@ const createMokkoji = function () {
     .then((res) => {
       if (res.data.code === 1102) {
         alert(res.data.message);
+        //생성 후 모꼬지 목록 불러오기
+        emit('updateList');
       } else {
         alert('포인트가 모자랍니다.');
       }

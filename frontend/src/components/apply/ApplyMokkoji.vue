@@ -10,7 +10,7 @@
         새로 만들기
       </button>
     </div>
-    <ApplyMokkojiCreateModal />
+    <ApplyMokkojiCreateModal @update-list="getMokkojiList()" />
     <!-- 검색 -->
     <div class="apply-search input-group mb-3">
       <input
@@ -134,6 +134,7 @@ const changePage = (newPage) => {
 };
 
 const getMokkojiList = function () {
+  console.log('리스트불러와');
   axios.get(`${import.meta.env.VITE_API_BASE_URL}mokkoji/list`).then((res) => {
     mokkojiList.value = res.data.result.list;
     mokkojiListPage.value = res.data.result.totalPages;
