@@ -64,4 +64,6 @@ public interface UserService {
     String getUserEmail(User userEmailChange);
 
     void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage);
+
+    void saveProfile(User user,String url);
 }

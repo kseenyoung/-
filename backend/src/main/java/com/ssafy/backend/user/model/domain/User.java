@@ -77,4 +77,7 @@ public class User {
     public void setUserPoint(int userPoint) {
         this.userPoint = userPoint;
     }
+    public void changeImage(String url) {
+        this.userPicture = url;
+    }
 }

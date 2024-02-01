@@ -360,4 +360,10 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
+
+    @Override
+    public void saveProfile(User user,String url) {
+        user.changeImage(url);
+        userRepository.save(user);
+    }
 }

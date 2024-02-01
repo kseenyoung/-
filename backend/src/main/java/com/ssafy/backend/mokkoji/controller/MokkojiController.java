@@ -1,19 +1,17 @@
 package com.ssafy.backend.mokkoji.controller;
 
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.mokkoji.model.dto.*;
 import com.ssafy.backend.mokkoji.service.MokkojiFacade;
 import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
@@ -30,7 +28,7 @@ public class MokkojiController {
         HttpSession session = request.getSession(false);
         String userId = new String("");
         if(session != null){
-            User user = (User) session.getAttribute("session");
+            User user = (User) session.getAttribute("User");
             userId = user.getUserId();
         }
         MokkojiDetailResponseDto dto = mokkojiFacade.getDetailMokkoji(mokkojiId,userId);
@@ -62,7 +60,7 @@ public class MokkojiController {
 
 
     @PostMapping("")
-    public BaseResponse<?> hideMokkojiURL(@RequestBody HashMap<String, Object> body
+    public BaseResponse<?> hideMokkojiURL(@RequestBody Map<String, Object> body
             , HttpServletRequest request) {
         //회원 체크
         HttpSession session = request.getSession(false);

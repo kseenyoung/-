@@ -9,6 +9,7 @@ import com.ssafy.backend.inventory.service.InventoryService;
 import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,7 +24,8 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 public class InventoryController {
     private final InventoryService inventoryService;
     @PostMapping("")
-    private BaseResponse<?> saveInventory(@RequestBody HashMap<String, Object> body,
+    private BaseResponse<?> saveInventory(
+            @RequestBody HashMap<String, Object> body,
                                           HttpServletRequest request) throws JsonProcessingException {
         HttpSession session = request.getSession(false);
 
@@ -42,19 +44,31 @@ public class InventoryController {
                     .build());
             return new BaseResponse<>(SUCCESS);
         }
+        else if("takeOff".equals(sign)){
+            int takeOffItem = (int) body.get("takeOffItem");
+            inventoryService.takeOffItem(takeOffItem,userId);
+            return new BaseResponse<>(SUCCESS);
+        }
         throw new BaseException(EMPTY_SIGN);
 
     }
 
     @GetMapping("/get")
     private BaseResponse<?> getInventory(
-            @RequestParam String userId,
+            HttpServletRequest request,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "category", defaultValue = "0") int category) {
+
+        HttpSession session = request.getSession(false);
+        if(session == null) throw new BaseException(NOT_AUTH_MEMBER);
+        User user = (User) session.getAttribute("User");
+        String userId = user.getUserId();
+
         InventoryResponseDto inventory = inventoryService.getInventory(userId, page, category);
 
         return new BaseResponse<>(inventory);
     }
+
 
 
 
