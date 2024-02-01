@@ -81,16 +81,11 @@ public class DagakController {
 
                 for(List<Integer> calendarDate : calendarDates){
                     RegisterDagakDto registerDagakDto = new RegisterDagakDto(userId, registerDagakId, LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)));
-//                    log.info("===-=0=-90-90-90 LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)) : {}", LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)));
-//                    log.info("registerDagak : {}", registerDagakDto);
 
                     dagakService.registerDagak(registerDagakDto);
                 }
 
                 return new BaseResponse<>(SUCCESS);
-
-            case "modifyDagak":
-                break;
 
             /*
              * [POST] 다각 삭제하기
@@ -102,6 +97,12 @@ public class DagakController {
                 Integer deleteDagakId = (Integer) body.get("deleteDagakId");
                 dagakFacade.deleteDagak(deleteDagakId);
                 return new BaseResponse<>(SUCCESS);
+
+            case "updateStartTime":
+                String gakId = (String) body.get("gakId");
+
+
+                break;
 
             case "updateEndTime":
                 break;
@@ -146,7 +147,6 @@ public class DagakController {
                 }
                 return new BaseResponse<>(SUCCESS);
         }
-
 
         return new BaseResponse(NOT_MATCH_SIGN);
     }

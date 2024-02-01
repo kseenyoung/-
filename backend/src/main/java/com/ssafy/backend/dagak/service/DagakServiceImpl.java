@@ -130,10 +130,6 @@ public class DagakServiceImpl implements DagakService {
         gakRepository.deleteById(deleteGakId);
     }
 
-    @Override
-    public void updateRemainGakOrder(List<GakDto> remainGaks) {
-
-    }
 
     @Override
     public void updateGakOrder(List<GakDto> Gaks) {
@@ -150,12 +146,7 @@ public class DagakServiceImpl implements DagakService {
         if (!isExistDagakId(registerDagakDto.getDagakId()))
             throw new BaseException(NOT_EXIST_DAGAK);
 
-//        log.info("registerDagakDto.getCalendarDate() : {}", registerDagakDto.getCalendarDate());
-//        if(registerDagakDto.getCalendarDate() instanceof LocalDate){
-//            log.info("weslhngfwielosghfwoilesjfolwisejflewjfdwlkefnqekjafrbnlwsr");
-//        }
         Calendar calendarByCalendarDate = calendarRepository.findCalendarByCalendarDate(registerDagakDto.getCalendarDate());
-//            Calendar byCalendarDateStartsWith = dagakMapper.getCalendarByCalendarDate(calendarDate.substring(0, 10));
         log.info("=========== byCalendarDateStartsWith : {}", calendarByCalendarDate);
         if(calendarByCalendarDate == null){
             // 해당 날에 등록된 다각이 없음
@@ -177,8 +168,6 @@ public class DagakServiceImpl implements DagakService {
                             .build()
             );
         }
-
-//        }
 
     }
 

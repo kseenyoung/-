@@ -32,7 +32,6 @@ public interface DagakService {
 
     void deleteGak(Integer deleteGakId);
 
-    void updateRemainGakOrder(List<GakDto> remainGaks);
 
     void registerDagak(RegisterDagakDto registerDagakDto);
 
