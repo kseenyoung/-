@@ -3,7 +3,6 @@ package com.ssafy.backend.user.model.dto;
 
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
-import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.user.model.domain.User;
 import org.springframework.http.HttpStatus;
@@ -12,10 +11,10 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 
 // 나중에 유효성 검사 주석 풀어야 함.
-public class UserSignupDto {
+public class UserSignupDTO {
     private String userId, userBirthday, userName, userPassword, userPhonenumber, userEmail, userNickname;
 
-    public UserSignupDto(String userId, String userBirthday, String userName, String userPassword, String userPhonenumber, String userEmail, String userNickname) throws MyException {
+    public UserSignupDTO(String userId, String userBirthday, String userName, String userPassword, String userPhonenumber, String userEmail, String userNickname) throws MyException {
         setUserId(userId);
         setUserBirthday(userBirthday);
         setUserName(userName);
@@ -121,8 +120,8 @@ public class UserSignupDto {
                 userName(this.userName).
                 userEmail(this.userEmail).build();
     }
-    public UserSignupDto(){}
-    public UserSignupDto(String userId) {
+    public UserSignupDTO(){}
+    public UserSignupDTO(String userId) {
         this.userId = userId;
     }
 }

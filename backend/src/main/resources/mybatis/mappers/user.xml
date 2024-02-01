@@ -10,19 +10,19 @@
         <result property="isFriend" column="is_friend" />
     </resultMap>
 
-    <insert id="signup"
-            parameterType="com.ssafy.backend.user.model.dto.UserSignupDto">
+    <insert id="signUp"
+            parameterType="com.ssafy.backend.user.model.dto.UserSignupDTO">
         insert into user(user_id, user_password, user_birthday, user_name, user_phonenumber, user_nickname, user_email)
         values(#{userId}, #{userPassword}, #{userBirthday}, #{userName}, #{userPhonenumber}, #{userNickname}, #{userEmail})
     </insert>
 
-    <update id="changePassword" parameterType="String">
+    <update id="modifyPassword" parameterType="String">
         update user
         set user_password = #{newSafePassword}
         where user_id = #{originUserId}
     </update>
 
-    <select id="viewAllUser" parameterType="String" resultMap="UserViewVO">
+    <select id="getAllUserList" parameterType="String" resultMap="UserViewVO">
         SELECT distinct
             u.user_id,
             u.user_nickname,

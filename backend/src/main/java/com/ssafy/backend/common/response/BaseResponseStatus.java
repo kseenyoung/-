@@ -46,7 +46,7 @@ public enum BaseResponseStatus {
     INVALID_AUTH_TOKEN(false, 2007, "유효하지 않은 인증번호입니다."),
     NOT_AUTH_PHONE_NUMBER(false, 2008, "인증이 되지 않은 전화번호입니다."),
     ALREADY_AUTH_PHONE_NUMBER(false, 2008, "이미 인증을 받은 전화번호입니다."),
-    NOT_EXIST_MEMBER(false, 2009, "존재하지 않는 사용자입니다."),
+    NOT_EXIST_USER(false, 2009, "존재하지 않는 사용자입니다."),
     ALREADY_EXIST_PHONE_NUMBER(false, 2010, "이미 등록된 휴대전화 번호입니다."),
     NOT_EXIST_GROUP(false, 2011, "존재하지 않는 모꼬지입니다."),
     ALREADY_EXIST_GROUP(false, 2012, "이미 존재하는 모꼬지입니다."),
@@ -109,9 +109,12 @@ public enum BaseResponseStatus {
     NOT_EXIST_KICK_USER(false, 2102, "강퇴할 모꼬지 회원이 존재하지 않습니다."),
     NOT_FOUND_RANKING_MOKKOJI(false, 2103, "해당 모꼬지의 랭킹이 존재하지 않습니다"),
     NOT_EXIST_USER_MOKKOJI(false, 2104, "회원의 모꼬지가 존재하지 않습니다"),
-    NOT_LEAVE_MOKKOJI_KING(false, 2105, "모꼬지장은 탈퇴할 수 없습니다"),
+    NOT_LEAVE_MOKKOJI_LEADER(false, 2105, "모꼬지장은 탈퇴할 수 없습니다"),
     IS_EXIST_MOKKOJI_NAME(false, 2106, "이미 존재하는 모꼬지 이름입니다"),
     NOT_EXIST_MOKKOJI(false, 2107, "해당 모꼬지를 찾을 수 없습니다"),
+    REFUSED_TO_DELETE_MOKKOJI(false, 2108, "모꼬지는 생성 7일 이후에 삭제할 수 있습니다."),
+    NOT_MOKKOJI_LEADER(false, 2109, "모꼬지장이 아닙니다."),
+    NOT_MOKKOJI_MEMBER(false, 2110, "해당 회원을 찾을 수 없습니다."),
 
     /* 보드 관련 BAD REQUEST */
     NOT_FOUND_TAG(false, 2110, "태그가 존재하지 않습니다."),
