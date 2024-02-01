@@ -6,10 +6,9 @@ import com.ssafy.backend.common.utils.RegEx;
 import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.friend.service.FriendService;
 import com.ssafy.backend.loginhistory.service.LoginHistoryService;
-import com.ssafy.backend.room.model.dto.QuestionDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
-import com.ssafy.backend.user.model.dto.OpenviduRequestDto;
+import com.ssafy.backend.user.model.dto.OpenviduRequestDTO;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.mapper.UserMapper;
@@ -167,7 +166,7 @@ public class UserController {
 
                         for (FriendVO friend : friendList) {
                             System.out.println(friend.getUserId() + "에게 로그인 신호");
-                            OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), "login", loginUserId);
+                            OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "login", loginUserId);
                             URI uri = UriComponentsBuilder
                                     .fromUriString(OPENVIDU_URL)
                                     .path("/openvidu/api/signal")

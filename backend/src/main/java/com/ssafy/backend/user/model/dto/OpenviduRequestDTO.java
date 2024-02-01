@@ -9,7 +9,7 @@ import java.util.HashMap;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OpenviduRequestDto {
+public class OpenviduRequestDTO {
     private String session;
     private String type;
     private String data;

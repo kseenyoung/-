@@ -7,9 +7,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class Product {
     @Id
@@ -19,7 +16,6 @@ public class Product {
     @Column
     private String productName;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne()
     @JoinColumn(name="productCategoryId")
     private ProductCategory productCategory;
@@ -32,4 +28,16 @@ public class Product {
 
     @Column
     private String productDescription;
+
+    public Product(int productId, String productName, ProductCategory productCategory, int productPrice, String productImage, String productDescription) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productCategory = productCategory;
+        this.productPrice = productPrice;
+        this.productImage = productImage;
+        this.productDescription = productDescription;
+    }
+
+    public Product() {
+    }
 }

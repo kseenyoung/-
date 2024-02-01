@@ -7,9 +7,11 @@ import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.inventory.model.domain.Inventory;
 import com.ssafy.backend.inventory.model.repository.InventoryRepository;
 import com.ssafy.backend.product.model.domain.Product;
-import com.ssafy.backend.product.model.dto.ProductDto;
-import com.ssafy.backend.product.model.dto.ProductListResDto;
+import com.ssafy.backend.product.model.dto.ProductDTO;
+import com.ssafy.backend.product.model.vo.ProductListVO;
 import com.ssafy.backend.product.model.repository.ProductRepository;
+import com.ssafy.backend.product.model.vo.ProductVO;
+import com.ssafy.backend.room.model.vo.AnswerVO;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_INVENTORY;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_PRODUCT;
@@ -40,35 +41,40 @@ public class ProductServiceImpl implements ProductService {
     InventoryRepository inventoryRepository;
 
     @Override
-    public ProductListResDto getList(int page) throws BaseException {
+    public ProductListVO getList(int page) throws BaseException {
         ArrayList<Sort.Order> sorts = new ArrayList<>();
         Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
         Page<Product> products = productRepository.findAll(pageable);
 
-        List<ProductDto> productDtoList = new ArrayList<>();
+        List<ProductDTO> productDTOList = new ArrayList<>();
         for(Product product: products){
             ProductCategory productCategory = product.getProductCategory();
-            ProductDto productDto = ProductDto.builder()
+            ProductDTO productDto = ProductDTO.builder()
                     .productId(product.getProductId())
                     .productName(product.getProductName())
                     .productCategoryDto(productCategory.toDto())
                     .productPrice(product.getProductPrice())
                     .productDescription(product.getProductDescription())
                     .build();
-            productDtoList.add(productDto);
+            productDTOList.add(productDto);
         }
 
-        ProductListResDto productListResDto = ProductListResDto.builder()
+        ProductListVO productListVO = ProductListVO.builder()
                 .totalPage(products.getTotalPages())
-                .productList(productDtoList)
+                .productList(productDTOList)
                 .build();
 
-        return productListResDto;
+        return productListVO;
     }
 
     @Override
-    public List<Product> searchList(int categoryId) throws MyException {
-        return productRepository.findByProductCategory_ProductCategoryId(categoryId);
+    public List<ProductVO> searchList(int categoryId) throws MyException {
+        List<Product> products = productRepository.findByProductCategory_ProductCategoryId(categoryId);
+        List<ProductVO> productVOS = products.stream()
+                .map(p -> new ProductVO(p.getProductId(),p.getProductName(),p.getProductCategory().toDto(),p.getProductPrice(),p.getProductImage(),p.getProductDescription()))
+                .collect(Collectors.toList());
+
+        return productVOS;
     }
 
     @Override
