@@ -150,6 +150,10 @@ export const useUserStore = defineStore(
           // localStorage.setItem('userStore', JSON.stringify(loginUserInfo.value));
         });
     };
+
+    const deleteLoginUserInfo = ()=>{
+      loginUserInfo.value = {};
+    }
     return {
       myUserName,
       APPLICATION_SERVER_URL,
@@ -164,6 +168,7 @@ export const useUserStore = defineStore(
       loginSession,
       loginUserInfo,
       getLoginUserInfo,
+      deleteLoginUserInfo,
       mySessionToken,
       studyRoomSessionToken,
     }
