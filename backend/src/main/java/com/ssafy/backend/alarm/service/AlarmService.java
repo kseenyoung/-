@@ -14,9 +14,9 @@ public interface AlarmService {
 
     void checkAlarm(CheckAlarmDTO checkAlarmDto);
 
-    List<Alarm> getAllList(String userId);
+    List<Alarm> getAllAlarmList(String userId);
 
-    List<Alarm> getUncheckList(String userId);
+    List<Alarm> getUncheckAlarmList(String userId);
 
     void aVoidDuplicateAlaram(ReqestAlarmDTO reqestAlarmDto);
 

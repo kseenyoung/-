@@ -63,25 +63,25 @@ public class AlarmController {
         return new BaseResponse(NOT_MATCH_SIGN);
     }
 
-    @GetMapping("getAllList")
-    public BaseResponse<?> getAllList(HttpServletRequest response){
+    @GetMapping("getAllAlarmList")
+    public BaseResponse<?> getAllAlarmList(HttpServletRequest response){
         HttpSession session = response.getSession(false);
         User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
 
         userService.isExistUser(userId);
-        List<Alarm> getAllListVO = alarmService.getAllList(userId);
+        List<Alarm> getAllListVO = alarmService.getAllAlarmList(userId);
 
         return new BaseResponse<>(getAllListVO);
     }
 
-    @GetMapping("getUncheckList")
-    public BaseResponse<?> getUncheckList(HttpServletRequest response){
+    @GetMapping("getUncheckAlarmList")
+    public BaseResponse<?> getUncheckAlarmList(HttpServletRequest response){
         HttpSession session = response.getSession(false);
         User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
 
-        List<Alarm> getUncheckListVO = alarmService.getUncheckList(userId);
+        List<Alarm> getUncheckListVO = alarmService.getUncheckAlarmList(userId);
 
         return new BaseResponse<>(getUncheckListVO);
     }

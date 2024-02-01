@@ -48,13 +48,7 @@ public class AlarmServiceImpl implements  AlarmService {
     }
 
     @Override
-    public List<Alarm> getAllList(String userId) {
-
-//        Sort sort = Sort.by(
-//                Sort.Order.asc("isChecked"),
-//                Sort.Order.desc("createdDate")
-//                );
-//        log.info("====== sort : {}", sort);
+    public List<Alarm> getAllAlarmList(String userId) {
 
         List<Alarm> allByUserId = alarmRepository.findAllByUserIdOrderByIsCheckedAscCreatedDateDesc(userId);
 
@@ -62,7 +56,7 @@ public class AlarmServiceImpl implements  AlarmService {
     }
 
     @Override
-    public List<Alarm> getUncheckList(String userId) {
+    public List<Alarm> getUncheckAlarmList(String userId) {
 
         List<Alarm> byUserIdAndIsChecked = alarmRepository.findByUserIdAndIsChecked(userId, 0);
 

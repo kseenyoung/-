@@ -48,7 +48,7 @@ public class FriendController {
              * @return ResponseEntity<HttpResponseBody < String>>
              * 친구 요청을 처리
              **/
-            case "request":
+            case "requestFriend":
                 String userId2 = (String) body.get("userId");  // 요청하고싶은 친구 userId
 
                 friendFacade.requestFriend(userId, userId2);

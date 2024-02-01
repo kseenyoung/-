@@ -78,7 +78,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public List<FriendVO> listFriends(String listUserId) {
 
-        List<FriendVO> friendListVOS = friendMapper.listFriends(listUserId);
+        List<FriendVO> friendListVOS = friendMapper.getFriendList(listUserId);
 
         log.info("---friendListVOS : {}", friendListVOS);
 
