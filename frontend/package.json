@@ -13,6 +13,7 @@
   "dependencies": {
     "@vuepic/vue-datepicker": "^7.4.1",
     "axios": "^1.6.5",
+    "bootstrap": "^5.3.1",
     "bootstrap-icons": "^1.11.3",
     "bootstrap-vue-3": "^0.5.1",
     "cors": "^2.8.5",
@@ -37,12 +38,11 @@
     "sass-loader": "^13.3.3",
     "vite": "^5.0.10"
   },
-  "options" : {
+  "options": {
     "allowedHosts": [
       "localhost",
       ".localhost"
     ],
     "proxy": "주소"
   }
-  
 }
