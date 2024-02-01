@@ -8,9 +8,11 @@ import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.dto.DagakDto;
 import com.ssafy.backend.dagak.model.dto.GakDto;
+import com.ssafy.backend.dagak.model.dto.RegisterDagakDto;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
 import com.ssafy.backend.dagak.service.DagakFacade;
 import com.ssafy.backend.dagak.service.DagakService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,7 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("dagak")
+@Slf4j
 public class DagakController {
 
     @Autowired
@@ -73,8 +76,18 @@ public class DagakController {
                 return new BaseResponse<>(SUCCESS);
 
             case "registerDagak":
+                String registerDagakId = (String) body.get("dagakId");
+                List<List<Integer>> calendarDates = ( List<List<Integer>>) body.get("calendarDate");
 
-                break;
+                for(List<Integer> calendarDate : calendarDates){
+                    RegisterDagakDto registerDagakDto = new RegisterDagakDto(userId, registerDagakId, LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)));
+//                    log.info("===-=0=-90-90-90 LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)) : {}", LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)));
+//                    log.info("registerDagak : {}", registerDagakDto);
+
+                    dagakService.registerDagak(registerDagakDto);
+                }
+
+                return new BaseResponse<>(SUCCESS);
 
             case "modifyDagak":
                 break;

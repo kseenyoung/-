@@ -11,6 +11,4 @@ public interface DagakRepository extends JpaRepository<Dagak, Integer> {
 
     List<Dagak> findDagaksByUserId(String userId);
 
-    Dagak findByDagakId(Integer dagakId);
-
 }
