@@ -2,16 +2,14 @@ package com.ssafy.backend.dagak.model.dto;
 
 import com.ssafy.backend.common.exception.BaseException;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.time.LocalDate;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_MATCH_SIGN;
 import static com.ssafy.backend.common.response.BaseResponseStatus.WRONG_TYPE;
 
-@ToString
 @Getter
-public class RegisterDagakDto {
+public class AddDagakDateDTO {
 
     private Integer dagakId;
 
@@ -19,10 +17,10 @@ public class RegisterDagakDto {
 
     private String userId;
 
-    public RegisterDagakDto() {
+    public AddDagakDateDTO() {
     }
 
-    public RegisterDagakDto(String userId, String dagakId, LocalDate calendarDate) {
+    public AddDagakDateDTO(String userId, String dagakId, LocalDate calendarDate) {
         setUserId(userId);
         setDagakId(dagakId);
         setCalendarDate(calendarDate);
@@ -49,5 +47,14 @@ public class RegisterDagakDto {
         if(dagakId == null)
             throw new BaseException(NOT_MATCH_SIGN);
         this.calendarDate = calendarDate;
+    }
+
+    @Override
+    public String toString() {
+        return "AddDagakDateDTO{" +
+                "dagakId=" + dagakId +
+                ", calendarDate=" + calendarDate +
+                ", userId='" + userId + '\'' +
+                '}';
     }
 }

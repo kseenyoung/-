@@ -1,8 +1,8 @@
 package com.ssafy.backend.alarm.service;
 
 import com.ssafy.backend.alarm.model.domain.Alarm;
-import com.ssafy.backend.alarm.model.dto.CheckAlarmDto;
-import com.ssafy.backend.alarm.model.dto.ReqestAlarmDto;
+import com.ssafy.backend.alarm.model.dto.CheckAlarmDTO;
+import com.ssafy.backend.alarm.model.dto.ReqestAlarmDTO;
 
 import java.util.List;
 
@@ -10,17 +10,17 @@ public interface AlarmService {
 
     Integer findAlarmId(String userId, String requestedUserId, int tagId);
 
-    void requestAlarm(ReqestAlarmDto reqestAlarmDto);
+    void requestAlarm(ReqestAlarmDTO reqestAlarmDto);
 
-    void checkAlarm(CheckAlarmDto checkAlarmDto);
+    void checkAlarm(CheckAlarmDTO checkAlarmDto);
 
-    List<Alarm> listofAllAlarm(String userId);
+    List<Alarm> getAllList(String userId);
 
-    List<Alarm> listOfUncheckedAlarm(String userId);
+    List<Alarm> getUncheckList(String userId);
 
-    void aVoidDuplicateAlaram(ReqestAlarmDto reqestAlarmDto);
+    void aVoidDuplicateAlaram(ReqestAlarmDTO reqestAlarmDto);
 
-    void deleteAlarm(ReqestAlarmDto alarmDto);
+    void deleteAlarm(ReqestAlarmDTO alarmDto);
 
     boolean isAlreadyRequestFriend(String userId, String requestedUserId);
 }

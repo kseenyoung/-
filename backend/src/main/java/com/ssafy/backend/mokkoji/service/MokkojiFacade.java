@@ -8,13 +8,7 @@ import com.ssafy.backend.category.service.CategoryService;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiApplyForRequestDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiCategoryDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiCreateRequestDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiRankDto;
-import com.ssafy.backend.mokkoji.model.vo.MokkojiDetailVO;
-import com.ssafy.backend.mokkoji.model.vo.MokkojiListVO;
-import com.ssafy.backend.mokkoji.model.vo.MokkojiRankingsVO;
+import com.ssafy.backend.mokkoji.model.dto.*;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.service.UserService;
@@ -186,7 +180,7 @@ public class MokkojiFacade {
         userService.saveMokkojiId(member, leader.getMokkojiId());
 
         //alarm save
-        ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
+        ReqestAlarmDTO alarmDto = ReqestAlarmDTO.builder()
                 .tagId(3)
                 .userId(member.getUserId())
                 .requestedUserId(leader.getUserId())
@@ -195,7 +189,7 @@ public class MokkojiFacade {
     }
 
     public void deleteAlarm(String leaderId, String memberId) {
-        ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
+        ReqestAlarmDTO alarmDto = ReqestAlarmDTO.builder()
                 .tagId(2)
                 .userId(memberId)
                 .requestedUserId(leaderId)

@@ -3,19 +3,18 @@ package com.ssafy.backend.room.model.dto;
 
 import lombok.Builder;
 
-
-public class SessionPropertyDto {
+public class SessionPropertyDTO {
     private String customSessionId;
     private String forcedVideoCodec;
 
 
     @Builder
-    public SessionPropertyDto(String customSessionId, String forcedVideoCodec) {
+    public SessionPropertyDTO(String customSessionId, String forcedVideoCodec) {
         this.customSessionId = customSessionId;
         this.forcedVideoCodec = forcedVideoCodec;
     }
 
-    public SessionPropertyDto() {
+    public SessionPropertyDTO() {
     }
 
     public String getCustomSessionId() {

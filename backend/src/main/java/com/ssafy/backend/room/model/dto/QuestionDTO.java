@@ -3,18 +3,42 @@ package com.ssafy.backend.room.model.dto;
 import com.ssafy.backend.room.model.domain.Question;
 import lombok.*;
 
-@Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class QuestionDto {
+public class QuestionDTO {
     private String questionId;
     private String userId;
+
+    public QuestionDTO() {
+    }
+
+    public QuestionDTO(String questionId, String userId, String session, String data) {
+        this.questionId = questionId;
+        this.userId = userId;
+        this.session = session;
+        this.data = data;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     private String session;
     private String data;
 
-    public QuestionDto(String userId, String session, String data) {
+    public QuestionDTO(String userId, String session, String data) {
         this.userId = userId;
         this.session = session;
         this.data = data;

@@ -6,18 +6,20 @@ import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
-import com.ssafy.backend.dagak.model.dto.DagakDto;
-import com.ssafy.backend.dagak.model.dto.GakDto;
-import com.ssafy.backend.dagak.model.dto.RegisterDagakDto;
-import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDto;
+import com.ssafy.backend.dagak.model.dto.DagakDTO;
+import com.ssafy.backend.dagak.model.dto.GakDTO;
+import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
+import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDTO;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
 import com.ssafy.backend.dagak.service.DagakFacade;
 import com.ssafy.backend.dagak.service.DagakService;
+import com.ssafy.backend.user.model.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,50 +42,50 @@ public class DagakController {
     private CategoryService categoryService;
 
     @PostMapping("")
-    public BaseResponse<?> dagak(@RequestBody Map<String, Object> body, HttpServletRequest request){
+    public BaseResponse<?> dagak(@RequestBody Map<String, Object> body, HttpServletRequest request) {
         String sign = (String) body.get("sign");
-//        HttpSession session = request.getSession(false);
-//
-//        User user = (User) session.getAttribute("User");
-//        if(session == null)
-//            return new BaseResponse<>(EMPTY_SESSION);
+        HttpSession session = request.getSession(false);
 
-//        String userId = user.getUserId();
-        String userId = "ssafy";
+        User user = (User) session.getAttribute("User");
+        String userId = user.getUserId();
 
-        if(sign == null)
+        if (session == null) {
+            return new BaseResponse<>(EMPTY_SESSION);
+        }
+
+        if (sign == null)
             return new BaseResponse(EMPTY_SIGN);
 
-        switch (sign){
-            case "createDagak":
+        switch (sign) {
+            case "addDagak":
                 List<Map<String, String>> json = (List<Map<String, String>>) body.get("gaks");
-                List<GakDto> gaks = new ArrayList<>();
+                List<GakDTO> gaks = new ArrayList<>();
 
                 int order = 1, totalTime = 0;
 
-                for(Map<String, String> gak: json){
+                for (Map<String, String> gak : json) {
                     String runningTime = gak.get("runningTime");
                     String category = gak.get("category");
-                    GakDto gakDto = new GakDto(category, order++, runningTime, userId);
+                    GakDTO gakDTO = new GakDTO(category, order++, runningTime, userId);
 
-                    totalTime += gakDto.getRunningTime();
-                    gaks.add(gakDto);
+                    totalTime += gakDTO.getRunningTime();
+                    gaks.add(gakDTO);
                 }
 
                 // 다각 생성
-                DagakDto dagakDto = new DagakDto(userId, totalTime);
-                dagakFacade.createDagak(dagakDto, gaks);
+                DagakDTO dagakDTO = new DagakDTO(userId, totalTime);
+                dagakFacade.addDagak(dagakDTO, gaks);
 
                 return new BaseResponse<>(SUCCESS);
 
-            case "registerDagak":
-                String registerDagakId = (String) body.get("dagakId");
-                List<List<Integer>> calendarDates = ( List<List<Integer>>) body.get("calendarDate");
+            case "addDagakDate":
+                String registDagakId = (String) body.get("dagakId");
+                List<List<Integer>> calendarDates = (List<List<Integer>>) body.get("calendarDate");
 
-                for(List<Integer> calendarDate : calendarDates){
-                    RegisterDagakDto registerDagakDto = new RegisterDagakDto(userId, registerDagakId, LocalDate.of(calendarDate.get(0),calendarDate.get(1),calendarDate.get(2)));
+                for (List<Integer> calendarDate : calendarDates) {
+                    AddDagakDateDTO addDagakDateDto = new AddDagakDateDTO(userId, registDagakId, LocalDate.of(calendarDate.get(0), calendarDate.get(1), calendarDate.get(2)));
 
-                    dagakService.registerDagak(registerDagakDto);
+                    dagakService.addDagakDate(addDagakDateDto);
                 }
 
                 return new BaseResponse<>(SUCCESS);
@@ -99,28 +101,28 @@ public class DagakController {
                 dagakFacade.deleteDagak(deleteDagakId);
                 return new BaseResponse<>(SUCCESS);
 
-            case "updateMemoryTime":
+            case "modifyMemoryTime":
                 String gakId = (String) body.get("gakId");
                 Integer memoryTime = (Integer) body.get("memoryTime");
                 String categoryId = (String) body.get("categoryId");
                 String calendarId = (String) body.get("calendarId");
-                UpdateMemoryTimeDto updateStartTimeDto = new UpdateMemoryTimeDto(gakId, categoryId, calendarId, memoryTime, userId);
+                UpdateMemoryTimeDTO updateStartTimeDto = new UpdateMemoryTimeDTO(gakId, categoryId, calendarId, memoryTime, userId);
 
-                dagakService.updateMemoryTime(updateStartTimeDto);
+                dagakService.modifyMemoryTime(updateStartTimeDto);
 
                 return new BaseResponse<>(SUCCESS);
             /*
              * [POST] 다각의 상세정보들 수정
              */
-            case "updateGak":
+            case "modifyGak":
                 Integer updateDagakId = (Integer) body.get("dagakId");
                 Integer updateGakId = (Integer) body.get("gakId");
                 Integer updateCategoryId = (Integer) body.get("categoryId");
                 Integer updateRunningTime = (Integer) body.get("runningTime");
-                if (updateCategoryId==null && updateRunningTime==null){
+                if (updateCategoryId == null && updateRunningTime == null) {
                     throw new BaseException(DATA_NOT_CHANGED);
                 }
-                dagakService.updateGak(updateDagakId, updateGakId, updateCategoryId, updateRunningTime);
+                dagakService.modifyGak(updateDagakId, updateGakId, updateCategoryId, updateRunningTime);
                 return new BaseResponse<>(SUCCESS);
 
             /*
@@ -136,16 +138,16 @@ public class DagakController {
             /*
              * [POST] 다각 순서 업데이트
              */
-            case "updateGakOrder":
+            case "modifyGakOrder":
                 List<Map<String, Integer>> GakInformation = (List<Map<String, Integer>>) body.get("GakInformation");
-                List<GakDto> updateOrderGaks = new ArrayList<>();
-                if (!GakInformation.isEmpty()){
-                    for(Map<String, Integer> gak: GakInformation){
+                List<GakDTO> updateOrderGaks = new ArrayList<>();
+                if (!GakInformation.isEmpty()) {
+                    for (Map<String, Integer> gak : GakInformation) {
                         Integer updateOrderGakId = gak.get("gakId");
                         Integer updateOrder = gak.get("gakOrder");
-                        updateOrderGaks.add(new GakDto(updateOrderGakId, updateOrder));
+                        updateOrderGaks.add(new GakDTO(updateOrderGakId, updateOrder));
                     }
-                    dagakService.updateGakOrder(updateOrderGaks);
+                    dagakService.modifyGakOrder(updateOrderGaks);
                 }
                 return new BaseResponse<>(SUCCESS);
         }
@@ -153,19 +155,17 @@ public class DagakController {
         return new BaseResponse(NOT_MATCH_SIGN);
     }
 
-    @GetMapping("calendar")
-    public BaseResponse<?> getCalendarDagaks(HttpServletRequest request){
-        //        HttpSession session = request.getSession(false);
-//
-//        User user = (User) session.getAttribute("User");
-//        if(session == null)
-//            return new BaseResponse<>(EMPTY_SESSION);
+    @GetMapping("getAllCalendarList")
+    public BaseResponse<?> getAllCalendarList(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
 
-//        String userId = user.getUserId();
-        String userId = "ssafy";
+        User user = (User) session.getAttribute("User");
+        if (session == null)
+            return new BaseResponse<>(EMPTY_SESSION);
 
-        List<CalendarDagakVO> calendarDagakVOS = dagakFacade.getCalendarDagaks(userId);
-//        System.out.println("최최초치ㅗ치ㅗ치ㅗ치쵳 최종 " + calendarDagakVOS);
+        String userId = user.getUserId();
+
+        List<CalendarDagakVO> calendarDagakVOS = dagakFacade.getAllCalendarList(userId);
 
         return new BaseResponse<>(calendarDagakVOS);
     }
@@ -173,34 +173,49 @@ public class DagakController {
     /*
      * [GET] 사용자의 모든 다각 반환
      */
-    @GetMapping("dagaks")
-    public BaseResponse<?> getDagaks(@RequestParam String userId){
+    @GetMapping("getAllDagakList")
+    public BaseResponse<?> getAllDagakList(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        User user = (User) session.getAttribute("User");
+        if (session == null)
+            return new BaseResponse<>(EMPTY_SESSION);
+
+        String userId = user.getUserId();
         List<Dagak> dagakList = dagakService.getDagakList(userId);
         return new BaseResponse<>(dagakList);
     }
-    
+
     /*
      * [GET] 사용자의 다각의 상세 정보 반환
      */
-    @GetMapping("gaks")
-    public BaseResponse<?> getDagakInformation(@RequestParam Integer dagakId){
+    @GetMapping("getAllGakList")
+    public BaseResponse<?> getAllGakList(@RequestParam Integer dagakId) {
         List<Gak> dagakInformation = dagakService.getGakInformation(dagakId);
         return new BaseResponse<>(dagakInformation);
     }
-    
+
     /*
      * [GET] 오늘의 다각 정보 반환
      */
-    @GetMapping("today")
-    public BaseResponse<?> getTodayDagak(@RequestParam String userId){
+    @GetMapping("getTodayDagak")
+    public BaseResponse<?> getTodayDagak(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+
+        User user = (User) session.getAttribute("User");
+        if (session == null)
+            return new BaseResponse<>(EMPTY_SESSION);
+
+        String userId = user.getUserId();
         LocalDate today = LocalDate.now();
         CalendarDagakVO todayDagakVO = dagakService.getDagak(userId, today);
         return new BaseResponse<>(todayDagakVO);
     }
-    @GetMapping("categories")
-    public BaseResponse<?> getCategories(){
 
-        List<Category> categories = categoryService.getAllCategories();
+    @GetMapping("getCategoryList")
+    public BaseResponse<?> getCategoryList() {
+
+        List<Category> categories = categoryService.getCategoryList();
 
         return new BaseResponse<>(categories);
     }

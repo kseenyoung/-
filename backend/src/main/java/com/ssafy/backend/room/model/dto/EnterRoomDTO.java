@@ -2,7 +2,7 @@ package com.ssafy.backend.room.model.dto;
 
 import java.util.HashMap;
 
-public class RoomEnterDto {
+public class EnterRoomDTO {
     private String userId;
     private String sessionName;
     private String videoCodec;
@@ -17,13 +17,13 @@ public class RoomEnterDto {
         return prevSession;
     }
 
-    public RoomEnterDto(String userId, String sessionName, String videoCodec) {
+    public EnterRoomDTO(String userId, String sessionName, String videoCodec) {
         this.userId = userId;
         this.sessionName = sessionName;
         this.videoCodec = videoCodec;
     }
 
-    public RoomEnterDto(String userId, String sessionName, String videoCodec, String prevConnectionId, String prevSession ) {
+    public EnterRoomDTO(String userId, String sessionName, String videoCodec, String prevConnectionId, String prevSession ) {
         this.userId = userId;
         this.sessionName = sessionName;
         this.videoCodec = videoCodec;

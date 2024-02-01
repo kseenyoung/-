@@ -7,21 +7,21 @@ import lombok.Getter;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_ALARM_ID;
 
 @Getter
-public class CheckAlarmDto {
+public class CheckAlarmDTO {
 
     private String userId;
 
     private Integer alarmId;
 
-    public CheckAlarmDto() {
+    public CheckAlarmDTO() {
     }
 
-    public CheckAlarmDto(String userId, String alarmId) {
+    public CheckAlarmDTO(String userId, String alarmId) {
         setUserId(userId);
         setAlarmId(alarmId);
     }
 
-    public CheckAlarmDto(String userId, int alarmId) {
+    public CheckAlarmDTO(String userId, int alarmId) {
         setUserId(userId);
         this.alarmId = alarmId;
     }

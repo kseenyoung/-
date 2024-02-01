@@ -2,15 +2,10 @@ package com.ssafy.backend.dagak.model.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Entity
-@ToString
 @Getter
 @Builder
 public class Dagak {
@@ -42,5 +37,16 @@ public class Dagak {
 
     public void setTotalTime(Integer totalTime) {
         this.totalTime = totalTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Dagak{" +
+                "dagakId=" + dagakId +
+                ", userId='" + userId + '\'' +
+                ", totalTime=" + totalTime +
+                ", createdDate='" + createdDate + '\'' +
+                ", updatedDate='" + updatedDate + '\'' +
+                '}';
     }
 }
