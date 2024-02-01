@@ -1,6 +1,6 @@
 package com.ssafy.backend.mokkoji.service;
 
-import com.ssafy.backend.alarm.model.dto.ReqestAlarmDto;
+import com.ssafy.backend.alarm.model.dto.ReqestAlarmDTO;
 import com.ssafy.backend.alarm.service.AlarmService;
 import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.model.dto.CategoryDto;
@@ -158,7 +158,7 @@ public class MokkojiFacade {
         if(user.getMokkojiId() != null)
             throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
         Mokkoji mokkoji = mokkojiService.findByMokkojiId(dto.getMokkojiId());
-        ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
+        ReqestAlarmDTO alarmDto = ReqestAlarmDTO.builder()
                 .tagId(2)
                 .userId(user.getUserId())
                 .requestedUserId(mokkoji.getLeaderId())
@@ -180,7 +180,7 @@ public class MokkojiFacade {
         userService.saveMokkojiId(member, leader.getMokkojiId());
 
         //alarm save
-        ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
+        ReqestAlarmDTO alarmDto = ReqestAlarmDTO.builder()
                 .tagId(3)
                 .userId(member.getUserId())
                 .requestedUserId(leader.getUserId())
@@ -189,7 +189,7 @@ public class MokkojiFacade {
     }
 
     public void deleteAlarm(String leaderId, String memberId) {
-        ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
+        ReqestAlarmDTO alarmDto = ReqestAlarmDTO.builder()
                 .tagId(2)
                 .userId(memberId)
                 .requestedUserId(leaderId)

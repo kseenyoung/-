@@ -1,12 +1,12 @@
 package com.ssafy.backend.dagak.model.vo;
 
 import com.ssafy.backend.dagak.model.domain.Gak;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
 public class CalendarDagakVO {
     private Integer calendarDagakId;
     private Integer dagakId;
@@ -14,32 +14,34 @@ public class CalendarDagakVO {
     private List<Gak> gaks;
     private String userId;
 
-    public CalendarDagakVO(Integer calendarDagakId, Integer dagakId, LocalDate calendarDate) {
-    }
-
-    public Integer getCalendarDagakId() {
-        return calendarDagakId;
-    }
     public CalendarDagakVO() {
     }
 
-    public Integer getDagakId() {
-        return dagakId;
-    }
-
-    public LocalDate getCalendarDate() {
-        return calendarDate;
-    }
-
-    public List<Gak> getGaks() {
-        return gaks;
+    public CalendarDagakVO(Integer calendarDagakId, Integer dagakId, LocalDate calendarDate) {
+        setCalendarDagakId(calendarDagakId);
+        setDagakId(dagakId);
+        setCalendarDate(calendarDate);
     }
 
     public void setGaks(List<Gak> gaks) {
         this.gaks = gaks;
     }
 
+    public void setCalendarDagakId(Integer calendarDagakId) {
+        this.calendarDagakId = calendarDagakId;
+    }
 
+    public void setDagakId(Integer dagakId) {
+        this.dagakId = dagakId;
+    }
+
+    public void setCalendarDate(LocalDate calendarDate) {
+        this.calendarDate = calendarDate;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     @Override
     public String toString() {

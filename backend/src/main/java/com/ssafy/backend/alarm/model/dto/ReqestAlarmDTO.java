@@ -11,18 +11,18 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 @Getter
 @Setter
 @ToString
-public class ReqestAlarmDto {
+public class ReqestAlarmDTO {
 
     private String userId, requestedUserId;
     private Integer tagId;
 
-    public ReqestAlarmDto(String userId, String requestedUserId, String tagId) {
+    public ReqestAlarmDTO(String userId, String requestedUserId, String tagId) {
         setUserId(userId);
         setRequestedUserId(requestedUserId);
         setTagId(tagId);
     }
     @Builder
-    public ReqestAlarmDto(String userId, String requestedUserId, Integer tagId) {
+    public ReqestAlarmDTO(String userId, String requestedUserId, Integer tagId) {
         this.userId = userId;
         this.requestedUserId = requestedUserId;
         this.tagId = tagId;

@@ -1,10 +1,11 @@
 package com.ssafy.backend.alarm.controller;
 
 import com.ssafy.backend.alarm.model.domain.Alarm;
-import com.ssafy.backend.alarm.model.dto.CheckAlarmDto;
-import com.ssafy.backend.alarm.model.dto.ReqestAlarmDto;
+import com.ssafy.backend.alarm.model.dto.CheckAlarmDTO;
+import com.ssafy.backend.alarm.model.dto.ReqestAlarmDTO;
 import com.ssafy.backend.alarm.service.AlarmService;
 import com.ssafy.backend.common.response.BaseResponse;
+import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,64 +34,56 @@ public class AlarmController {
 
         String sign = body.get("sign");
         HttpSession session = response.getSession(false);
+        User user = (User) session.getAttribute("session");
+        String userId = user.getUserId();
 
         if(sign == null)
             return new BaseResponse(EMPTY_SIGN);
 
         switch (sign){
-            case "request":
+            case "requestAlarm":
                 String tagId = body.get("tagId");
                 String requestedUserId = body.get("requestedUserId");
-//                User user = (User) session.getAttribute("session");
-//                String requestUserId = user.getUserId();
-                String requestUserId = "ssafy";  // session ID
 
-                ReqestAlarmDto reqestAlarmDto = new ReqestAlarmDto(requestUserId, requestedUserId, tagId);
-                log.info("requestAlarmDto : {}", reqestAlarmDto);
+                ReqestAlarmDTO reqestAlarmDTO = new ReqestAlarmDTO(userId, requestedUserId, tagId);
+                log.info("requestAlarmDto : {}", reqestAlarmDTO);
 
-                alarmService.requestAlarm(reqestAlarmDto);
+                alarmService.requestAlarm(reqestAlarmDTO);
 
                 return new BaseResponse(SUCCESS);
-            case "check":
-//                User user = (User) session.getAttribute("session");
-//                String checkUserId = user.getUserId();
-                String checkUserId = "ssafy";  // session ID
+            case "checkAlarm":
                 String alarmId = body.get("alarmId");
 
-                CheckAlarmDto checkAlarmDto = new CheckAlarmDto(checkUserId, alarmId);
-                alarmService.checkAlarm(checkAlarmDto);
+                CheckAlarmDTO checkAlarmDTO = new CheckAlarmDTO(userId, alarmId);
+                alarmService.checkAlarm(checkAlarmDTO);
 
                 return new BaseResponse<>(SUCCESS);
-
         }
-
 
         return new BaseResponse(NOT_MATCH_SIGN);
     }
 
-    @GetMapping("listOfAll")
-    public BaseResponse<?> listofAllAlarm(HttpServletRequest response){
-//        HttpSession session = response.getSession(false);
-//        User user = (User) session.getAttribute("User");
-//        String userId = user.getUserId();
-        String userId = "ssafy";
+    @GetMapping("getAllList")
+    public BaseResponse<?> getAllList(HttpServletRequest response){
+        HttpSession session = response.getSession(false);
+        User user = (User) session.getAttribute("User");
+        String userId = user.getUserId();
 
         userService.isExistUser(userId);
-        List<Alarm> listOfAllAlarmVO = alarmService.listofAllAlarm(userId);
+        List<Alarm> getAllListVO = alarmService.getAllList(userId);
 
-        return new BaseResponse<>(listOfAllAlarmVO);
+        return new BaseResponse<>(getAllListVO);
     }
 
-    @GetMapping("listOfUnchecked")
-    public BaseResponse<?> listofUncheckedAlarm(HttpServletRequest response){
-//        HttpSession session = response.getSession(false);
-//        User user = (User) session.getAttribute("User");
-//        String userId = user.getUserId();
-        String userId = "ssafy";
+    @GetMapping("getUncheckList")
+    public BaseResponse<?> getUncheckList(HttpServletRequest response){
+        HttpSession session = response.getSession(false);
+        User user = (User) session.getAttribute("User");
+        String userId = user.getUserId();
 
-        List<Alarm> listOfUncheckedAlarmVO = alarmService.listOfUncheckedAlarm(userId);
+        List<Alarm> getUncheckListVO = alarmService.getUncheckList(userId);
 
-        return new BaseResponse<>(listOfUncheckedAlarmVO);
+        return new BaseResponse<>(getUncheckListVO);
     }
 
 

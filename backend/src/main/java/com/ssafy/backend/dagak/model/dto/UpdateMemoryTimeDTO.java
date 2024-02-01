@@ -2,24 +2,22 @@ package com.ssafy.backend.dagak.model.dto;
 
 import com.ssafy.backend.common.exception.BaseException;
 import lombok.Getter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.JSON_PARSING_ERROR;
 
 @Getter
-@ToString
 @Slf4j
-public class UpdateMemoryTimeDto {
+public class UpdateMemoryTimeDTO {
 
     private Integer gakId, categoryId, calendarId;
     private Integer memoryTime;
     private String userId;
 
-    public UpdateMemoryTimeDto() {
+    public UpdateMemoryTimeDTO() {
     }
 
-    public UpdateMemoryTimeDto(String gakId, String categoryId, String calendarId, Integer memoryTime, String userId) {
+    public UpdateMemoryTimeDTO(String gakId, String categoryId, String calendarId, Integer memoryTime, String userId) {
         setGakId(gakId);
         setMemoryTime(memoryTime);
         setUserId(userId);
@@ -70,5 +68,16 @@ public class UpdateMemoryTimeDto {
         if(gakId == null)
             throw new BaseException(JSON_PARSING_ERROR);
         this.memoryTime = memoryTime;
+    }
+
+    @Override
+    public String toString() {
+        return "UpdateMemoryTimeDTO{" +
+                "gakId=" + gakId +
+                ", categoryId=" + categoryId +
+                ", calendarId=" + calendarId +
+                ", memoryTime=" + memoryTime +
+                ", userId='" + userId + '\'' +
+                '}';
     }
 }
