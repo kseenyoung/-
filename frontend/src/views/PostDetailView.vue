@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <h1>제목</h1>
     <p>내용</p>
     <p class="text-muted">2020-01-01</p>
@@ -11,6 +11,7 @@
       <div class="col-auto">
         <button class="btn btn-outline-dark">다음글</button>
       </div>
+      <div class="col-auto me-auto"></div>
       <div class="col-auto">
         <button class="btn btn-outline-dark" @click="goListPage">목록</button>
       </div>
@@ -34,4 +35,8 @@ const goListPage = () => router.push({ name: 'PostList' })
 const goEditPage = () => router.push({ name: 'PostEdit', params: { id } })
 </script>
 
-<style></style>
+<style>
+.container {
+  margin: 80px;
+}
+</style>

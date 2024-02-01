@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <div class="padding"></div>
     <h1>게시글 작성</h1>
     <form @submit.prevent>
@@ -20,13 +20,16 @@
 </template>
 
 <script setup>
-import { useRouter, routerKey } from 'vue-router'
+import { useRouter } from 'vue-router'
 const router = useRouter()
-const goListPage = () => routerKey.push({ name: 'PostList' })
+const goListPage = () => router.push({ name: 'PostList' })
 </script>
 
 <style>
 .padding {
   padding: 40px;
+}
+.container {
+  margin: 80px;
 }
 </style>

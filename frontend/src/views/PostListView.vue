@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <h1>게시글 목록</h1>
     <hr class="my-4" />
     <div class="row g-3">
@@ -14,13 +14,13 @@
     </div>
   </div>
   <div class="d-flex">
-    <button class="btn btn-outline-success" type="button" @click="goPage">글쓰기</button>
+    <button class="btn btn-outline-success" type="button" @click="goWrite">글쓰기</button>
   </div>
 </template>
 
 <script setup>
 import PostItem from '@/components/posts/PostItem.vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { getPosts } from '@/api/posts'
 import { ref } from 'vue'
 const router = useRouter()
@@ -32,6 +32,7 @@ fetchPosts()
 const goPage = (id) => {
   router.push(`/posts/${id}`)
 }
+const goWrite = () => router.push({ name: 'PostCreate' })
 </script>
 
 <style scoped>
@@ -39,20 +40,7 @@ const goPage = (id) => {
   font-weight: 900;
   font-size: 50px;
 }
-.cardlist {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.marketpage {
-  margin-top: 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.card img {
-  border: 10px solid black;
+.container {
+  margin: 80px;
 }
 </style>

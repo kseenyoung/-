@@ -88,22 +88,22 @@ const router = createRouter({
     },
     {
       path: '/posts/list',
-      name: 'post',
+      name: 'PostList',
       component: () => import('@/views/PostListView.vue')
     },
     {
       path: '/posts/create',
-      name: 'create',
+      name: 'PostCreate',
       component: () => import('@/views/PostCreateView.vue')
     },
     {
       path: '/posts/:id',
-      name: 'detail',
+      name: 'PostDetail',
       component: () => import('@/views/PostDetailView.vue')
     },
     {
       path: '/posts/:id/edit',
-      name: 'edit',
+      name: 'PostEdit',
       component: () => import('@/views/PostEditView.vue')
     }
   ]

@@ -66,7 +66,6 @@
       <div id="bsquare10">
         <SimpleDagak />
       </div>
-
       <button class="startbutton" @click="navigateToStudyRoom">공부시작</button>
     </div>
     <div class="part two">
@@ -78,29 +77,29 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import MyRanking from '@/components/home/MyRanking.vue';
-import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
-import { useUserStore } from '@/stores/user';
-import { useRankStore } from '@/stores/rank';
-import SimpleDagak from '@/components/dagak/SimpleDagak.vue';
-const store = useUserStore();
-const rankstore = useRankStore();
-const router = useRouter();
-const API_URL = 'https://localhost:8080';
-const mokkojiRank = ref([]);
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import MyRanking from '@/components/home/MyRanking.vue'
+import MokkojiRanking from '@/components/home/MokkojiRanking.vue'
+import { useUserStore } from '@/stores/user'
+import { useRankStore } from '@/stores/rank'
+import SimpleDagak from '@/components/dagak/SimpleDagak.vue'
+const store = useUserStore()
+const rankstore = useRankStore()
+const router = useRouter()
+const API_URL = 'https://localhost:8080'
+const mokkojiRank = ref([])
 
 const navigateToStudyRoom = () => {
-  router.push('/studyroom');
-};
+  router.push('/studyroom')
+}
 
 onMounted(async () => {
-  console.log('마운트 시작');
-  store.login();
-  await rankstore.getMokkojiRank();
-  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
-});
+  console.log('마운트 시작')
+  store.login()
+  await rankstore.getMokkojiRank()
+  console.log('mokkojiRank.value: ', rankstore.mokkojiRank)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -130,6 +129,8 @@ onMounted(async () => {
   // 기존 스타일 유지
   background-color: #639b9d;
   /* 적절한 배경색으로 변경 */
+  bottom: 50px;
+  z-index: 100;
   border: none;
   color: white;
   padding: 15px 30px;

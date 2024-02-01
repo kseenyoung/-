@@ -12,9 +12,7 @@
         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
       </div>
       <div class="pt-4">
-        <button type="button" class="btn btn-outline-danger me-2" @click="goDetailPage">
-          취소
-        </button>
+        <button type="button" class="btn btn-outline-danger me-2" @click="goListPage">취소</button>
         <button class="btn btn-primary">수정</button>
       </div>
     </form>
@@ -27,7 +25,7 @@ const route = useRoute()
 const router = useRouter()
 const id = route.params.id
 
-const goDetailPage = () => router.push({ name: 'PostDeatil', params: { id } })
+const goListPage = () => router.push({ name: 'PostList' })
 </script>
 
 <style>
