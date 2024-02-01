@@ -1,6 +1,6 @@
 package com.ssafy.backend.mokkoji.service;
 
-import com.ssafy.backend.alarm.model.dto.ReqestAlarmDto;
+import com.ssafy.backend.alarm.model.dto.ReqestAlarmDTO;
 import com.ssafy.backend.alarm.service.AlarmService;
 import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.model.dto.CategoryDto;
@@ -9,6 +9,9 @@ import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
 import com.ssafy.backend.mokkoji.model.dto.*;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiDetailVO;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiListVO;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiRankingsVO;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.service.UserService;
@@ -158,7 +161,7 @@ public class MokkojiFacade {
         if(user.getMokkojiId() != null)
             throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
         Mokkoji mokkoji = mokkojiService.getMokkojiById(dto.getMokkojiId());
-        ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
+        ReqestAlarmDTO alarmDto = ReqestAlarmDTO.builder()
                 .tagId(2)
                 .userId(user.getUserId())
                 .requestedUserId(mokkoji.getLeaderId())
