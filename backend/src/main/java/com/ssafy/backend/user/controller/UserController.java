@@ -41,6 +41,7 @@ import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -93,9 +94,12 @@ public class UserController {
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("test")
     public void test(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
+        List<Integer> date = (List<Integer>) body.get("test");
+        System.out.println(date);
+        LocalDate today = LocalDate.of(date.get(0), date.get(1), date.get(2));
+        System.out.println(today);
 
     }
-
 
     @PostMapping("")
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
@@ -466,7 +470,8 @@ public class UserController {
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
-                    
+
+
             }
         }
         throw new BaseException(NOT_MATCH_SIGN);
