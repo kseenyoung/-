@@ -140,5 +140,18 @@ public class DagakServiceImpl implements DagakService {
         }
     }
 
+    @Override
+    public void deleteDagak(Integer deleteDagakId) {
+        dagakRepository.deleteById(deleteDagakId);
+        List<Calendar> dagaksOfCalendar = calendarRepository.findAllByDagakId(deleteDagakId);
+        boolean isAfter;
+        for (Calendar dagakOfCalendar : dagaksOfCalendar){
+            isAfter = dagakOfCalendar.getCalendarDate().isAfter(LocalDate.now());
+            if (isAfter) {
+                calendarRepository.deleteById(dagakOfCalendar.getCalendarDagakId());
+            }
+        }
+    }
+
 
 }
