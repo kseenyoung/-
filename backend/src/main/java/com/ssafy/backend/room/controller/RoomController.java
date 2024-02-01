@@ -68,7 +68,7 @@ public class RoomController {
                 RoomEnterDto randomRoomEnterDto = new RoomEnterDto(userId,sessionName,videoCodec,connectionId,studyRoom);
                 ConnectionDto connectionDto = roomService.enterRandomroom(randomRoomEnterDto);
                 if (session != null) { // 토큰이랑, 현재 내가 참여하고 있는 스터디룸 들어감
-                    session.setAttribute("connectionId",connectionDto.getToken());
+                    session.setAttribute("connectionId",connectionDto.getConnectionId());
                     session.setAttribute("studyRoom",connectionDto.getSession());
                 }
 

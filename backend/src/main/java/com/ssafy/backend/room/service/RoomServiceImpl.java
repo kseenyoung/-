@@ -93,6 +93,9 @@ public class RoomServiceImpl implements RoomService {
             for(Session s : activeSessions){ // 기존의 연결을 찾아서 삭제한다
                 if(s.getSessionId().equals(prevSession)){ // 세션을 찾았다면
                     try{
+                        System.out.println("기존의 연결을 끊습니다.");
+                        //TODO: 연결을 안끊어진다. 이걸 끊어야한다
+                        System.out.println(prevConnectionId);
                         s.forceDisconnect(prevConnectionId);
                     } catch (Exception e){
                         System.out.println("이미 연결이 끊어져있습니다.");
@@ -101,9 +104,18 @@ public class RoomServiceImpl implements RoomService {
             }
         }
 
+        openvidu.fetch();
+        session = openvidu.getActiveSession(sessionName);
+        if(session == null){    // 이 세션이 나혼자 있었으면 연결이 끊기면서 방도 사라질수있으므로 , 다시 방을 만든다
+            System.out.println("방이 사라졌으므로 새로 생성합니다.");
+            HashMap<String,String> SessionPropertyJson = roomEnterDto.toSessionPropertyJson();
+            SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
+            session = openvidu.createSession(properties);
+        }
+
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
         Connection connection = session.createConnection(properties);
-
+        System.out.println("이번에 새로생긴 연결: "+connection.getConnectionId());
         ConnectionDto connectionDto = new ConnectionDto(connection.getConnectionId(),sessionName,connection.getToken());
         return connectionDto;
     }
