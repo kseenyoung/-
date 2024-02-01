@@ -96,10 +96,8 @@ const navigateToStudyRoom = () => {
 };
 
 onMounted(async () => {
-  console.log('마운트 시작');
   store.login();
   await rankstore.getMokkojiRank();
-  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
 });
 </script>
 

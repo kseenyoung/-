@@ -146,6 +146,7 @@ public class UserController {
                         User user = new User(loginUserId);
                         session = request.getSession();
                         session.setAttribute("User", user);
+                        System.out.println("session : " + session);
 
                         if (session.getAttribute("kakaoEmail") != null) {
                             // 세션에 kakaoEmail 이 있으면 연동함.
@@ -171,7 +172,6 @@ public class UserController {
 
                         for (FriendVO friend : friendList) {
                             System.out.println(friend.getUserId() + "에게 로그인 신호");
-
                             OpenviduRequestDto openviduRequestDto = new OpenviduRequestDto(friend.getUserId(), "login", loginUserId);
                             URI uri = UriComponentsBuilder
                                     .fromUriString(OPENVIDU_URL)
@@ -189,12 +189,13 @@ public class UserController {
                                     .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
                                     .body(openviduRequestDto.toJson());
 
-                            System.out.println(openviduRequestDto.toJson());
-
                             RestTemplate restTemplate = new RestTemplate();
                             restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-
-                            ResponseEntity<QuestionDto> responseEntity = restTemplate.postForEntity(uri, requestEntity, QuestionDto.class);
+                            try{
+                                ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
+                            }catch (Exception e){
+                                System.out.println("error: "+e);
+                            }
                         }
 
                         loginHistoryService.successLogin(loginUserId, loginUserIp);

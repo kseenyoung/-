@@ -12,17 +12,29 @@ import { RouterView } from 'vue-router';
 import TheHeaderNav from './components/common/TheHeaderNav.vue';
 import TheFooter from './components/common/TheFooter.vue';
 
-const leave = function (event) {
-  console.log('이곳에 메서드 작성');
-  event.preventDefault();
-  event.returnValue = '';
-};
-onMounted(() => {
-  window.addEventListener('beforeunload', leave);
-});
-onBeforeUnmount(() => {
-  window.removeEventListener('beforeunload', leave);
-});
+// const leave =  async(event)=> {
+//   console.log("새로고침!!!");
+//   // await axios.post(
+//   //         'https://localhost:8080/dagak/room',
+//   //         {
+//   //           sign: "leaveRoom"
+//   //         },
+//   //         {
+//   //           headers: {
+//   //             'Content-Type': 'application/json',
+//   //           },
+//   //         },
+//   //       );
+
+//   event.preventDefault();
+//   event.returnValue = '';
+// };
+// onMounted(() => {
+//   window.addEventListener('beforeunload', leave);
+// });
+// onBeforeUnmount(() => {
+//   window.removeEventListener('beforeunload', leave);
+// });
 </script>
 <style lang="scss" scoped>
 #wrapper {

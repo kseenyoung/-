@@ -96,7 +96,9 @@ const login = async function () {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) => res.data)
+    .then(
+      (res) => res.data
+      )
     .then((json) => {
       if (json.code === 1000) {
         //로그인 실패
