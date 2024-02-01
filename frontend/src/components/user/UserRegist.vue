@@ -249,7 +249,7 @@ const duplicateIdCheck = async function (checkId) {
   };
 
   await axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -341,7 +341,7 @@ const duplicateNicknameCheck = async function (checkNickname) {
   await axios
     .post(
       // 로그인 콜백
-      'https://localhost:8080/dagak/user',
+      `${import.meta.env.VITE_API_BASE_URL}user`,
       body,
       {
         headers: {
@@ -400,7 +400,7 @@ const registUser = function () {
   };
 
   axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },

@@ -248,7 +248,7 @@ const changePw = function () {
     newPassword: newPassword.value,
   };
   axios
-    .post('https://localhost:8080/dagak/user', userBody, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, userBody, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -300,7 +300,7 @@ const existNickname = async function (checkNickname) {
   };
 
   await axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -327,7 +327,7 @@ const changeNickname = function () {
   };
 
   axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },

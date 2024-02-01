@@ -86,10 +86,12 @@ onMounted(() => {
 
 //전체 알람 목록 불러오기
 const getAlarmList = function () {
-  axios.get('https://localhost:8080/dagak/alarms/listOfAll').then((res) => {
-    alarmTotal.value = res.data.result.length;
-    alarmList.value = res.data.result;
-  });
+  axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}alarms/listOfAll`)
+    .then((res) => {
+      alarmTotal.value = res.data.result.length;
+      alarmList.value = res.data.result;
+    });
 };
 
 //알림 확인
@@ -99,7 +101,7 @@ const checkAlarm = async function (alarmId) {
     alarmId: alarmId,
   };
   await axios
-    .post('https://localhost:8080/dagak/alarms', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}alarms`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -119,7 +121,7 @@ const accessAlarm = async function (tagId, requestedUserId) {
       memberId: requestedUserId,
     };
     await axios
-      .post('https://localhost:8080/dagak/mokkoji', body, {
+      .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -140,7 +142,7 @@ const accessAlarm = async function (tagId, requestedUserId) {
       userId: requestedUserId,
     };
     await axios
-      .post('https://localhost:8080/dagak/friend', body, {
+      .post(`${import.meta.env.VITE_API_BASE_URL}friend`, body, {
         headers: {
           'Content-Type': 'application/json',
         },

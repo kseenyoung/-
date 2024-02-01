@@ -77,7 +77,7 @@ const logout = function () {
     sign: 'logout',
   };
   axios
-    .post('https://localhost:8080/dagak/user', body)
+    .post(` ${import.meta.env.VITE_API_BASE_URL}user`, body)
     .then((res) => res.data)
     .then(() => {
       //유저정보 공백 & 로컬스토리지에 저장한 것 삭제

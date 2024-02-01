@@ -132,7 +132,7 @@ export const useUserStore = defineStore(
         sign: 'viewMyPage',
       };
       axios
-        .post('https://localhost:8080/dagak/user', body, {
+        .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
           headers: {
             'Content-Type': 'application/json',
           },

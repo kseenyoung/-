@@ -55,7 +55,7 @@ onMounted(() => {
 });
 
 const getFriends = function () {
-  axios.get('https://localhost:8080/dagak/friend/list').then((res) => {
+  axios.get(`${import.meta.env.VITE_API_BASE_URL}friend/list`).then((res) => {
     console.log(res.data);
     if (res.data.code === 1000) {
       console.log(res.data);
@@ -75,7 +75,7 @@ const friendDetail = function (nickname) {
     userNickname: nickname,
   };
   axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
