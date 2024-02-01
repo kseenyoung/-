@@ -3,10 +3,8 @@ package com.ssafy.backend.user.service;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
-import com.ssafy.backend.friend.model.domain.Friend;
 import com.ssafy.backend.friend.model.mapper.FriendMapper;
 import com.ssafy.backend.friend.model.repository.FriendRepository;
-import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.security.model.SecurityDto;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
@@ -27,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;

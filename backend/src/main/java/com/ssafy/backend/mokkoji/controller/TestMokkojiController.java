@@ -3,6 +3,9 @@ package com.ssafy.backend.mokkoji.controller;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.mokkoji.model.dto.*;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiDetailVO;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiListVO;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiRankingsVO;
 import com.ssafy.backend.mokkoji.service.MokkojiFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,14 +23,14 @@ public class TestMokkojiController {
     private final MokkojiFacade mokkojiFacade;
     @GetMapping("/rank10")
     public BaseResponse<?> mokkojiRankings(){
-        List<MokkojiRankingsResponseDto> mokkojiRankingsResponseDto = mokkojiFacade.geTmokkojiTopTen();
-        return new BaseResponse<>(mokkojiRankingsResponseDto);
+        List<MokkojiRankingsVO> mokkojiRankingsVO = mokkojiFacade.geTmokkojiTopTen();
+        return new BaseResponse<>(mokkojiRankingsVO);
     }
 
     @GetMapping("/rank/{mokkojiName}")
     public BaseResponse<?> mokkojiRankings(@PathVariable(name = "") String mokkojiName){
-        MokkojiRankingsResponseDto mokkojiRankingsResponseDto = mokkojiFacade.getByMokkojiNameRanking(mokkojiName);
-        return new BaseResponse<>(mokkojiRankingsResponseDto);
+        MokkojiRankingsVO mokkojiRankingsVO = mokkojiFacade.getByMokkojiNameRanking(mokkojiName);
+        return new BaseResponse<>(mokkojiRankingsVO);
     }
 
     @PostMapping("/create")
@@ -42,7 +45,7 @@ public class TestMokkojiController {
             @RequestParam(value = "page", defaultValue = "0") int page
             ,@RequestParam(value = "keyword", defaultValue = "") String keyword
             ,@RequestParam(value = "categories",required = false) List<Integer> categories){
-        MokkojiListResponseDto mokkojiList = mokkojiFacade.getMokkojiList(categories,page, keyword);
+        MokkojiListVO mokkojiList = mokkojiFacade.getMokkojiList(categories,page, keyword);
         return new BaseResponse<>(mokkojiList);
     }
     //모꼬지 삭제
@@ -73,7 +76,7 @@ public class TestMokkojiController {
     public BaseResponse<?> detailData(
             @PathVariable(name = "mokkojiId") int mokkojiId,
             @RequestParam String userId) {
-        MokkojiDetailResponseDto dto = mokkojiFacade.getDetailMokkoji(mokkojiId,userId);
+        MokkojiDetailVO dto = mokkojiFacade.getDetailMokkoji(mokkojiId,userId);
         return new BaseResponse<>(dto);
     }
 

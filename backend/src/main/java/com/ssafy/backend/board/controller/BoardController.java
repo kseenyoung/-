@@ -2,20 +2,25 @@ package com.ssafy.backend.board.controller;
 
 
 import com.ssafy.backend.board.model.dto.*;
+import com.ssafy.backend.board.model.vo.BoardDetailVO;
+import com.ssafy.backend.board.model.vo.BoardListVO;
+import com.ssafy.backend.board.model.vo.CommentVO;
 import com.ssafy.backend.board.service.BoardService;
 import com.ssafy.backend.board.service.CommentService;
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
-import com.ssafy.backend.common.utils.HttpResponseBody;
+import com.ssafy.backend.common.response.BaseResponse;
+import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 import static com.ssafy.backend.common.utils.BoardValidator.isNumeric;
 
 @RestController
@@ -27,144 +32,148 @@ public class BoardController {
     private final CommentService commentService;
 
     @GetMapping("/detail/{id:[\\d]+}")
-    public ResponseEntity<HttpResponseBody<?>> getDetailBoard(@PathVariable("id") long id) {
-        BoardDetailResponseDto responseDto = boardService.getDetail(id);
-        return new ResponseEntity<>(new HttpResponseBody<>("OK", responseDto), HttpStatus.OK);
+    public BaseResponse<?> getBoardDetail(@PathVariable("id") long id) {
+        BoardDetailVO responseDTO = boardService.getBoardDetail(id);
+        return new BaseResponse<>(responseDTO);
     }
     @GetMapping("/list")
-    public ResponseEntity<HttpResponseBody<?>> boardGetList(
+    public BaseResponse<?> getBoardList(
             @RequestParam(value = "page", defaultValue = "0") int page
             ,@RequestParam(value = "keyword", defaultValue = "") String keyword)
     {
-        boardService.getList(page, keyword);
-        return new ResponseEntity<>(new HttpResponseBody<>("OK", boardService.getList(page, keyword)), HttpStatus.OK);
+        BoardListVO boardList = boardService.getBoardList(page, keyword);
+        return new BaseResponse<>(boardList);
     }
     @PostMapping("")
-    public ResponseEntity<HttpResponseBody<?>> boardHideURL(@RequestBody Map<String, Object> body,
+    public BaseResponse<?> boardHideURL(@RequestBody Map<String, Object> body,
                                                        HttpServletRequest request) {
         String sign = (String) body.get("sign");
 
         HttpSession session = request.getSession(false);
         if (session == null) {
-            throw new MyException("로그인해주세요", HttpStatus.BAD_REQUEST);
+            throw new BaseException(BaseResponseStatus.NEED_LOGIN);
         }
-        User user = (User) session.getAttribute("session");
+        User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
         //보드 생성
-        if ("addPost".equals(sign)) {
-            String boardTitle = (String) body.get("boardTitle");
-            String boardContent = (String) body.get("boardContent");
-            Object tagId = body.get("tagId");
-            //tagId가 숫자일때
-            if (tagId == null) throw new MyException("숫자입력 아니야", HttpStatus.BAD_REQUEST);
-            if (isNumeric((String) tagId)) {
-                BoardCreateRequestDto dto = BoardCreateRequestDto.builder()
-                        .boardContent(boardContent)
-                        .boardTitle(boardTitle)
-                        .tagId((int) tagId).build();
-                //dto 만들고 insert boardData
-                boardService.boardCreate(dto, "test입니다");
-                return new ResponseEntity<>(new HttpResponseBody<>("게시글 만들기 성공", ""), HttpStatus.OK);
-            }
-        } else if ("deletePost".equals(sign)) {
-            String boardId = (String) body.get("boardId");
-            if (boardId == null) throw new MyException("숫자입력 아니야", HttpStatus.BAD_REQUEST);
-            if (isNumeric(boardId)) {
-                BoardDeleteRequestDto dto = BoardDeleteRequestDto
-                        .builder().boardId(Long.parseLong(boardId)).build();
-                boardService.delete(dto, userId);
-                return new ResponseEntity<>(new HttpResponseBody<>("게시글 삭제 성공", ""), HttpStatus.OK);
-            }
+        switch (sign) {
+            case "addBoard":
+                String boardTitle = (String) body.get("boardTitle");
+                String boardContent = (String) body.get("boardContent");
+                Object tagId = body.get("tagId");
+                //tagId가 숫자일때
+                if (tagId == null) throw new BaseException(JSON_PROCESSING_ERROR);
+                if (isNumeric((String) tagId)) {
+                    BoardAddRequestDTO DTO = BoardAddRequestDTO.builder()
+                            .boardContent(boardContent)
+                            .boardTitle(boardTitle)
+                            .tagId((int) tagId).build();
+                    boardService.addBoard(DTO, userId);
+                    return new BaseResponse<>(SUCCESS);
+                }
+                break;
+            case "deletePost":
+                String boardId = (String) body.get("boardId");
+                if (boardId == null) throw new MyException("숫자입력 아니야", HttpStatus.BAD_REQUEST);
+                if (isNumeric(boardId)) {
+                    BoardDeleteRequestDTO dto = BoardDeleteRequestDTO
+                            .builder().boardId(Long.parseLong(boardId)).build();
+                    boardService.deleteBoard(dto, userId);
+                    return new BaseResponse<>(SUCCESS);
+                }
+                break;
+            case "modifyPost":
+                boardTitle = (String) body.get("boardTitle");
+                boardContent = (String) body.get("boardContent");
+                tagId = body.get("tagId");
+                boardId = (String) body.get("boardId");
+                //tagId가 숫자일때
+                if (tagId == null) throw new BaseException(JSON_PROCESSING_ERROR);
+                if (boardId == null) throw new BaseException(JSON_PROCESSING_ERROR);
+                if (isNumeric((String) tagId) && isNumeric(boardId)) {
+                    BoardModifyRequestDTO dto = BoardModifyRequestDTO.builder()
+                            .boardId(Long.parseLong(boardId))
+                            .boardTitle(boardTitle)
+                            .boardContent(boardContent)
+                            .build();
+                    boardService.modifyBoard(dto, userId);
+                    return new BaseResponse<>(SUCCESS);
+                }
+                break;
         }
-        else if ("modifyPost".equals(sign)) {
-            String boardTitle = (String) body.get("boardTitle");
-            String boardContent = (String) body.get("boardContent");
-            String tagId = (String) body.get("tagId");
-            String boardId = (String) body.get("boardId");
-            //tagId가 숫자일때
-            if (tagId == null) throw new MyException("태그 숫자 아니야", HttpStatus.BAD_REQUEST);
-            if (boardId == null) throw new MyException("보드 숫자 아니야", HttpStatus.BAD_REQUEST);
-            if (isNumeric(tagId) && isNumeric(boardId)) {
-                BoardModifyRequestDto dto = BoardModifyRequestDto.builder()
-                        .boardId(Long.parseLong(boardId))
-                        .boardTitle(boardTitle)
-                        .boardContent(boardContent)
-                        .build();
-                boardService.update(dto, userId);
-                return new ResponseEntity<>(new HttpResponseBody<>("게시글 수정 성공", ""), HttpStatus.OK);
-            }
-        }
-        throw new MyException("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+        throw new BaseException(NOT_MATCH_SIGN);
     }
     @PostMapping("/comment")
-    public ResponseEntity<HttpResponseBody<?>> commentHideURL(@RequestBody Map<String, Object> body,
+    public BaseResponse commentHideURL(@RequestBody Map<String, Object> body,
                                                        HttpServletRequest request) {
         String sign = (String) body.get("sign");
         HttpSession session = request.getSession(false);
         if (session == null) {
-            throw new MyException("로그인해주세요", HttpStatus.BAD_REQUEST);
+            throw new BaseException(NEED_LOGIN);
         }
-        User user = (User) session.getAttribute("session");
+        User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
-        //보드 생성
-        if ("addComment".equals(sign)) {
-            String comment = (String) body.get("comment");
-            String boardId =(String) body.get("boardId");
-            //boardId 가 숫자 일 때 
-            if (boardId == null) throw new MyException("NULL", HttpStatus.BAD_REQUEST);
-            if (isNumeric( boardId)) {
-                //request dto
-                CommentCreateRequestDto requestDto = CommentCreateRequestDto.builder()
-                        .boardId(Long.parseLong(boardId))
-                        .comment(comment).build();
-                long commentId = commentService.commentCreate(requestDto, userId);
 
-                //response dto
-                CommentCreateResponseDto responseDto = CommentCreateResponseDto.builder()
-                        .commentId(commentId)
-                        .boardId(Long.parseLong(boardId))
-                        .comment(comment).build();
-                return new ResponseEntity<>(new HttpResponseBody<>("댓글 작성 성공", responseDto), HttpStatus.OK);
-            }
-        } else if ("modifyComment".equals(sign)) {
-            String commentId = (String) body.get("commentId");
-            String comment = (String) body.get("comment");
-            String boardId =(String) body.get("boardId");
+        switch (sign){
+            case "addComment":
+                String comment = (String) body.get("comment");
+                String boardId =(String) body.get("boardId");
+                //boardId 가 숫자 일 때
+                if (boardId == null) throw new BaseException(JSON_PARSING_ERROR);
+                if (isNumeric( boardId)) {
+                    //request dto
+                    CommentCreateRequestDTO requestDTO = CommentCreateRequestDTO.builder()
+                            .boardId(Long.parseLong(boardId))
+                            .comment(comment).build();
+                    long commentId = commentService.addComment(requestDTO, userId);
 
-            if (boardId == null) throw new MyException("boardId NULL", HttpStatus.BAD_REQUEST);
-            if (commentId == null) throw new MyException("commentId NULL", HttpStatus.BAD_REQUEST);
-            if (isNumeric(boardId) && isNumeric(commentId)) {
-                //request dto
-                CommentModifyRequestDto dto = CommentModifyRequestDto.builder()
-                        .boardId(Long.parseLong(boardId))
-                        .comment(comment)
-                        .commentId(Long.parseLong(commentId))
-                        .build();
-                //response dto
-                long commentId2 = commentService.modify(dto, userId);
-                CommentCreateResponseDto responseDto = CommentCreateResponseDto.builder()
-                        .commentId(commentId2)
-                        .boardId(Long.parseLong(boardId))
-                        .comment(comment).build();
-                return new ResponseEntity<>(new HttpResponseBody<>("댓글 수정 성공", responseDto), HttpStatus.OK);
-            }
-        } else if ("deleteComment".equals(sign)) {
-            String commentId = (String) body.get("commentId");
-            String boardId =(String) body.get("boardId");
-            if (boardId == null) throw new MyException("boardId NULL", HttpStatus.BAD_REQUEST);
-            if (commentId == null) throw new MyException("commentId NULL", HttpStatus.BAD_REQUEST);
-            if (isNumeric(boardId) && isNumeric(commentId)) {
-                CommentDeleteRequestDto dto = CommentDeleteRequestDto.builder()
-                        .boardId(Long.parseLong(boardId))
-                        .commentId(Long.parseLong(commentId))
-                        .build();
-                commentService.delete(dto, userId);
-                return new ResponseEntity<>(new HttpResponseBody<>("OK", new String("댓글 삭제 성공")), HttpStatus.OK);
-            }
+                    //response dto
+                    CommentVO commentVO = CommentVO.builder()
+                            .commentId(commentId)
+                            .boardId(Long.parseLong(boardId))
+                            .comment(comment).build();
+                    return new BaseResponse<>(commentVO);
+                }
+                break;
+            case "modifyComment":
+                String commentId = (String) body.get("commentId");
+                comment = (String) body.get("comment");
+                boardId =(String) body.get("boardId");
+
+                if (boardId == null) throw new BaseException(JSON_PARSING_ERROR);
+                if (commentId == null) throw new BaseException(JSON_PARSING_ERROR);
+                if (isNumeric(boardId) && isNumeric(commentId)) {
+                    //request dto
+                    CommentModifyRequestDTO dto = CommentModifyRequestDTO.builder()
+                            .boardId(Long.parseLong(boardId))
+                            .comment(comment)
+                            .commentId(Long.parseLong(commentId))
+                            .build();
+                    //response dto
+                    long responseCommentId = commentService.modifyComment(dto, userId);
+                    CommentVO commentVO = CommentVO.builder()
+                            .commentId(responseCommentId)
+                            .boardId(Long.parseLong(boardId))
+                            .comment(comment).build();
+                    return new BaseResponse(commentVO);
+                }
+                break;
+            case "deleteComment":
+                commentId = (String) body.get("commentId");
+                boardId =(String) body.get("boardId");
+                if (boardId == null) throw new BaseException(JSON_PARSING_ERROR);
+                if (commentId == null) throw new BaseException(JSON_PARSING_ERROR);
+                if (isNumeric(boardId) && isNumeric(commentId)) {
+                    CommentDeleteRequestDTO dto = CommentDeleteRequestDTO.builder()
+                            .boardId(Long.parseLong(boardId))
+                            .commentId(Long.parseLong(commentId))
+                            .build();
+                    commentService.deleteComment(dto, userId);
+                    return new BaseResponse(SUCCESS);
+                }
 
         }
-
-        throw new MyException("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+        throw new BaseException(NOT_MATCH_SIGN);
     }
 
 }

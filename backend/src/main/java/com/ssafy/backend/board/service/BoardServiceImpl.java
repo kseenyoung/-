@@ -10,18 +10,22 @@ import com.ssafy.backend.board.model.repository.BoardRepository;
 import com.ssafy.backend.board.model.repository.CommentRepository;
 import com.ssafy.backend.board.model.repository.TagRepository;
 
-import com.ssafy.backend.common.exception.MyException;
+import com.ssafy.backend.board.model.vo.BoardDetailVO;
+import com.ssafy.backend.board.model.vo.BoardListVO;
+import com.ssafy.backend.common.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_FOUND_BOARD;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_FOUND_TAG;
 
 @Service
 @RequiredArgsConstructor
@@ -33,28 +37,28 @@ public class BoardServiceImpl implements BoardService{
 
 
     @Override
-    public void boardCreate(BoardCreateRequestDto dto, String userId){
+    public void addBoard(BoardAddRequestDTO dto, String userId){
         Tag tag = tagRepository.findByTagId(dto.getTagId())
-                .orElseThrow(() -> new MyException("없는 태그입니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_FOUND_TAG));
         boardRepository.save(dto.toEntity(tag,userId));
     }
 
     @Override
     @Transactional
-    public void delete(BoardDeleteRequestDto dto, String userId) {
+    public void deleteBoard(BoardDeleteRequestDTO dto, String userId) {
         Board board = boardRepository.findByBoardIdAndUserId(dto.getBoardId(),userId)
-                .orElseThrow(() ->new MyException("삭제할 글이 없습니다",HttpStatus.BAD_REQUEST));
+                .orElseThrow(() ->new BaseException(NOT_FOUND_BOARD));
         List<Comment> allByBoardId = commentRepository.findAllByBoardId(board);
         commentRepository.deleteAll(allByBoardId);
         boardRepository.delete(board);
     }
 
     @Override
-    public void update(BoardModifyRequestDto dto, String userId) {
+    public void modifyBoard(BoardModifyRequestDTO dto, String userId) {
         Board board = boardRepository.findByBoardIdAndUserId(dto.getBoardId(),userId)
-                .orElseThrow(() ->new MyException("수정할 글이 없습니다.",HttpStatus.BAD_REQUEST));
+                .orElseThrow(() ->new BaseException(NOT_FOUND_BOARD));
         Tag tag = tagRepository.findByTagId(dto.getTagId())
-                .orElseThrow(() -> new MyException("없는 태그입니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_FOUND_TAG));
 
         board.updateBoard(tag,dto.getBoardTitle(),dto.getBoardContent());
         boardRepository.save(board);
@@ -62,18 +66,18 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public BoardListResponseDto getList(int page, String keyword) {
+    public BoardListVO getBoardList(int page, String keyword) {
         ArrayList<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdDate"));
         Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
         Page<Board> boards = boardRepository.findByBoardTitleContaining(keyword, pageable);
 
-        List<BoardDto> boardDtoList = new ArrayList<>();
+        List<BoardDTO> boardDtoList = new ArrayList<>();
         for (Board board : boards){
-            boardDtoList.add(new BoardDto(board));
+            boardDtoList.add(new BoardDTO(board));
         }
 
-        return BoardListResponseDto.builder()
+        return BoardListVO.builder()
                 .totalPages(boards.getTotalPages())
                 .boards(boardDtoList)
                 .build();
@@ -82,16 +86,16 @@ public class BoardServiceImpl implements BoardService{
     //게시글 확인 후 존재하면 댓글 불러와서 보여주기
     @Override
     @Transactional(readOnly = true)
-    public BoardDetailResponseDto getDetail(long id) {
+    public BoardDetailVO getBoardDetail(long id) {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new MyException("게시글이 존재하지 않습니다", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_FOUND_BOARD));
 
-        List<CommentDto> comments = new ArrayList<CommentDto>();
+        List<CommentDTO> comments = new ArrayList<CommentDTO>();
         List<Comment> commentEntities = commentRepository.findAllByBoardIdOrderByCommentIdDesc(board);
         for(Comment comment : commentEntities){
-            comments.add(new CommentDto(comment));
+            comments.add(new CommentDTO(comment));
         }
-        BoardDto boardDto = new BoardDto(board);
-        return new BoardDetailResponseDto(boardDto, comments);
+        BoardDTO boardDto = new BoardDTO(board);
+        return new BoardDetailVO(boardDto, comments);
     }
 }

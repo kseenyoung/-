@@ -1,13 +1,11 @@
 package com.ssafy.backend.inventory.service;
 
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.common.utils.S3Uploader;
 import com.ssafy.backend.inventory.model.domain.Inventory;
-import com.ssafy.backend.inventory.model.dto.InventoryDto;
-import com.ssafy.backend.inventory.model.dto.InventoryResponseDto;
-import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDto;
+import com.ssafy.backend.inventory.model.vo.InventoryVO;
+import com.ssafy.backend.inventory.model.vo.InventoryPageVO;
+import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDTO;
 import com.ssafy.backend.inventory.model.repository.InventoryRepository;
-import com.ssafy.backend.user.model.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
@@ -30,7 +28,7 @@ public class InventoryServiceImpl implements InventoryService {
     private final InventoryRepository inventoryRepository;
 
     @Override
-    public InventoryResponseDto getInventory(String userId, int page, int category) {
+    public InventoryPageVO getInventory(String userId, int page, int category) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createdDate")));
         Page<Inventory> all;
         if(category == 0){
@@ -39,11 +37,11 @@ public class InventoryServiceImpl implements InventoryService {
             all = inventoryRepository.findAllByUserIdAndProduct_ProductCategory_ProductCategoryId(pageable, userId, category);
         }
 
-        List<InventoryDto> inventories = all.getContent().stream()
-                .map(InventoryDto::new)
+        List<InventoryVO> inventories = all.getContent().stream()
+                .map(InventoryVO::new)
                 .collect(Collectors.toList());
 
-        return InventoryResponseDto.builder()
+        return InventoryPageVO.builder()
                 .userId(userId)
                 .inventories(inventories)
                 .totalPage(all.getTotalPages())
@@ -57,7 +55,7 @@ public class InventoryServiceImpl implements InventoryService {
     @SneakyThrows
     @Override
     @Transactional
-    public void saveInventory(InventorySaveRequestDto dto) {
+    public void equipItem(InventorySaveRequestDTO dto) {
         //장비들 진짜 있는지 확인
         List<Inventory> inventories = inventoryRepository.findAllByUserIdAndInventoryIdIn(dto.getUserId(),dto.getItemList());
         //size == 0 이면 아무 장비도 없음
@@ -96,8 +94,8 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     @Transactional
-    public void takeOffItem(int takeOffItem,String userId) {
-        Inventory inventory = inventoryRepository.findByUserIdAndInventoryId(userId, takeOffItem)
+    public void unEquipItem(int unEquipItemId,String userId) {
+        Inventory inventory = inventoryRepository.findByUserIdAndInventoryId(userId, unEquipItemId)
                 .orElseThrow(() -> {
                     throw new BaseException(NOT_EXIST_INVENTORY);
                 });

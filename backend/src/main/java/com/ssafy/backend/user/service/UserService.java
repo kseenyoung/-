@@ -7,6 +7,7 @@ import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.vo.MyPageVO;
+import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 
 import java.util.List;

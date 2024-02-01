@@ -8,7 +8,13 @@ import com.ssafy.backend.category.service.CategoryService;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
-import com.ssafy.backend.mokkoji.model.dto.*;
+import com.ssafy.backend.mokkoji.model.dto.MokkojiApplyForRequestDto;
+import com.ssafy.backend.mokkoji.model.dto.MokkojiCategoryDto;
+import com.ssafy.backend.mokkoji.model.dto.MokkojiCreateRequestDto;
+import com.ssafy.backend.mokkoji.model.dto.MokkojiRankDto;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiDetailVO;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiListVO;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiRankingsVO;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.service.UserService;
@@ -42,17 +48,17 @@ public class MokkojiFacade {
     @Transactional(rollbackFor = Exception.class)
     public void saveMokkoji(MokkojiCreateRequestDto dto){
         User user = userService.canCreateMokkoji(dto.getLeaderId(), CREATE_MOKKOJI_POINT);
-        Mokkoji mokkoji = mokkojiService.createMokkoji(dto.toEntity());
+        Mokkoji mokkoji = mokkojiService.addMokkoji(dto.toEntity());
         List<Category> categories = categoryService.getCategories(dto.getMokkojiCategories());
         //이거 나중에 saveAll로 바꿔야함
         for (Category category : categories) {
-            mokkojiCategoryService.createMokkjiCategory(mokkoji, category);
+            mokkojiCategoryService.addMokkjiCategory(mokkoji, category);
         }
         userService.saveMokkojiId(user, mokkoji);
     }
 
 
-    public MokkojiRankingsResponseDto getByMokkojiNameRanking(String mokkojiName) {
+    public MokkojiRankingsVO getByMokkojiNameRanking(String mokkojiName) {
         List<MokkojiRankings> byMokkojiName = mokkojiRankingService.getByMokkojiName(mokkojiName);
         log.info("모꼬지 이름 랭킹 검색입니다.{}",byMokkojiName);
         MokkojiRankings mokkojiRankings = byMokkojiName.get(0);
@@ -63,11 +69,11 @@ public class MokkojiFacade {
         List<CategoryDto> categories = categoriesEntities
                 .stream().map(CategoryDto::new)
                 .collect(Collectors.toList());
-        return new MokkojiRankingsResponseDto(categories, mokkojiDto);
+        return new MokkojiRankingsVO(categories, mokkojiDto);
     }
 
-    public List<MokkojiRankingsResponseDto> geTmokkojiTopTen() {
-        List<MokkojiRankingsResponseDto> list = new ArrayList<>();
+    public List<MokkojiRankingsVO> geTmokkojiTopTen() {
+        List<MokkojiRankingsVO> list = new ArrayList<>();
         List<MokkojiRankings> topTen = mokkojiRankingService.getRankingTopTen();
         log.info("모꼬지 이름 탑텐입니다.{}",topTen);
         for (MokkojiRankings mokkojiRankings: topTen) {
@@ -76,14 +82,14 @@ public class MokkojiFacade {
             List<CategoryDto> categories = categoriesEntities
                     .stream().map(CategoryDto::new)
                     .collect(Collectors.toList());
-            list.add(new MokkojiRankingsResponseDto(categories, mokkojiDto));
+            list.add(new MokkojiRankingsVO(categories, mokkojiDto));
         }
         return list;
 
     }
 
 
-    public MokkojiListResponseDto getMokkojiList(List<Integer> categories,int page, String keyword) {
+    public MokkojiListVO getMokkojiList(List<Integer> categories, int page, String keyword) {
         Page<Mokkoji> mokkojiList;
         if(categories == null || categories.size() == 0){
             mokkojiList = mokkojiService.getMokkojiList(page, keyword);
@@ -95,13 +101,13 @@ public class MokkojiFacade {
         }
         log.info("전체 아이템 수: {}", mokkojiList.getTotalElements());
         log.info("전체 페이지 수: {}", mokkojiList.getTotalPages());
-        Map<Mokkoji, List<Category>> map = mokkojiCategoryService.findAllByMokkojis(mokkojiList);
+        Map<Mokkoji, List<Category>> map = mokkojiCategoryService.getMokkojis(mokkojiList);
 
         List<MokkojiCategoryDto> list = map.entrySet().stream().map(e -> {
             return new MokkojiCategoryDto(e.getValue(), e.getKey());
         }).collect(Collectors.toList());
 
-        return new MokkojiListResponseDto(list, mokkojiList.getTotalPages());
+        return new MokkojiListVO(list, mokkojiList.getTotalPages());
     }
     //모꼬지 삭제로직
     @Transactional
@@ -129,11 +135,11 @@ public class MokkojiFacade {
         userService.kickMokkojiUser(user);
     }
 
-    public MokkojiDetailResponseDto getDetailMokkoji(int mokkojiId, String userId) {
-        MokkojiDetailResponseDto dto = new MokkojiDetailResponseDto();
-        Mokkoji mokkoji = mokkojiService.findByMokkojiId(mokkojiId);
+    public MokkojiDetailVO getDetailMokkoji(int mokkojiId, String userId) {
+        MokkojiDetailVO dto = new MokkojiDetailVO();
+        Mokkoji mokkoji = mokkojiService.getMokkojiById(mokkojiId);
         List<UserInformationVO> user = userService.viewUserInformationByMokkoji(mokkoji);
-        List<Category> categories = mokkojiCategoryService.findByMokkoji(mokkoji);
+        List<Category> categories = mokkojiCategoryService.getCategories(mokkoji);
         if("".equals(userId) || userId == null) {
             dto.setUserId("");
             dto.setMyMokkojiId(0);
@@ -157,7 +163,7 @@ public class MokkojiFacade {
         User user = userService.isExistUser(dto.getUserId());
         if(user.getMokkojiId() != null)
             throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
-        Mokkoji mokkoji = mokkojiService.findByMokkojiId(dto.getMokkojiId());
+        Mokkoji mokkoji = mokkojiService.getMokkojiById(dto.getMokkojiId());
         ReqestAlarmDto alarmDto = ReqestAlarmDto.builder()
                 .tagId(2)
                 .userId(user.getUserId())

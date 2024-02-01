@@ -3,13 +3,12 @@ package com.ssafy.backend.inventory.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
-import com.ssafy.backend.inventory.model.dto.InventoryResponseDto;
-import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDto;
+import com.ssafy.backend.inventory.model.vo.InventoryPageVO;
+import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDTO;
 import com.ssafy.backend.inventory.service.InventoryService;
 import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -24,7 +23,7 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 public class InventoryController {
     private final InventoryService inventoryService;
     @PostMapping("")
-    private BaseResponse<?> saveInventory(
+    private BaseResponse<?> iventoryHideURL(
             @RequestBody HashMap<String, Object> body,
                                           HttpServletRequest request) throws JsonProcessingException {
         HttpSession session = request.getSession(false);
@@ -34,22 +33,21 @@ public class InventoryController {
         String userId = user.getUserId();
 
         String sign = (String) body.get("sign");
+        switch(sign){
+            case "equip":
+                List<Integer> itemList  = (List<Integer>) body.get("itemList");
 
-        if ("save".equals(sign)) {
-            List<Integer> itemList  = (List<Integer>) body.get("itemList");
-
-            inventoryService.saveInventory(InventorySaveRequestDto.builder()
-                    .userId(userId)
-                    .itemList(itemList)
-                    .build());
-            return new BaseResponse<>(SUCCESS);
+                inventoryService.equipItem(InventorySaveRequestDTO.builder()
+                        .userId(userId)
+                        .itemList(itemList)
+                        .build());
+                return new BaseResponse<>(SUCCESS);
+            case "unEquip":
+                int unEquipItem = (int) body.get("unEquipItem");
+                inventoryService.unEquipItem(unEquipItem,userId);
+                return new BaseResponse<>(SUCCESS);
         }
-        else if("takeOff".equals(sign)){
-            int takeOffItem = (int) body.get("takeOffItem");
-            inventoryService.takeOffItem(takeOffItem,userId);
-            return new BaseResponse<>(SUCCESS);
-        }
-        throw new BaseException(EMPTY_SIGN);
+        throw new BaseException(NOT_MATCH_SIGN);
 
     }
 
@@ -64,7 +62,7 @@ public class InventoryController {
         User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
 
-        InventoryResponseDto inventory = inventoryService.getInventory(userId, page, category);
+        InventoryPageVO inventory = inventoryService.getInventory(userId, page, category);
 
         return new BaseResponse<>(inventory);
     }
