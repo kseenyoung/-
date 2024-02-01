@@ -71,6 +71,7 @@ public class RoomServiceImpl implements RoomService {
         String sessionName = enterRoomDTO.getSessionName();
         Session session;
 
+        // 세션에 해당하는 방이 존재하는지 확인
         sessionName = getRandomroom(sessionName);
         enterRoomDTO.setSessionName(sessionName);
         openvidu.fetch();

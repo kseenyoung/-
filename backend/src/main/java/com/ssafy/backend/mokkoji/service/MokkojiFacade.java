@@ -41,14 +41,14 @@ public class MokkojiFacade {
 
     @Transactional(rollbackFor = Exception.class)
     public void saveMokkoji(MokkojiCreateRequestDto dto){
-        User user = userService.canCreateMokkoji(dto.getLeaderId(), CREATE_MOKKOJI_POINT);
+        User user = userService.canAddMokkoji(dto.getLeaderId(), CREATE_MOKKOJI_POINT);
         Mokkoji mokkoji = mokkojiService.createMokkoji(dto.toEntity());
         List<Category> categories = categoryService.getCategories(dto.getMokkojiCategories());
         //이거 나중에 saveAll로 바꿔야함
         for (Category category : categories) {
             mokkojiCategoryService.createMokkjiCategory(mokkoji, category);
         }
-        userService.saveMokkojiId(user, mokkoji);
+        userService.modifyMokkojiId(user, mokkoji);
     }
 
 
@@ -125,14 +125,14 @@ public class MokkojiFacade {
         User user = userService.isExistUser(userId);
         if(user.getMokkojiId() == null) throw new BaseException(NOT_EXIST_USER_MOKKOJI);
         if(user.getMokkojiId().getLeaderId().equals(user.getUserId()))
-            throw new BaseException(NOT_LEAVE_MOKKOJI_KING);
+            throw new BaseException(NOT_LEAVE_MOKKOJI_LEADER);
         userService.kickMokkojiUser(user);
     }
 
     public MokkojiDetailResponseDto getDetailMokkoji(int mokkojiId, String userId) {
         MokkojiDetailResponseDto dto = new MokkojiDetailResponseDto();
         Mokkoji mokkoji = mokkojiService.findByMokkojiId(mokkojiId);
-        List<UserInformationVO> user = userService.viewUserInformationByMokkoji(mokkoji);
+        List<UserInformationVO> user = userService.getUserInformationByMokkoji(mokkoji);
         List<Category> categories = mokkojiCategoryService.findByMokkoji(mokkoji);
         if("".equals(userId) || userId == null) {
             dto.setUserId("");
@@ -177,7 +177,7 @@ public class MokkojiFacade {
         if(member.getMokkojiId() != null)
             throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);
         //save
-        userService.saveMokkojiId(member, leader.getMokkojiId());
+        userService.modifyMokkojiId(member, leader.getMokkojiId());
 
         //alarm save
         ReqestAlarmDTO alarmDto = ReqestAlarmDTO.builder()

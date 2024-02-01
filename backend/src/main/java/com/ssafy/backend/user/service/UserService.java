@@ -4,8 +4,8 @@ package com.ssafy.backend.user.service;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import com.ssafy.backend.user.model.domain.User;
-import com.ssafy.backend.user.model.dto.UserLoginDto;
-import com.ssafy.backend.user.model.dto.UserSignupDto;
+import com.ssafy.backend.user.model.dto.UserLoginDTO;
+import com.ssafy.backend.user.model.dto.UserSignupDTO;
 import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
@@ -14,17 +14,17 @@ import java.util.List;
 
 public interface UserService {
 
-    void signup(UserSignupDto userSignupDto) throws Exception;
+    void signUp(UserSignupDTO userSignupDTO) throws Exception;
 
     boolean isExistId(String userLoginId) throws Exception;
 
-    boolean login(UserLoginDto userLoginDto) throws Exception;
+    boolean login(UserLoginDTO userLoginDTO) throws Exception;
 
     boolean isExistNickname(String userTriedNickname);
 
-    User canCreateMokkoji(String userId, int point);
+    User canAddMokkoji(String userId, int point);
 
-    void saveMokkojiId(User user, Mokkoji mokkoji);
+    void modifyMokkojiId(User user, Mokkoji mokkoji);
 
     User isExistUser(String userId);
 
@@ -38,17 +38,17 @@ public interface UserService {
 
     void kickMokkojiUser(User memberCheck);
 
-    UserInformationVO viewUserInformation(String viewUserNickname);
+    UserInformationVO getUserInformation(String getUserNickname);
 
-    List<UserInformationVO> viewUserInformationByMokkoji(Mokkoji mokkoji);
+    List<UserInformationVO> getUserInformationByMokkoji(Mokkoji mokkoji);
 
     String sendEmail(String userEmailForAuth) throws MyException;
 
     boolean deleteUser(String deleteUserId, String deleteUserPassword) throws Exception;
 
-    void changePassword(String originUserId, String newPassword) throws Exception;
+    void modifyPassword(String originUserId, String newPassword) throws Exception;
 
-    void changeNickname(String changeNicknameUserId, String newNickname);
+    void modifyNickname(String modifyNicknameUserId, String newNickname);
 
     User isKakaoUser(String kakaoEmail);
 
@@ -58,13 +58,13 @@ public interface UserService {
 
     void linkGoogle(String loginUserId, String googleEmail);
 
-    void changeEmail(String originUserId, String newEmail);
+    void modifyEmail(String originUserId, String newEmail);
 
-    MyPageVO viewMyPage(String viewUserId);
+    MyPageVO getMyPage(String getUserId);
 
-    String getUserEmail(User userEmailChange);
+    String getUserEmail(User userEmailModify);
 
-    void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage);
+    void modifyUserStatusMessage(String ModifyStatusUserId, String newStatusMessage);
 
-    List<UserViewVO> viewAllUser(String userIdForFriendBoard);
+    List<UserViewVO> getAllUserList(String userIdForFriendBoard);
 }
