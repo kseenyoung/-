@@ -5,14 +5,15 @@
         <div class="nametag">Python 마스터</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
         <img class="pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중" />
+        <button @click="leaveStudyRoom">나가기</button>
       </div>
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
-        <textarea id="message" name="message" rows="4" cols="30" v-model="question" placeholder="-- 질문을 입력하세요--"></textarea>
+        <!-- <textarea id="message" name="message" rows="4" cols="30" v-model="question" placeholder="-- 질문을 입력하세요--"></textarea>
         <button @click="askQuestion">질문하기</button>
         <textarea id="message" name="message" rows="4" cols="30" v-model="answer" placeholder="-- 답변을 입력하세요--"></textarea>
-        <button @click="answerQuestion">답변하기</button>
+        <button @click="answerQuestion">답변하기</button> -->
       </div>
     </div>
 
@@ -97,11 +98,12 @@ import { useUserStore } from '@/stores/user';
 import QnAListView from "@/components/room/QnAListView.vue";
 import UserVideo from "@/components/room/UserVideo.vue";
 import Dagak from "@/components/dagak/Dagak.vue";
+import { useRouter } from 'vue-router';
 
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-
+const router = useRouter();
 const store = useUserStore();
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
@@ -221,6 +223,13 @@ const joinSession = () => {
 
   window.addEventListener("beforeunload", leaveSession);
 };
+
+const leaveStudyRoom = async() => {
+  console.log("스터디룸을 나갑니다.");
+  await leaveSession;
+  console.log("홈화면으로 돌아갑니다.");
+  router.push('/');
+}
 
 const leaveSession = () => {
   if (session.value) session.value.disconnect();
