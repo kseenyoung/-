@@ -315,9 +315,9 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                    /*
-                     * [POST] 비밀번호 변경
-                     */
+                /*
+                 * [POST] 비밀번호 변경
+                 */
                 case "changePassword":
                     session = request.getSession(false);
                     if (session != null) {
@@ -357,9 +357,9 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                    /*
-                     * 이메일 변경을 위한 인증
-                     */
+                /*
+                 * 이메일 변경을 위한 인증
+                 */
                 case "sendEmailForChangeEmail":
                     session = request.getSession(false);
                     if (session != null) {
@@ -433,10 +433,10 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                    /*
-                     * [POST] 마이페이지
-                     * userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint
-                     */
+                /*
+                 * [POST] 마이페이지
+                 * userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint
+                 */
                 case "viewMyPage":
                     session = request.getSession(false);
                     if (session != null) {
