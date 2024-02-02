@@ -29,11 +29,11 @@ public class FriendFacade {
             throw new BaseException(ALREADY_EXIST_FRIEND);
         }
         // 이미 친구 요청을 했는지 확인(알람 : userId=ssafy, requestedUserId=ssafy123, type=4, isChecked=0)
-        if(alarmService.isAlreadyRequestFriend(userId, userId2))
+        if(alarmService.isAlreadyRequestFriend(userId2, userId))
             throw new BaseException(ALREADY_EXIST_ALARM);
 
         friendService.requestFriend(userId, userId2);
-        alarmService.requestAlarm(new ReqestAlarmDTO(userId, userId2, 4));
+        alarmService.requestAlarm(new ReqestAlarmDTO(userId2, userId, 4));
     }
 
     @Transactional
