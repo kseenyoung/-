@@ -129,6 +129,7 @@ export const useUserStore = defineStore(
         })
         .then((res) => res.data)
         .then((json) => {
+          console.log("json: "+json.result);
           loginUserInfo.value = json.result;
           loginUserInfo.value.sub = 'SQLD';
           console.log('회원정보: ' + loginUserInfo.value);
