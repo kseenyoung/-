@@ -65,7 +65,7 @@ onMounted(() => {
 
 const getUserProfileInfo = function () {
   const body = {
-    sign: 'viewUserInformation',
+    sign: 'getUserInformation',
     userNickname: userStore.loginUserInfo.userNickname,
   };
   axios
@@ -87,7 +87,7 @@ const onInputStatus = function (event) {
 
 const changeStatus = function () {
   const body = {
-    sign: 'changeUserStatusMessage',
+    sign: 'ModifyUserStatusMessage',
     newStatusMessage: userStatusMessage.value,
   };
   axios

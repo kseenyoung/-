@@ -90,7 +90,7 @@ const alarmStore = useAlarmStore();
 //알림 확인
 const checkAlarm = async function (alarmId) {
   const body = {
-    sign: 'check',
+    sign: 'checkAlarm',
     alarmId: alarmId,
   };
 
@@ -107,7 +107,7 @@ const accessAlarm = async function (tagId, requestedUserId) {
   if (tagId === 2) {
     //모꼬지 승인 API
     const body = {
-      sign: 'AcceptMokkoji',
+      sign: 'accessMokkoji',
       memberId: requestedUserId,
     };
     await axios

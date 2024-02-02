@@ -8,7 +8,7 @@ export const useCategoryStore = defineStore(
     const categoryList = ref([]);
     const getCategoryList = function () {
       axios
-        .get(`${import.meta.env.VITE_API_BASE_URL}category/list`)
+        .get(`${import.meta.env.VITE_API_BASE_URL}category/getCategoryList`)
         .then((res) => {
           categoryList.value = res.data.result;
         });

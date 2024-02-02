@@ -243,7 +243,7 @@ const changePWFlag = computed(() => {
 //비빌번호 변경 axios
 const changePw = function () {
   const userBody = {
-    sign: 'changePassword',
+    sign: 'modifyPassword',
     userPassword: curPassword.value,
     newPassword: newPassword.value,
   };
@@ -322,7 +322,7 @@ const existNickname = async function (checkNickname) {
 
 const changeNickname = function () {
   const body = {
-    sign: 'changeNickname',
+    sign: 'modifyNickname',
     newNickname: nickname.value,
   };
 

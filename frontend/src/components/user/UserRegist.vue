@@ -389,7 +389,7 @@ const formatPhoneNumber = function () {
 //유저등록
 const registUser = function () {
   const body = {
-    sign: 'signup',
+    sign: 'signUp',
     userId: id.value,
     userBirthday: birth.value,
     userName: name.value,

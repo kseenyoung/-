@@ -119,7 +119,7 @@ export const useUserStore = defineStore(
 
     const getLoginUserInfo = async function () {
       const body = {
-        sign: 'viewMyPage',
+        sign: 'getMyPage',
       };
       axios
         .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {

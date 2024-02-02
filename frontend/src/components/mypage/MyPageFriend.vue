@@ -55,19 +55,21 @@ onMounted(() => {
 });
 
 const getFriends = function () {
-  axios.get(`${import.meta.env.VITE_API_BASE_URL}friend/list`).then((res) => {
-    if (res.data.code === 1000) {
-      //성공
-      totalFriend.value = res.data.result.countFriend;
-      listFriend.value = res.data.result.friends;
-    }
-  });
+  axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}friend/getFriendList`)
+    .then((res) => {
+      if (res.data.code === 1000) {
+        //성공
+        totalFriend.value = res.data.result.countFriend;
+        listFriend.value = res.data.result.friends;
+      }
+    });
 };
 
 const friendDetailInfo = ref({});
 const friendDetail = function (nickname) {
   const body = {
-    sign: 'viewUserInformation',
+    sign: 'getUserInformation',
     userNickname: nickname,
   };
   axios

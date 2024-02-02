@@ -87,7 +87,7 @@ onMounted(() => {
 //전체 알람 목록 불러오기
 const getAlarmList = function () {
   axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}alarms/listOfAll`)
+    .get(`${import.meta.env.VITE_API_BASE_URL}alarms/getAllAlarmList`)
     .then((res) => {
       alarmTotal.value = res.data.result.length;
       alarmList.value = res.data.result;
@@ -97,7 +97,7 @@ const getAlarmList = function () {
 //알림 확인
 const checkAlarm = async function (alarmId) {
   const body = {
-    sign: 'check',
+    sign: 'checkAlarm',
     alarmId: alarmId,
   };
   await axios
@@ -117,7 +117,7 @@ const accessAlarm = async function (tagId, requestedUserId) {
   if (tagId === 2) {
     //모꼬지 승인 API
     const body = {
-      sign: 'AcceptMokkoji',
+      sign: 'accessMokkoji',
       memberId: requestedUserId,
     };
     await axios
