@@ -24,7 +24,6 @@ public class FriendServiceImpl implements FriendService {
     @Autowired
     FriendMapper friendMapper;
 
-
     @Transactional(rollbackOn = Exception.class)
     public void requestFriend(String userId, String userId2) {
         // 존재하는 userId인지 각각 확인 필요
