@@ -120,8 +120,17 @@ public class UserSignupDTO {
                 userName(this.userName).
                 userEmail(this.userEmail).build();
     }
-    public UserSignupDTO(){}
-    public UserSignupDTO(String userId) {
-        this.userId = userId;
+
+    @Override
+    public String toString() {
+        return "UserSignupDTO{" +
+                "userId='" + userId + '\'' +
+                ", userBirthday='" + userBirthday + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userPhonenumber='" + userPhonenumber + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", userNickname='" + userNickname + '\'' +
+                '}';
     }
 }
