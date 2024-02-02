@@ -5,12 +5,21 @@
 <mapper
         namespace="com.ssafy.backend.loginhistory.model.mapper.LoginHistoryMapper">
 
+    <resultMap id="LoginHistoryVO" type="com.ssafy.backend.loginhistory.model.vo.LoginHistoryVO">
+        <result property="userId" column="user_id" />
+        <result property="userIp" column="user_ip" />
+        <result property="loginHistoryId" column="login_history_id" />
+        <result property="tryLoginCount" column="try_login_count" />
+        <result property="createdDate" column="created_date" />
+        <result property="updatedDate" column="updated_date" />
+    </resultMap>
+
     <select id="getLoginHistory" parameterType="String"
-            resultType="com.ssafy.backend.loginhistory.model.dto.LoginHistoryDto">
+            resultMap="LoginHistoryVO">
         select * from login_history where user_id = #{userId} and user_ip = #{userIp}
     </select>
 
-    <insert id="insertFirstHistory" parameterType="String">
+    <insert id="addFirstHistory" parameterType="String">
         insert into
             login_history (user_id, user_ip, try_login_count)
         values (#{userId}, #{userIp}, 1)
@@ -27,7 +36,7 @@
             login_history set try_login_count = 0 where user_id = #{userId} and user_ip = #{userIp}
     </update>
 
-    <update id="updateTryLoginCount" parameterType="String">
+    <update id="modifyTryLoginCount" parameterType="String">
         update
             login_history set try_login_count = try_login_count + 1 where user_id = #{userId} and user_ip = #{userIp}
     </update>
