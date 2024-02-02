@@ -53,7 +53,9 @@
         </button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
-          <a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:8080/dagak/user/googleOauth&response_type=code&scope=email">
+          <a
+            href="https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:8080/dagak/user/googleOauth&response_type=code&scope=email"
+          >
             <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" />
           </a>
           <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인" />
@@ -119,7 +121,7 @@ const login = async function () {
           name: 'home',
         });
       } else if (res.data.code === 1405) {
-        alert('로그인 실패. ' + res.data.result);
+        alert(res.data.result);
       }
     });
   id.value = '';

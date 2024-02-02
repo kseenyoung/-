@@ -110,7 +110,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useUserStore } from '@/stores/user';
 import axios from 'axios';
 
@@ -128,7 +128,6 @@ onMounted(() => {
 //닉네임 검색
 const searchFriend = function () {
   if (searchText.value === '') {
-    //빈문자열로 검색 시 전체 목록
     getFriendList();
   } else {
     const filteredFriends = friendList.value.filter((friend) =>
@@ -137,6 +136,13 @@ const searchFriend = function () {
     friendList.value = filteredFriends;
   }
 };
+
+// 검색어가 변경될 때 전체 목록으로 돌아가도록 수정
+watch(searchText, () => {
+  if (searchText.value === '') {
+    getFriendList();
+  }
+});
 
 //총 페이지 설정
 const totalPages = computed(() =>
