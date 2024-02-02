@@ -19,10 +19,11 @@ public class SecurityDTO {
 
     public void setUserId(String userId) {
         if (userId != null || !"".equals(userId)){
-            setUserId(userId);
+            this.userId = userId;
         } else {
             throw new BaseException(FAIL_SIGN_UP);
         }
+
     }
 
     public String getSalt() {
@@ -31,7 +32,7 @@ public class SecurityDTO {
 
     public void setSalt(String salt) {
         if (salt != null || !"".equals(salt)) {
-            setSalt(salt);
+            this.salt = salt;
         } else {
             throw new BaseException(FAIL_SIGN_UP);
         }
