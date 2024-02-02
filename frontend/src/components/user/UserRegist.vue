@@ -256,7 +256,7 @@ const duplicateIdCheck = async function (checkId) {
     })
     .then((res) => res.data)
     .then((json) => {
-      if (json.code == 1002) {
+      if (json.code == 1000) {
         // 중복 아님
         isDuplicateId.value = true;
       } else {
@@ -352,7 +352,7 @@ const duplicateNicknameCheck = async function (checkNickname) {
     .then((res) => res.data)
     .then((json) => {
       console.log(json.code);
-      if (json.code == 1004) {
+      if (json.code == 1000) {
         // 중복 아님
         isDuplicateNickname.value = true;
       } else {
