@@ -96,12 +96,17 @@ const login = async function () {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) => res.data);
-  userStore.getLoginUserInfo();
-  //성공 시 홈으로
-  router.push({
-    name: 'home',
-  });
+    .then((res) => {
+      if (res.data.result === null) {
+        userStore.getLoginUserInfo();
+        //성공 시 홈으로
+        router.push({
+          name: 'home',
+        });
+      } else if (res.data.result === '로그인 실패') {
+        alert('로그인 실패');
+      }
+    });
   id.value = '';
   password.value = '';
 };

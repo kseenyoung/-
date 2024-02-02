@@ -1,7 +1,6 @@
 <template>
   <div class="apply-friend-wrapper">
     <div class="apply-title">친구 신청</div>
-    <button @click="test">테스트</button>
     <!-- 검색 -->
     <div class="apply-search input-group mb-3">
       <input
@@ -21,7 +20,7 @@
         <thead class="my-thead">
           <tr>
             <th>프로필</th>
-            <th>닉네임</th>
+            <th class="apply-friend-thead-nick">닉네임</th>
             <th>친구신청</th>
           </tr>
         </thead>
@@ -57,7 +56,10 @@
               </ul>
             </td>
             <td>
-              <button class="btn common-btn" :disabled="friend.friend">
+              <button
+                class="btn btn-sm common-btn my-btn"
+                :disabled="friend.friend"
+              >
                 신청
               </button>
             </td>
@@ -68,13 +70,11 @@
 
     <!-- 페이지네이션 -->
     <div class="apply-pagenation">
-      <div class="apply-pagenation">
-        <button @click="prevPage" :disabled="currentPage === 1">이전</button>
-        <span>{{ currentPage }}</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages">
-          다음
-        </button>
-      </div>
+      <button @click="prevPage" :disabled="currentPage === 1">이전</button>
+      <span>{{ currentPage }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">
+        다음
+      </button>
     </div>
   </div>
 </template>
@@ -89,10 +89,6 @@ const userStore = useUserStore();
 const friendList = ref([]);
 const itemsPerPage = ref(10);
 let currentPage = ref(1);
-
-const test = function () {
-  console.log(paginatedFriendList.value);
-};
 
 const totalPages = computed(() =>
   Math.ceil(friendList.value.length / itemsPerPage.value),
@@ -122,7 +118,7 @@ onMounted(() => {
 
 const getFriendList = function () {
   const body = {
-    sign: 'viewAllUser',
+    sign: 'getAllUserList',
     userId: userStore.loginUserInfo.userId,
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => {
@@ -134,7 +130,7 @@ const getFriendList = function () {
 const friendDetailInfo = ref({});
 const friendDetail = function (nickname) {
   const body = {
-    sign: 'viewUserInformation',
+    sign: 'getUserInformation',
     userNickname: nickname,
   };
   axios
@@ -158,12 +154,11 @@ const friendDetail = function (nickname) {
 <style lang="scss" scoped>
 .apply-friend-wrapper {
   padding: 30px 30px;
-  // .my-thead {
-  //   tr {
-  //     > th:nth-child(3) {
-  //       width: 70%;
-  //     }
-  //   }
-  // }
+  .apply-friend-thead-nick {
+    width: 70px;
+  }
+  .my-btn {
+    padding: 5px 15px;
+  }
 }
 </style>

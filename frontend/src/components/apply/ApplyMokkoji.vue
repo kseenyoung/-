@@ -48,7 +48,7 @@
         </thead>
         <tbody>
           <tr
-            class="my-hover"
+            class="my-hover my-tbody"
             v-for="mokkoji in mokkojiList"
             :key="mokkoji.mokkoji.mokkojiId"
           >
@@ -99,7 +99,7 @@
             class="page-item"
             :class="{ disabled: currentPage === mokkojiListPage - 1 }"
           >
-            <a class="page-link" href="#" @click="changePage(currentPage + 1)">
+            <a class="page-link" @click="changePage(currentPage + 1)">
               <i class="bi bi-chevron-right"></i>
             </a>
           </li>
