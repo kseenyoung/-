@@ -29,6 +29,11 @@ public class EnterRoomDTO {
         this.prevSession = prevSession;
     }
 
+    public EnterRoomDTO(String prevConnectionId, String prevSession) {
+        this.prevConnectionId = prevConnectionId;
+        this.prevSession = prevSession;
+    }
+
     public void setSessionName(String sessionName) {
         if(sessionName == null || sessionName.isEmpty()){
             throw new BaseException(FAIL_TO_CONNECT);

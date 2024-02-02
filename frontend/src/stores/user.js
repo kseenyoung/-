@@ -11,6 +11,7 @@ export const useUserStore = defineStore(
     const mySessionToken = ref('');
     const studyRoomSessionToken = ref('');
     const loginUserInfo = ref({});
+    const isInSession = ref(false);
 
     //로그인 세션 test
     const login = function () {
@@ -150,6 +151,7 @@ export const useUserStore = defineStore(
       deleteLoginUserInfo,
       mySessionToken,
       studyRoomSessionToken,
+      isInSession
     };
   },
   //store를 localStorage에 저장하기 위해서(새로고침 시 데이터 날라감 방지)
