@@ -32,6 +32,7 @@ public enum BaseResponseStatus {
     SUCCESS_CREATE_PRODUCT(true,1401, "상품 추가에 성공했습니다."),
     SUCCESS_BUY_PRODUCT(true, 1402,"상품 구매에 성공했습니다"),
     SUCCESS_SELL_PRODUCT(true,1403 ,"상품 판매에 성공했습니다" ),
+    SUCCESS_LEAVE_SESSION(true, 1404, "세션을 나가는데 성공했습니다"),
 
     /**
      * 2000 : Request 오류
@@ -66,7 +67,8 @@ public enum BaseResponseStatus {
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
     NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다."),
     NOT_EXIST_INVENTORY(false,2041,"일치하는 인벤토리가 없습니다."),
-    WRONG_TYPE(false,2041,"자료형이 일치하지 않습니다."),
+    NOT_EXIST_SESSION(false,2042, "존재하지 않는 세션입니다."),
+    WRONG_TYPE(false,2043,"자료형이 일치하지 않습니다."),
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_DELETE_ALARM(false, 2033, "이미 삭제된 알람입니다"),
@@ -93,6 +95,13 @@ public enum BaseResponseStatus {
     FAIL_TO_LINK(false, 2047,"연동에 실패했습니다."),
     FAIL_TO_CONNECT(false, 2048,"통신에 실패했습니다."),
 
+    INVALID_ID(false, 2049,"올바른 아이디를 입력해주세요."),
+    INVALID_PASSWORD(false, 2050,"올바른 비밀번호를 입력해주세요."),
+    INVALID_BIRTHDAY(false, 2051,"올바른 생일을 입력해주세요."),
+    INVALID_NAME(false, 2052,"올바른 이름을 입력해주세요."),
+    INVALID_PHONENUMBER(false, 2053,"올바른 핸드폰 번호를 입력해주세요."),
+    INVALID_EMAIL(false, 2054,"올바른 이메일을 입력해주세요."),
+    INVALID_NICKNAME(false, 2055,"올바른 닉네임을 입력해주세요."),
 
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/
     AVOID_DUPLICATE_ALARM(false, 2101, "이미 상대방에게 요청을 보냈습니다."),
@@ -116,12 +125,13 @@ public enum BaseResponseStatus {
 
 
     /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
-    JSON_PARSING_ERROR(false, 2300, "이미 상대방과 친구입니다."),
+    JSON_PARSING_ERROR(false, 2300, "알맞은 타입으로 요청해주세요"),
 
     /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
 //    WRONG_TYPE(false,2400,"자료형이 일치하지 않습니다."),
     DATA_NOT_CHANGED(false,2400,"변경된 데이터가 없습니다."),
     NOT_EXIST_GAK(false,2401,"데이터가 존재하지 않습니다."),
+    NOT_EXIST_DAGAK(false,2401,"유효하지 않은 다각 아이디입니다."),
 
 
     /**

@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ConnectionDto {
+    private String connectionId;
     private String session;
     private String token;
 }

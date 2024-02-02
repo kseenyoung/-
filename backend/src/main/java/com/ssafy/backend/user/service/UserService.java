@@ -7,6 +7,7 @@ import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.dto.UserLoginDto;
 import com.ssafy.backend.user.model.dto.UserSignupDto;
 import com.ssafy.backend.user.model.vo.MyPageVO;
+import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
 
 import java.util.List;
@@ -37,9 +38,9 @@ public interface UserService {
 
     void kickMokkojiUser(User memberCheck);
 
-    UserViewVO viewUserInformation(String viewUserNickname);
+    UserInformationVO viewUserInformation(String viewUserNickname);
 
-    List<UserViewVO> viewUserInformationByMokkoji(Mokkoji mokkoji);
+    List<UserInformationVO> viewUserInformationByMokkoji(Mokkoji mokkoji);
 
     String sendEmail(String userEmailForAuth) throws MyException;
 
@@ -64,4 +65,6 @@ public interface UserService {
     String getUserEmail(User userEmailChange);
 
     void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage);
+
+    List<UserViewVO> viewAllUser(String userIdForFriendBoard);
 }

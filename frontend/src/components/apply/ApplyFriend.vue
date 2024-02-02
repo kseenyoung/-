@@ -1,7 +1,7 @@
 <template>
   <div class="apply-friend-wrapper">
     <div class="apply-title">친구 신청</div>
-    <button @click="getFriendList">테스트</button>
+    <button @click="test">테스트</button>
     <!-- 검색 -->
     <div class="apply-search input-group mb-3">
       <input
@@ -26,16 +26,21 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="my-hover">
+          <tr
+            v-for="friend in paginatedFriendList"
+            :key="friend.userId"
+            class="my-hover"
+          >
+            <!-- <td><img src="@/assets/img/${friend.userPicture}.png" /></td> -->
             <td><img src="@/assets/img/기본프로필_갈색.jpg" /></td>
             <td class="dropdown">
               <div
                 class="dropdown-toggle"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                @click="friendDetail(userNickname)"
+                @click="friendDetail(friend.userNickname)"
               >
-                ssafy
+                {{ friend.userNickname }}
               </div>
               <ul class="dropdown-menu">
                 <li>{{ friendDetailInfo.userNickname }}</li>
@@ -51,25 +56,69 @@
                 <li>"{{ friendDetailInfo.userStatusMessage }}"</li>
               </ul>
             </td>
-            <td><button class="btn common-btn">신청</button></td>
+            <td>
+              <button class="btn common-btn" :disabled="friend.friend">
+                신청
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <!-- 페이지네이션 -->
-    <div class="apply-pagenation">페이지네이션</div>
+    <div class="apply-pagenation">
+      <div class="apply-pagenation">
+        <button @click="prevPage" :disabled="currentPage === 1">이전</button>
+        <span>{{ currentPage }}</span>
+        <button @click="nextPage" :disabled="currentPage === totalPages">
+          다음
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useUserStore } from '@/stores/user';
 import axios from 'axios';
 
 const userStore = useUserStore();
 
 const friendList = ref([]);
+const itemsPerPage = ref(10);
+let currentPage = ref(1);
+
+const test = function () {
+  console.log(paginatedFriendList.value);
+};
+
+const totalPages = computed(() =>
+  Math.ceil(friendList.value.length / itemsPerPage.value),
+);
+
+const paginatedFriendList = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return friendList.value.slice(start, end);
+});
+
+const prevPage = function () {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const nextPage = function () {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+onMounted(() => {
+  getFriendList();
+});
 
 const getFriendList = function () {
   const body = {
@@ -77,7 +126,6 @@ const getFriendList = function () {
     userId: userStore.loginUserInfo.userId,
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => {
-    console.log(res);
     friendList.value = res.data.result;
   });
 };
