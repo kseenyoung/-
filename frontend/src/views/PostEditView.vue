@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <div class="padding"></div>
     <h1>게시글 수정</h1>
     <form @submit.prevent>
@@ -31,5 +31,8 @@ const goListPage = () => router.push({ name: 'PostList' })
 <style>
 .padding {
   padding: 40px;
+}
+.container {
+  margin: 80px;
 }
 </style>
