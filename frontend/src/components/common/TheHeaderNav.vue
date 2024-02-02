@@ -76,18 +76,18 @@ const getSessionId = function () {
 };
 
 //로그아웃
-const logout = function () {
+const logout = async function () {
   const body = {
     sign: 'logout',
   };
-  axios
+  await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body)
     .then((res) => res.data);
   userStore.loginUserInfo = {};
   localStorage.removeItem('useStore');
   //성공 시 홈으로
   router.push({
-    name: 'home',
+    name: 'login',
   });
 };
 
