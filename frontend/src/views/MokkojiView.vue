@@ -192,22 +192,24 @@ const deleteMokkoji = function () {
     });
 };
 
-//모꼬지 삭제
+//모꼬지 강퇴
 const kickMember = function (memberId) {
-  const body = {
-    sign: 'kickMember',
-    member: memberId,
-  };
-  axios
-    .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body)
-    .then((res) => {
-      if (res.data.code === 1000) {
-        //성공
-        alert('강퇴했습니다.');
-      } else {
-        alert('실패');
-      }
-    });
+  if (window.confirm('정말 강퇴하시겠습니까?')) {
+    const body = {
+      sign: 'kickMember',
+      member: memberId,
+    };
+    axios
+      .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body)
+      .then((res) => {
+        if (res.data.code === 1000) {
+          //성공
+          alert('강퇴되었습니다.');
+        } else {
+          alert('실패');
+        }
+      });
+  }
 };
 </script>
 
