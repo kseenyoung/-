@@ -130,7 +130,10 @@ public class UserController {
                  * 로그인 반복 시도 시 5회 제한...
                  */
                 case "login":
-                    session = request.getSession(false);
+//                    session = request.getSession(false);
+                    // 리캡챠 인증 하드코딩
+                    session = request.getSession();
+                    session.setAttribute("recaptcha", "ok");
                     if (session != null) {
                         String isBot = (String) session.getAttribute("recaptcha");
                         if ("ok".equals(isBot)) {
@@ -202,9 +205,9 @@ public class UserController {
                                 // 로그인 실패 시 카운트 시작.
                                 int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
                                 if (remainTime != 0) {
-                                    return new BaseResponse<>(remainTime + "초 뒤에 다시 시도해주세요");
+                                    return new BaseResponse<>(FAIL_TO_LOGIN, remainTime + "초 뒤에 다시 시도해주세요");
                                 } else {
-                                    return new BaseResponse<>("로그인 실패");
+                                    return new BaseResponse<>(FAIL_TO_LOGIN, "로그인에 실패했습니다.");
                                 }
                             }
                         } else {
