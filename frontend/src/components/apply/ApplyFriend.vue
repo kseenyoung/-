@@ -214,6 +214,7 @@ const requestFriend = function (userId) {
     sign: 'requestFriend',
     userId: userId,
   };
+  console.log(body);
   axios.post(`${import.meta.env.VITE_API_BASE_URL}friend`, body).then((res) => {
     console.log(res);
     if (res.data.code === 1000) {
