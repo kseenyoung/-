@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Transactional(rollbackFor = {Exception.class, BaseException.class} ,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = {SQLException.class, Exception.class, BaseException.class, RuntimeException.class} ,propagation = Propagation.REQUIRES_NEW)
     @Override
     public void signUp(UserSignupDTO userSignupDTO) throws Exception {
         SecurityDTO securityDTO = new SecurityDTO();
@@ -82,8 +83,6 @@ public class UserServiceImpl implements UserService {
         userSignupDTO.setUserPassword(safePassword);
 
         securityMapper.addSalt(securityDTO);
-        //트랜잭션 테스트
-        userSignupDTO.setUserId(null);
         userMapper.signUp(userSignupDTO);
     }
 
