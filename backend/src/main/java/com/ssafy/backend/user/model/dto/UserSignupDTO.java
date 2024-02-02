@@ -41,9 +41,9 @@ public class UserSignupDTO {
     }
 
     public void setUserBirthday(String userBirthday) throws MyException {
-        if (userBirthday == null) {
-            throw new BaseException(INVALID_BIRTHDAY);
-        }
+//        if (userBirthday == null) {
+//            throw new BaseException(INVALID_BIRTHDAY);
+//        }
         this.userBirthday = userBirthday;
     }
 
