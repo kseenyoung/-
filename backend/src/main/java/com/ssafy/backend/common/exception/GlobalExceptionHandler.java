@@ -1,5 +1,6 @@
 package com.ssafy.backend.common.exception;
 
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.response.BaseResponseStatus;
@@ -41,4 +42,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new BaseResponse<>(BaseResponseStatus.OOPS);
     }
 
+    @ExceptionHandler(Exception.class)
+    protected BaseResponse<BaseResponseStatus> handleException(AmazonS3Exception e) {
+        log.error("AmazonS3Exception", e);
+        return new BaseResponse<>(BaseResponseStatus.OOPS);
+    }
 }

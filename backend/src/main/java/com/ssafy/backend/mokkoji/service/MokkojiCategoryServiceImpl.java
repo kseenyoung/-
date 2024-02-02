@@ -21,7 +21,7 @@ public class MokkojiCategoryServiceImpl implements MokkojiCategoryService{
 
 
     @Override
-    public void createMokkjiCategory(Mokkoji mokkoji, Category category) {
+    public void addMokkjiCategory(Mokkoji mokkoji, Category category) {
         mokkojiCategoryRepository.save(MokkojiCategory.builder()
                 .category(category)
                 .mokkoji(mokkoji)
@@ -29,14 +29,14 @@ public class MokkojiCategoryServiceImpl implements MokkojiCategoryService{
     }
 
     @Override
-    public Map<Mokkoji, List<Category>> findAllByMokkojis(Page<Mokkoji> mokkojiList) {
+    public Map<Mokkoji, List<Category>> getMokkojis(Page<Mokkoji> mokkojiList) {
         List<Mokkoji> mokkojis = mokkojiList.getContent();
         List<MokkojiCategory> mokkojiCategories = mokkojiCategoryRepository.findByMokkojiIn(mokkojis);
 
         Map<Mokkoji, List<Category>> map = new HashMap<>();
         for (Mokkoji mokkoji :mokkojis) {
             if (!map.containsKey(mokkoji)) {
-                map.put(mokkoji, new ArrayList<Category>());
+                map.put(mokkoji, new ArrayList<>());
             }
         }
 
@@ -56,8 +56,8 @@ public class MokkojiCategoryServiceImpl implements MokkojiCategoryService{
     }
 
     @Override
-    public List<Category> findByMokkoji(Mokkoji mokkoji) {
-        List<Category> data = new ArrayList<Category>();
+    public List<Category> getCategories(Mokkoji mokkoji) {
+        List<Category> data = new ArrayList<>();
         List<MokkojiCategory> list = mokkojiCategoryRepository.findByMokkoji(mokkoji);
         for (MokkojiCategory m : list){
             data.add(m.getCategory());

@@ -9,6 +9,7 @@
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-person"></i></span>
             <input
+              :disabled="disableInputId"
               type="text"
               class="form-control no-outline"
               id="id"
@@ -23,24 +24,27 @@
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-lock"></i></span>
             <input
+              :disabled="disableInputPassword"
               type="password"
               class="form-control no-outline"
               id="password"
               placeholder="비밀번호"
               required
               v-model="password"
+              @keyup.enter="login"
             />
           </div>
         </div>
         <div class="mb-3 form-check">
           <input
+            :disabled="disableCheckId"
             type="checkbox"
             class="form-check-input no-outline"
             id="rememberId"
           />
           <label class="form-check-label" for="rememberId">아이디 저장</label>
         </div>
-        <button class="btn btn-primary common-btn" @click="login">
+        <button class="btn btn-primary common-btn" :disabled="disableLoginButton" @click="login">
           로그인
         </button>
         <div class="or-seperator"><i>또는</i></div>
@@ -81,6 +85,12 @@ const id = ref('');
 const password = ref('');
 // const rememberId = ref(false);
 
+// reCAPTCHA 
+const disableInputId = ref(true);
+const disableInputPassword = ref(true);
+const disableCheckId = ref(true);
+const disableLoginButton = ref(true);
+
 //로그인
 const login = async function () {
   const body = {
@@ -90,25 +100,20 @@ const login = async function () {
   };
   console.log(body);
   await axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) => res.data)
-    .then((json) => {
-      if (json.code === 1000) {
-        //로그인 실패
-        alert(json.result);
-      } else if (json.code === 1001) {
-        //로그인 성공
-        alert('로그인에 성공했습니다.');
-        //로그인 하자마자 유저정보 저장
+    .then((res) => {
+      if (res.data.result === null) {
         userStore.getLoginUserInfo();
         //성공 시 홈으로
         router.push({
           name: 'home',
         });
+      } else if (res.data.result === '로그인 실패') {
+        alert('로그인 실패');
       }
     });
   id.value = '';
@@ -116,25 +121,34 @@ const login = async function () {
 };
 
 const recaptchaExpired = async function (response) {
+  disableInputId.value = true;
+  disableInputPassword.value = true;
+  disableCheckId.value = true;``
+  disableLoginButton.value = true;
   const body = {
     recaptchaResponse: '만료',
   };
-  await axios.post('https://localhost:8080/dagak/user/recaptcha', body, {
+  await axios.post(`${import.meta.env.VITE_API_BASE_URL}user/recaptcha`, body, {
     headers: {
       'Content-Type': 'application/json',
     },
-  });
+  })
 };
 
 const recaptchaVerified = async function (response) {
+  disableInputId.value = false;
+  disableInputPassword.value = false;
+  disableCheckId.value = false;
+  disableLoginButton.value = false;
   const body = {
     recaptchaResponse: response,
   };
-  await axios.post('https://localhost:8080/dagak/user/recaptcha', body, {
+  await axios.post(`${import.meta.env.VITE_API_BASE_URL}user/recaptcha`, body, {
     headers: {
       'Content-Type': 'application/json',
     },
-  });
+  }).then((res) => res.data);
+  userStore.getLoginUserInfo();;
 };
 </script>
 

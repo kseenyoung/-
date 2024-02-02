@@ -37,7 +37,11 @@
             <span class="underline">마이페이지</span>
           </RouterLink>
           <!-- 모꼬지가 있을때는 길드페이지로, 없으면 친구/모꼬지 신청 페이지로 이동 -->
-          <RouterLink :to="`/mokkoji/1`" class="dropdown-item">
+          <RouterLink
+            :to="`/mokkoji/${userStore.loginUserInfo.mokkojiId}`"
+            class="dropdown-item"
+            v-show="userStore.loginUserInfo.mokkojiId != null"
+          >
             <span class="underline">모꼬지</span>
           </RouterLink>
           <li>
@@ -59,8 +63,10 @@ import Alarm from './Alarm.vue';
 import AlarmModal from './AlarmModal.vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
+import { useAlarmStore } from '@/stores/alarm';
 
 const userStore = useUserStore();
+const alarmStore = useAlarmStore();
 const router = useRouter();
 
 //로그인할 때 생성한 sessionStorage의 정보
@@ -70,20 +76,18 @@ const getSessionId = function () {
 };
 
 //로그아웃
-const logout = function () {
+const logout = async function () {
   const body = {
     sign: 'logout',
   };
-  axios
-    .post('https://localhost:8080/dagak/user', body)
-    .then((res) => res.data)
-    .then(() => {
-      //유저정보 공백으로
-      userStore.loginUserInfo = {};
-    });
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body)
+    .then((res) => res.data);
+  userStore.loginUserInfo = {};
+  localStorage.removeItem('useStore');
   //성공 시 홈으로
   router.push({
-    name: 'home',
+    name: 'login',
   });
 };
 
@@ -100,6 +104,7 @@ const handleScroll = () => {
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
   getSessionId();
+  alarmStore.getUnReadAlarmList();
 });
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll);

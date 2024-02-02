@@ -1,19 +1,20 @@
 package com.ssafy.backend.mokkoji.controller;
 
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.mokkoji.model.dto.*;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiDetailVO;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiListVO;
+import com.ssafy.backend.mokkoji.model.vo.MokkojiRankingsVO;
 import com.ssafy.backend.mokkoji.service.MokkojiFacade;
 import com.ssafy.backend.user.model.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
@@ -30,25 +31,25 @@ public class MokkojiController {
         HttpSession session = request.getSession(false);
         String userId = new String("");
         if(session != null){
-            User user = (User) session.getAttribute("session");
+            User user = (User) session.getAttribute("User");
             userId = user.getUserId();
         }
-        MokkojiDetailResponseDto dto = mokkojiFacade.getDetailMokkoji(mokkojiId,userId);
-        return new BaseResponse<>(dto);
+        MokkojiDetailVO mokkojiDetailVO = mokkojiFacade.getDetailMokkoji(mokkojiId,userId);
+        return new BaseResponse<>(mokkojiDetailVO);
     }
 
 
     //탑텐 조회
     @GetMapping("/rank10")
     public BaseResponse<?> mokkojiRankings(){
-            List<MokkojiRankingsResponseDto> mokkojiRankingsResponseDto = mokkojiFacade.geTmokkojiTopTen();
-        return new BaseResponse<>(mokkojiRankingsResponseDto);
+            List<MokkojiRankingsVO> mokkojiRankingsVO = mokkojiFacade.geTmokkojiTopTen();
+        return new BaseResponse<>(mokkojiRankingsVO);
     }
     //이름으로 순위 검색
     @GetMapping("/rank/{mokkojiName}")
     public BaseResponse mokkojiRankings(@PathVariable(name = "") String mokkojiName){
-        MokkojiRankingsResponseDto mokkojiRankingsResponseDto = mokkojiFacade.getByMokkojiNameRanking(mokkojiName);
-        return new BaseResponse(mokkojiRankingsResponseDto);
+        MokkojiRankingsVO mokkojiRankingsVO = mokkojiFacade.getByMokkojiNameRanking(mokkojiName);
+        return new BaseResponse(mokkojiRankingsVO);
     }
     //모꼬지 리스트 조회
     @GetMapping("/list")
@@ -56,74 +57,63 @@ public class MokkojiController {
             @RequestParam(value = "page", defaultValue = "0") int page
             ,@RequestParam(value = "keyword", defaultValue = "") String keyword
             ,@RequestParam(value = "categories",required = false) List<Integer> categories){
-        MokkojiListResponseDto mokkojiList = mokkojiFacade.getMokkojiList(categories,page, keyword);
-        return new BaseResponse<>(mokkojiList);
+        MokkojiListVO mokkojiListVO = mokkojiFacade.getMokkojiList(categories,page, keyword);
+        return new BaseResponse<>(mokkojiListVO);
     }
 
 
     @PostMapping("")
-    public BaseResponse<?> hideMokkojiURL(@RequestBody HashMap<String, Object> body
+    public BaseResponse<?> hideMokkojiURL(@RequestBody Map<String, Object> body
             , HttpServletRequest request) {
         //회원 체크
         HttpSession session = request.getSession(false);
         if (session == null) {
             throw new BaseException(EMPTY_SESSION);
         }
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
-//        sign 체크
         String sign = (String) body.get("sign");
-        // 모꼬지 삭제
-        if ("deleteMokkoji".equals(sign)) {
-            mokkojiFacade.deleteMokkoji(userId);
-            return new BaseResponse<>(SUCCESS_DELETE_MOKKOJI);
-        }
-        //모꼬지 강퇴
-        else if("kickMember".equals(sign)){
-            String member = (String) body.get("member");
-            if(member == null) throw new BaseException(NOT_EXIST_KICK_USER);
-            mokkojiFacade.kickUser(userId,member);
-            return new BaseResponse<>(SUCCESS_KICK_MOKKOJI_MEMBER);
-        }
-        //모꼬지 만들기
-        else if ("addMokkoji".equals(sign)) {
-            String mokkojiName = (String) body.get("mokkojiName");
-            String mokkjiStatus = (String) body.get("mokkojiStatus");
-            List<Integer> categories = (List<Integer>) body.get("mokkojiCategories");
-            MokkojiCreateRequestDto dto = MokkojiCreateRequestDto.builder()
-                    .mokkojiName(mokkojiName)
-                    .mokkojiStatus(mokkjiStatus)
-                    .mokkojiCategories(categories)
-                    .leaderId(userId)
-                    .build();
 
-            mokkojiFacade.saveMokkoji(dto);
-            return new BaseResponse<>(SUCCESS_CREATE_MOKKOJI);
+        switch (sign){
+            case "deleteMokkoji":
+                mokkojiFacade.deleteMokkoji(userId);
+                return new BaseResponse<>(SUCCESS_DELETE_MOKKOJI);
+            case "kickMember":
+                String member = (String) body.get("member");
+                if(member == null) throw new BaseException(NOT_EXIST_KICK_USER);
+                mokkojiFacade.kickUser(userId,member);
+                return new BaseResponse<>(SUCCESS_KICK_MOKKOJI_MEMBER);
+            case "addMokkoji":
+                String mokkojiName = (String) body.get("mokkojiName");
+                String mokkjiStatus = (String) body.get("mokkojiStatus");
+                List<Integer> categories = (List<Integer>) body.get("mokkojiCategories");
+                MokkojiCreateRequestDTO DTO = MokkojiCreateRequestDTO.builder()
+                        .mokkojiName(mokkojiName)
+                        .mokkojiStatus(mokkjiStatus)
+                        .mokkojiCategories(categories)
+                        .leaderId(userId)
+                        .build();
+                mokkojiFacade.saveMokkoji(DTO);
+                return new BaseResponse<>(SUCCESS);
+            case "leaveMokkoji":
+                mokkojiFacade.leaveMokkoji(userId);
+                return new BaseResponse<>(SUCCESS);
+            //모꼬지 가입 신청 나중에 ParseInt 수정해야됨
+            case "requestMokkoji":
+                String mokkojiId = (String) body.get("mokkojiId");
+                mokkojiFacade.applyForMokkoji(
+                        MokkojiApplyForRequestDTO.builder()
+                                .userId(userId)
+                                .mokkojiId(Integer.parseInt(mokkojiId))
+                                .build()
+                );
+                return new BaseResponse<>(SUCCESS);
+            case "accessMokkoji":
+                String memberId = (String) body.get("memberId");
+                mokkojiFacade.deleteAlarm(memberId,userId);
+                mokkojiFacade.acceptForMokkoji(userId, memberId);
+                return new BaseResponse<>(SUCCESS);
         }
-        //모꼬지 나가기
-        else if ("leaveMokkoji".equals(sign)) {
-            mokkojiFacade.leaveMokkoji(userId);
-            return new BaseResponse<>(SUCCESS_LEAVE_MOKKOJI);
-        }
-        //모꼬지 가입 신청 나중에 ParseInt 수정해야됨
-        else if ("ApplyMokkoji".equals(sign)) {
-            String mokkojiId = (String) body.get("mokkojiId");
-            mokkojiFacade.applyForMokkoji(
-                    MokkojiApplyForRequestDto.builder()
-                            .userId(userId)
-                            .mokkojiId(Integer.parseInt(mokkojiId))
-                            .build()
-            );
-            return new BaseResponse<>(SUCCESS_APPLY_FOR_MOKKOJI);
-        }
-        //모꼬지 가입 승인
-        else if ("AcceptMokkoji".equals(sign)) {
-            String memberId = (String) body.get("memberId");
-            mokkojiFacade.deleteAlarm(userId,memberId);
-            mokkojiFacade.acceptForMokkoji(userId, memberId);
-            return new BaseResponse<>(SUCCESS_ACCEPT_MOKKOJI);
-        }
-
-        return new BaseResponse<>(EMPTY_SIGN);
+        return new BaseResponse<>(NOT_MATCH_SIGN);
     }
 }

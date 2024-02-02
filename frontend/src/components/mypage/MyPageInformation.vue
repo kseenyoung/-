@@ -243,12 +243,12 @@ const changePWFlag = computed(() => {
 //비빌번호 변경 axios
 const changePw = function () {
   const userBody = {
-    sign: 'changePassword',
+    sign: 'modifyPassword',
     userPassword: curPassword.value,
     newPassword: newPassword.value,
   };
   axios
-    .post('https://localhost:8080/dagak/user', userBody, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, userBody, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -257,7 +257,7 @@ const changePw = function () {
     .then((json) => {
       if (json.code === 1008) {
         //성공
-        alert(json.message);
+        alert('비밀번호가 변경되었습니다');
       } else {
         //실패
         alert(json.message);
@@ -300,14 +300,14 @@ const existNickname = async function (checkNickname) {
   };
 
   await axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
     })
     .then((res) => res.data)
     .then((json) => {
-      if (json.code == 1004) {
+      if (json.code == 1000) {
         // 중복 아님
         isDuplicateNickname.value = true;
         alert('사용 가능한 닉네임입니다.');
@@ -322,21 +322,21 @@ const existNickname = async function (checkNickname) {
 
 const changeNickname = function () {
   const body = {
-    sign: 'changeNickname',
+    sign: 'modifyNickname',
     newNickname: nickname.value,
   };
 
   axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
     })
     .then((res) => res.data)
     .then((json) => {
-      if (json.code == 1009) {
+      if (json.code == 1000) {
         // 성공
-        alert(json.message);
+        alert('닉네임이 변경되었습니다.');
         userStore.getLoginUserInfo();
       } else {
         // 실패

@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Integer> {
-
+    Optional<Inventory> findByUserIdAndInventoryId(String userId, int inventoryId);
     Page<Inventory> findAllByUserId(Pageable pageable, String userId);
 
     Page<Inventory> findAllByUserIdAndProduct_ProductCategory_ProductCategoryId(Pageable pageable, String userId, int productCategoryId);

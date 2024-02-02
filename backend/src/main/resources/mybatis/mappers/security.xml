@@ -4,7 +4,7 @@
 
 <mapper namespace="com.ssafy.backend.security.model.mapper.SecurityMapper">
 
-    <insert id="insertSalt" parameterType="com.ssafy.backend.security.model.SecurityDto">
+    <insert id="addSalt" parameterType="com.ssafy.backend.security.model.dto.SecurityDTO">
         insert into user_security(user_id, salt)
         values(#{userId}, #{salt})
     </insert>
@@ -21,7 +21,7 @@
         where user_id=#{deleteUserId}
     </delete>
 
-    <update id="changeSalt" parameterType="String">
+    <update id="modifySalt" parameterType="String">
         update user_security
         set salt = #{newSalt}
         where user_id = #{originUserId}
