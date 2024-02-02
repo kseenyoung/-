@@ -473,6 +473,7 @@ public class UserController {
                 case "ModifyUserStatusMessage":
                     User changeStatusUser = (User) session.getAttribute("User");
                     if (changeStatusUser != null) {
+
                         String modifyStatusUserId = changeStatusUser.getUserId();
                         if (modifyStatusUserId != null) {
                             String newStatusMessage = (String) body.get("newStatusMessage");

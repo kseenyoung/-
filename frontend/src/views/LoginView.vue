@@ -118,7 +118,7 @@ const login = async function () {
 const recaptchaExpired = async function (response) {
   disableInputId.value = true;
   disableInputPassword.value = true;
-  disableCheckId.value = true;
+  disableCheckId.value = true;``
   disableLoginButton.value = true;
   const body = {
     recaptchaResponse: '만료',
