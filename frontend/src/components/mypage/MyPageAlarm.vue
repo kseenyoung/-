@@ -96,6 +96,7 @@ const getAlarmList = function () {
 
 //알림 확인
 const checkAlarm = async function (alarmId) {
+  console.log('확인 클릭');
   const body = {
     sign: 'checkAlarm',
     alarmId: alarmId,
@@ -106,8 +107,7 @@ const checkAlarm = async function (alarmId) {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) => res.data)
-    .then(() => {});
+    .then((res) => res.data);
   getAlarmList();
   alarmStore.getUnReadAlarmList();
 };

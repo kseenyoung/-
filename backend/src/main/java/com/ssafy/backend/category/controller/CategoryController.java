@@ -16,7 +16,7 @@ public class CategoryController {
 
     @GetMapping("/getCategoryList")
     public BaseResponse<?> getList(){
-        return new BaseResponse<>(categoryService.getAllCategories());
+        return new BaseResponse<>(categoryService.getCategoryList());
     }
 
 }
