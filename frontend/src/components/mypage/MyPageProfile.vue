@@ -65,11 +65,11 @@ onMounted(() => {
 
 const getUserProfileInfo = function () {
   const body = {
-    sign: 'viewUserInformation',
+    sign: 'getUserInformation',
     userNickname: userStore.loginUserInfo.userNickname,
   };
   axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -87,11 +87,11 @@ const onInputStatus = function (event) {
 
 const changeStatus = function () {
   const body = {
-    sign: 'changeUserStatusMessage',
+    sign: 'ModifyUserStatusMessage',
     newStatusMessage: userStatusMessage.value,
   };
   axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },

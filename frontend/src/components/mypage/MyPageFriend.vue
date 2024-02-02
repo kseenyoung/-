@@ -55,38 +55,34 @@ onMounted(() => {
 });
 
 const getFriends = function () {
-  axios.get('https://localhost:8080/dagak/friend/list').then((res) => {
-    console.log(res.data);
-    if (res.data.code === 1000) {
-      console.log(res.data);
-      //성공
-      totalFriend.value = res.data.result.countFriend;
-      listFriend.value = res.data.result.friends;
-      console.log(listFriend.value);
-    }
-  });
+  axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}friend/getFriendList`)
+    .then((res) => {
+      if (res.data.code === 1000) {
+        //성공
+        totalFriend.value = res.data.result.countFriend;
+        listFriend.value = res.data.result.friends;
+      }
+    });
 };
 
 const friendDetailInfo = ref({});
 const friendDetail = function (nickname) {
-  console.log('상세 클릭: ' + nickname);
   const body = {
-    sign: 'viewUserInformation',
+    sign: 'getUserInformation',
     userNickname: nickname,
   };
   axios
-    .post('https://localhost:8080/dagak/user', body, {
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json',
       },
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
       if (json.code === 1000) {
         //성공
         friendDetailInfo.value = json.result;
-        console.log(friendDetailInfo.value);
       } else {
         alert('닉네임이 비어있습니다.');
       }

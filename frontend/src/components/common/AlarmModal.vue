@@ -90,11 +90,11 @@ const alarmStore = useAlarmStore();
 //알림 확인
 const checkAlarm = async function (alarmId) {
   const body = {
-    sign: 'check',
+    sign: 'checkAlarm',
     alarmId: alarmId,
   };
 
-  await axios.post('https://localhost:8080/dagak/alarms', body, {
+  await axios.post(`${import.meta.env.VITE_API_BASE_URL}alarms`, body, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -107,11 +107,11 @@ const accessAlarm = async function (tagId, requestedUserId) {
   if (tagId === 2) {
     //모꼬지 승인 API
     const body = {
-      sign: 'AcceptMokkoji',
+      sign: 'accessMokkoji',
       memberId: requestedUserId,
     };
     await axios
-      .post('https://localhost:8080/dagak/mokkoji', body, {
+      .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -132,7 +132,7 @@ const accessAlarm = async function (tagId, requestedUserId) {
       userId: requestedUserId,
     };
     await axios
-      .post('https://localhost:8080/dagak/friend', body, {
+      .post(`${import.meta.env.VITE_API_BASE_URL}friend`, body, {
         headers: {
           'Content-Type': 'application/json',
         },

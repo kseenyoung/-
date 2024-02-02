@@ -10,7 +10,7 @@ export const useAlarmStore = defineStore(
     const alarmUnReadList = ref([]);
     const getUnReadAlarmList = function () {
       axios
-        .get('https://localhost:8080/dagak/alarms/listOfUnchecked')
+        .get(`${import.meta.env.VITE_API_BASE_URL}alarms/getUncheckAlarmList`)
         .then((res) => {
           alarmUnReadTotal.value = res.data.result.length;
           alarmUnReadList.value = res.data.result;
