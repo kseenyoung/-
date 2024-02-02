@@ -233,7 +233,7 @@ public class UserController {
                     if (isExistId) {
                         throw new BaseException(ALREADY_EXIST_ID);
                     } else {
-                        return new BaseResponse<>(SUCCESS_ID_CHECK);
+                        return new BaseResponse<>(SUCCESS);
                     }
 
                     /*
