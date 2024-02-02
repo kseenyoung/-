@@ -1,7 +1,11 @@
 package com.ssafy.backend.room.model.dto;
 
+import com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.room.model.domain.Answer;
 import lombok.Getter;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_TO_CONNECT;
 
 @Getter
 public class AnswerDTO {
@@ -29,6 +33,38 @@ public class AnswerDTO {
         this.questionId = questionId;
     }
 
+    public void setAnswerId(String answerId) {
+        if(answerId == null || answerId.isEmpty()){
+            throw new BaseException(FAIL_TO_CONNECT);
+         }else{
+            this.answerId = answerId;
+        }
+    }
+
+    public void setUserId(String userId) {
+        if(userId == null || userId.isEmpty()){
+            throw new BaseException(FAIL_TO_CONNECT);
+        } else{
+            this.userId = userId;
+        }
+    }
+
+    public void setSession(String session) {
+        if(session == null || session.isEmpty()){
+            throw new BaseException(FAIL_TO_CONNECT);
+        } else{
+            this.session = session;
+        }
+    }
+
+    public void setData(String data) {
+        if(data == null){
+            throw new BaseException(FAIL_TO_CONNECT);
+        } else{
+            this.data = data;
+        }
+    }
+
     public Answer toEntity(){
         return Answer.builder()
                 .userId(this.userId)
@@ -36,25 +72,5 @@ public class AnswerDTO {
                 .answer(this.data)
                 .questionId(this.questionId)
                 .build();
-    }
-
-    public void setAnswerId(String answerId) {
-        this.answerId = answerId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public void setSession(String session) {
-        this.session = session;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-    public void setQuestionId(String questionId) {
-        this.questionId = questionId;
     }
 }

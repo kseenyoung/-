@@ -103,6 +103,8 @@ public enum BaseResponseStatus {
     INVALID_EMAIL(false, 2054,"올바른 이메일을 입력해주세요."),
     INVALID_NICKNAME(false, 2055,"올바른 닉네임을 입력해주세요."),
 
+    NEED_RECAPTCHA(false, 2056,"리캡챠 인증이 필요합니다."),
+
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/
     AVOID_DUPLICATE_ALARM(false, 2101, "이미 상대방에게 요청을 보냈습니다."),
     ALREADY_EXIST_USER_MOKKOJI(false, 2100, "이미 회원은 모꼬지를 가입한 상태입니다."),

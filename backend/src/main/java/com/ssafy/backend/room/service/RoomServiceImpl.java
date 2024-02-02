@@ -142,12 +142,7 @@ public class RoomServiceImpl implements RoomService {
 
         // DB에 질문 저장
         Question question = saveQuestion(questionDTO);
-        QuestionVO questionVO = QuestionVO.builder()
-                .questionId(question.getQuestionId())
-                .userId(questionDTO.getUserId())
-                .session(questionDTO.getSession())
-                .data(questionDTO.getData())
-                .build();
+        QuestionVO questionVO = new QuestionVO(question.getQuestionId(),questionDTO.getUserId(),questionDTO.getSession(),questionDTO.getData());
 
         ObjectMapper om = new ObjectMapper();
         OpenviduRequestDTO openviduRequestDTO = new OpenviduRequestDTO(sessionId,"question",om.writeValueAsString(questionVO));
@@ -186,16 +181,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         Answer answer = saveAnswer(answerDTO);
-        String answerId = answer.getAnswerId();
-        answerDTO.setAnswerId(answerId);
-        AnswerVO answerVO = AnswerVO.builder()
-                .answerId(answer.getAnswerId())
-                .userId(answerDTO.getUserId())
-                .session(answerDTO.getSession())
-                .data(answerDTO.getData())
-                .questionId(answerDTO.getQuestionId())
-                .build();
-
+        AnswerVO answerVO = new AnswerVO(answer.getAnswerId(),answerDTO.getUserId(),answerDTO.getSession(),answerDTO.getData(),answerDTO.getQuestionId());
         ObjectMapper om = new ObjectMapper();
 
         OpenviduRequestDTO openviduRequestDTO = new OpenviduRequestDTO(sessionId,"answer",om.writeValueAsString(answerVO));

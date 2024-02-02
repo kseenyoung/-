@@ -1,21 +1,19 @@
 package com.ssafy.backend.room.model.dto;
 
+import com.ssafy.backend.common.exception.BaseException;
+import lombok.Getter;
+
 import java.util.HashMap;
 
+import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_TO_CONNECT;
+
+@Getter
 public class EnterRoomDTO {
     private String userId;
     private String sessionName;
     private String videoCodec;
     private String prevConnectionId;
     private String prevSession;
-
-    public String getPrevConnectionId() {
-        return prevConnectionId;
-    }
-
-    public String getPrevSession() {
-        return prevSession;
-    }
 
     public EnterRoomDTO(String userId, String sessionName, String videoCodec) {
         this.userId = userId;
@@ -32,19 +30,11 @@ public class EnterRoomDTO {
     }
 
     public void setSessionName(String sessionName) {
-        this.sessionName = sessionName;
-    }
-
-    public void setVideoCodec(String videoCodec) {
-        this.videoCodec = videoCodec;
-    }
-
-    public String getSessionName() {
-        return sessionName;
-    }
-
-    public String getVideoCodec() {
-        return videoCodec;
+        if(sessionName == null || sessionName.isEmpty()){
+            throw new BaseException(FAIL_TO_CONNECT);
+        } else {
+            this.sessionName = sessionName;
+        }
     }
 
     public HashMap<String,String> toSessionPropertyJson(){

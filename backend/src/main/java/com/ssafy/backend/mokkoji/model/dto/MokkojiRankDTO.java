@@ -4,14 +4,14 @@ import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
 import lombok.Getter;
 
 @Getter
-public class MokkojiRankDto {
+public class MokkojiRankDTO {
     private int mokkojiId;
 
     private String mokkojiName;
 
     private String leaderId;
     private int rank;
-    public MokkojiRankDto(MokkojiRankings entity) {
+    public MokkojiRankDTO(MokkojiRankings entity) {
         this.mokkojiId = entity.getMokkojiId();
         this.mokkojiName = entity.getMokkojiName();
         this.leaderId = entity.getLeaderId();

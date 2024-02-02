@@ -130,78 +130,90 @@ public class UserController {
                  * 로그인 반복 시도 시 5회 제한...
                  */
                 case "login":
-                    String loginUserId = (String) body.get("userId");
-                    String loginUserPassword = (String) body.get("userPassword");
-                    String loginUserIp = request.getRemoteAddr();
+                    session = request.getSession(false);
+                    if (session != null) {
+                        String isBot = (String) session.getAttribute("recaptcha");
+                        if ("ok".equals(isBot)) {
 
-                    UserLoginDTO userLoginDto = new UserLoginDTO(loginUserId, loginUserPassword);
-                    if (userService.login(userLoginDto)) {  // 로그인 성공 시...
+                            String loginUserId = (String) body.get("userId");
+                            String loginUserPassword = (String) body.get("userPassword");
+                            String loginUserIp = request.getRemoteAddr();
 
-                        User user = new User(loginUserId);
-                        session = request.getSession();
-                        session.setAttribute("User", user);
-                        System.out.println("session : " + session);
+                            UserLoginDTO userLoginDto = new UserLoginDTO(loginUserId, loginUserPassword);
+                            if (userService.login(userLoginDto)) {  // 로그인 성공 시...
 
-                        if (session.getAttribute("kakaoEmail") != null) {
-                            // 세션에 kakaoEmail 이 있으면 연동함.
-                            String kakaoEmail = (String) session.getAttribute("kakaoEmail");
-                            userService.linkKakao(loginUserId, kakaoEmail);
-                            session.invalidate();
-                            return new BaseResponse<>(SUCCESS);
-                        }
+                                User user = new User(loginUserId);
+                                session = request.getSession();
+                                session.setAttribute("User", user);
+                                System.out.println("session : " + session);
 
-                        if (session.getAttribute("googleEmail") != null) {
-                            // 세션에 googleEmail 이 있으면 연동함.
-                            String googleEmail = (String) session.getAttribute("googleEmail");
-                            userService.linkGoogle(loginUserId, googleEmail);
-                            session.invalidate();
-                            return new BaseResponse<>(SUCCESS);
-                        }
+                                if (session.getAttribute("kakaoEmail") != null) {
+                                    // 세션에 kakaoEmail 이 있으면 연동함.
+                                    String kakaoEmail = (String) session.getAttribute("kakaoEmail");
+                                    userService.linkKakao(loginUserId, kakaoEmail);
+                                    session.invalidate();
+                                    return new BaseResponse<>(SUCCESS);
+                                }
 
-                        // 로그인 성공시 친구들에게 시그널 전송
-                        List<FriendVO> friendList = friendService.listFriends(loginUserId);
+                                if (session.getAttribute("googleEmail") != null) {
+                                    // 세션에 googleEmail 이 있으면 연동함.
+                                    String googleEmail = (String) session.getAttribute("googleEmail");
+                                    userService.linkGoogle(loginUserId, googleEmail);
+                                    session.invalidate();
+                                    return new BaseResponse<>(SUCCESS);
+                                }
 
-                        for (FriendVO friend : friendList) {
-                            System.out.println(friend.getUserId() + "에게 로그인 신호");
-                            OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "login", loginUserId);
-                            URI uri = UriComponentsBuilder
-                                    .fromUriString(OPENVIDU_URL)
-                                    .path("/openvidu/api/signal")
-                                    .encode()
-                                    .build()
-                                    .toUri();
+                                // 로그인 성공시 친구들에게 시그널 전송
+                                List<FriendVO> friendList = friendService.listFriends(loginUserId);
 
-                            String secret = "Basic " + OPENVIDU_SECRET;
-                            secret = Base64.getEncoder().encodeToString(secret.getBytes());
+                                for (FriendVO friend : friendList) {
+                                    System.out.println(friend.getUserId() + "에게 로그인 신호");
+                                    OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "login", loginUserId);
+                                    URI uri = UriComponentsBuilder
+                                            .fromUriString(OPENVIDU_URL)
+                                            .path("/openvidu/api/signal")
+                                            .encode()
+                                            .build()
+                                            .toUri();
 
-                            RequestEntity<String> requestEntity = RequestEntity
-                                    .post(uri)
-                                    .header("Content-Type", "application/json")
-                                    .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
-                                    .body(openviduRequestDto.toJson());
+                                    String secret = "Basic " + OPENVIDU_SECRET;
+                                    secret = Base64.getEncoder().encodeToString(secret.getBytes());
 
-                            RestTemplate restTemplate = new RestTemplate();
-                            restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-                            try{
-                                ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
-                            }catch (Exception e){
-                                System.out.println("error: "+e);
+                                    RequestEntity<String> requestEntity = RequestEntity
+                                            .post(uri)
+                                            .header("Content-Type", "application/json")
+                                            .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
+                                            .body(openviduRequestDto.toJson());
+
+                                    RestTemplate restTemplate = new RestTemplate();
+                                    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+                                    try {
+                                        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
+                                    } catch (Exception e) {
+                                        System.out.println("error: " + e);
+                                    }
+                                }
+                                loginHistoryService.successLogin(loginUserId, loginUserIp);
+                                return new BaseResponse<>(SUCCESS);
+                            } else {  // 로그인 실패 시
+                                if (session != null) {
+                                    session.invalidate();
+                                }
+                                // 로그인 실패 시 카운트 시작.
+                                int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
+                                if (remainTime != 0) {
+                                    return new BaseResponse<>(remainTime + "초 뒤에 다시 시도해주세요");
+                                } else {
+                                    return new BaseResponse<>("로그인 실패");
+                                }
                             }
-                        }
-                        loginHistoryService.successLogin(loginUserId, loginUserIp);
-                        return new BaseResponse<>(SUCCESS);
-                    } else {  // 로그인 실패 시
-                        if (session!=null){
-                            session.invalidate();
-                        }
-                        // 로그인 실패 시 카운트 시작.
-                        int remainTime = loginHistoryService.failLogin(loginUserId, loginUserIp);
-                        if (remainTime != 0) {
-                            return new BaseResponse<>(remainTime + "초 뒤에 다시 시도해주세요");
                         } else {
-                            return new BaseResponse<>("로그인 실패");
+                            throw new BaseException(NEED_RECAPTCHA);
                         }
+                    } else {
+                        throw new BaseException(NEED_RECAPTCHA);
                     }
+
 
                 case "logout":
                     session = request.getSession(false);
@@ -240,7 +252,7 @@ public class UserController {
                      */
                 case "getUserInformation":
                     session = request.getSession(false);
-                    if (session!=null){
+                    if (session != null) {
                         String getUserNickname = (String) body.get("userNickname");
                         if (getUserNickname != null) {
                             boolean isExistNicknameForView = userService.isExistNickname(getUserNickname);
@@ -319,9 +331,9 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                /*
-                 * [POST] 비밀번호 변경
-                 */
+                    /*
+                     * [POST] 비밀번호 변경
+                     */
                 case "modifyPassword":
                     session = request.getSession(false);
                     if (session != null) {
@@ -361,9 +373,9 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                /*
-                 * 이메일 변경을 위한 인증
-                 */
+                    /*
+                     * 이메일 변경을 위한 인증
+                     */
                 case "sendEmailForModifyEmail":
                     session = request.getSession(false);
                     if (session != null) {
@@ -423,7 +435,7 @@ public class UserController {
                     session = request.getSession(false);
                     if (session != null) {
                         String emailChecked = (String) session.getAttribute("emailChecked");
-                        if (emailChecked!=null && emailChecked.equals("yes")){
+                        if (emailChecked != null && emailChecked.equals("yes")) {
                             User originUser = (User) session.getAttribute("User");
 
                             String originUserId = originUser.getUserId();
@@ -440,10 +452,10 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                /*
-                 * [POST] 마이페이지
-                 * userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint
-                 */
+                    /*
+                     * [POST] 마이페이지
+                     * userId, userName, userPicture, userEmail, userBirthday, userPhonenumber, userPoint
+                     */
                 case "getMyPage":
                     session = request.getSession(false);
                     if (session != null) {
@@ -455,14 +467,15 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                /*
-                 * [POST] 유저 상태메세지 변경
-                 */
+                    /*
+                     * [POST] 유저 상태메세지 변경
+                     */
                 case "ModifyUserStatusMessage":
                     User changeStatusUser = (User) session.getAttribute("User");
-                    if (changeStatusUser!=null){
+                    if (changeStatusUser != null) {
+
                         String modifyStatusUserId = changeStatusUser.getUserId();
-                        if (modifyStatusUserId!=null){
+                        if (modifyStatusUserId != null) {
                             String newStatusMessage = (String) body.get("newStatusMessage");
                             userService.modifyUserStatusMessage(modifyStatusUserId, newStatusMessage);
                             return new BaseResponse<>(SUCCESS);
@@ -473,13 +486,13 @@ public class UserController {
                         throw new BaseException(NEED_LOGIN);
                     }
 
-                /*
-                 * [POST] 친구 게시판에서 모든 유저 보기.
-                 * 유저 아이디, 유저 아이콘, 유저 닉네임, 친구 여부
-                 */
+                    /*
+                     * [POST] 친구 게시판에서 모든 유저 보기.
+                     * 유저 아이디, 유저 아이콘, 유저 닉네임, 친구 여부
+                     */
                 case "getAllUserList":
                     session = request.getSession(false);
-                    if(session!=null){
+                    if (session != null) {
                         String userIdForFriendBoard = (String) body.get("userId");
                         List<UserViewVO> userListAtFriendBoard = userService.getAllUserList(userIdForFriendBoard);
                         return new BaseResponse<>(userListAtFriendBoard);
@@ -540,14 +553,16 @@ public class UserController {
      * reCAPTCHA
      */
     @PostMapping("recaptcha")
-    public void isRobot(@RequestBody Map response, HttpServletRequest request) {
+    public void isBot(@RequestBody Map response, HttpServletRequest request) {
+        HttpSession session = request.getSession();
         String recaptchaResponse = (String) response.get("recaptchaResponse");
         if ("만료".equals(recaptchaResponse)) {
-            boolean isNotRobot = false;
-            System.out.println("만료됨");
+            boolean isNotBot = false;
+            session.invalidate();
         } else {
-            boolean isNotRobot = ReCaptchaService.isRobot(recaptchaResponse);
-            System.out.println(isNotRobot);
+            boolean isNotBot = ReCaptchaService.isBot(recaptchaResponse);
+            session.setAttribute("recaptcha", "ok");
+            System.out.println(isNotBot);
         }
 
     }
