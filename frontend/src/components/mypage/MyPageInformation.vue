@@ -257,7 +257,7 @@ const changePw = function () {
     .then((json) => {
       if (json.code === 1008) {
         //성공
-        alert(json.message);
+        alert('비밀번호가 변경되었습니다');
       } else {
         //실패
         alert(json.message);
@@ -307,7 +307,7 @@ const existNickname = async function (checkNickname) {
     })
     .then((res) => res.data)
     .then((json) => {
-      if (json.code == 1004) {
+      if (json.code == 1000) {
         // 중복 아님
         isDuplicateNickname.value = true;
         alert('사용 가능한 닉네임입니다.');
@@ -334,9 +334,9 @@ const changeNickname = function () {
     })
     .then((res) => res.data)
     .then((json) => {
-      if (json.code == 1009) {
+      if (json.code == 1000) {
         // 성공
-        alert(json.message);
+        alert('닉네임이 변경되었습니다.');
         userStore.getLoginUserInfo();
       } else {
         // 실패

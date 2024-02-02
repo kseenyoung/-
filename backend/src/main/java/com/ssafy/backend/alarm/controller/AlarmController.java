@@ -34,7 +34,7 @@ public class AlarmController {
 
         String sign = body.get("sign");
         HttpSession session = response.getSession(false);
-        User user = (User) session.getAttribute("session");
+        User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
 
         if(sign == null)
