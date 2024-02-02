@@ -80,7 +80,9 @@ const logout = function () {
   const body = {
     sign: 'logout',
   };
-  axios.post('https://localhost:8080/dagak/user', body).then((res) => res.data);
+  axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body)
+    .then((res) => res.data);
   userStore.loginUserInfo = {};
   localStorage.removeItem('useStore');
   //성공 시 홈으로
