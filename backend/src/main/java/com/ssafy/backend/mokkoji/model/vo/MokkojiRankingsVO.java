@@ -1,7 +1,7 @@
 package com.ssafy.backend.mokkoji.model.vo;
 
 import com.ssafy.backend.category.model.dto.CategoryDto;
-import com.ssafy.backend.mokkoji.model.dto.MokkojiRankDto;
+import com.ssafy.backend.mokkoji.model.dto.MokkojiRankDTO;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.List;
 @Getter
 public class MokkojiRankingsVO {
     private List<CategoryDto> categories;
-    private MokkojiRankDto mokkoji;
+    private MokkojiRankDTO mokkoji;
 
-    public MokkojiRankingsVO(List<CategoryDto> categories, MokkojiRankDto mokkoji) {
+    public MokkojiRankingsVO(List<CategoryDto> categories, MokkojiRankDTO mokkoji) {
         this.categories = categories;
         this.mokkoji = mokkoji;
     }
@@ -20,7 +20,7 @@ public class MokkojiRankingsVO {
         this.categories = categories;
     }
 
-    public void setMokkoji(MokkojiRankDto mokkoji) {
+    public void setMokkoji(MokkojiRankDTO mokkoji) {
         this.mokkoji = mokkoji;
     }
 }

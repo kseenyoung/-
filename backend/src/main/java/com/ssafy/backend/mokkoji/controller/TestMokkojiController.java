@@ -34,7 +34,7 @@ public class TestMokkojiController {
     }
 
     @PostMapping("/create")
-    public BaseResponse<?> createMokkoji(@RequestBody MokkojiCreateRequestDto dto){
+    public BaseResponse<?> createMokkoji(@RequestBody MokkojiCreateRequestDTO dto){
         mokkojiFacade.saveMokkoji(dto);
         return new BaseResponse<>(SUCCESS_CREATE_MOKKOJI);
     }
@@ -82,7 +82,7 @@ public class TestMokkojiController {
 
     //모꼬지 가입 신청 -> 일단 테스트
     @PostMapping("/applyFor/mokkoji")
-    public BaseResponse<?> applyForMokkoji(@RequestBody MokkojiApplyForRequestDto dto) {
+    public BaseResponse<?> applyForMokkoji(@RequestBody MokkojiApplyForRequestDTO dto) {
         mokkojiFacade.applyForMokkoji(dto);
         return new BaseResponse<>(SUCCESS_APPLY_FOR_MOKKOJI);
     }

@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MokkojiApplyForRequestDto {
+public class MokkojiApplyForRequestDTO {
     private String userId;
     private int mokkojiId;
 
     @Builder
-    public MokkojiApplyForRequestDto(String userId, int mokkojiId) {
+    public MokkojiApplyForRequestDTO(String userId, int mokkojiId) {
         this.userId = userId;
         this.mokkojiId = mokkojiId;
     }

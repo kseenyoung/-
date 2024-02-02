@@ -8,13 +8,13 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class MokkojiCategoryDto {
+public class MokkojiCategoryDTO {
     private List<Category> categories;
     private Mokkoji mokkoji;
 
 
     @Builder
-    public MokkojiCategoryDto(List<Category> categories, Mokkoji mokkoji) {
+    public MokkojiCategoryDTO(List<Category> categories, Mokkoji mokkoji) {
         this.categories = categories;
         this.mokkoji = mokkoji;
     }
