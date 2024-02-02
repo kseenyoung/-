@@ -43,7 +43,7 @@ public class MokkojiFacade {
     private final AlarmService alarmService;
 
     @Transactional(rollbackFor = Exception.class)
-    public void saveMokkoji(MokkojiCreateRequestDto dto){
+    public void saveMokkoji(MokkojiCreateRequestDTO dto){
 
         User user = userService.canAddMokkoji(dto.getLeaderId(), CREATE_MOKKOJI_POINT);
         Mokkoji mokkoji = mokkojiService.addMokkoji(dto.toEntity());
@@ -61,7 +61,7 @@ public class MokkojiFacade {
         log.info("모꼬지 이름 랭킹 검색입니다.{}",byMokkojiName);
         MokkojiRankings mokkojiRankings = byMokkojiName.get(0);
 
-        MokkojiRankDto mokkojiDto = new MokkojiRankDto(mokkojiRankings);
+        MokkojiRankDTO mokkojiDto = new MokkojiRankDTO(mokkojiRankings);
         List<Category> categoriesEntities = categoryService.getCategoryList(mokkojiRankings.getCategories());
 
         List<CategoryDto> categories = categoriesEntities
@@ -75,7 +75,7 @@ public class MokkojiFacade {
         List<MokkojiRankings> topTen = mokkojiRankingService.getRankingTopTen();
         log.info("모꼬지 이름 탑텐입니다.{}",topTen);
         for (MokkojiRankings mokkojiRankings: topTen) {
-            MokkojiRankDto mokkojiDto = new MokkojiRankDto(mokkojiRankings);
+            MokkojiRankDTO mokkojiDto = new MokkojiRankDTO(mokkojiRankings);
             List<Category> categoriesEntities = categoryService.getCategoryList(mokkojiRankings.getCategories());
             List<CategoryDto> categories = categoriesEntities
                     .stream().map(CategoryDto::new)
@@ -101,8 +101,8 @@ public class MokkojiFacade {
         log.info("전체 페이지 수: {}", mokkojiList.getTotalPages());
         Map<Mokkoji, List<Category>> map = mokkojiCategoryService.getMokkojis(mokkojiList);
 
-        List<MokkojiCategoryDto> list = map.entrySet().stream().map(e -> {
-            return new MokkojiCategoryDto(e.getValue(), e.getKey());
+        List<MokkojiCategoryDTO> list = map.entrySet().stream().map(e -> {
+            return new MokkojiCategoryDTO(e.getValue(), e.getKey());
         }).collect(Collectors.toList());
 
         return new MokkojiListVO(list, mokkojiList.getTotalPages());
@@ -157,7 +157,7 @@ public class MokkojiFacade {
     }
 
     @Transactional
-    public void applyForMokkoji(MokkojiApplyForRequestDto dto) {
+    public void applyForMokkoji(MokkojiApplyForRequestDTO dto) {
         User user = userService.isExistUser(dto.getUserId());
         if(user.getMokkojiId() != null)
             throw new BaseException(ALREADY_EXIST_USER_MOKKOJI);

@@ -87,7 +87,7 @@ public class MokkojiController {
                 String mokkojiName = (String) body.get("mokkojiName");
                 String mokkjiStatus = (String) body.get("mokkojiStatus");
                 List<Integer> categories = (List<Integer>) body.get("mokkojiCategories");
-                MokkojiCreateRequestDto DTO = MokkojiCreateRequestDto.builder()
+                MokkojiCreateRequestDTO DTO = MokkojiCreateRequestDTO.builder()
                         .mokkojiName(mokkojiName)
                         .mokkojiStatus(mokkjiStatus)
                         .mokkojiCategories(categories)
@@ -102,7 +102,7 @@ public class MokkojiController {
             case "requestMokkoji":
                 String mokkojiId = (String) body.get("mokkojiId");
                 mokkojiFacade.applyForMokkoji(
-                        MokkojiApplyForRequestDto.builder()
+                        MokkojiApplyForRequestDTO.builder()
                                 .userId(userId)
                                 .mokkojiId(Integer.parseInt(mokkojiId))
                                 .build()

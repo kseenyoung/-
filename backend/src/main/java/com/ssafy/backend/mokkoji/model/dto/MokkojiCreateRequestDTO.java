@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class MokkojiCreateRequestDto {
+public class MokkojiCreateRequestDTO {
     private String mokkojiName;
     private String leaderId;
     private List<Integer> mokkojiCategories = new ArrayList<Integer>();
@@ -24,7 +24,7 @@ public class MokkojiCreateRequestDto {
 
     @Builder
 
-    public MokkojiCreateRequestDto(String mokkojiName, String leaderId, List<Integer> mokkojiCategories, String mokkojiStatus) {
+    public MokkojiCreateRequestDTO(String mokkojiName, String leaderId, List<Integer> mokkojiCategories, String mokkojiStatus) {
         this.mokkojiName = mokkojiName;
         this.leaderId = leaderId;
         this.mokkojiCategories = mokkojiCategories;
