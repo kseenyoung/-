@@ -215,7 +215,7 @@ public class DagakController {
     @GetMapping("getCategoryList")
     public BaseResponse<?> getCategoryList() {
 
-        List<Category> categories = categoryService.getCategoryList();
+        List<Category> categories = categoryService.getAllCategoryList();
 
         return new BaseResponse<>(categories);
     }
