@@ -25,5 +25,5 @@ public interface RoomService {
     Answer saveAnswer(AnswerDTO answerDto) throws Exception;
     Question saveQuestion(QuestionDTO questionDto) throws Exception;
     List<AnswerVO> findAnswerByQuestionId(String questionId) throws Exception;
-    void leaveSession(String userId,String token) throws Exception;
+    void leaveSession(EnterRoomDTO enterRoomDTO) throws Exception;
 }
