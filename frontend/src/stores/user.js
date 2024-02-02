@@ -26,7 +26,6 @@ export const useUserStore = defineStore(
       process.env.NODE_ENV === 'production'
         ? ''
         : 'https://localhost:8080/dagak/';
-    const myUserName = ref(loginUserInfo.value.myUserName);
 
     // 계정 방 입장
     const enterMyRoom = async () => {
@@ -36,10 +35,10 @@ export const useUserStore = defineStore(
 
     // 계정 방 생성
     const createMyRoom = async () => {
-      console.log('loginUser : ', myUserName);
+      console.log('loginUser : ', loginUserInfo.value.userId);
       const response = await axios.post(
         APPLICATION_SERVER_URL + 'room',
-        { sign: 'enterMyRoom', userId: myUserName },
+        { sign: 'enterMyroom', userId: loginUserInfo.value.userId },
         {
           headers: { 'Content-Type': 'application/json' },
         },
@@ -62,7 +61,7 @@ export const useUserStore = defineStore(
           {
             session: stream.data,
             type: 'signal:login-callBack',
-            data: myUserName.value,
+            data: loginUserInfo.value.userId,
           },
           {
             headers: {
@@ -84,7 +83,7 @@ export const useUserStore = defineStore(
 
       enterMyRoom().then((token) => {
         mySession.value
-          .connect(token, myUserName.value)
+          .connect(token, loginUserInfo.value.userId)
           .then(() => {
             publisherMySession.value = OVMy.value.initPublisher(undefined, {
               audioSource: undefined,
@@ -127,21 +126,16 @@ export const useUserStore = defineStore(
             'Content-Type': 'application/json',
           },
         })
-        .then((res) => res.data)
-        .then((json) => {
-          console.log('json: ' + json.result);
-          loginUserInfo.value = json.result;
+        .then((res) => {
+          loginUserInfo.value = res.data.result;
           loginUserInfo.value.sub = 'SQLD';
-          console.log('회원정보: ' + loginUserInfo.value);
-          // localStorage.setItem('userStore', JSON.stringify(loginUserInfo.value));
-        });
+        }).then(()=> login())
     };
 
     const deleteLoginUserInfo = () => {
       loginUserInfo.value = {};
     };
     return {
-      myUserName,
       APPLICATION_SERVER_URL,
       login,
       OVMy,

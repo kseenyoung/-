@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = {Exception.class, BaseException.class} ,propagation = Propagation.REQUIRES_NEW)
     @Override
     public void signUp(UserSignupDTO userSignupDTO) throws Exception {
         SecurityDTO securityDTO = new SecurityDTO();
@@ -81,7 +82,8 @@ public class UserServiceImpl implements UserService {
         userSignupDTO.setUserPassword(safePassword);
 
         securityMapper.addSalt(securityDTO);
-
+        //트랜잭션 테스트
+        userSignupDTO.setUserId(null);
         userMapper.signUp(userSignupDTO);
     }
 

@@ -1,17 +1,39 @@
 package com.ssafy.backend.security.model.dto;
 
+import com.ssafy.backend.common.exception.BaseException;
 import lombok.Data;
 
-@Data
+import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_SIGN_UP;
+
+
 public class SecurityDTO {
     private String userId, salt;
 
     public SecurityDTO() {}
 
-    public SecurityDTO(String userId, String salt){
-        this.userId = userId;
-        this.salt = salt;
+    public SecurityDTO(String userId, String salt){}
+
+    public String getUserId() {
+        return userId;
     }
 
+    public void setUserId(String userId) {
+        if (userId != null || !"".equals(userId)){
+            setUserId(userId);
+        } else {
+            throw new BaseException(FAIL_SIGN_UP);
+        }
+    }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        if (salt != null || !"".equals(salt)) {
+            setSalt(salt);
+        } else {
+            throw new BaseException(FAIL_SIGN_UP);
+        }
+    }
 }
