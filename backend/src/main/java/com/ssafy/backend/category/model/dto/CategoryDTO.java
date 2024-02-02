@@ -7,12 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CategoryDto {
+public class CategoryDTO {
     private Integer categoryId;
     private String categoryName;
 
     @Builder
-    public CategoryDto(Category category) {
+    public CategoryDTO(Category category) {
         this.categoryId = category.getCategoryId();
         this.categoryName = category.getCategoryName();
     }

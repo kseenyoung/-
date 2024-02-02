@@ -3,7 +3,7 @@ package com.ssafy.backend.mokkoji.service;
 import com.ssafy.backend.alarm.model.dto.ReqestAlarmDTO;
 import com.ssafy.backend.alarm.service.AlarmService;
 import com.ssafy.backend.category.model.domain.Category;
-import com.ssafy.backend.category.model.dto.CategoryDto;
+import com.ssafy.backend.category.model.dto.CategoryDTO;
 import com.ssafy.backend.category.service.CategoryService;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
@@ -61,13 +61,13 @@ public class MokkojiFacade {
         log.info("모꼬지 이름 랭킹 검색입니다.{}",byMokkojiName);
         MokkojiRankings mokkojiRankings = byMokkojiName.get(0);
 
-        MokkojiRankDTO mokkojiDto = new MokkojiRankDTO(mokkojiRankings);
+        MokkojiRankDTO mokkojiDTO = new MokkojiRankDTO(mokkojiRankings);
         List<Category> categoriesEntities = categoryService.getCategoryList(mokkojiRankings.getCategories());
 
-        List<CategoryDto> categories = categoriesEntities
-                .stream().map(CategoryDto::new)
+        List<CategoryDTO> categories = categoriesEntities
+                .stream().map(CategoryDTO::new)
                 .collect(Collectors.toList());
-        return new MokkojiRankingsVO(categories, mokkojiDto);
+        return new MokkojiRankingsVO(categories, mokkojiDTO);
     }
 
     public List<MokkojiRankingsVO> geTmokkojiTopTen() {
@@ -77,8 +77,8 @@ public class MokkojiFacade {
         for (MokkojiRankings mokkojiRankings: topTen) {
             MokkojiRankDTO mokkojiDto = new MokkojiRankDTO(mokkojiRankings);
             List<Category> categoriesEntities = categoryService.getCategoryList(mokkojiRankings.getCategories());
-            List<CategoryDto> categories = categoriesEntities
-                    .stream().map(CategoryDto::new)
+            List<CategoryDTO> categories = categoriesEntities
+                    .stream().map(CategoryDTO::new)
                     .collect(Collectors.toList());
             list.add(new MokkojiRankingsVO(categories, mokkojiDto));
         }
