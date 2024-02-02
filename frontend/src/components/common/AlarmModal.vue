@@ -24,6 +24,13 @@
 
         <div class="modal-body">
           <div
+            v-if="alarmStore.alarmUnReadList.length === 0"
+            class="hasNoAlarm"
+          >
+            읽지 않은 알림이 없습니다.
+          </div>
+          <div
+            v-else
             v-for="alarm in alarmStore.alarmUnReadList"
             :key="alarm.alarmId"
             class="alarm-wrapper"
@@ -206,6 +213,9 @@ const getAlarmMessage = (tagId) => {
 }
 .modal-body {
   padding: 0px;
+  .hasNoAlarm {
+    padding: 30px 20px;
+  }
   .alarm-wrapper:last-child {
     border-bottom: none;
   }

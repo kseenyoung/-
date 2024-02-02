@@ -96,7 +96,6 @@ const getAlarmList = function () {
 
 //알림 확인
 const checkAlarm = async function (alarmId) {
-  console.log('확인 클릭');
   const body = {
     sign: 'checkAlarm',
     alarmId: alarmId,
@@ -113,7 +112,6 @@ const checkAlarm = async function (alarmId) {
 };
 
 const accessAlarm = async function (tagId, requestedUserId) {
-  console.log(requestedUserId);
   if (tagId === 2) {
     //모꼬지 승인 API
     const body = {
@@ -127,9 +125,9 @@ const accessAlarm = async function (tagId, requestedUserId) {
         },
       })
       .then((res) => {
-        if (res.data.code === 1105) {
+        if (res.data.code === 1000) {
           //성공
-          alert(res.data.message);
+          alert('모꼬지 요청을 수락했습니다.');
         } else if (res.data.code === 2100) {
           //이미 모꼬지가 있는 유저
           alert(res.data.message);
