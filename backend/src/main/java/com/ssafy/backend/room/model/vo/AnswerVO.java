@@ -1,8 +1,11 @@
 package com.ssafy.backend.room.model.vo;
 
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.room.model.domain.Answer;
 import lombok.Builder;
 import lombok.Getter;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_TO_CONNECT;
 
 @Getter
 @Builder
@@ -24,11 +27,11 @@ public class AnswerVO {
     }
 
     public AnswerVO(String answerId, String userId, String session, String data, String questionId) {
-        this.answerId = answerId;
-        this.userId = userId;
-        this.session = session;
-        this.data = data;
-        this.questionId = questionId;
+        setAnswerId(answerId);
+        setUserId(userId);
+        setSession(session);
+        setData(data);
+        setQuestionId(questionId);
     }
 
     public Answer toEntity(){
@@ -45,18 +48,34 @@ public class AnswerVO {
     }
 
     public void setUserId(String userId) {
-        this.userId = userId;
+        if(userId == null || userId.isEmpty()){
+            throw new BaseException(FAIL_TO_CONNECT);
+        } else{
+            this.userId = userId;
+        }
     }
 
     public void setSession(String session) {
-        this.session = session;
+        if(session == null || session.isEmpty()){
+            throw new BaseException(FAIL_TO_CONNECT);
+        } else{
+            this.session = session;
+        }
     }
 
     public void setData(String data) {
-        this.data = data;
+        if(data == null || data.isEmpty()){
+            throw new BaseException(FAIL_TO_CONNECT);
+        } else{
+            this.data = data;
+        }
     }
 
     public void setQuestionId(String questionId) {
-        this.questionId = questionId;
+        if(questionId == null || questionId.isEmpty()){
+            throw new BaseException(FAIL_TO_CONNECT);
+        } else{
+            this.questionId = questionId;
+        }
     }
 }

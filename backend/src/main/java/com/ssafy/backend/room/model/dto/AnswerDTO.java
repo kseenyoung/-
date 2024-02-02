@@ -65,14 +65,6 @@ public class AnswerDTO {
         }
     }
 
-    public void setQuestionId(String questionId) {
-        if(questionId == null || questionId.isEmpty()){
-            throw new BaseException(FAIL_TO_CONNECT);
-        } else{
-            this.questionId = questionId;
-        }
-    }
-
     public Answer toEntity(){
         return Answer.builder()
                 .userId(this.userId)

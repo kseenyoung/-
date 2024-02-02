@@ -14,10 +14,10 @@ public class QuestionVO {
     }
 
     public QuestionVO(String questionId, String userId, String session, String data) {
-        this.questionId = questionId;
-        this.userId = userId;
-        this.session = session;
-        this.data = data;
+        setQuestionId(questionId);
+        setUserId(userId);
+        setSession(session);
+        setData(data);
     }
 
     public void setQuestionId(String questionId) {

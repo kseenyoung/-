@@ -7,22 +7,11 @@ import lombok.*;
 import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_TO_CONNECT;
 
 @Getter
-@Builder
 public class QuestionDTO {
     private String questionId;
     private String userId;
     private String session;
     private String data;
-
-    public QuestionDTO() {
-    }
-
-    public QuestionDTO(String questionId, String userId, String session, String data) {
-        this.questionId = questionId;
-        this.userId = userId;
-        this.session = session;
-        this.data = data;
-    }
 
     public void setUserId(String userId) {
         if(userId == null || userId.isEmpty()){
@@ -50,9 +39,9 @@ public class QuestionDTO {
     }
 
     public QuestionDTO(String userId, String session, String data) {
-        this.userId = userId;
-        this.session = session;
-        this.data = data;
+        setUserId(userId);
+        setSession(session);
+        setData(data);
     }
 
     public Question toEntity(){
