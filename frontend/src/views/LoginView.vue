@@ -106,7 +106,6 @@ const login = async function () {
     userId: id.value,
     userPassword: password.value,
   };
-  console.log(body);
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
@@ -159,7 +158,6 @@ const recaptchaVerified = async function (response) {
       },
     })
     .then((res) => res.data);
-  userStore.getLoginUserInfo();
 };
 </script>
 

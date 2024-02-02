@@ -66,7 +66,7 @@
               <button
                 class="btn btn-sm common-btn my-btn"
                 :disabled="friend.friend"
-                @click=""
+                @click="requestFriend(friend.userId)"
               >
                 신청
               </button>
@@ -206,6 +206,23 @@ const friendDetail = function (nickname) {
         alert('닉네임이 비어있습니다.');
       }
     });
+};
+
+//친구 신청 보내기
+const requestFriend = function (userId) {
+  const body = {
+    sign: 'requestFriend',
+    userId: userId,
+  };
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}friend`, body).then((res) => {
+    console.log(res);
+    if (res.data.code === 1000) {
+      //성공
+      alert('친구 신청을 보냈습니다.');
+    } else {
+      alert('실패했습니다.');
+    }
+  });
 };
 </script>
 
