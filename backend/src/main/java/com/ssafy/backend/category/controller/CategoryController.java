@@ -13,10 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
     private final CategoryService categoryService;
 
+<<<<<<< Updated upstream
 
     @GetMapping("/getCategoryList")
     public BaseResponse<?> getList(){
         return new BaseResponse<>(categoryService.getCategoryList());
+=======
+    @GetMapping("/getAllCategoryList")
+    public BaseResponse<?> getAllCategoryList(){
+        return new BaseResponse<>(categoryService.getAllCategoryList());
+>>>>>>> Stashed changes
     }
 
 }

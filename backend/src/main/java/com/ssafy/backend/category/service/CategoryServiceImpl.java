@@ -19,12 +19,12 @@ public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<Category> getCategories(List<Integer> categoriesId) {
+    public List<Category> getCategoryList(List<Integer> categoriesId) {
         return categoryRepository.findAllById(categoriesId);
     }
 
     @Override
-    public List<Category> getCategoryList(){
+    public List<Category> getAllCategoryList(){
         return categoryRepository.findAll();
     }
 

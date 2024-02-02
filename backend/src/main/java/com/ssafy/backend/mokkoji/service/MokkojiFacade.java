@@ -47,7 +47,7 @@ public class MokkojiFacade {
 
         User user = userService.canAddMokkoji(dto.getLeaderId(), CREATE_MOKKOJI_POINT);
         Mokkoji mokkoji = mokkojiService.addMokkoji(dto.toEntity());
-        List<Category> categories = categoryService.getCategories(dto.getMokkojiCategories());
+        List<Category> categories = categoryService.getCategoryList(dto.getMokkojiCategories());
         //이거 나중에 saveAll로 바꿔야함
         for (Category category : categories) {
             mokkojiCategoryService.addMokkjiCategory(mokkoji, category);
@@ -62,7 +62,7 @@ public class MokkojiFacade {
         MokkojiRankings mokkojiRankings = byMokkojiName.get(0);
 
         MokkojiRankDto mokkojiDto = new MokkojiRankDto(mokkojiRankings);
-        List<Category> categoriesEntities = categoryService.getCategories(mokkojiRankings.getCategories());
+        List<Category> categoriesEntities = categoryService.getCategoryList(mokkojiRankings.getCategories());
 
         List<CategoryDto> categories = categoriesEntities
                 .stream().map(CategoryDto::new)
@@ -76,7 +76,7 @@ public class MokkojiFacade {
         log.info("모꼬지 이름 탑텐입니다.{}",topTen);
         for (MokkojiRankings mokkojiRankings: topTen) {
             MokkojiRankDto mokkojiDto = new MokkojiRankDto(mokkojiRankings);
-            List<Category> categoriesEntities = categoryService.getCategories(mokkojiRankings.getCategories());
+            List<Category> categoriesEntities = categoryService.getCategoryList(mokkojiRankings.getCategories());
             List<CategoryDto> categories = categoriesEntities
                     .stream().map(CategoryDto::new)
                     .collect(Collectors.toList());
