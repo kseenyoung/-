@@ -1,6 +1,6 @@
 package com.ssafy.backend.product.model.dto;
 
-import com.ssafy.backend.category.model.dto.ProductCategoryDto;
+import com.ssafy.backend.category.model.dto.ProductCategoryDTO;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,7 +9,7 @@ import lombok.Getter;
 public class ProductDTO {
     private int productId;
     private String productName;
-    private ProductCategoryDto productCategoryDto;
+    private ProductCategoryDTO productCategoryDto;
     private int productPrice;
     private String productImage;
     private String productDescription;
@@ -22,7 +22,7 @@ public class ProductDTO {
         this.productName = productName;
     }
 
-    public void setProductCategoryDto(ProductCategoryDto productCategoryDto) {
+    public void setProductCategoryDto(ProductCategoryDTO productCategoryDto) {
         this.productCategoryDto = productCategoryDto;
     }
 

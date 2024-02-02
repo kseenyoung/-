@@ -1,6 +1,6 @@
 package com.ssafy.backend.product.model.vo;
 
-import com.ssafy.backend.category.model.dto.ProductCategoryDto;
+import com.ssafy.backend.category.model.dto.ProductCategoryDTO;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,7 +10,7 @@ public class ProductVO {
     public ProductVO() {
     }
 
-    public ProductVO(int productId, String productName, ProductCategoryDto productCategoryDto, int productPrice, String productImage, String productDescription) {
+    public ProductVO(int productId, String productName, ProductCategoryDTO productCategoryDto, int productPrice, String productImage, String productDescription) {
         this.productId = productId;
         this.productName = productName;
         this.productCategoryDto = productCategoryDto;
@@ -21,7 +21,7 @@ public class ProductVO {
 
     private int productId;
     private String productName;
-    private ProductCategoryDto productCategoryDto;
+    private ProductCategoryDTO productCategoryDto;
     private int productPrice;
     private String productImage;
     private String productDescription;
@@ -34,7 +34,7 @@ public class ProductVO {
         this.productName = productName;
     }
 
-    public void setProductCategoryDto(ProductCategoryDto productCategoryDto) {
+    public void setProductCategoryDto(ProductCategoryDTO productCategoryDto) {
         this.productCategoryDto = productCategoryDto;
     }
 

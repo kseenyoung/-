@@ -7,7 +7,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class ProductCategoryDto {
+public class ProductCategoryDTO {
     private int productCategoryId;
     private String productCategoryName;
 }
