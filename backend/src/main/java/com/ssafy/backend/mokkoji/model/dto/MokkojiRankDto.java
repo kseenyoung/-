@@ -2,10 +2,8 @@ package com.ssafy.backend.mokkoji.model.dto;
 
 import com.ssafy.backend.mokkoji.model.domain.MokkojiRankings;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class MokkojiRankDto {
     private int mokkojiId;
 
@@ -18,5 +16,21 @@ public class MokkojiRankDto {
         this.mokkojiName = entity.getMokkojiName();
         this.leaderId = entity.getLeaderId();
         this.rank = entity.getRank();
+    }
+
+    public void setMokkojiId(int mokkojiId) {
+        this.mokkojiId = mokkojiId;
+    }
+
+    public void setMokkojiName(String mokkojiName) {
+        this.mokkojiName = mokkojiName;
+    }
+
+    public void setLeaderId(String leaderId) {
+        this.leaderId = leaderId;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }

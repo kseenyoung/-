@@ -1,8 +1,8 @@
 package com.ssafy.backend.alarm.service;
 
 import com.ssafy.backend.alarm.model.domain.Alarm;
-import com.ssafy.backend.alarm.model.dto.CheckAlarmDto;
-import com.ssafy.backend.alarm.model.dto.ReqestAlarmDto;
+import com.ssafy.backend.alarm.model.dto.CheckAlarmDTO;
+import com.ssafy.backend.alarm.model.dto.ReqestAlarmDTO;
 import com.ssafy.backend.alarm.model.repository.AlarmRepository;
 import com.ssafy.backend.common.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class AlarmServiceImpl implements  AlarmService {
     }
 
     @Override
-    public void requestAlarm(ReqestAlarmDto reqestAlarmDto) {
+    public void requestAlarm(ReqestAlarmDTO reqestAlarmDto) {
         alarmRepository.save(
                 Alarm.builder()
                         .tagId(reqestAlarmDto.getTagId())
@@ -38,7 +38,7 @@ public class AlarmServiceImpl implements  AlarmService {
                         .build());
     }
     @Override
-    public void checkAlarm(CheckAlarmDto checkAlarmDto) {
+    public void checkAlarm(CheckAlarmDTO checkAlarmDto) {
         Alarm alarm = alarmRepository.findById(checkAlarmDto.getAlarmId()).orElseThrow(() -> new BaseException(NOT_EXIST_ALARM_ID));
         alarm.setIsChecked(1);
 
@@ -48,13 +48,7 @@ public class AlarmServiceImpl implements  AlarmService {
     }
 
     @Override
-    public List<Alarm> listofAllAlarm(String userId) {
-
-//        Sort sort = Sort.by(
-//                Sort.Order.asc("isChecked"),
-//                Sort.Order.desc("createdDate")
-//                );
-//        log.info("====== sort : {}", sort);
+    public List<Alarm> getAllAlarmList(String userId) {
 
         List<Alarm> allByUserId = alarmRepository.findAllByUserIdOrderByIsCheckedAscCreatedDateDesc(userId);
 
@@ -62,7 +56,7 @@ public class AlarmServiceImpl implements  AlarmService {
     }
 
     @Override
-    public List<Alarm> listOfUncheckedAlarm(String userId) {
+    public List<Alarm> getUncheckAlarmList(String userId) {
 
         List<Alarm> byUserIdAndIsChecked = alarmRepository.findByUserIdAndIsChecked(userId, 0);
 
@@ -70,7 +64,7 @@ public class AlarmServiceImpl implements  AlarmService {
     }
 
     @Override
-    public void aVoidDuplicateAlaram(ReqestAlarmDto reqestAlarmDto) {
+    public void aVoidDuplicateAlaram(ReqestAlarmDTO reqestAlarmDto) {
         alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(
                 reqestAlarmDto.getUserId(),
                 reqestAlarmDto.getRequestedUserId(),
@@ -81,7 +75,7 @@ public class AlarmServiceImpl implements  AlarmService {
     }
 
     @Override
-    public void deleteAlarm(ReqestAlarmDto alarmDto) {
+    public void deleteAlarm(ReqestAlarmDTO alarmDto) {
         System.out.println(alarmDto);
         Alarm alarm = alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(
                 alarmDto.getUserId(),

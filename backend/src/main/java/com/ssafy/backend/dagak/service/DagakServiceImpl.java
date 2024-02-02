@@ -6,10 +6,10 @@ import com.ssafy.backend.dagak.model.domain.Calendar;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.domain.GakHistory;
-import com.ssafy.backend.dagak.model.dto.DagakDto;
-import com.ssafy.backend.dagak.model.dto.GakDto;
-import com.ssafy.backend.dagak.model.dto.RegisterDagakDto;
-import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDto;
+import com.ssafy.backend.dagak.model.dto.DagakDTO;
+import com.ssafy.backend.dagak.model.dto.GakDTO;
+import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
+import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDTO;
 import com.ssafy.backend.dagak.model.repository.CalendarRepository;
 import com.ssafy.backend.dagak.model.repository.DagakRepository;
 import com.ssafy.backend.dagak.model.repository.GakHistoryRepository;
@@ -47,24 +47,24 @@ public class DagakServiceImpl implements DagakService {
     GakHistoryRepository gakHistoryRepository;
 
     @Override
-    public int createDagak(DagakDto dagakDto) {
-        //log.info("dagak : {}", dagakDto);
+    public int addDagak(DagakDTO dagakDTO) {
         return dagakRepository.save(
                 Dagak.builder()
-                        .userId(dagakDto.getUserId())
-                        .totalTime(dagakDto.getTotalTime())
+                        .userId(dagakDTO.getUserId())
+                        .totalTime(dagakDTO.getTotalTime())
                         .build()
         ).getDagakId();
     }
 
     @Override
-    public void createGak(List<GakDto> gaks) {
+    public void createGak(List<GakDTO> gaks) {
         //log.info("gak : {}", gaks);
         List<Gak> gakEntities = new ArrayList<>();
-        for (GakDto gak : gaks) {
+        for (GakDTO gak : gaks) {
             Gak build = Gak.builder()
                     .userId(gak.getUserId())
                     .gakOrder(gak.getGakOrder())
+                    .categoryId(gak.getCategoryId())
                     .runningTime(gak.getRunningTime())
                     .dagakId(gak.getDagakId())
                     .build();
@@ -75,7 +75,7 @@ public class DagakServiceImpl implements DagakService {
     }
 
     @Override
-    public List<CalendarDagakVO> getCalendar(String userId) {
+    public List<CalendarDagakVO> getCalendarList(String userId) {
         List<CalendarDagakVO> result = new ArrayList<>();
 
         List<Calendar> byUserId = calendarRepository.findByUserId(userId);
@@ -83,7 +83,6 @@ public class DagakServiceImpl implements DagakService {
             CalendarDagakVO calendarDagakVO = new CalendarDagakVO(calendar.getCalendarDagakId(), calendar.getDagakId(), calendar.getCalendarDate());
             result.add(calendarDagakVO);
         }
-//            log.info("**********calendarDagakVO : {}", result);
         return result;
     }
 
@@ -91,10 +90,8 @@ public class DagakServiceImpl implements DagakService {
     public List<CalendarDagakVO> getCalendarGaks(List<CalendarDagakVO> calendarDagaks) {
 
         for (CalendarDagakVO calendarDagakVO : calendarDagaks) {
-//            log.info("dagakId : {}", calendarDagakVO.getDagakId());
             List<Gak> allByDagakId = gakRepository.findAllByDagakId(calendarDagakVO.getDagakId());
             calendarDagakVO.setGaks(allByDagakId);
-//            log.info("gaks : {}", allByDagakId);
         }
 
         return calendarDagaks;
@@ -120,7 +117,7 @@ public class DagakServiceImpl implements DagakService {
     }
 
     @Override
-    public void updateGak(Integer dagakId, Integer gakId, Integer categoryId, Integer runningTime) {
+    public void modifyGak(Integer dagakId, Integer gakId, Integer categoryId, Integer runningTime) {
         Gak gak = gakRepository.findById(gakId).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
         if (categoryId != null) {
             gak.setCategoryId(categoryId);
@@ -138,8 +135,8 @@ public class DagakServiceImpl implements DagakService {
 
 
     @Override
-    public void updateGakOrder(List<GakDto> Gaks) {
-        for (GakDto Gak : Gaks) {
+    public void modifyGakOrder(List<GakDTO> Gaks) {
+        for (GakDTO Gak : Gaks) {
             Gak gak = gakRepository.findById(Gak.getGakId()).orElseThrow(() -> new BaseException(NOT_EXIST_GAK));
             gak.setGakOrder(Gak.getGakOrder());
             gakRepository.save(gak);
@@ -147,20 +144,20 @@ public class DagakServiceImpl implements DagakService {
     }
 
     @Override
-    public void registerDagak(RegisterDagakDto registerDagakDto) {
+    public void addDagakDate(AddDagakDateDTO addDagakDateDto) {
         // 유효한 다각인지 확인
-        if (!isExistDagakId(registerDagakDto.getDagakId()))
+        if (!isExistDagakId(addDagakDateDto.getDagakId()))
             throw new BaseException(NOT_EXIST_DAGAK);
 
-        Calendar calendarByCalendarDate = calendarRepository.findCalendarByCalendarDate(registerDagakDto.getCalendarDate());
+        Calendar calendarByCalendarDate = calendarRepository.findCalendarByCalendarDate(addDagakDateDto.getCalendarDate());
         log.info("=========== byCalendarDateStartsWith : {}", calendarByCalendarDate);
         if (calendarByCalendarDate == null) {
             // 해당 날에 등록된 다각이 없음
             calendarRepository.save(
                     Calendar.builder()
-                            .dagakId(registerDagakDto.getDagakId())
-                            .userId(registerDagakDto.getUserId())
-                            .calendarDate(registerDagakDto.getCalendarDate())
+                            .dagakId(addDagakDateDto.getDagakId())
+                            .userId(addDagakDateDto.getUserId())
+                            .calendarDate(addDagakDateDto.getCalendarDate())
                             .build()
             );
         } else {
@@ -168,9 +165,9 @@ public class DagakServiceImpl implements DagakService {
             calendarRepository.save(
                     Calendar.builder()
                             .calendarDagakId(calendarByCalendarDate.getCalendarDagakId())
-                            .dagakId(registerDagakDto.getDagakId())
-                            .userId(registerDagakDto.getUserId())
-                            .calendarDate(registerDagakDto.getCalendarDate())
+                            .dagakId(addDagakDateDto.getDagakId())
+                            .userId(addDagakDateDto.getUserId())
+                            .calendarDate(addDagakDateDto.getCalendarDate())
                             .build()
             );
         }
@@ -199,12 +196,10 @@ public class DagakServiceImpl implements DagakService {
     }
 
     @Override
-    public void updateMemoryTime(UpdateMemoryTimeDto updateMemoryTimeDto) {
+    public void modifyMemoryTime(UpdateMemoryTimeDTO updateMemoryTimeDto) {
         LocalDate today = LocalDate.now();
-//        log.info("updateMemoryTimeDto : {}", updateMemoryTimeDto);
 
         GakHistory gakHistory = gakHistoryRepository.findByGakIdAndCreatedDate(updateMemoryTimeDto.getGakId(), today);
-//        log.info("gakHistory : {}", gakHistory);
 
         if (gakHistory == null) {
             // 기록이 없는 각

@@ -1,14 +1,12 @@
 package com.ssafy.backend.dagak.model.domain;
 
-import com.ssafy.backend.dagak.model.dto.GakDto;
+import com.ssafy.backend.dagak.model.dto.GakDTO;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
 import javax.persistence.*;
 
 @Entity
-@ToString
 @Builder
 @Getter
 public class Gak {
@@ -35,8 +33,8 @@ public class Gak {
         this.userId = userId;
     }
 
-    public GakDto entiryToGakDto(){
-        return new GakDto(categoryId, gakOrder, runningTime, userId);
+    public GakDTO entiryToGakDto(){
+        return new GakDTO(categoryId, gakOrder, runningTime, userId);
     }
 
     public void setCategoryId(Integer categoryId) {
@@ -49,5 +47,17 @@ public class Gak {
 
     public void setGakOrder(Integer gakOrder) {
         this.gakOrder = gakOrder;
+    }
+
+    @Override
+    public String toString() {
+        return "Gak{" +
+                "gakId=" + gakId +
+                ", dagakId=" + dagakId +
+                ", categoryId=" + categoryId +
+                ", gakOrder=" + gakOrder +
+                ", runningTime=" + runningTime +
+                ", userId='" + userId + '\'' +
+                '}';
     }
 }

@@ -1,6 +1,5 @@
 package com.ssafy.backend.mokkoji.model.domain;
 
-import com.ssafy.backend.mokkoji.model.dto.MokkojiRankDto;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.Immutable;

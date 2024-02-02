@@ -8,9 +8,6 @@ import javax.persistence.Entity;
 
 @Entity
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 @Getter
 public class Friend  {
 
@@ -21,4 +18,19 @@ public class Friend  {
     @Column
     private Integer isFriend;
 
+    public Friend(UserId userId, Integer isFriend) {
+        this.userId = userId;
+        this.isFriend = isFriend;
+    }
+
+    public Friend() {
+    }
+
+    @Override
+    public String toString() {
+        return "Friend{" +
+                "userId=" + userId +
+                ", isFriend=" + isFriend +
+                '}';
+    }
 }

@@ -3,17 +3,15 @@ package com.ssafy.backend.user.service;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.utils.EncryptUtil;
-import com.ssafy.backend.friend.model.domain.Friend;
 import com.ssafy.backend.friend.model.mapper.FriendMapper;
 import com.ssafy.backend.friend.model.repository.FriendRepository;
-import com.ssafy.backend.friend.model.vo.FriendVO;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
-import com.ssafy.backend.security.model.SecurityDto;
+import com.ssafy.backend.security.model.dto.SecurityDTO;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.domain.UserRank;
-import com.ssafy.backend.user.model.dto.UserLoginDto;
-import com.ssafy.backend.user.model.dto.UserSignupDto;
+import com.ssafy.backend.user.model.dto.UserLoginDTO;
+import com.ssafy.backend.user.model.dto.UserSignupDTO;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.repository.UserRankRepository;
 import com.ssafy.backend.user.model.repository.UserRepository;
@@ -36,13 +34,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MEMBER;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final int PLUS_DAYS = 7;
+
     @Autowired
     UserMapper userMapper;
 
@@ -69,38 +68,34 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void signup(UserSignupDto userSignupDto) throws Exception {
-        SecurityDto securityDto = new SecurityDto();
-        String userPassword = userSignupDto.getUserPassword();
+    public void signUp(UserSignupDTO userSignupDTO) throws Exception {
+        SecurityDTO securityDTO = new SecurityDTO();
+        String userPassword = userSignupDTO.getUserPassword();
 
         String signUpSalt = UUID.randomUUID().toString();
         String safePassword = EncryptUtil.getSHA256(userPassword, signUpSalt);
 
-        securityDto.setUserId(userSignupDto.getUserId());
-        securityDto.setSalt(signUpSalt);
+        securityDTO.setUserId(userSignupDTO.getUserId());
+        securityDTO.setSalt(signUpSalt);
 
-        userSignupDto.setUserPassword(safePassword);
+        userSignupDTO.setUserPassword(safePassword);
 
-        securityMapper.insertSalt(securityDto);
+        securityMapper.addSalt(securityDTO);
 
-        userMapper.signup(userSignupDto);
+        userMapper.signUp(userSignupDTO);
     }
 
     @Override
-    public boolean isExistId(String userLoginId) throws Exception {
+    public boolean isExistId(String userLoginId) {
         return userRepository.existsById(userLoginId);
     }
     @Override
-    public boolean login(UserLoginDto userLoginDto) throws Exception {
-        String loginPassword = userLoginDto.getUserPassword();
-        String loginUserId = userLoginDto.getUserId();
+    public boolean login(UserLoginDTO userLoginDTO) throws Exception {
+        String loginPassword = userLoginDTO.getUserPassword();
+        String loginUserId = userLoginDTO.getUserId();
         String loginSalt = securityMapper.getSalt(loginUserId);
         String encryptedLoginPassword = EncryptUtil.getSHA256(loginPassword, loginSalt);
-        System.out.println(loginUserId);
-//        User user = userRepository.findById(loginUserId)
-//                .orElseThrow(() -> new BaseException(FAIL_LOGIN));
         User user = userRepository.findUserByUserId(loginUserId);
-//        System.out.println(user);
         if (user == null) {
             return false;
         } else {
@@ -113,7 +108,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isExistNickname(String userTriedNickname) {
         User user = userRepository.findUserByUserNickname(userTriedNickname);
-        System.out.println(user);
         if (user!=null){
             return true;
         } else {
@@ -123,24 +117,25 @@ public class UserServiceImpl implements UserService {
 
     //포인트 null이면 오류 널 체크 해야됨
     @Override
-    public User canCreateMokkoji(String userId, int point) {
+    public User canAddMokkoji(String userId, int point) {
         User user = isExistUser(userId);
         log.info("모꼬지가 있는지 확인합니다. mokkojiId : {}",user.getMokkojiId());
-        if(user.getMokkojiId() != null ) throw new MyException("이미 유저는 길드가 존재합니다.", HttpStatus.BAD_REQUEST);
-        if(user.getUserPoint() - point <0) throw new MyException("포인트가 부족합니다." , HttpStatus.BAD_REQUEST);
+        // 이미 존재하는 길드, 포인트 부족
+        if(user.getMokkojiId() != null ) throw new BaseException(OOPS);
+        if(user.getUserPoint() - point <0) throw new BaseException(OOPS);
         user.usePoint(point);
         return user;
     }
 
     @Override
-    public void saveMokkojiId(User user, Mokkoji mokkoji) {
+    public void modifyMokkojiId(User user, Mokkoji mokkoji) {
         user.saveMokkoji(mokkoji);
         userRepository.save(user);
     }
 
     public User isExistUser(String userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new MyException("회원이 존재하지 않습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_EXIST_USER));
     }
 
     //길드 삭제시 유저에서 확인해야하는 것
@@ -151,7 +146,7 @@ public class UserServiceImpl implements UserService {
         LocalDateTime now = LocalDateTime.now();
         //7일 이전인지 체크
         if (!now.isAfter(createdDateTime))
-            throw new MyException("7일 이후에 모꼬지를 삭제할 수 있습니다.", HttpStatus.BAD_REQUEST);
+            throw new BaseException(REFUSED_TO_DELETE_MOKKOJI);
         return user;
     }
 
@@ -166,9 +161,9 @@ public class UserServiceImpl implements UserService {
     //길드장인지 체크
     public User leaderCheck(String userId) {
         User user = isExistUser(userId);
-        if(user.getMokkojiId() == null) throw new MyException("해당 회원은 모꼬지가 현재 없습니다", HttpStatus.BAD_REQUEST);
+        if(user.getMokkojiId() == null) throw new BaseException(NOT_EXIST_USER_MOKKOJI);
         if (!user.getMokkojiId().getLeaderId().equals(user.getUserId()))
-            throw new MyException("모꼬지장이 아닙니다.", HttpStatus.BAD_REQUEST);
+            throw new BaseException(NOT_MOKKOJI_LEADER);
         return user;
     }
 
@@ -176,7 +171,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User memberCheck(String memberId, Mokkoji mokkoji) {
         return userRepository.findByMokkojiIdAndUserId(mokkoji, memberId)
-                .orElseThrow(() -> new MyException("현재 모꼬지에서 해당 회원을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_MOKKOJI_MEMBER));
     }
 
     @Override
@@ -191,8 +186,8 @@ public class UserServiceImpl implements UserService {
      * 유저아이디, 유저닉네임, 유저사진, 유저상태메세지, 유저모꼬지이름, 유저누적공부시간, 유저랭크
      */
     @Override
-    public UserInformationVO viewUserInformation(String viewUserNickname) {
-        User user = userRepository.findUserByUserNickname(viewUserNickname);
+    public UserInformationVO getUserInformation(String getUserNickname) {
+        User user = userRepository.findUserByUserNickname(getUserNickname);
         UserInformationVO userInformationVO = new UserInformationVO();
         userInformationVO.setUserId(user.getUserId());
         userInformationVO.setUserNickname(user.getUserNickname());
@@ -206,15 +201,13 @@ public class UserServiceImpl implements UserService {
             UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
             userInformationVO.setUserRank(userRank.getUserRank());
         }
-
-        System.out.println(userInformationVO);
         return userInformationVO;
     }
 
     @Override
-    public List<UserInformationVO> viewUserInformationByMokkoji(Mokkoji mokkoji) {
+    public List<UserInformationVO> getUserInformationByMokkoji(Mokkoji mokkoji) {
         List<User> user = userRepository.findAllByMokkojiId(mokkoji);
-        List<UserInformationVO> data = new ArrayList<UserInformationVO>();
+        List<UserInformationVO> userInformationVOs = new ArrayList<UserInformationVO>();
         for(User u : user){
             UserInformationVO userInformationVO = new UserInformationVO();
             userInformationVO.setUserId(u.getUserId());
@@ -225,9 +218,9 @@ public class UserServiceImpl implements UserService {
                 UserRank userRank = userRankRepository.findUserRankByUserId(u.getUserId());
                 userInformationVO.setUserRank(userRank.getUserRank());
             }
-            data.add(userInformationVO);
+            userInformationVOs.add(userInformationVO);
         }
-        return data;
+        return userInformationVOs;
     }
 
     @Override
@@ -244,14 +237,13 @@ public class UserServiceImpl implements UserService {
             body += "<h3>" + "요청하신 인증번호 입니다." + "</h3>";
             body += "<h1>" + "인증 번호 : " + codeForAuth + "</h1>";
             body += "<h3>" + "인증번호를 정확하게 입력해주세요." + "</h3>";
-            body += "<h3>" + "위 인증번호의 유효시간은 30분 입니다." + "</h3>";
+//            body += "<h3>" + "위 인증번호의 유효시간은 30분 입니다." + "</h3>";
             body += "<h3>" + "감사합니다." + "</h3>";
             emailContent.setText(body, "UTF-8", "html");
         } catch (Exception e) {
-            throw new MyException("메일 전송에 실패했습니다.", HttpStatus.BAD_REQUEST);
+            throw new BaseException(FAIL_TO_CONNECT);
         }
         javaMailSender.send(emailContent);
-
         return codeForAuth;
     }
 
@@ -261,10 +253,8 @@ public class UserServiceImpl implements UserService {
         String encryptedDeletePassword = EncryptUtil.getSHA256(deleteUserPassword, deleteUserSalt);
 
         User user = userRepository.findById(deleteUserId)
-                .orElseThrow(() -> new MyException("ERROR", HttpStatus.BAD_REQUEST));
-
+                .orElseThrow(() -> new BaseException(NOT_EXIST_USER));
         boolean isMatch = user.checkPassword(encryptedDeletePassword);
-
         if (isMatch) {
             // TODO : 뭘 지울 지 정해야 함...
             userRepository.deleteById(deleteUserId);
@@ -277,17 +267,17 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void changePassword(String originUserId, String newPassword) throws Exception {
+    public void modifyPassword(String originUserId, String newPassword) throws Exception {
         String newSalt = UUID.randomUUID().toString();
         String newSafePassword = EncryptUtil.getSHA256(newPassword, newSalt);
 
-        securityMapper.changeSalt(originUserId, newSalt);
-        userMapper.changePassword(originUserId, newSafePassword);
+        securityMapper.modifySalt(originUserId, newSalt);
+        userMapper.modifyPassword(originUserId, newSafePassword);
     }
 
     @Override
-    public void changeNickname(String changeNicknameUserId, String newNickname) {
-        User user = userRepository.findById(changeNicknameUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
+    public void modifyNickname(String modifyNicknameUserId, String newNickname) {
+        User user = userRepository.findById(modifyNicknameUserId).orElseThrow(() -> new BaseException(NOT_EXIST_USER));
         user.setUserNickname(newNickname);
 
         userRepository.save(user);
@@ -318,8 +308,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeEmail(String originUserId, String newEmail) {
-        User user = userRepository.findById(originUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
+    public void modifyEmail(String originUserId, String newEmail) {
+        User user = userRepository.findById(originUserId).orElseThrow(() -> new BaseException(NOT_EXIST_USER));
         user.setUserEmail(newEmail);
 
         userRepository.save(user);
@@ -327,8 +317,8 @@ public class UserServiceImpl implements UserService {
 
     //// userId, userName, userPicture, userNickname,userPicture, userEmail, userBirthday, userPhonenumber, userPoint,
     @Override
-    public MyPageVO viewMyPage(String viewUserId) {
-        User user = userRepository.findUserByUserId(viewUserId);
+    public MyPageVO getMyPage(String getUserId) {
+        User user = userRepository.findUserByUserId(getUserId);
         MyPageVO myPageVO = new MyPageVO();
         myPageVO.setUserId(user.getUserId());
         myPageVO.setUserName(user.getUserName());
@@ -348,8 +338,6 @@ public class UserServiceImpl implements UserService {
             UserRank userRank = userRankRepository.findUserRankByUserId(user.getUserId());
             myPageVO.setUserRank(userRank.getUserRank());
         }
-
-        System.out.println(myPageVO);
         return myPageVO;
     }
 
@@ -360,16 +348,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserStatusMessage(String changeStatusUserId, String newStatusMessage) {
-        User user = userRepository.findById(changeStatusUserId).orElseThrow(() -> new BaseException(NOT_EXIST_MEMBER));
+    public void modifyUserStatusMessage(String changeStatusUserId, String newStatusMessage) {
+        User user = userRepository.findById(changeStatusUserId).orElseThrow(() -> new BaseException(NOT_EXIST_USER));
         user.setUserStatusMessage(newStatusMessage);
 
         userRepository.save(user);
     }
 
     @Override
-    public List<UserViewVO> viewAllUser(String userId) {
-        List<UserViewVO> userListAtFriendBoard = userMapper.viewAllUser(userId);
+    public void saveProfile(User user,String url) {
+        user.changeImage(url);
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<UserViewVO> getAllUserList(String userId) {
+        List<UserViewVO> userListAtFriendBoard = userMapper.getAllUserList(userId);
         return userListAtFriendBoard;
     }
 }
