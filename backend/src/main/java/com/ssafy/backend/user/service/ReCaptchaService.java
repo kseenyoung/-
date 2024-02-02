@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_TO_CONNECT;
@@ -20,7 +18,7 @@ public class ReCaptchaService {
     @Value("${google.recaptcha.key}")
     private static String googlekey;
 
-    public static boolean isRobot(String recaptchaResponse) {
+    public static boolean isBot(String recaptchaResponse) {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL("https://www.google.com/recaptcha/api/siteverify")
                     .openConnection();
