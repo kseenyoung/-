@@ -108,15 +108,14 @@ public class UserController {
                  * [POST] 회원가입
                  */
                 case "signUp":
-                    String userLoginId = (String) body.get("userId");
-                    String userLoginBirthday = (String) body.get("userBirthday");
-                    String userLoginName = (String) body.get("userName");
-                    String userLoginPassword = (String) body.get("userPassword");
-                    String userLoginPhonenumber = (String) body.get("userPhonenumber");
-                    String userLoginEmail = (String) body.get("userEmail");
-                    String userLoginNickname = (String) body.get("userNickname");
-
-                    UserSignupDTO userSignupDTO = new UserSignupDTO(userLoginId, userLoginBirthday, userLoginName, userLoginPassword, userLoginPhonenumber, userLoginEmail, userLoginNickname);
+                    String userSignUpId = (String) body.get("userId");
+                    String userSignUpBirthday = (String) body.get("userBirthday");
+                    String userSignUpName = (String) body.get("userName");
+                    String userSignUpPassword = (String) body.get("userPassword");
+                    String userSignUpPhonenumber = (String) body.get("userPhonenumber");
+                    String userSignUpEmail = (String) body.get("userEmail");
+                    String userSignUpNickname = (String) body.get("userNickname");
+                    UserSignupDTO userSignupDTO = new UserSignupDTO(userSignUpId, userSignUpBirthday, userSignUpName, userSignUpPassword, userSignUpPhonenumber, userSignUpEmail, userSignUpNickname);
 
                     userService.signUp(userSignupDTO);
 
