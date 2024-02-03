@@ -29,7 +29,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public InventoryPageVO getInventory(String userId, int page, int category) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createdDate")));
+        Pageable pageable = PageRequest.of(page, 30, Sort.by(Sort.Order.desc("createdDate")));
         Page<Inventory> all;
         if(category == 0){
             all = inventoryRepository.findAllByUserId(pageable, userId);

@@ -127,6 +127,7 @@ public enum BaseResponseStatus {
     TWO_UP_PUT_ON_CLOTH(false, 2120, "같은 카테고리의 옷을 두 개 이상 입을 수 없습니다"),
     DUPLICATE_INVENTORY_ID(false, 2121, "중복된 아이템 착용 요청입니다."),
     EMPTY_INVENTORY(false, 2122, "존재하는 아이템이 인벤토리에 없습니다"),
+    DUPLICATE_PURCHASE_ITEM(false,2123 , "중복된 아이템을 구매할 수 없습니다."),
 
     /* 친구 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_EXIST_FRIEND(false, 2200, "이미 친구입니다."),
