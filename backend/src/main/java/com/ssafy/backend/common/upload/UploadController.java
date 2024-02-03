@@ -42,7 +42,7 @@ public class UploadController {
         String url = null;
         url = s3Uploader.uploadFile(file, userId);
         userService.saveProfile(existUser,url);
-        return new BaseResponse<>(SUCCESS);
+        return new BaseResponse<>(url);
     }
 
 }
