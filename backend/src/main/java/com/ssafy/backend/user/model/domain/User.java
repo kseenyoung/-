@@ -1,10 +1,13 @@
 package com.ssafy.backend.user.model.domain;
 
+import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.INSUFFICIENT_POINT;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -18,7 +21,7 @@ public class User {
     @Column
     private Integer userPoint, userTotalStudyTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mokkojiId")
     private Mokkoji mokkojiId;
 
@@ -39,8 +42,9 @@ public class User {
         return this.userPassword.equals(encryptedPassword);
     }
 
-    public void usePoint(int userPoint) {
-        this.userPoint -= userPoint;
+    public void usePoint(int usePoint) {
+        if(this.userPoint - usePoint <0) throw new BaseException(INSUFFICIENT_POINT);
+        this.userPoint -= usePoint;
     }
 
     public void saveMokkoji(Mokkoji mokkoji) {

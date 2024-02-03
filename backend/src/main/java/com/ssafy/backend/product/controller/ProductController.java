@@ -3,18 +3,15 @@ package com.ssafy.backend.product.controller;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.response.BaseResponse;
-import com.ssafy.backend.product.model.domain.Product;
 import com.ssafy.backend.product.model.vo.ProductListVO;
 import com.ssafy.backend.product.model.vo.ProductVO;
 import com.ssafy.backend.product.service.ProductService;
+import com.ssafy.backend.user.model.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +32,12 @@ public class ProductController {
     @PostMapping("")
     public BaseResponse<?> store(@RequestBody Map<String, Object> body, HttpServletRequest httpServletRequest) throws MyException {
         String sign = (String) body.get("sign");
-        String userId = "yj";
+        HttpSession session = httpServletRequest.getSession(false);
+        if (session == null) {
+            throw new BaseException(NEED_LOGIN);
+        }
+        User user = (User) session.getAttribute("User");
+        String userId = user.getUserId();
         if(sign == null){
             throw new BaseException(EMPTY_SESSION);
         }
