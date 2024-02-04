@@ -20,7 +20,7 @@ import ApplyMokkoji from '@/components/apply/ApplyMokkoji.vue';
 }
 .apply-wrapper {
   display: flex;
-  min-height: 650px;
+  min-height: 750px;
   background-color: aliceblue;
   box-shadow:
     rgba(0, 0, 0, 0.4) 0px 2px 4px,

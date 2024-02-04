@@ -17,7 +17,7 @@
     </select>
 
     <!-- #{user_id}의 친구 닉네임 찾기 -->
-    <select id="listFriends" parameterType="String" resultMap="friendVO">
+    <select id="getFriendList" parameterType="String" resultMap="friendVO">
         select user_id, user_nickname
         from user u join(select user_id2, is_friend
                          from friend

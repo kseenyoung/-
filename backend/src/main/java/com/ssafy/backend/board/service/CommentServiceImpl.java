@@ -2,15 +2,17 @@ package com.ssafy.backend.board.service;
 
 import com.ssafy.backend.board.model.domain.Board;
 import com.ssafy.backend.board.model.domain.Comment;
-import com.ssafy.backend.board.model.dto.CommentCreateRequestDto;
-import com.ssafy.backend.board.model.dto.CommentDeleteRequestDto;
-import com.ssafy.backend.board.model.dto.CommentModifyRequestDto;
+import com.ssafy.backend.board.model.dto.CommentCreateRequestDTO;
+import com.ssafy.backend.board.model.dto.CommentDeleteRequestDTO;
+import com.ssafy.backend.board.model.dto.CommentModifyRequestDTO;
 import com.ssafy.backend.board.model.repository.BoardRepository;
 import com.ssafy.backend.board.model.repository.CommentRepository;
-import com.ssafy.backend.common.exception.MyException;
+import com.ssafy.backend.common.exception.BaseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_FOUND_BOARD;
+import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_FOUND_COMMENT;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -23,29 +25,29 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public long commentCreate(CommentCreateRequestDto dto,String userId) {
+    public long addComment(CommentCreateRequestDTO dto, String userId) {
         Board board = boardRepository.findById(dto.getBoardId())
-                .orElseThrow(() -> new MyException("존재하지 않는 글입니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_FOUND_BOARD));
         return commentRepository.save(dto.toEntity(board, userId)).getCommentId();
 
     }
 
     @Override
-    public long modify(CommentModifyRequestDto dto, String userId) {
+    public long modifyComment(CommentModifyRequestDTO dto, String userId) {
         Board board = boardRepository.findById(dto.getBoardId())
-                .orElseThrow(() -> new MyException("존재하지 않는 글입니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_FOUND_BOARD));
         Comment comment = commentRepository.findByCommentIdAndUserId(dto.getCommentId(),userId)
-                .orElseThrow(() -> new MyException("존재하지 않는 댓글입니다,", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_FOUND_COMMENT));
         comment.modifyComment(dto.getComment());
         return commentRepository.save(comment).getCommentId();
     }
 
     @Override
-    public void delete(CommentDeleteRequestDto dto, String userId) {
+    public void deleteComment(CommentDeleteRequestDTO dto, String userId) {
         Board board = boardRepository.findById(dto.getBoardId())
-                .orElseThrow(() -> new MyException("존재하지 않는 글입니다.", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_FOUND_BOARD));
         Comment comment = commentRepository.findByCommentIdAndUserId(dto.getCommentId(),userId)
-                .orElseThrow(() -> new MyException("이미 삭제된 글입니다,", HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new BaseException(NOT_FOUND_BOARD));
          commentRepository.delete(comment);
     }
 }

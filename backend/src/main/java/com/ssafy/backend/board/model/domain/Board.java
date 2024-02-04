@@ -2,12 +2,14 @@ package com.ssafy.backend.board.model.domain;
 
 import com.ssafy.backend.common.model.domain.BaseTime;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class Board extends BaseTime {
 
     @Id
@@ -27,29 +29,6 @@ public class Board extends BaseTime {
     @Column(columnDefinition = "char (255)")
     private String boardContent;
 
-
-
-    public long getBoardId() {
-        return boardId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-
-    public String getBoardTitle() {
-        return boardTitle;
-    }
-
-    public String getBoardContent() {
-        return boardContent;
-    }
-
-
-    public Tag getTagId() {
-        return tagId;
-    }
 
     @Builder
     public Board(String userId, Tag tagId, String boardTitle, String boardContent) {

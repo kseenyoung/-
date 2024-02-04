@@ -1,13 +1,12 @@
 package com.ssafy.backend.inventory.service;
 
-import com.ssafy.backend.inventory.model.domain.Inventory;
-import com.ssafy.backend.inventory.model.dto.InventoryResponseDto;
-import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDto;
-
-import java.util.List;
+import com.ssafy.backend.inventory.model.vo.InventoryPageVO;
+import com.ssafy.backend.inventory.model.dto.InventorySaveRequestDTO;
 
 public interface InventoryService {
-    InventoryResponseDto getInventory(String userId, int page, int category);
+    InventoryPageVO getInventory(String userId, int page, int category);
 
-    void saveInventory(InventorySaveRequestDto dto);
+    void equipItem(InventorySaveRequestDTO dto);
+
+    void unEquipItem(int unEquipItemId,String userId);
 }

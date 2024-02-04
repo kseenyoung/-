@@ -2,12 +2,14 @@ package com.ssafy.backend.board.model.domain;
 
 import com.ssafy.backend.common.model.domain.BaseTime;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
+@Getter
 public class Comment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,22 +22,9 @@ public class Comment extends BaseTime {
     @Column
     private String userId;
 
-    @Column(columnDefinition = "varchar (20)")
+    @Column
     private String comment;
 
-    public long getCommentId() {
-        return commentId;
-    }
-    public String getUserId() {
-        return userId;
-    }
-    public String getComment() {
-        return comment;
-    }
-
-    public Board getBoardId() {
-        return boardId;
-    }
 
     @Builder
     public Comment(Board boardId, String userId, String comment) {

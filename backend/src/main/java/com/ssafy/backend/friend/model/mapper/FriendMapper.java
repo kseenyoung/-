@@ -10,5 +10,5 @@ public interface FriendMapper {
 
     public int countFriend(String countUserId);
 
-    List<FriendVO> listFriends(String listUserId);
+    List<FriendVO> getFriendList(String listUserId);
 }

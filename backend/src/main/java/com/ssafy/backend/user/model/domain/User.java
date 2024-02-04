@@ -1,7 +1,6 @@
 package com.ssafy.backend.user.model.domain;
 
 import com.ssafy.backend.mokkoji.model.domain.Mokkoji;
-import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -76,5 +75,8 @@ public class User {
     }
     public void setUserPoint(int userPoint) {
         this.userPoint = userPoint;
+    }
+    public void changeImage(String url) {
+        this.userPicture = url;
     }
 }

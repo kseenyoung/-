@@ -3,9 +3,6 @@
     <div>
       <p class="title">모꼬지 순위</p>
     </div>
-    <!-- <div class="top-ranker">
-      <p>{{ topRankingData.rank }}위 {{ topRankingData.name }} {{ topRankingData.score }}</p>
-    </div> -->
     <table>
       <thead>
         <tr>
@@ -15,13 +12,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in rankingData.slice(0, 10)" :key="index">
-          <td>{{ index + 1 }}위</td>
-          <td>{{ item.name }}</td>
-          <td>{{ item.score }}</td>
+        <tr v-for="item in mokkojiRank" :key="item.mokkoji.mokkojiId">
+          <td>{{ item.mokkoji.rank }}위</td>
+          <td>{{ item.mokkoji.mokkojiName }}</td>
+          <td>{{ item.mokkoji.leaderId }}</td>
         </tr>
       </tbody>
-    </table>
+    </table>  
   </div>
 </template>
 
@@ -31,33 +28,10 @@ import { useUserStore } from '@/stores/user';
 import { ref, onMounted } from 'vue';
 
 const store = useUserStore();
-
-const topRankingData = { rank: 1, name: 'dory', score: 29348 };
-
-const rankingData = [
-  { name: '모꼬', score: 29348 },
-  { name: '지모', score: 29348 },
-  { name: '꼬지', score: 29348 },
-  { name: '모꼬지', score: 29348 },
-  { name: '모', score: 29348 },
-  { name: '꼬', score: 29348 },
-  { name: '지', score: 29348 },
-  { name: '지꼬', score: 29348 },
-  { name: '모지', score: 29348 },
-  { name: '꼬모', score: 29348 },
-  // Add other ranking data as needed
-];
-
-const rankstore = useRankStore();
-
+const rankStore = useRankStore();
+const mokkojiRank = ref([]);
 onMounted(() => {
-  rankstore.getMokkojiRank();
-  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
-  console.log('mokkojiRank.value: ', rankstore.mokkojiRank.value);
-  console.log(
-    'mokkojiRank.value.mokkojiName: ',
-    rankstore.mokkojiRank.mokkojiName,
-  );
+  mokkojiRank.value = rankStore.mokkojiRank;
 });
 </script>
 

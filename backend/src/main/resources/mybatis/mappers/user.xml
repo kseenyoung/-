@@ -4,16 +4,38 @@
 
 <mapper namespace="com.ssafy.backend.user.model.mapper.UserMapper">
 
-    <insert id="signup"
-            parameterType="com.ssafy.backend.user.model.dto.UserSignupDto">
+    <resultMap id="UserViewVO" type="com.ssafy.backend.user.model.vo.UserViewVO">
+        <result property="userId" column="user_id" />
+        <result property="userNickname" column="user_nickname" />
+        <result property="isFriend" column="is_friend" />
+    </resultMap>
+
+    <insert id="signUp"
+            parameterType="com.ssafy.backend.user.model.dto.UserSignupDTO">
         insert into user(user_id, user_password, user_birthday, user_name, user_phonenumber, user_nickname, user_email)
         values(#{userId}, #{userPassword}, #{userBirthday}, #{userName}, #{userPhonenumber}, #{userNickname}, #{userEmail})
     </insert>
 
-    <update id="changePassword" parameterType="String">
+    <update id="modifyPassword" parameterType="String">
         update user
         set user_password = #{newSafePassword}
         where user_id = #{originUserId}
     </update>
 
+    <select id="getAllUserList" parameterType="String" resultMap="UserViewVO">
+        SELECT distinct
+            u.user_id,
+            u.user_nickname,
+            u.user_picture,
+            CASE WHEN f.is_friend IS NOT NULL AND f.is_friend = true THEN true
+                 WHEN f.is_friend IS NOT NULL AND f.is_friend = false THEN false
+                 ELSE false END AS is_friend
+        FROM
+            user u
+                LEFT JOIN
+            friend f ON (u.user_id = f.user_id OR u.user_id = f.user_id2)
+                AND (f.user_id = #{userId} OR f.user_id2 = #{userId})
+        WHERE
+            u.user_id != #{userId}
+    </select>
 </mapper>

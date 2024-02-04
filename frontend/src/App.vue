@@ -1,19 +1,20 @@
 <template>
-  <TheHeaderNav/>
+  <TheHeaderNav />
   <div id="wrapper">
     <RouterView />
   </div>
-  <TheFooter/>
+  <TheFooter />
 </template>
 
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
+import { onBeforeUnmount, onMounted } from 'vue';
+import { RouterView } from 'vue-router';
 import TheHeaderNav from './components/common/TheHeaderNav.vue';
 import TheFooter from './components/common/TheFooter.vue';
-</script>
 
+</script>
 <style lang="scss" scoped>
-#wrapper{
+#wrapper {
   height: auto;
   min-height: 100%;
   padding-bottom: $footer-height;

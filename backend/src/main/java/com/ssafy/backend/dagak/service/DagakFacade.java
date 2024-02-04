@@ -1,14 +1,19 @@
 package com.ssafy.backend.dagak.service;
 
-import com.ssafy.backend.dagak.model.dto.DagakDto;
-import com.ssafy.backend.dagak.model.dto.GakDto;
+import com.ssafy.backend.dagak.model.domain.Gak;
+import com.ssafy.backend.dagak.model.dto.DagakDTO;
+import com.ssafy.backend.dagak.model.dto.GakDTO;
+import com.ssafy.backend.dagak.model.repository.GakRepository;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -17,13 +22,15 @@ public class DagakFacade {
     @Autowired
     private DagakService dagakService;
 
-    @Transactional
-    public void createDagak(DagakDto dagakDto, List<GakDto> gaks){
+    @Autowired
+    GakRepository gakRepository;
 
-        int dagakId = dagakService.createDagak(dagakDto);
+    @Transactional
+    public void addDagak(DagakDTO dagakDto, List<GakDTO> gaks){
+        int dagakId = dagakService.addDagak(dagakDto);
 
         // 각 생성
-        for(GakDto gak: gaks){
+        for(GakDTO gak: gaks){
             gak.setDagakId(dagakId);
         }
 
@@ -31,18 +38,37 @@ public class DagakFacade {
     }
 
     @Transactional
-    public List<CalendarDagakVO> getCalendarDagaks(String userId) {
+    public List<CalendarDagakVO> getAllCalendarList(String userId) {
         // CalendarDagak 가져오기
-        List<CalendarDagakVO> calendarDagaks = dagakService.getCalendar(userId);
+        List<CalendarDagakVO> calendarDagakList = dagakService.getCalendarList(userId);
         // dagakId로 gak들 정보 가져오기
-        dagakService.getCalendarGaks(calendarDagaks);
+        dagakService.getCalendarGaks(calendarDagakList);
 
-//        for(CalendarDagakVO vo : calendarDagaks){
-//            log.info("===== CalendarDagakVO : {}", vo);
-//        }
-//        log.info("최종 CalendarDagakVOS : {}" , calendarDagaks);
+        return calendarDagakList;
 
-        return calendarDagaks;
+    }
 
+
+    @Transactional
+    public void deleteGak(Integer deleteGakId, List<Map<String, Integer>> remainGakInformation) {
+        dagakService.deleteGak(deleteGakId);
+        List<GakDTO> remainGaks = new ArrayList<>();
+        if (!remainGakInformation.isEmpty()){
+            for(Map<String, Integer> gak: remainGakInformation){
+                Integer remainGakId = gak.get("gakId");
+                Integer remainOrder = gak.get("gakOrder");
+                remainGaks.add(new GakDTO(remainGakId, remainOrder));
+            }
+                    dagakService.modifyGakOrder(remainGaks);
+        }
+    }
+
+    @Transactional
+    public void deleteDagak(Integer deleteDagakId) {
+        dagakService.deleteDagak(deleteDagakId);
+        List<Gak> gaks = gakRepository.findAllByDagakId(deleteDagakId);
+        for (Gak gak : gaks){
+            dagakService.deleteGak(gak.getGakId());
+        }
     }
 }

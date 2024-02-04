@@ -5,10 +5,10 @@ import org.springframework.data.domain.Page;
 
 public interface MokkojiService {
 
-    Mokkoji createMokkoji(Mokkoji mokkoji);
+    Mokkoji addMokkoji(Mokkoji mokkoji);
     Page<Mokkoji> getMokkojiList(int page, String keyword);
 
     void deleteMokkoji(Mokkoji mokkoji);
 
-    Mokkoji findByMokkojiId(int mokkojiId);
+    Mokkoji getMokkojiById(int mokkojiId);
 }

@@ -3,32 +3,20 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import router from "@/router";
 
-export const useRankStore = defineStore('counter', () => {
-const API_URL = 'https://localhost:8080'
-const mokkojiRank = ref([])
-// const getMokkojiRank = function () {
-//     axios({
-//       method: "get",
-//       url: `${API_URL}/dagak/mokkoji/rank10`,
-//     })
-//       .then((response) => {
-//         console.log('js.mokkojirank: ',response.data.data[0].mokkoji)
-//         mokkojiRank.value = response.data.data[0].mokkoji;
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       });
-//   };
+export const useRankStore = defineStore('rankStore', () => {
+const mokkojiRank = ref()
 const getMokkojiRank = async function () {
   try {
-    const response = await axios.get(`${API_URL}/dagak/mokkoji/rank10`);
-    console.log('js.mokkojirank: ', response.data.data[0].mokkoji);
-    console.log('js.mokkojirank: ', response.data.data);
-    mokkojiRank.value = response.data.data;
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/mokkoji/rank10`);
+
+    if(response.data.code === 1000){
+      mokkojiRank.value = response.data.result;
+    }
+    
   } catch (error) {
     console.error(error);
   }
 };
 
-  return { API_URL, mokkojiRank, getMokkojiRank }
+  return {mokkojiRank, getMokkojiRank }
 }, { persist: true })

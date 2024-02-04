@@ -24,7 +24,7 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_MOK
 public class MokkojiServiceImpl implements MokkojiService {
     private final MokkojiRepository mokkojiRepository;
     @Override
-    public Mokkoji createMokkoji(Mokkoji mokkoji) {
+    public Mokkoji addMokkoji(Mokkoji mokkoji) {
         log.info("모꼬지 이름을 체크합니다. {}",mokkoji.getMokkojiName());
         mokkojiRepository.findByMokkojiName(mokkoji.getMokkojiName())
                 .ifPresent(a -> {
@@ -49,7 +49,7 @@ public class MokkojiServiceImpl implements MokkojiService {
     }
 
     @Override
-    public Mokkoji findByMokkojiId(int mokkojiId) {
+    public Mokkoji getMokkojiById(int mokkojiId) {
         return mokkojiRepository.findMokkojiByMokkojiId(mokkojiId)
                 .orElseThrow(() -> new BaseException(NOT_EXIST_MOKKOJI));
     }

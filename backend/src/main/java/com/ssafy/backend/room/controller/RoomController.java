@@ -2,22 +2,28 @@ package com.ssafy.backend.room.controller;
 
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
-import com.ssafy.backend.room.model.dto.AnswerDto;
-import com.ssafy.backend.room.model.dto.ConnectionDto;
-import com.ssafy.backend.room.model.dto.QuestionDto;
-import com.ssafy.backend.room.model.dto.RoomEnterDto;
+import com.ssafy.backend.room.model.dto.AnswerDTO;
+import com.ssafy.backend.room.model.vo.AnswerVO;
+import com.ssafy.backend.room.model.vo.ConnectionVO;
+import com.ssafy.backend.room.model.dto.QuestionDTO;
+import com.ssafy.backend.room.model.dto.EnterRoomDTO;
+import com.ssafy.backend.room.model.vo.QuestionVO;
 import com.ssafy.backend.room.service.RoomService;
 import io.openvidu.java.client.OpenVidu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.EMPTY_SIGN;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("room")
@@ -42,56 +48,70 @@ public class RoomController {
     @PostMapping("")
     public BaseResponse<?> room(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
-        String userId="yj";
-        String sessionName;
-        String videoCodec;
-        String token;
+        String userId = (String) body.get("userId");
+        String sessionName="";
+        String videoCodec="";
+        String connectionId="";
+        String studyRoom="";
+        String token="";
+        String questionId="";
+        HttpSession session = request.getSession();
 
         switch (sign){
-            case "enterRandomroom": // 랜덤 방 입장
+            case "enterRandomroom":
+                if (session != null) {
+                    connectionId = (String) session.getAttribute("connectionId");
+                    studyRoom = (String) session.getAttribute("studyRoom");
+                }
+
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
-                RoomEnterDto randomRoomEnterDto = new RoomEnterDto(sessionName, videoCodec);
-                ConnectionDto connectionDto = roomService.enterRandomroom(randomRoomEnterDto);
+                EnterRoomDTO randomEnterRoomDTO = new EnterRoomDTO(userId,sessionName,videoCodec,connectionId,studyRoom);
+                ConnectionVO connectionVO = roomService.enterRandomroom(randomEnterRoomDTO);
 
-                return new BaseResponse<>(connectionDto);
-            case "enterMyRoom":
-                userId = (String) body.get("userId");
-                RoomEnterDto defaultRoomEnterDto = new RoomEnterDto(userId, "VP8");
-                token = roomService.enterDefaultroom(defaultRoomEnterDto);
+                if (session != null) {
+                    session.setAttribute("connectionId", connectionVO.getConnectionId());
+                    session.setAttribute("studyRoom", connectionVO.getSession());
+                }
+
+                return new BaseResponse<>(connectionVO);
+            case "enterMyroom":
+                EnterRoomDTO enterMyRoom = new EnterRoomDTO(userId, userId,"VP8");
+                token = roomService.enterMyroom(enterMyRoom);
+
+                if (session != null) {
+                    session.setAttribute("token", token);
+                }
 
                 return new BaseResponse<>(token);
-            case "enterMoccojiroom": // 모꼬지(길드) 방 입장
+            case "enterMoccojiroom":
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
-
-                RoomEnterDto moccojiRoomEnterDto = new RoomEnterDto(sessionName, videoCodec);
-                token = roomService.enterMoccojiroom(moccojiRoomEnterDto);
+                EnterRoomDTO moccojiEnterRoomDTO = new EnterRoomDTO(userId,sessionName, videoCodec);
+                token = roomService.enterMoccojiroom(moccojiEnterRoomDTO);
 
                 return new BaseResponse<>(token);
-            case "askQuestion": // 질문하기
+            case "askQuestion":
                 sessionName = (String) body.get("session");
                 String qustionData = (String) body.get("data");
+                userId = (String) body.get("userId");
+                QuestionDTO questionDto = new QuestionDTO(userId, sessionName, qustionData);
+                QuestionVO questionVO = roomService.askQuestion(questionDto);
 
-                System.out.println("sessionName: " + sessionName);
-                QuestionDto questionDto = new QuestionDto(userId, sessionName, qustionData);
-                questionDto = roomService.askQuestion(questionDto);
-
-                return new BaseResponse<>(questionDto);
-            case "answerQuestion": // 답변하기
+                return new BaseResponse<>(questionVO);
+            case "answerQuestion":
                 sessionName = (String) body.get("session");
                 String answerData = (String) body.get("data");
-                String questionId = (String) body.get("questionId");
-
-                AnswerDto answerDto = new AnswerDto(userId,sessionName,answerData,questionId);
-                answerDto = roomService.answerQuestion(answerDto);
-
-                return new BaseResponse<>(answerDto);
-            case "findAnswer": // 답변 찾기
                 questionId = (String) body.get("questionId");
-                List<AnswerDto> answerDtos = roomService.findAnswerByQuestionId(questionId);
+                AnswerDTO answerDTO = new AnswerDTO(userId,sessionName,answerData,questionId);
+                AnswerVO answerVO = roomService.answerQuestion(answerDTO);
 
-                return new BaseResponse<>(answerDtos);
+                return new BaseResponse<>(answerVO);
+            case "findAnswer":
+                questionId = (String) body.get("questionId");
+                List<AnswerVO> answerVOS = roomService.findAnswerByQuestionId(questionId);
+
+                return new BaseResponse<>(answerVOS);
         }
         throw new BaseException(EMPTY_SIGN);
     }

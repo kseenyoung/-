@@ -54,6 +54,9 @@ dependencies {
     implementation 'net.tanesha.recaptcha4j:recaptcha4j:0.0.7'
     implementation 'javax.json:javax.json-api:1.1.2'
     implementation 'org.glassfish:javax.json:1.1'
+
+    //S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE'
 }
 
 tasks.named('test') {

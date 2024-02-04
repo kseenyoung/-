@@ -32,6 +32,7 @@ public enum BaseResponseStatus {
     SUCCESS_CREATE_PRODUCT(true,1401, "상품 추가에 성공했습니다."),
     SUCCESS_BUY_PRODUCT(true, 1402,"상품 구매에 성공했습니다"),
     SUCCESS_SELL_PRODUCT(true,1403 ,"상품 판매에 성공했습니다" ),
+    SUCCESS_LEAVE_SESSION(true, 1404, "세션을 나가는데 성공했습니다"),
 
     /**
      * 2000 : Request 오류
@@ -45,7 +46,7 @@ public enum BaseResponseStatus {
     INVALID_AUTH_TOKEN(false, 2007, "유효하지 않은 인증번호입니다."),
     NOT_AUTH_PHONE_NUMBER(false, 2008, "인증이 되지 않은 전화번호입니다."),
     ALREADY_AUTH_PHONE_NUMBER(false, 2008, "이미 인증을 받은 전화번호입니다."),
-    NOT_EXIST_MEMBER(false, 2009, "존재하지 않는 사용자입니다."),
+    NOT_EXIST_USER(false, 2009, "존재하지 않는 사용자입니다."),
     ALREADY_EXIST_PHONE_NUMBER(false, 2010, "이미 등록된 휴대전화 번호입니다."),
     NOT_EXIST_GROUP(false, 2011, "존재하지 않는 모꼬지입니다."),
     ALREADY_EXIST_GROUP(false, 2012, "이미 존재하는 모꼬지입니다."),
@@ -66,11 +67,13 @@ public enum BaseResponseStatus {
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
     NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다."),
     NOT_EXIST_INVENTORY(false,2041,"일치하는 인벤토리가 없습니다."),
-    WRONG_TYPE(false,2041,"자료형이 일치하지 않습니다."),
+    NOT_EXIST_SESSION(false,2042, "존재하지 않는 세션입니다."),
+    WRONG_TYPE(false,2043,"자료형이 일치하지 않습니다."),
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_DELETE_ALARM(false, 2033, "이미 삭제된 알람입니다"),
 
+    /* User */
     ALREADY_EXIST_USER(false, 2034, "이미 존재하는 회원입니다."),
     ALREADY_EXIST_ID(false, 2035, "이미 존재하는 아이디입니다."),
     FAIL_LOGIN(false, 2036, "로그인에 실패했습니다."),
@@ -92,6 +95,13 @@ public enum BaseResponseStatus {
     FAIL_TO_LINK(false, 2047,"연동에 실패했습니다."),
     FAIL_TO_CONNECT(false, 2048,"통신에 실패했습니다."),
 
+    INVALID_ID(false, 2049,"올바른 아이디를 입력해주세요."),
+    INVALID_PASSWORD(false, 2050,"올바른 비밀번호를 입력해주세요."),
+    INVALID_BIRTHDAY(false, 2051,"올바른 생일을 입력해주세요."),
+    INVALID_NAME(false, 2052,"올바른 이름을 입력해주세요."),
+    INVALID_PHONENUMBER(false, 2053,"올바른 핸드폰 번호를 입력해주세요."),
+    INVALID_EMAIL(false, 2054,"올바른 이메일을 입력해주세요."),
+    INVALID_NICKNAME(false, 2055,"올바른 닉네임을 입력해주세요."),
 
     /* 모꼬지 관련 에러 이넘 클래스 BAD REQUEST*/
     AVOID_DUPLICATE_ALARM(false, 2101, "이미 상대방에게 요청을 보냈습니다."),
@@ -99,9 +109,17 @@ public enum BaseResponseStatus {
     NOT_EXIST_KICK_USER(false, 2102, "강퇴할 모꼬지 회원이 존재하지 않습니다."),
     NOT_FOUND_RANKING_MOKKOJI(false, 2103, "해당 모꼬지의 랭킹이 존재하지 않습니다"),
     NOT_EXIST_USER_MOKKOJI(false, 2104, "회원의 모꼬지가 존재하지 않습니다"),
-    NOT_LEAVE_MOKKOJI_KING(false, 2105, "모꼬지장은 탈퇴할 수 없습니다"),
+    NOT_LEAVE_MOKKOJI_LEADER(false, 2105, "모꼬지장은 탈퇴할 수 없습니다"),
     IS_EXIST_MOKKOJI_NAME(false, 2106, "이미 존재하는 모꼬지 이름입니다"),
     NOT_EXIST_MOKKOJI(false, 2107, "해당 모꼬지를 찾을 수 없습니다"),
+    REFUSED_TO_DELETE_MOKKOJI(false, 2108, "모꼬지는 생성 7일 이후에 삭제할 수 있습니다."),
+    NOT_MOKKOJI_LEADER(false, 2109, "모꼬지장이 아닙니다."),
+    NOT_MOKKOJI_MEMBER(false, 2110, "해당 회원을 찾을 수 없습니다."),
+
+    /* 보드 관련 BAD REQUEST */
+    NOT_FOUND_TAG(false, 2110, "태그가 존재하지 않습니다."),
+    NOT_FOUND_BOARD(false, 2111, "글이 존재하지 않습니다."),
+    NOT_FOUND_COMMENT(false, 2112, "댓글이 존재하지 않습니다."),
 
     /* 이벤토리 BAD REQUEST  */
     TWO_UP_PUT_ON_CLOTH(false, 2120, "같은 카테고리의 옷을 두 개 이상 입을 수 없습니다"),
@@ -109,15 +127,19 @@ public enum BaseResponseStatus {
     EMPTY_INVENTORY(false, 2122, "존재하는 아이템이 인벤토리에 없습니다"),
 
     /* 친구 관련 에러 이넘 클래스 BAD REQUEST*/
-    ALREADY_EXIST_FRIEND(false, 2200, "이미 상대방과 친구입니다."),
-    NOT_FRIEND(false, 2201, "이미 상대방과 친구입니다."),
+    ALREADY_EXIST_FRIEND(false, 2200, "이미 친구입니다."),
+    NOT_REQUESTED_FRIEND(false, 2201, "친구 요청이 없으므로 승인할 수 없습니다."),
+    ALREADY_EXIST_ALARM(false, 2200, "이미 상대방에게 친구 요청 하였습니다."),
 
 
     /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
-    JSON_PARSING_ERROR(false, 2300, "이미 상대방과 친구입니다."),
+    JSON_PARSING_ERROR(false, 2300, "알맞은 타입으로 요청해주세요"),
 
     /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
 //    WRONG_TYPE(false,2400,"자료형이 일치하지 않습니다."),
+    DATA_NOT_CHANGED(false,2400,"변경된 데이터가 없습니다."),
+    NOT_EXIST_GAK(false,2401,"데이터가 존재하지 않습니다."),
+    NOT_EXIST_DAGAK(false,2401,"유효하지 않은 다각 아이디입니다."),
 
 
     /**
