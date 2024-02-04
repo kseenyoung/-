@@ -18,6 +18,7 @@
         <RouterLink to="/login" v-if="!userStore.loginUserInfo.userId">
           <span class="underline">로그인</span>
         </RouterLink>
+
         <div
           class="dropdown-toggle common-pointer"
           data-bs-toggle="dropdown"
