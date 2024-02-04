@@ -5,6 +5,9 @@
         <RouterLink to="/">다각</RouterLink>
       </div>
       <div class="d-flex align-items-center">
+        <RouterLink to="/posts/list">
+          <span class="underline">게시판</span>
+        </RouterLink>
         <RouterLink to="/apply">
           <span class="underline">친구/모꼬지 신청</span>
         </RouterLink>
@@ -15,6 +18,7 @@
         <RouterLink to="/login" v-if="!userStore.loginUserInfo.userId">
           <span class="underline">로그인</span>
         </RouterLink>
+
         <div
           class="dropdown-toggle common-pointer"
           data-bs-toggle="dropdown"
@@ -70,10 +74,10 @@ const alarmStore = useAlarmStore();
 const router = useRouter();
 
 //로그인할 때 생성한 sessionStorage의 정보
-const loginId = ref('');
+const loginId = ref('')
 const getSessionId = function () {
-  loginId.value = sessionStorage.getItem('loginSession');
-};
+  loginId.value = sessionStorage.getItem('loginSession')
+}
 
 //로그아웃
 const logout = async function () {
@@ -92,14 +96,14 @@ const logout = async function () {
 };
 
 // 헤더 스크롤
-const headerHidden = ref(false);
-let lastScrollTop = 0;
+const headerHidden = ref(false)
+let lastScrollTop = 0
 
 const handleScroll = () => {
-  const scrollTop = window.scrollY || document.documentElement.scrollTop;
-  headerHidden.value = scrollTop > lastScrollTop && scrollTop > 70;
-  lastScrollTop = scrollTop;
-};
+  const scrollTop = window.scrollY || document.documentElement.scrollTop
+  headerHidden.value = scrollTop > lastScrollTop && scrollTop > 70
+  lastScrollTop = scrollTop
+}
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
@@ -107,8 +111,8 @@ onMounted(() => {
   alarmStore.getUnReadAlarmList();
 });
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll);
-});
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style lang="scss" scoped>
