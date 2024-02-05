@@ -595,7 +595,7 @@ div[id^='bsquare'] {
 .background {
   width: 100%;
   height: 100%;
-  background: url('@/assets/gif.gif') no-repeat center center fixed;
+  background: url('@/assets/background.gif') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
