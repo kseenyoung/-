@@ -9,18 +9,18 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Getter
-public class Tag {
+public class BoardTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tagId;
+    private int boardTagId;
 
     @Column(columnDefinition = "varchar (10)")
-    private String tagName;
+    private String boardTagName;
 
 
     @Builder
-    public Tag(int tagId, String tagName) {
-        this.tagId = tagId;
-        this.tagName = tagName;
+    public BoardTag(int tagId, String tagName) {
+        this.boardTagId = tagId;
+        this.boardTagName = tagName;
     }
 }
