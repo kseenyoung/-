@@ -131,13 +131,14 @@ const enterRoom = async (sessionId) => {
 const createSession = async (sessionId) => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
-    { sign: "enterRandomroom", userId: store.myUserName, sessionName: sessionId, videoCodec: "VP8"},
+    { sign: "enterRandomroom", userId: store.myUserName, sessionName: store.loginUserInfo.sub, videoCodec: "VP8"},
     {
       headers: { "Content-Type": "application/json" },
     },
   );
   console.log(response.data.result.session);
   mySession.value = response.data.result.session;
+  // store.loginUserInfo.sub = response.data.result.session;
   return response.data.result.token;
 };
 
@@ -198,10 +199,10 @@ const joinSession = () => {
     console.log("새로고침!!!!!");
   });
 
-  enterRoom(mySession.value).then((token) => {
+  enterRoom(store.loginUserInfo.sub).then((token) => {
     console.log("token"+token);
     store.studyRoomSessionToken = token;
-    session.value.connect(token, myUserName.value).then(() => {
+    session.value.connect(token, store.myUserName).then(() => {
       publisher.value = OV.value.initPublisher(undefined, {
         audioSource: undefined,
         videoSource: undefined,
@@ -216,22 +217,23 @@ const joinSession = () => {
       mainStreamManager.value = publisher.value;
 
       session.value.publish(publisher.value);
+      store.isInSession = true;
     }).catch((error) => {
       console.log("There was an error connecting to the session:", error.code, error.message);
     });
   });
 
-  window.addEventListener("beforeunload", leaveSession);
+  // window.addEventListener("beforeunload", leaveSession);
 };
 
 const leaveStudyRoom = async() => {
   console.log("스터디룸을 나갑니다.");
-  await leaveSession;
+  await leaveSession();
   console.log("홈화면으로 돌아갑니다.");
   router.push('/');
 }
 
-const leaveSession = () => {
+const leaveSession = async () => {
   if (session.value) session.value.disconnect();
 
   session.value = undefined;
@@ -240,7 +242,17 @@ const leaveSession = () => {
   subscribers.value = [];
   OV.value = undefined;
 
-  window.removeEventListener("beforeunload", leaveSession);
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + "room",
+    { sign: "leaveSession"},
+    {
+      headers: { "Content-Type": "application/json" },
+    },
+  ).then(()=>{
+    alert("퇴실합니다.")
+  });
+
+  // window.removeEventListener("beforeunload", leaveSession);
 };
 
 const updateMainVideoStreamManager = (stream) => {

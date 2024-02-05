@@ -71,30 +71,26 @@ public class RoomServiceImpl implements RoomService {
         String sessionName = enterRoomDTO.getSessionName();
         Session session;
 
-        // 세션에 해당하는 방이 존재하는지 확인
-        sessionName = getRandomroom(sessionName);
+        if(enterRoomDTO.getPrevConnectionId() == null){
+            sessionName = getRandomroom(sessionName);
+        }  else { // 기존연결이 있다면 재접속
+            sessionName = enterRoomDTO.getPrevSession();
+        }
         enterRoomDTO.setSessionName(sessionName);
         openvidu.fetch();
         session = openvidu.getActiveSession(sessionName);
 
         if(session == null){    // 방이 존재하지 않다면 생성하라
+            System.out.println("========================================");
+            System.out.println("존재하지 않는 방에 입장합니다: "+sessionName);
+//            deletePreviousConnection(enterRoomDTO);
             HashMap<String,String> SessionPropertyJson = enterRoomDTO.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
-            session = openvidu.createSession(properties);
+            openvidu.createSession(properties);
         } else{                 // 새로고침할떄 다른 세션에 있는 나의 연결을 삭제한다.
-            openvidu.fetch();
-            List<Session> activeSessions = openvidu.getActiveSessions();
-            String prevSession = enterRoomDTO.getPrevSession();
-            String prevConnectionId = enterRoomDTO.getPrevConnectionId();
-            for(Session s : activeSessions){ // 기존의 연결을 찾아서 삭제한다
-                if(s.getSessionId().equals(prevSession)){ // 세션을 찾았다면
-                    try{
-                        s.forceDisconnect(prevConnectionId);
-                    } catch (Exception e){
-                        System.out.println("이미 연결이 끊어져있습니다.");
-                    }
-                }
-            }
+            System.out.println("========================================");
+            System.out.println("존재하는 방에 입장합니다: "+sessionName);
+//            deletePreviousConnection(enterRoomDTO);
         }
 
         openvidu.fetch();
@@ -108,6 +104,7 @@ public class RoomServiceImpl implements RoomService {
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
         Connection connection = session.createConnection(properties);
         ConnectionVO connectionVO = new ConnectionVO(connection.getConnectionId(),sessionName,connection.getToken());
+        System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
         return connectionVO;
     }
 
@@ -233,23 +230,29 @@ public class RoomServiceImpl implements RoomService {
         return answerVOS;
     }
 
-    @Override
-    public void leaveSession(String userId, String token) throws Exception {
-        openvidu.fetch();
-        Session session = openvidu.getActiveSession(userId);
-        if(session!=null){
-            List<Connection> connections = session.getActiveConnections();
-            for (Connection connection : connections){
-                if(token.equals(connection.getToken())){
-                        session.forceDisconnect(connection);
-                }
-            }
-        }
-    }
-
     public String getRandomroom(String sessionName){
         Random random = new Random();
         int roomNumber = random.nextInt( 3) + 1; // 1-3
         return sessionName+roomNumber;
+    }
+
+    public void leaveSession(EnterRoomDTO enterRoomDTO) throws Exception{
+        openvidu.fetch();
+        List<Session> activeSessions = openvidu.getActiveSessions();
+        String prevSession = enterRoomDTO.getPrevSession();
+        String prevConnectionId = enterRoomDTO.getPrevConnectionId();
+        for(Session s : activeSessions){ // 기존의 연결을 찾아서 삭제한다
+            System.out.println("기존 연결끊기를 시도합니다 ... ");
+            if(s.getSessionId().equals(prevSession)){ // 세션을 찾았다면
+                System.out.println("기존 연결을 찾았습니다 ... ");
+                System.out.println("기존 연결 아이디 : "+prevConnectionId);
+                try{
+                    s.forceDisconnect(prevConnectionId);
+                    System.out.println("기존 연결을 성공적으로 끊었습니다.");
+                } catch (Exception e){
+                    System.out.println("이미 연결이 끊어져있습니다.");
+                }
+            }
+        }
     }
 }

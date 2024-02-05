@@ -3,15 +3,13 @@ package com.ssafy.backend.product.service;
 import com.ssafy.backend.category.model.domain.ProductCategory;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
-import com.ssafy.backend.common.response.BaseResponseStatus;
 import com.ssafy.backend.inventory.model.domain.Inventory;
 import com.ssafy.backend.inventory.model.repository.InventoryRepository;
 import com.ssafy.backend.product.model.domain.Product;
 import com.ssafy.backend.product.model.dto.ProductDTO;
-import com.ssafy.backend.product.model.vo.ProductListVO;
 import com.ssafy.backend.product.model.repository.ProductRepository;
+import com.ssafy.backend.product.model.vo.ProductListVO;
 import com.ssafy.backend.product.model.vo.ProductVO;
-import com.ssafy.backend.room.model.vo.AnswerVO;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
                     .productCategoryDto(productCategory.toDto())
                     .productPrice(product.getProductPrice())
                     .productDescription(product.getProductDescription())
+                    .productImage(product.getProductImage())
                     .build();
             productDTOList.add(productDto);
         }
@@ -82,8 +81,10 @@ public class ProductServiceImpl implements ProductService {
         if(user == null){
             throw new BaseException(NOT_EXIST_USER);
         }
-
         Product product = productRepository.findById(productId).orElseThrow(()-> new BaseException(NOT_EXIST_PRODUCT));
+        inventoryRepository.findProductByUserIdAndProductId(productId, userId).ifPresent(e ->{
+            throw new BaseException(DUPLICATE_PURCHASE_ITEM);
+        });
         int price = product.getProductPrice();
         deductPoint(user, price);
 
@@ -113,8 +114,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public void deductPoint(User user, int price){
-        int prevPoint = user.getUserPoint();
-        user.setUserPoint(prevPoint - price);
+        user.usePoint(price);
         userRepository.save(user);
     }
 }

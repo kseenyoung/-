@@ -18,19 +18,18 @@
           <td>{{ item.mokkoji.leaderId }}</td>
         </tr>
       </tbody>
-    </table>  
+    </table>
   </div>
 </template>
 
 <script setup>
 import { useRankStore } from '@/stores/rank';
-import { useUserStore } from '@/stores/user';
 import { ref, onMounted } from 'vue';
 
-const store = useUserStore();
 const rankStore = useRankStore();
 const mokkojiRank = ref([]);
-onMounted(() => {
+onMounted(async () => { 
+  await rankStore.getMokkojiRank();
   mokkojiRank.value = rankStore.mokkojiRank;
 });
 </script>
