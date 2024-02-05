@@ -86,10 +86,10 @@ public enum BaseResponseStatus {
 
     FAIL_TO_DELETE_USER(false, 2041, "회원 탈퇴 실패."),
 
-
     NEED_LOGIN(false, 2042,"로그인이 필요한 서비스입니다."),
     NEED_KAKAO_LINK(false, 2043,"기존 회원 로그인 후 카카오 서비스와 연동 하시겠습니까?"),
     NEED_GOOGLE_LINK(false, 2044,"기존 회원 로그인 후 구글 서비스와 연동 하시겠습니까?"),
+    NEED_AGAIN_LOGIN(false, 2045,"다시 로그인을 해주세요."),
 
     NOT_MATCH_EMAIL(false, 2045,"기존 이메일이 일치하지 않습니다"),
     NOT_MATCH_CODE(false, 2046,"인증코드가 일치하지 않습니다"),
@@ -129,6 +129,7 @@ public enum BaseResponseStatus {
     TWO_UP_PUT_ON_CLOTH(false, 2120, "같은 카테고리의 옷을 두 개 이상 입을 수 없습니다"),
     DUPLICATE_INVENTORY_ID(false, 2121, "중복된 아이템 착용 요청입니다."),
     EMPTY_INVENTORY(false, 2122, "존재하는 아이템이 인벤토리에 없습니다"),
+    DUPLICATE_PURCHASE_ITEM(false,2123 , "중복된 아이템을 구매할 수 없습니다."),
 
     /* 친구 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_EXIST_FRIEND(false, 2200, "이미 친구입니다."),

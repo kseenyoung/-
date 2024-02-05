@@ -84,22 +84,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {  onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import MyRanking from '@/components/home/MyRanking.vue';
 import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
 import { useUserStore } from '@/stores/user';
-import { useRankStore } from '@/stores/rank';
 import { useCategoryStore } from '@/stores/category';
 import { useAlarmStore } from '@/stores/alarm';
 import SimpleDagak from '@/components/dagak/SimpleDagak.vue';
 const userStore = useUserStore();
-const rankstore = useRankStore();
 const categoryStore = useCategoryStore();
 const alarmStore = useAlarmStore();
 const router = useRouter();
-const API_URL = 'https://localhost:8080';
-const mokkojiRank = ref([]);
 
 const navigateToStudyRoom = () => {
   router.push('/studyroom');
@@ -109,8 +105,6 @@ onMounted(async () => {
   // store.login();
   alarmStore.getUnReadAlarmList();
   categoryStore.getCategoryList();
-  await rankstore.getMokkojiRank();
-  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
 });
 </script>
 

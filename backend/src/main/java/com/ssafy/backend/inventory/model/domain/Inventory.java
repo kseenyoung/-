@@ -1,6 +1,5 @@
 package com.ssafy.backend.inventory.model.domain;
 
-import com.ssafy.backend.category.model.domain.ProductCategory;
 import com.ssafy.backend.product.model.domain.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +25,7 @@ public class Inventory {
 
     private int isWearing;
 
-    @ManyToOne()
+    @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "productId")
     private Product product;
 
