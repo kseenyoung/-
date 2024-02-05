@@ -1,7 +1,7 @@
 package com.ssafy.backend.board.model.dto;
 
 import com.ssafy.backend.board.model.domain.Board;
-import com.ssafy.backend.board.model.domain.Tag;
+import com.ssafy.backend.board.model.domain.BoardTag;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class BoardDTO {
     private long boardId;
     private String userId;
-    private Tag tag;
+    private BoardTag boardTag;
     private String boardTitle;
     private String boardContent;
     private LocalDateTime createdDate;
@@ -20,7 +20,7 @@ public class BoardDTO {
     public BoardDTO(Board board) {
         this.boardId = board.getBoardId();
         this.userId = board.getUserId();
-        this.tag = board.getTagId();
+        this.boardTag = board.getBoardTagId();
         this.boardTitle = board.getBoardTitle();
         this.boardContent = board.getBoardContent();
         this.createdDate = board.getUpdatedDate();
@@ -35,8 +35,8 @@ public class BoardDTO {
         this.userId = userId;
     }
 
-    public void setTag(Tag tag) {
-        this.tag = tag;
+    public void setBoardTag(BoardTag boardTag) {
+        this.boardTag = boardTag;
     }
 
     public void setBoardTitle(String boardTitle) {

@@ -3,9 +3,7 @@ package com.ssafy.backend.board.service;
 import com.ssafy.backend.board.model.dto.TagCreateRequestDTO;
 import com.ssafy.backend.board.model.repository.TagRepository;
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.common.exception.MyException;
 import com.ssafy.backend.common.response.BaseResponseStatus;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +20,6 @@ public class TagServiceImpl implements TagService{
         tagRepository.findById(dto.getTagId()).ifPresent( e-> {
             throw new BaseException(BaseResponseStatus.NOT_FOUND_TAG);
         });
-        return tagRepository.save(dto.toEntity()).getTagId();
+        return tagRepository.save(dto.toEntity()).getBoardTagId();
     }
 }

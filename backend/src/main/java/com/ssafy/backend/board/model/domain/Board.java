@@ -21,7 +21,7 @@ public class Board extends BaseTime {
 
     @ManyToOne()
     @JoinColumn(name="tagId")
-    private Tag tagId;
+    private BoardTag boardTagId;
 
     @Column(columnDefinition = "char (40)")
     private String boardTitle;
@@ -31,15 +31,15 @@ public class Board extends BaseTime {
 
 
     @Builder
-    public Board(String userId, Tag tagId, String boardTitle, String boardContent) {
+    public Board(String userId, BoardTag boardTagId, String boardTitle, String boardContent) {
         this.userId = userId;
-        this.tagId = tagId;
+        this.boardTagId = boardTagId;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
     }
 
-    public void updateBoard(Tag tagId, String boardTitle, String boardContent) {
-        this.tagId = tagId;
+    public void updateBoard(BoardTag boardTagId, String boardTitle, String boardContent) {
+        this.boardTagId = boardTagId;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
     }
