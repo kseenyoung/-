@@ -1,7 +1,7 @@
 package com.ssafy.backend.room.model.vo;
 
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.room.model.domain.Answer;
+import com.ssafy.backend.room.model.domain.redis.AnswerRedis;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -34,11 +34,11 @@ public class AnswerVO {
         setQuestionId(questionId);
     }
 
-    public Answer toEntity(){
-        return Answer.builder()
+    public AnswerRedis toEntity(){
+        return AnswerRedis.builder()
                 .userId(this.userId)
                 .session(this.session)
-                .answer(this.data)
+                .answerContent(this.data)
                 .questionId(this.questionId)
                 .build();
     }
