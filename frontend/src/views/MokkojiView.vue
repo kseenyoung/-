@@ -67,7 +67,7 @@
             <div>{{ mokkoji.leaderId }}</div>
             <div>{{ mokkoji.mokkojiStatus }}</div>
             <div v-for="item in categories" :key="item.categoryId">
-              <div>{{ item.categoryName }}</div>
+              <div>#{{ item.categoryName }}</div>
             </div>
           </div>
         </div>
@@ -101,30 +101,39 @@ const userId = ref();
 
 // Vue Router 인스턴스 생성
 const route = useRoute(); // route 객체 생성
-const id = route.params.id;
 const getMokkojiDetail = async function () {
   const id = route.params.id; // id 값을 route.params에서 가져옵니다.
-  return await axios.get(
-    `${import.meta.env.VITE_API_BASE_URL}mokkoji/detail/${id}`,
-  );
+  return await axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}mokkoji/detail/${id}`)
+    .then((res) => {
+      if (res.data.code === 1000) {
+        mokkoji.value = res.data.result.mokkoji;
+        user.value = res.data.result.user;
+        categories.value = res.data.result.categories;
+        leaderCheck.value = res.data.result.leader;
+        myMokkoji.value = res.data.result.myMokkojiId;
+        userId.value = res.data.result.userId;
+      } else {
+        alert(res.data.message);
+      }
+    });
 };
 
 onMounted(async () => {
-  const response = await getMokkojiDetail(id);
+  getMokkojiDetail();
+  // const response = await getMokkojiDetail(id);
 
-  if (response.data.code === 1000) {
-    console.log(response.data);
-    mokkoji.value = response.data.result.mokkoji;
-    user.value = response.data.result.user;
-    categories.value = response.data.result.categories;
-    // leaderCheck.value = response.data.result.leaderCheck;
-    leaderCheck.value = response.data.result.leader;
-    // myMokkoji.value = response.data.result.myMokkoji;
-    myMokkoji.value = response.data.result.myMokkojiId;
-    userId.value = response.data.result.userId;
-  } else {
-    alert(response.data.message);
-  }
+  // if (response.data.code === 1000) {
+  //   console.log(response.data);
+  //   mokkoji.value = response.data.result.mokkoji;
+  //   user.value = response.data.result.user;
+  //   categories.value = response.data.result.categories;
+  //   leaderCheck.value = response.data.result.leader;
+  //   myMokkoji.value = response.data.result.myMokkojiId;
+  //   userId.value = response.data.result.userId;
+  // } else {
+  //   alert(response.data.message);
+  // }
 });
 
 //모꼬지 가입 신청
@@ -205,6 +214,7 @@ const kickMember = function (memberId) {
         if (res.data.code === 1000) {
           //성공
           alert('강퇴되었습니다.');
+          getMokkojiDetail();
         } else {
           alert('실패');
         }

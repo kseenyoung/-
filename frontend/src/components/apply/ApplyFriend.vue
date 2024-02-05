@@ -180,6 +180,7 @@ const getFriendList = function () {
     userId: userStore.loginUserInfo.userId,
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => {
+    console.log(res.data);
     friendList.value = res.data.result;
   });
 };
@@ -214,12 +215,12 @@ const requestFriend = function (userId) {
     sign: 'requestFriend',
     userId: userId,
   };
-  console.log(body);
   axios.post(`${import.meta.env.VITE_API_BASE_URL}friend`, body).then((res) => {
-    console.log(res);
     if (res.data.code === 1000) {
       //성공
       alert('친구 신청을 보냈습니다.');
+    } else if (res.data.code === 2200) {
+      alert('이미 친구 신청을 보낸 유저입니다.');
     } else {
       alert('실패했습니다.');
     }

@@ -44,6 +44,12 @@ const router = createRouter({
           component: () => import('@/components/mypage/MyPageSchedule.vue'),
         },
         {
+          path: 'mydagak',
+          name: 'myPageScheduleDagak',
+          component: () =>
+            import('@/components/mypage/MyPageScheduleDagak.vue'),
+        },
+        {
           path: 'friend',
           name: 'myPageFriend',
           component: () => import('@/components/mypage/MyPageFriend.vue'),
