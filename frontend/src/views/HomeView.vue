@@ -1,6 +1,7 @@
 <template>
-  <div class="background">
+
     <div class="parent">
+        <div class="background">
       <div class="part one">
         <div class="title m-0" style="color:#000000; font-size:150px;">다각</div>
         <h2><div style="color:white;font-weight:bold" class="">다같이 랜덤 스터디</div></h2>
@@ -13,13 +14,19 @@
         <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
     </div>
       </div>
+      </div>
+        <div class="background">
       <div class="part two">
         <MyRanking />
         <MokkojiRanking />
       </div>
-      <div class="part three">3</div>
+      </div>
+        <div class="background">
+      <div class="part three">
+        3
+      </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
