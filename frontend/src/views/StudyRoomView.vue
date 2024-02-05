@@ -5,7 +5,7 @@
         <div class="nametag">Python 마스터</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
         <img class="pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중" />
-        <button @click="leaveStudyRoom">나가기</button>
+        <button class="btn btn-outline-dark me-2" @click="leaveStudyRoom">나가기</button>
       </div>
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
@@ -26,30 +26,16 @@
             </div>
           </div>
           <div class="video-player-1">
-            <user-video class="videog1" ref="video1" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video2" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video3" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video4" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video5" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
+
+            <user-video class="videog1" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
               :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
           </div>
         </div>
 
         <div class="video-player-2">
-          <user-video class="videog2" ref="video6" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video7" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video8" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video9" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video10" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
+
+            <user-video class="videog2" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
+              :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
         </div>
       </div>
       <div class="bar">
@@ -95,16 +81,20 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { OpenVidu, Stream } from 'openvidu-browser';
 import { useUserStore } from '@/stores/user';
+import { useDagakStore } from '@/stores/dagak';
 import QnAListView from "@/components/room/QnAListView.vue";
 import UserVideo from "@/components/room/UserVideo.vue";
 import Dagak from "@/components/dagak/Dagak.vue";
 import { useRouter } from 'vue-router';
 
 
+
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const router = useRouter();
 const store = useUserStore();
+const dagakStore = useDagakStore();
+
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
 
@@ -300,6 +290,8 @@ const togglePause = () => {
 onMounted(() => {
   console.log("방에 입장합니다.");
   joinSession();
+  dagakStore.getTodayDagak();
+  console.log("다각을 가져옵니다.")
 });
 </script>
 
@@ -548,5 +540,8 @@ onMounted(() => {
 .ratetoggle:hover {
   background-color: white;
   /* border-bottom: 2px solid white;*/
+}
+.leave {
+  border: none;
 }
 </style>

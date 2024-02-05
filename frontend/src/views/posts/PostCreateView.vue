@@ -5,7 +5,7 @@
     <form @submit.prevent>
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">제목</label>
-        <input type="email" class="form-control" id="title" />
+        <input  class="form-control" id="title" />
       </div>
       <div class="mb-3">
         <label for="content" class="form-label">내용</label>

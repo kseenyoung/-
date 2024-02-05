@@ -5,7 +5,7 @@
       <p class="card-text">
         {{ content }}
       </p>
-      <p class="text-muted">{{ createdAt }}</p>
+      <p class="text-muted">{{ createdDate }}</p>
     </div>
   </div>
 </template>
@@ -19,7 +19,7 @@ defineProps({
   content: {
     type: String
   },
-  createdAt: {
+  createdDate: {
     type: [String, Date, Number]
   }
 })

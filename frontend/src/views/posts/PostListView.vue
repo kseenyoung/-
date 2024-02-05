@@ -3,12 +3,11 @@
     <h2>게시글 목록</h2>
     <hr class="my-4" />
     <div class="row g-3">
-      <div v-for="post in posts" :key="post.id" class="col-4">
+      <div v-for="post in posts.data.result.boards" :key="post.boardId" class="col-6">
         <PostItem
-          :title="post.title"
-          :content="post.content"
-          :created-at="post.createdAt"
-          @click="goDetailPage(post.id)"
+          :title="post.boardTitle"
+          :created-date="formatDate(post.createdDate)"
+          @click="goDetailPage(post.boardId)"
         ></PostItem>
       </div>
     </div>
@@ -26,6 +25,7 @@ import { useBoardStore } from '@/stores/board'
 import PostItem from '@/components/posts/PostItem.vue'
 const router = useRouter()
 const boardStore = useBoardStore()
+
 const goCreatePage = () => {
   router.push({
     name: 'postCreate'
@@ -33,7 +33,8 @@ const goCreatePage = () => {
 }
 const posts = ref([])
 const fetchPosts = () => {
-  posts.value = boardStore.posts
+  boardStore.getPosts();
+  posts.value = boardStore.posts;
 }
 fetchPosts()
 const goDetailPage = (id) => {
@@ -44,6 +45,14 @@ const goDetailPage = (id) => {
     }
   })
 }
+
+const formatDate = (timestampArray) => {
+  const date = new Date(...timestampArray);
+  return date.toLocaleString();
+};
+
+
+
 </script>
 
 <style lang="scss" scoped>

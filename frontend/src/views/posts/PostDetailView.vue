@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <h2>제목</h2>
-    <p>내용</p>
-    <p class="text-muted">2020-01-01</p>
+    <h2> {{detail.boardTitle}} </h2>
+    <p>{{detail.boardContent}}</p>
+    <p class="text-muted">{{ formatDate(detail.createdDate) }}</p>
     <hr class="my-4" />
     <div class="row g-2">
       <div class="col-auto">
@@ -27,9 +27,14 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
+import { useBoardStore } from '@/stores/board'
+import { ref } from 'vue'
+const boardStore = useBoardStore()
 const route = useRoute()
 const router = useRouter()
-const id = route.params.id
+const postId = route.params.id
+const detail = ref([])
+console.log(route.params.id, detail)
 const goListPage = () => {
   router.push({
     name: 'postList'
@@ -39,10 +44,22 @@ const goEditPage = () => {
   router.push({
     name: 'postEdit',
     params: {
-      id: 1
+      id: postId
     }
   })
 }
+
+const fetchDetail = (id) => {
+  boardStore.getPostDetail(id);
+  detail.value = boardStore.postDetail;
+}
+fetchDetail(postId);
+
+const formatDate = (timestampArray) => {
+  const date = new Date(...timestampArray);
+  return date.toLocaleString();
+};
+
 </script>
 
 <style lang="scss" scoped>

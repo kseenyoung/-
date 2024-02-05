@@ -67,9 +67,13 @@
         <SimpleDagak />
       </div>
 
-      <button
+      <!-- <button
         class="startbutton"
         v-if="userStore.loginUserInfo.userId"
+        @click="navigateToStudyRoom"
+      > -->
+      <button
+        class="startbutton"
         @click="navigateToStudyRoom"
       >
         공부시작
