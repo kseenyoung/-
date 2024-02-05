@@ -120,6 +120,8 @@ public enum BaseResponseStatus {
     NOT_MOKKOJI_LEADER(false, 2109, "모꼬지장이 아닙니다."),
     NOT_MOKKOJI_MEMBER(false, 2110, "해당 회원을 찾을 수 없습니다."),
 
+
+
     /* 보드 관련 BAD REQUEST */
     NOT_FOUND_TAG(false, 2110, "태그가 존재하지 않습니다."),
     NOT_FOUND_BOARD(false, 2111, "글이 존재하지 않습니다."),
@@ -145,6 +147,7 @@ public enum BaseResponseStatus {
     DATA_NOT_CHANGED(false,2400,"변경된 데이터가 없습니다."),
     NOT_EXIST_GAK(false,2401,"데이터가 존재하지 않습니다."),
     NOT_EXIST_DAGAK(false,2401,"유효하지 않은 다각 아이디입니다."),
+    NOT_FOUND_TODAY_DAGAK(false, 2402, "등록된 오늘의 다각이 없습니다"),
 
 
     /**

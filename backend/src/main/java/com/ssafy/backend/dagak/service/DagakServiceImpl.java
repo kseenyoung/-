@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_DAGAK;
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_GAK;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @Service
 @Slf4j
@@ -109,10 +108,18 @@ public class DagakServiceImpl implements DagakService {
 
     @Override
     public CalendarDagakVO getDagak(String userId, LocalDate today) {
-        Calendar todayCalender = calendarRepository.findCalendarByCalendarDateAndAndUserId(today, userId);
+        Calendar todayCalender = calendarRepository.findCalendarByCalendarDateAndAndUserId(today, userId)
+                .orElseThrow(() ->
+                    new BaseException(NOT_FOUND_TODAY_DAGAK));
         CalendarDagakVO todayCalendarDagakVO = new CalendarDagakVO();
         todayCalendarDagakVO.setUserId(todayCalender.getUserId());
         todayCalendarDagakVO.setDagakId(todayCalender.getDagakId());
+        todayCalendarDagakVO.setCalendarDate(todayCalender.getCalendarDate());
+        todayCalendarDagakVO.setCalendarDagakId(todayCalendarDagakVO.getCalendarDagakId());
+
+        todayCalendarDagakVO.setGaks(gakRepository.findAllByDagakId(todayCalendarDagakVO.getDagakId()));
+        log.info("todayCalendarDagakVO.getGaks() : ", todayCalendarDagakVO.getGaks());
+        
         return todayCalendarDagakVO;
     }
 
