@@ -71,6 +71,8 @@ onMounted(async () => {
   // 기존 스타일 유지
   background-color: #639b9d;
   /* 적절한 배경색으로 변경 */
+  bottom: 50px;
+  z-index: 100;
   border: none;
   color: white;
   padding: 15px 30px;
