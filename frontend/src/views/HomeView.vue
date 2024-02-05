@@ -2,14 +2,16 @@
   <div class="background">
     <div class="parent">
       <div class="part one">
-        <div class="title">다각</div>
-        <button
-          class="startbutton"
+        <div class="title m-0" style="color:#000000; font-size:150px;">다각</div>
+        <h2><div style="color:white;font-weight:bold" class="">다같이 랜덤 스터디</div></h2>
+        <div
+          style="color: white;"
           v-if="userStore.loginUserInfo.userId"
           @click="navigateToStudyRoom"
         >
-          공부시작
-        </button>
+          <h3 style="display:inline-block;"> <VueWriter :array="arr" style="display:inline-block;" class="is-typed cursor" :caret="underscore" /></h3>
+        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+    </div>
       </div>
       <div class="part two">
         <MyRanking />
@@ -21,7 +23,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted,ref } from 'vue'
 import { useRouter } from 'vue-router'
 import MyRanking from '@/components/home/MyRanking.vue'
 import MokkojiRanking from '@/components/home/MokkojiRanking.vue'
@@ -29,6 +31,15 @@ import { useUserStore } from '@/stores/user'
 import { useCategoryStore } from '@/stores/category'
 import { useAlarmStore } from '@/stores/alarm'
 import SimpleDagak from '@/components/dagak/SimpleDagak.vue'
+
+const arr = ref([
+  " \"정보처리기사\"",
+  "\"SQLD\"",
+  "\"생활과윤리\"",
+  "\"JLPT\"",
+]);
+
+
 const userStore = useUserStore()
 const categoryStore = useCategoryStore()
 const alarmStore = useAlarmStore()
@@ -52,6 +63,8 @@ onMounted(async () => {
   position: relative;
   z-index: 30;
   color: black;
+  padding-top: 10%;
+  padding-bottom: 5%;
 }
 
 .title::before {
@@ -593,6 +606,7 @@ div[id^='bsquare'] {
   background-position: center;
 }
 .background {
+  position: relative;
   width: 100%;
   height: 100%;
   background: url('@/assets/background.gif') no-repeat center center fixed;
@@ -600,5 +614,16 @@ div[id^='bsquare'] {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+}
+
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.2); /* 흰색에 대한 배경 투명도 조절 가능 */
+  z-index: 1; /* 이미지 위에 배치하려면 z-index 값을 조절하세요 */
 }
 </style>
