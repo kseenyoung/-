@@ -1,10 +1,14 @@
 <template>
-  <div class="background">
+
     <div class="parent">
+        <div class="background">
       <div class="part one">
-        <div class="title m-" style="color:#000000; font-size:150px;">다각</div>
-    
-        <h2><div style="color:white;font-weight:bold" class="">다같이 랜덤 스터디</div></h2>
+        
+        <div class="title m-0" style="color:#000000; font-size:10rem;">
+          다각
+        <h2><div style="color:black ;font-weight:bold" class="">다같이 랜덤 스터디</div></h2>
+        </div>
+
         <div
           style="color: white;"
           v-if="userStore.loginUserInfo.userId"
@@ -14,13 +18,19 @@
         <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
     </div>
       </div>
+      </div>
+        <div class="background">
       <div class="part two">
         <MyRanking />
         <MokkojiRanking />
       </div>
-      <div class="part three">3</div>
+      </div>
+        <div class="background">
+      <div class="part three">
+        3
+      </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -65,7 +75,7 @@ onMounted(async () => {
   z-index: 30;
   color: black;
   padding-top: 10%;
-  padding-bottom: 5%;
+  padding-bottom: 0;
 }
 
 .title::before {
@@ -627,7 +637,8 @@ div[id^='bsquare'] {
   background-color: rgba(255, 255, 255, 0.2); /* 흰색에 대한 배경 투명도 조절 가능 */
   z-index: 1; /* 이미지 위에 배치하려면 z-index 값을 조절하세요 */
 }
-
-
+.font-weight-bold {
+  margin-top: 10%;
+}
 </style>
 

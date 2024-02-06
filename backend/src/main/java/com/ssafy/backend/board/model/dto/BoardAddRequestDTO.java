@@ -2,7 +2,7 @@ package com.ssafy.backend.board.model.dto;
 
 
 import com.ssafy.backend.board.model.domain.Board;
-import com.ssafy.backend.board.model.domain.Tag;
+import com.ssafy.backend.board.model.domain.BoardTag;
 import com.ssafy.backend.common.utils.BoardValidator;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
@@ -43,12 +43,13 @@ public class BoardAddRequestDTO {
         this.tagId = tagId;
     }
 
-    public Board toEntity(Tag tag, String userId) {
-        return Board.builder().userId("test")
+    public Board toEntity(BoardTag boardTag, String userId) {
+        return Board.builder()
                 .boardContent(boardContent)
                 .boardTitle(boardTitle)
-                .tagId(tag)
-                .userId(userId).build();
+                .boardTagId(boardTag)
+                .userId(userId)
+                .build();
     }
 
     public BoardAddRequestDTO(){

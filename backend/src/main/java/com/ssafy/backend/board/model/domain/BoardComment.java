@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Getter
-public class Comment extends BaseTime {
+public class BoardComment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long commentId;
@@ -27,7 +27,7 @@ public class Comment extends BaseTime {
 
 
     @Builder
-    public Comment(Board boardId, String userId, String comment) {
+    public BoardComment(Board boardId, String userId, String comment) {
         this.boardId = boardId;
         this.userId = userId;
         this.comment = comment;
