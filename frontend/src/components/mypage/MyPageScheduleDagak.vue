@@ -37,46 +37,68 @@
             ></button>
           </div>
           <div class="modal-body">
+            <div class="modal-body-title">
+              [{{ selectedDagakId }} - 다각아이디(제목으로 수정해야)]
+            </div>
             <div class="gak-wrapper">
-              <div
-                v-for="gak in gakList"
-                :key="gak.gakId"
-                class="gak-detail-wrapper"
+              <draggable
+                v-model="gakList"
+                :element="'div'"
+                :animation="100"
+                :list="gakList"
+                class="drag-container"
+                @change="updateGakOrder"
+                item-key="id"
               >
-                <div class="gak-detail-wrapper-left">
-                  <div class="gak-detail-order">{{ gak.gakOrder }}.</div>
-                  <div class="gak-detail-tag">
-                    <!-- {{ getCategoryName(gak.categoryId) }} -->
-                    <select class="form-select" v-model="gak.categoryId">
-                      <option
-                        v-for="category in categoryStore.categoryList"
-                        :key="category.categoryId"
-                        :value="category.categoryId"
-                      >
-                        {{ category.categoryName }}
-                      </option>
-                    </select>
+                <template #item="{ element }">
+                  <div :key="element.gakId" class="gak-detail-wrapper">
+                    <div class="gak-detail-wrapper-left">
+                      <div class="gak-detail-order">
+                        {{ element.gakOrder }}.
+                      </div>
+                      <div class="gak-detail-tag">
+                        <select
+                          class="form-select"
+                          v-model="element.categoryId"
+                        >
+                          <option
+                            v-for="category in categoryStore.categoryList"
+                            :key="category.categoryId"
+                            :value="category.categoryId"
+                          >
+                            {{ category.categoryName }}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="gak-detail-time">
+                        <input
+                          class="form-control"
+                          type="number"
+                          v-model="element.runningTime"
+                          :id="'gakRunnginTime_' + element.gakId"
+                        />
+                        분
+                      </div>
+                    </div>
+                    <div class="gak-detail-wrapper-right common-pointer">
+                      <i
+                        class="bi bi-pencil-square"
+                        @click="
+                          updateGak(
+                            element.gakId,
+                            element.categoryId,
+                            element.runningTime,
+                          )
+                        "
+                      ></i>
+                      <i
+                        class="bi bi-trash"
+                        @click="deleteGak(element.gakId)"
+                      ></i>
+                    </div>
                   </div>
-                  <div class="gak-detail-time">
-                    <input
-                      class="form-control"
-                      type="number"
-                      v-model="gak.runningTime"
-                      id="gakRunnginTime"
-                    />
-                    분
-                  </div>
-                </div>
-                <div class="gak-detail-wrapper-right common-pointer">
-                  <i
-                    class="bi bi-pencil-square"
-                    @click="
-                      updateGak(gak.gakId, gak.categoryId, gak.runningTime)
-                    "
-                  ></i>
-                  <i class="bi bi-trash" @click="deleteGak(gak.gakId)"></i>
-                </div>
-              </div>
+                </template>
+              </draggable>
             </div>
           </div>
           <div class="modal-footer">
@@ -101,7 +123,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import MyPageScheduleDagakModal from './MyPageScheduleDagakModal.vue';
+import draggable from 'vuedraggable';
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
@@ -119,7 +141,6 @@ const getAllDagakList = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`)
     .then((res) => {
-      console.log(res);
       dagakList.value = res.data.result;
     });
 };
@@ -137,7 +158,11 @@ const openModal = function (id) {
       params: { dagakId: id },
     })
     .then((res) => {
-      gakList.value = res.data.result;
+      //각 목록을 gakOrder 기준으로 오름차순 정렬
+      const sortedGakList = res.data.result.sort(
+        (a, b) => a.gakOrder - b.gakOrder,
+      );
+      gakList.value = sortedGakList;
     });
 };
 
@@ -152,9 +177,16 @@ const getCategoryName = (categoryId) => {
 //각 삭제
 const deleteGak = function (gakId) {
   if (window.confirm('정말로 삭제하시겠습니까?')) {
+    const updatedGakList = gakList.value.filter((gak) => gak.gakId !== gakId);
+    const remainGakInformation = updatedGakList.map((gak, index) => ({
+      gakId: gak.gakId,
+      gakOrder: index + 1,
+    }));
+    console.log(remainGakInformation);
     const body = {
       sign: 'deleteGak',
       gakId: gakId,
+      remainGakInformation: remainGakInformation,
     };
     axios
       .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
@@ -193,9 +225,38 @@ const updateGak = function (gakId, categoryId, runningTime) {
       });
   }
 };
+
+//각 순서 수정
+const updateGakOrder = function () {
+  //드래그 한 정보를 gakOrder에 저장
+  gakList.value.forEach((gak, index) => {
+    gak.gakOrder = index + 1;
+  });
+
+  //Map형식으로 저장
+  const gakInformation = gakList.value.map((gak) => ({
+    gakId: gak.gakId,
+    gakOrder: gak.gakOrder,
+  }));
+
+  const body = {
+    sign: 'modifyGakOrder',
+    GakInformation: gakInformation,
+  };
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
+    if (res.data.code === 1000) {
+      //순서 수정 성공
+    } else {
+      alert('실패했습니다.');
+    }
+  });
+};
 </script>
 
 <style lang="scss" scoped>
+.drag-item {
+  border: 1px solid black;
+}
 .dagak-list-wrapper {
   display: flex;
   flex-wrap: wrap;
