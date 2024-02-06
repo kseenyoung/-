@@ -1,125 +1,116 @@
 <template>
-  <div class="parent">
-    <div class="part one">
-      <!-- <div class="title">多角</div>
-      <div id="square1">JAVA</div>
-      <div id="square2">python</div>
-      <div id="square3">C++</div>
-      <div id="square4">민법</div>
-      <div id="square5">수능수학</div>
-      <div id="square6">수능국어</div>
-      <div id="square7">재수</div>
-      <div id="square8">이모티콘제작</div>
-      <div id="square9">입시미술</div>
-      <div id="square10">도전만화</div>
-      <div id="square11">수능영어</div>
-      <div id="square12">OPIc</div>
-      <div id="bsquare1">flutter</div>
-      <div id="bsquare5">민사소송법</div>
-      <div id="bsquare7">미분적분학</div>
-      <div id="bsquare10">R</div> -->
 
-      <div class="title">多角</div>
-      <div id="square1">
-        <SimpleDagak />
-      </div>
-      <div id="square2">
-        <SimpleDagak />
-      </div>
-      <div id="square3">
-        <SimpleDagak />
-      </div>
-      <div id="square4">
-        <SimpleDagak />
-      </div>
-      <div id="square5">
-        <SimpleDagak />
-      </div>
-      <!-- <div id="square6"><SimpleDagak/></div> -->
-      <div id="square7">
-        <SimpleDagak />
-      </div>
-      <div id="square8">
-        <SimpleDagak />
-      </div>
-      <div id="square9">
-        <SimpleDagak />
-      </div>
-      <div id="square10">
-        <SimpleDagak />
-      </div>
-      <div id="square11">
-        <SimpleDagak />
-      </div>
-      <div id="square12">
-        <SimpleDagak />
-      </div>
-      <div id="bsquare1">
-        <SimpleDagak />
-      </div>
-      <div id="bsquare5">
-        <SimpleDagak />
-      </div>
-      <div id="bsquare7">
-        <SimpleDagak />
-      </div>
-      <div id="bsquare10">
-        <SimpleDagak />
-      </div>
+    <div class="parent">
+        <div class="background">
+      <div class="part one">
+        
+        <div class="title m-0" style="color:#000000; font-size:10rem;">
+          다각
+        <h2><div style="color:black ;font-weight:bold" class="">다같이 랜덤 스터디</div></h2>
+        </div>
 
-      <!-- <button
-        class="startbutton"
-        v-if="userStore.loginUserInfo.userId"
-        @click="navigateToStudyRoom"
-      > -->
-      <button
-        class="startbutton"
-        @click="navigateToStudyRoom"
-      >
-        공부시작
-      </button>
+        <div
+          style="color: white;"
+          v-if="userStore.loginUserInfo.userId == null"
+          @click="navigateToLogin">
+          <div class="is-typed">
+            <h3 style="display:inline-block;"> 
+              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+            </h3>
+        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+        </div>
+      </div>
+        <div
+          style="color: white;"
+          v-else
+          @click="navigateToStudyRoom">
+          <div class="is-typed">
+            <h3 style="display:inline-block;"> 
+              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+            </h3>
+        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+        </div>
+      </div>
+      </div>
+      </div>
+        <div class="background">
+      <div class="part two">
+        <MyRanking />
+        <MokkojiRanking />
+      </div>
+      </div>
+        <div class="background">
+      <div class="part three">
+        3
+      </div>
+        </div>
     </div>
-    <div class="part two">
-      <MyRanking />
-      <MokkojiRanking />
-    </div>
-    <div class="part three">3</div>
-  </div>
 </template>
 
 <script setup>
-import {  onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import MyRanking from '@/components/home/MyRanking.vue';
-import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
-import { useUserStore } from '@/stores/user';
-import { useCategoryStore } from '@/stores/category';
-import { useAlarmStore } from '@/stores/alarm';
-import SimpleDagak from '@/components/dagak/SimpleDagak.vue';
-const userStore = useUserStore();
-const categoryStore = useCategoryStore();
-const alarmStore = useAlarmStore();
-const router = useRouter();
+import { onMounted,ref } from 'vue'
+import { useRouter } from 'vue-router'
+import MyRanking from '@/components/home/MyRanking.vue'
+import MokkojiRanking from '@/components/home/MokkojiRanking.vue'
+import { useUserStore } from '@/stores/user'
+import { useCategoryStore } from '@/stores/category'
+import { useAlarmStore } from '@/stores/alarm'
+import { useDagakStore } from '@/stores/dagak'
+import SimpleDagak from '@/components/dagak/SimpleDagak.vue'
+
+const arr = ref([
+  " \"정보처리기사\"",
+  "\"SQLD\"",
+  "\"생활과윤리\"",
+  "\"JLPT\"",
+]);
+
+
+const userStore = useUserStore()
+const categoryStore = useCategoryStore()
+const alarmStore = useAlarmStore()
+const router = useRouter()
+const dagakStore = useDagakStore()
+
+const navigateToLogin = () => {
+  alert("로그인해주세요!")
+  router.push('/login')
+}
+
 
 const navigateToStudyRoom = () => {
+  if(dagakStore.todayDagak.value == null)
   router.push('/studyroom')
 }
 
 onMounted(async () => {
   // store.login();
-  alarmStore.getUnReadAlarmList();
-  categoryStore.getCategoryList();
-});
+  alarmStore.getUnReadAlarmList()
+  categoryStore.getCategoryList()
+  if(userStore.loginUserInfo.userId != null){
+    dagakStore.getTodayDagak();
+    arr = [];
+  }
+})
 </script>
 
 <style lang="scss" scoped>
+.is-typed {
+  user-select: none;
+  
+}
+.is-typed:hover {
+  cursor: pointer;
+  color : black;
+}
 .title {
-  padding-top: 5%;
-  font-size: 22rem;
+  font-size: 15rem;
   font-weight: bold;
   position: relative;
-  z-index: 20;
+  z-index: 30;
   color: black;
+  padding-top: 10%;
+  padding-bottom: 0;
 }
 
 .title::before {
@@ -206,13 +197,6 @@ onMounted(async () => {
 }
 
 .one {
-  // background-image: url('https://img.freepik.com/free-vector/abstract-3d-perspective-indoor-wireframe-vector-design_1017-39916.jpg?w=1060&t=st=1705037743~exp=1705038343~hmac=abc423a6b1c37e3cfec62d1e9af305e6f3989f5421e7c351a80a494cad1a4629');
-  // background-image: url('https://img.freepik.com/free-vector/detailed-wireframe-terrain-landscape-in-black-and-white_1048-11902.jpg?w=1380&t=st=1705038502~exp=1705039102~hmac=ab8142a255e5fb577d99e6111f45612933a987327ade60ae55e02646d932400a');
-  // background-image: url('https://previews.123rf.com/images/roxiller/roxiller1608/roxiller160800030/61554592-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%B6%94%EC%83%81-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%A0%90%EC%9D%B4%EC%9E%88%EB%8A%94-%ED%85%8D%EC%8A%A4%EC%B2%98-%EA%B2%80%EC%9D%80-%ED%8C%A8%ED%84%B4-%EB%B2%A1%ED%84%B0.jpg');
-  // background-image: url('@/assets/img/home/square.png');
-  // z-index: -1;
-
-  // filter: invert(100%);
   background-size: cover;
   background-position: center;
 }
@@ -658,20 +642,38 @@ div[id^='bsquare'] {
   // background-color: gray;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  position: relative;
   font-family: 'NanumSquareNeo';
-  font-weight: 700;
-  // background-image: url('@/assets/img/home/navymountain.jpg');
-  // background-image: url('@/assets/img/home/square.png');
-  background-image: url('@/assets/img/home/sky.jpg');
-  background-size: cover;
-  background-position: center;
 }
 
 .three {
   // background-color: rgb(195, 195, 195);
-  background-image: url('@/assets/img/home/sky.jpg');
   background-size: cover;
   background-position: center;
 }
+.background {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: url('@/assets/background.gif') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.2); /* 흰색에 대한 배경 투명도 조절 가능 */
+  z-index: 0; /* 이미지 위에 배치하려면 z-index 값을 조절하세요 */
+}
+.font-weight-bold {
+  margin-top: 10%;
+}
 </style>
+

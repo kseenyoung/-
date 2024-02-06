@@ -136,6 +136,7 @@ const subscribers = ref([]);
 const question = ref("");
 const answer = ref("");
 
+
 console.log("STORE USER  :  ", store.loginUser);
 // 초기 데이터(계정 세션 아이디, 계정 이름)
 const myUserName = ref(store.myUserName);
@@ -321,6 +322,19 @@ onMounted(() => {
   joinSession();
   dagakStore.getTodayDagak();
   console.log("다각을 가져옵니다.")
+  
+  // 공부 시간 보내기
+  // await axios.get(`${import.meta.env.VITE_API_BASE_URL}user`  + "/kakaoOAuth?code=" + code)
+  // .then((res) => {
+  //     if (res.data.code == 1000) {
+  //       userStore.getLoginUserInfo();
+  //       alert("로그인에 성공했습니다.")
+  //       router.push({
+  //           name: 'home',
+  //         });
+  //     } 
+  //   })
+
 });
 </script>
 

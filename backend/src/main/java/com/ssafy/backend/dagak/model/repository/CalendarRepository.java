@@ -18,5 +18,5 @@ public interface CalendarRepository extends JpaRepository<Calendar, Integer> {
 
     void deleteByCalendarDagakId(Integer dagakId);
 
-    Calendar findCalendarByCalendarDateAndAndUserId(LocalDate today, String userId);
+    Calendar findCalendarByCalendarDateAndUserId(LocalDate today, String userId);
 }

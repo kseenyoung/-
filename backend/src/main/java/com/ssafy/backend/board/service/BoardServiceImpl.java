@@ -1,8 +1,8 @@
 package com.ssafy.backend.board.service;
 
 import com.ssafy.backend.board.model.domain.Board;
-import com.ssafy.backend.board.model.domain.Comment;
-import com.ssafy.backend.board.model.domain.Tag;
+import com.ssafy.backend.board.model.domain.BoardComment;
+import com.ssafy.backend.board.model.domain.BoardTag;
 
 import com.ssafy.backend.board.model.dto.*;
 
@@ -38,9 +38,9 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public void addBoard(BoardAddRequestDTO dto, String userId){
-        Tag tag = tagRepository.findByTagId(dto.getTagId())
+        BoardTag boardTag = tagRepository.findByBoardTagId(dto.getTagId())
                 .orElseThrow(() -> new BaseException(NOT_FOUND_TAG));
-        boardRepository.save(dto.toEntity(tag,userId));
+        boardRepository.save(dto.toEntity(boardTag,userId));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class BoardServiceImpl implements BoardService{
     public void deleteBoard(BoardDeleteRequestDTO dto, String userId) {
         Board board = boardRepository.findByBoardIdAndUserId(dto.getBoardId(),userId)
                 .orElseThrow(() ->new BaseException(NOT_FOUND_BOARD));
-        List<Comment> allByBoardId = commentRepository.findAllByBoardId(board);
+        List<BoardComment> allByBoardId = commentRepository.findAllByBoardId(board);
         commentRepository.deleteAll(allByBoardId);
         boardRepository.delete(board);
     }
@@ -57,10 +57,10 @@ public class BoardServiceImpl implements BoardService{
     public void modifyBoard(BoardModifyRequestDTO dto, String userId) {
         Board board = boardRepository.findByBoardIdAndUserId(dto.getBoardId(),userId)
                 .orElseThrow(() ->new BaseException(NOT_FOUND_BOARD));
-        Tag tag = tagRepository.findByTagId(dto.getTagId())
+        BoardTag boardTag = tagRepository.findByBoardTagId(dto.getTagId())
                 .orElseThrow(() -> new BaseException(NOT_FOUND_TAG));
 
-        board.updateBoard(tag,dto.getBoardTitle(),dto.getBoardContent());
+        board.updateBoard(boardTag,dto.getBoardTitle(),dto.getBoardContent());
         boardRepository.save(board);
 
     }
@@ -91,9 +91,9 @@ public class BoardServiceImpl implements BoardService{
                 .orElseThrow(() -> new BaseException(NOT_FOUND_BOARD));
 
         List<CommentDTO> comments = new ArrayList<CommentDTO>();
-        List<Comment> commentEntities = commentRepository.findAllByBoardIdOrderByCommentIdDesc(board);
-        for(Comment comment : commentEntities){
-            comments.add(new CommentDTO(comment));
+        List<BoardComment> boardCommentEntities = commentRepository.findAllByBoardIdOrderByCommentIdDesc(board);
+        for(BoardComment boardComment : boardCommentEntities){
+            comments.add(new CommentDTO(boardComment));
         }
         BoardDTO boardDto = new BoardDTO(board);
         return new BoardDetailVO(boardDto, comments);

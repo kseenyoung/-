@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Transactional(rollbackFor = {SQLException.class, Exception.class, BaseException.class, RuntimeException.class} ,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = {Exception.class} ,propagation = Propagation.REQUIRES_NEW)
     @Override
     public void signUp(UserSignupDTO userSignupDTO) throws Exception {
         SecurityDTO securityDTO = new SecurityDTO();
