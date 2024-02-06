@@ -3,7 +3,7 @@
   <button @click="goToCalander">캘린더로</button>
   <div class="dagak-list-wrapper">
     <div
-      class="dagak-detail-wrapper"
+      class="dagak-detail-wrapper common-pointer"
       v-for="dagak in dagakList"
       :key="dagak.dagakId"
       data-bs-toggle="modal"
@@ -15,9 +15,9 @@
       {{ dagak.dagakId }}
     </div>
 
-    <!-- 모달 -->
+    <!-- 각 상세정보 모달 -->
     <div
-      class="modal fade modal-sm"
+      class="modal fade"
       id="MyPageScheduleDagakModal"
       tabindex="-1"
       aria-labelledby="MyPageScheduleDagakModal"
@@ -25,10 +25,9 @@
     >
       <div class="modal-dialog">
         <div class="modal-content">
-          <!-- Modal content goes here -->
           <div class="modal-header">
             <h5 class="modal-title" id="MyPageScheduleDagakModal">
-              [{{ selectedDagakId }} - 다각아이디(제목으로)]
+              [{{ selectedDagakId }} - 다각아이디(제목으로 수정해야)]
             </h5>
             <button
               type="button"
@@ -47,21 +46,41 @@
                 <div class="gak-detail-wrapper-left">
                   <div class="gak-detail-order">{{ gak.gakOrder }}.</div>
                   <div class="gak-detail-tag">
-                    {{ getCategoryName(gak.categoryId) }}
+                    <!-- {{ getCategoryName(gak.categoryId) }} -->
+                    <select class="form-select" v-model="gak.categoryId">
+                      <option
+                        v-for="category in categoryStore.categoryList"
+                        :key="category.categoryId"
+                        :value="category.categoryId"
+                      >
+                        {{ category.categoryName }}
+                      </option>
+                    </select>
                   </div>
-                  <div class="gak-detail-time">{{ gak.runningTime }}분</div>
+                  <div class="gak-detail-time">
+                    <input
+                      class="form-control"
+                      type="number"
+                      v-model="gak.runningTime"
+                      id="gakRunnginTime"
+                    />
+                    분
+                  </div>
                 </div>
-                <div
-                  class="gak-detail-wrapper-right common-pointer"
-                  @click="deleteGak(gak.gakId)"
-                >
-                  <i class="bi bi-x"></i>
+                <div class="gak-detail-wrapper-right common-pointer">
+                  <i
+                    class="bi bi-pencil-square"
+                    @click="
+                      updateGak(gak.gakId, gak.categoryId, gak.runningTime)
+                    "
+                  ></i>
+                  <i class="bi bi-trash" @click="deleteGak(gak.gakId)"></i>
                 </div>
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary">닫기</button>
+            <button class="btn btn-secondary">닫기</button>
             <button
               type="button"
               class="btn btn-danger"
@@ -73,7 +92,7 @@
         </div>
       </div>
     </div>
-    <!-- 모달 -->
+    <!-- 각 상세정보 모달 -->
   </div>
 </template>
 
@@ -95,6 +114,7 @@ onMounted(() => {
   getAllDagakList();
 });
 
+//전체 다각 목록 불러오기
 const getAllDagakList = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`)
@@ -104,12 +124,13 @@ const getAllDagakList = function () {
     });
 };
 
+//뒤로가기(캘린더로)
 const goToCalander = function () {
   router.go(-1);
 };
 
+//다각 클릭 시 각 목록+상세정보 불러와서 저장
 const openModal = function (id) {
-  console.log(id);
   selectedDagakId.value = id;
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
@@ -120,6 +141,7 @@ const openModal = function (id) {
     });
 };
 
+//카테고리Id를 카테고리Name으로 반환
 const getCategoryName = (categoryId) => {
   const category = categoryStore.categoryList.find(
     (cat) => cat.categoryId === categoryId,
@@ -127,10 +149,48 @@ const getCategoryName = (categoryId) => {
   return category ? category.categoryName : 'Unknown Category';
 };
 
-const deleteGak = function (id) {
-  console.log(id);
+//각 삭제
+const deleteGak = function (gakId) {
   if (window.confirm('정말로 삭제하시겠습니까?')) {
-    alert('dd');
+    const body = {
+      sign: 'deleteGak',
+      gakId: gakId,
+    };
+    axios
+      .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
+      .then((res) => {
+        if (res.data.code === 1000) {
+          //삭제 성공
+          openModal(selectedDagakId.value);
+        } else {
+          alert('실패했습니다.');
+        }
+      });
+  }
+};
+
+//각 수정
+const updateGak = function (gakId, categoryId, runningTime) {
+  if (window.confirm('수정하시겠습니까?')) {
+    //삭제 후 각 리스트 다시 호출
+    const body = {
+      sign: 'modifyGak',
+      dagakId: selectedDagakId.value,
+      gakId: gakId,
+      categoryId: categoryId,
+      runningTime: runningTime,
+    };
+    axios
+      .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
+      .then((res) => {
+        if (res.data.code === 1000) {
+          //수정 성공
+          openModal(selectedDagakId.value);
+          alert('수정되었습니다.');
+        } else {
+          alert('실패했습니다.');
+        }
+      });
   }
 };
 </script>
@@ -149,7 +209,7 @@ const deleteGak = function (id) {
 }
 .modal-body {
   .gak-wrapper {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     .gak-detail-wrapper {
       margin: 20px 0px;
       padding: 10px;
@@ -157,6 +217,14 @@ const deleteGak = function (id) {
       border-radius: 10px;
       display: flex;
       justify-content: space-between;
+      .gak-detail-wrapper-right {
+        > i:nth-child(1) {
+          margin-right: 15px;
+        }
+        > i:nth-child(2) {
+          margin-right: 10px;
+        }
+      }
       .gak-detail-wrapper-left {
         > div {
           display: inline-block;
@@ -171,6 +239,10 @@ const deleteGak = function (id) {
         }
         .gak-detail-time {
           margin-left: 10px;
+          input {
+            display: inline-block;
+            width: 80px;
+          }
         }
       }
     }
