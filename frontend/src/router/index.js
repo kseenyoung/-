@@ -84,7 +84,19 @@ const router = createRouter({
     {
       path: '/studyroom',
       name: 'studyroom',
-      component: () => import('@/views/StudyRoomView.vue')
+      component: () => import('@/views/StudyRoomView.vue'),
+      children: [
+        {
+          path: 'qna',
+          name: 'QnAList',
+          component: () => import('@/components/room/QnAListView.vue'),
+        },
+        {
+          path: 'studyRate',
+          name: 'studyRate',
+          component: () => import('@/components/room/StudyRateView.vue'),
+        }
+      ]
     },
     {
       // :모꼬지pk 나중에 넣자

@@ -73,7 +73,7 @@ public class UserController {
     GoogleOAuthServiceImpl googleOAuthService;
 
     @Autowired
-    ReCaptchaService reCaptchaService;
+    VerifyService reCaptchaService;
 
 
     // Transaction test
@@ -560,7 +560,7 @@ public class UserController {
             boolean isNotBot = false;
             session.invalidate();
         } else {
-            boolean isNotBot = ReCaptchaService.isBot(recaptchaResponse);
+            boolean isNotBot = reCaptchaService.isVerified(recaptchaResponse);
             session.setAttribute("recaptcha", "ok");
             System.out.println(isNotBot);
         }

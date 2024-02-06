@@ -11,12 +11,35 @@
 
         <div
           style="color: white;"
-          v-if="userStore.loginUserInfo.userId"
-          @click="navigateToStudyRoom"
-        >
-          <h3 style="display:inline-block;"> <VueWriter :array="arr" style="display:inline-block;" class="is-typed cursor" :caret="underscore" /></h3>
+          v-if="userStore.loginUserInfo.userId == null"
+          @click="navigateToLogin">
+          <div class="is-typed">
+            <h3 style="display:inline-block;"> 
+              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+            </h3>
         <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
-    </div>
+        </div>
+      </div>
+        <div
+          style="color: white;"
+          v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
+          @click="navigateToMyPageSchedule">
+          <div class="is-typed">
+            <h3 style="display:inline-block;"> </h3>
+        <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
+        </div>
+      </div>
+        <div
+          style="color: white;"
+          v-else
+          @click="navigateToStudyRoom">
+          <div class="is-typed">
+            <h3 style="display:inline-block;"> 
+              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+            </h3>
+        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+        </div>
+      </div>
       </div>
       </div>
         <div class="background">
@@ -34,13 +57,14 @@
 </template>
 
 <script setup>
-import { onMounted,ref } from 'vue'
+import { onMounted,ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import MyRanking from '@/components/home/MyRanking.vue'
 import MokkojiRanking from '@/components/home/MokkojiRanking.vue'
 import { useUserStore } from '@/stores/user'
 import { useCategoryStore } from '@/stores/category'
 import { useAlarmStore } from '@/stores/alarm'
+import { useDagakStore } from '@/stores/dagak'
 import SimpleDagak from '@/components/dagak/SimpleDagak.vue'
 
 const arr = ref([
@@ -49,25 +73,66 @@ const arr = ref([
   "\"생활과윤리\"",
   "\"JLPT\"",
 ]);
-
+const myGaks = ref([]);
+const categories = ref([]);
 
 const userStore = useUserStore()
 const categoryStore = useCategoryStore()
 const alarmStore = useAlarmStore()
 const router = useRouter()
+const dagakStore = useDagakStore()
 
-const navigateToStudyRoom = () => {
-  router.push('/studyroom')
+const navigateToMyPageSchedule= () =>{
+  router.push('/mypage');
 }
 
+const navigateToLogin = () => {
+  alert("로그인해주세요!")
+  router.push('/login')
+}
+
+
+const navigateToStudyRoom = () => {
+  if(dagakStore.todayDagak.value == null)
+  router.push('/studyroom')
+}
+const getGaks = async () =>{ 
+  myGaks.value = dagakStore.todayDagak.gaks;
+  categories.value = categoryStore.categoryList;
+  arr.value = [];
+  myGaks.value.forEach(gak =>{
+    categories.value.forEach(category =>{
+      if(gak.categoryId === category.categoryId){
+        arr.value.push(`\"${category.categoryName}\"`);
+      }
+    });
+  });
+};
 onMounted(async () => {
   // store.login();
   alarmStore.getUnReadAlarmList()
-  categoryStore.getCategoryList()
+  await categoryStore.getCategoryList()
+  await dagakStore.getTodayDagak()
+   if(userStore.loginUserInfo.userId != null){
+      await getGaks();
+    }
 })
+watch(() => userStore.loginUserInfo.userId, (newUserId) => {
+  if (newUserId != null) {
+    getGaks();
+  }
+});
 </script>
 
 <style lang="scss" scoped>
+.is-typed {
+  user-select: none;
+  
+}
+.is-typed:hover {
+  cursor: pointer;
+  color : black;
+}
 .title {
   font-size: 15rem;
   font-weight: bold;

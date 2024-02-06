@@ -6,7 +6,7 @@ export const useCategoryStore = defineStore(
   'categoryStore',
   () => {
     const categoryList = ref([]);
-    const getCategoryList = function () {
+    const getCategoryList = async function () {
       axios
         .get(`${import.meta.env.VITE_API_BASE_URL}category/getAllCategoryList`)
         .then((res) => {
