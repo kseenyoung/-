@@ -320,8 +320,7 @@ const togglePause = () => {
 onMounted(() => {
   console.log("방에 입장합니다.");
   joinSession();
-  dagakStore.getTodayDagak();
-  console.log("다각을 가져옵니다.")
+
   
   // 공부 시간 보내기
   // await axios.get(`${import.meta.env.VITE_API_BASE_URL}user`  + "/kakaoOAuth?code=" + code)
@@ -334,6 +333,9 @@ onMounted(() => {
   //         });
   //     } 
   //   })
+
+  dagakStore.getTodayDagak();
+  console.log("다각을 가져옵니다.")
 
 });
 </script>
