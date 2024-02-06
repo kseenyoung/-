@@ -15,10 +15,7 @@ import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
-import com.ssafy.backend.user.service.GoogleOAuthService;
-import com.ssafy.backend.user.service.KakaoOAuthService;
-import com.ssafy.backend.user.service.ReCaptchaService;
-import com.ssafy.backend.user.service.UserService;
+import com.ssafy.backend.user.service.*;
 import io.openvidu.java.client.OpenVidu;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +31,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.time.LocalDate;
@@ -71,10 +67,10 @@ public class UserController {
     }
 
     @Autowired
-    KakaoOAuthService kakaoOAuthService;
+    KakaoOAuthServiceImpl kakaoOAuthService;
 
     @Autowired
-    GoogleOAuthService googleOAuthService;
+    GoogleOAuthServiceImpl googleOAuthService;
 
     @Autowired
     ReCaptchaService reCaptchaService;
@@ -153,7 +149,7 @@ public class UserController {
                                     // 세션에 kakaoEmail 이 있으면 연동함.
                                     String kakaoEmail = (String) session.getAttribute("kakaoEmail");
                                     userService.linkKakao(loginUserId, kakaoEmail);
-                                    session.invalidate();
+                                    session.removeAttribute("kakaoEmail");
                                     return new BaseResponse<>(SUCCESS);
                                 }
 
@@ -161,7 +157,7 @@ public class UserController {
                                     // 세션에 googleEmail 이 있으면 연동함.
                                     String googleEmail = (String) session.getAttribute("googleEmail");
                                     userService.linkGoogle(loginUserId, googleEmail);
-                                    session.invalidate();
+                                    session.removeAttribute("googleEmail");
                                     return new BaseResponse<>(SUCCESS);
                                 }
 
@@ -510,12 +506,12 @@ public class UserController {
     /*
      * 카카오 로그인
      */
-    @GetMapping("kakaoOauth")
+    @GetMapping("kakaoOAuth")
     public BaseResponse<?> kakaoOauth(@RequestParam String code, HttpServletRequest request) {
         HttpSession session;
 
-        String access_Token = kakaoOAuthService.getKaKaoAccessToken(code);
-        String kakaoEmail = kakaoOAuthService.createKakaoUser(access_Token);
+        String access_Token = kakaoOAuthService.getToken(code);
+        String kakaoEmail = kakaoOAuthService.getUser(access_Token);
 
         User kakaoUser = userService.isKakaoUser(kakaoEmail);
         if (kakaoUser != null) {
@@ -533,23 +529,25 @@ public class UserController {
     /*
      * 구글 로그인
      */
-    @RequestMapping("googleOauth")
-    public BaseResponse<?> googleOauth(HttpServletRequest request, @RequestParam(value = "code") String authCode, HttpServletResponse response) throws Exception {
-        HttpSession session;
-        String googleEamil = googleOAuthService.getGoogleAccessToken(authCode);
-
-        User googleUser = userService.isGoogleUser(googleEamil);
-        if (googleUser != null) {
-            session = request.getSession();
-            session.setAttribute("User", googleUser);
-            return new BaseResponse<>(SUCCESS);
-        } else {
-            // TODO: 프론트에서 연동 할 건지 말 건지 화면 전환해줘야함. 연동한다고 하면 이메일에 세션 들고 로그인 화면으로,,
-            session = request.getSession();
-            session.setAttribute("googleEamil", googleEamil);
-            throw new BaseException(NEED_GOOGLE_LINK);
+    @GetMapping(value = "googleOAuth")
+    public BaseResponse<?> getGoogleToken(@RequestParam(value = "googleCode") String code, HttpServletRequest request) {
+        String googleEmail = googleOAuthService.getUser(code);
+        if (googleEmail != null) {
+            User googleUser = userService.isGoogleUser(googleEmail);
+            if (googleUser != null) {  // 구글 로그인 연동된 회원일 시
+                HttpSession session = request.getSession();
+                session.setAttribute("User", googleUser);
+                return new BaseResponse<>(SUCCESS);
+            } else {
+                // CODE: 1406, 연동해야함
+                HttpSession session = request.getSession();
+                session.setAttribute("googleEmail", googleEmail);
+                return new BaseResponse<>(SUCCESS_GET_EMAIL, googleEmail);
+            }
         }
+        throw new BaseException(FAIL_TO_CONNECT);
     }
+
 
     /*
      * reCAPTCHA
