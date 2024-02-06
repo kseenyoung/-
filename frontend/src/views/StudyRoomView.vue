@@ -129,24 +129,14 @@
 </template>
 
 <script setup>
-<<<<<<< HEAD
 import { ref, onBeforeUnmount, onMounted } from 'vue'
 import axios from 'axios'
 import { OpenVidu, Stream } from 'openvidu-browser'
 import { useUserStore } from '@/stores/user'
 import QnAListView from '@/components/room/QnAListView.vue'
 import UserVideo from '@/components/room/UserVideo.vue'
-import Dagak from '@/components/dagak/Dagak.vue'
-import { useRouter } from 'vue-router'
-=======
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-import { OpenVidu, Stream } from 'openvidu-browser'
-import { useUserStore } from '@/stores/user'
-import UserVideo from '@/components/room/UserVideo.vue'
 import { useRouter } from 'vue-router'
 import Dagak from '@/components/dagak/Dagak.vue'
->>>>>>> 4855651a848bbfa0fecc1605937772facfbd6bb1
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
@@ -162,11 +152,7 @@ const mainStreamManager = ref(undefined)
 const publisher = ref(undefined)
 const subscribers = ref([])
 const question = ref('')
-<<<<<<< HEAD
 const leave = ref("refresh");
-=======
-const answer = ref('')
->>>>>>> 4855651a848bbfa0fecc1605937772facfbd6bb1
 
 console.log('STORE USER  :  ', store.loginUser)
 // 초기 데이터(계정 세션 아이디, 계정 이름)
@@ -240,10 +226,7 @@ const joinSession = () => {
 
   session.value.on('streamCreated', ({ stream }) => {
     const subscriber = session.value.subscribe(stream)
-<<<<<<< HEAD
     console.log("subscribers: "+subscriber.value);
-=======
->>>>>>> 4855651a848bbfa0fecc1605937772facfbd6bb1
     subscribers.value.push(subscriber)
   })
 
@@ -254,7 +237,6 @@ const joinSession = () => {
     }
   })
 
-<<<<<<< HEAD
   session.value.on('exception', (exception) => {
     console.warn(exception)
     if (exception.name == 'NO_STREAM_PLAYING_EVENT') {
@@ -265,11 +247,6 @@ const joinSession = () => {
         }
       })
     }
-=======
-  session.value.on('exception', ({ exception }) => {
-    console.warn(exception)
-    console.log('새로고침!!!!!')
->>>>>>> 4855651a848bbfa0fecc1605937772facfbd6bb1
   })
 
   enterRoom(store.loginUserInfo.sub).then((token) => {
@@ -299,7 +276,6 @@ const joinSession = () => {
       })
   })
 
-<<<<<<< HEAD
   // window.addEventListener("beforeunload", leaveSession(false));
 }
 
@@ -307,24 +283,12 @@ const leaveStudyRoom = async () => {
   alert('나가기 버튼을 눌렀습니다.')
   leave.value = "leave";
   await leaveSession()
-=======
-  // window.addEventListener("beforeunload", leaveSession);
-}
-
-const leaveStudyRoom = async () => {
-  console.log('스터디룸을 나갑니다.')
-  await leaveSession()
-  console.log('홈화면으로 돌아갑니다.')
->>>>>>> 4855651a848bbfa0fecc1605937772facfbd6bb1
   router.push('/')
 }
 
 const leaveSession = async () => {
-<<<<<<< HEAD
   if(leave.value == "leave") alert("의도적으로 나갑니다");
   alert('나갑니다.')
-=======
->>>>>>> 4855651a848bbfa0fecc1605937772facfbd6bb1
   if (session.value) session.value.disconnect()
 
   session.value = undefined
@@ -336,27 +300,16 @@ const leaveSession = async () => {
   const response = await axios
     .post(
       APPLICATION_SERVER_URL + 'room',
-<<<<<<< HEAD
       { sign: 'leaveSession', leave: leave.value},
-=======
-      { sign: 'leaveSession' },
->>>>>>> 4855651a848bbfa0fecc1605937772facfbd6bb1
       {
         headers: { 'Content-Type': 'application/json' }
       }
     )
     .then(() => {
-<<<<<<< HEAD
       alert('퇴실완료.')
     })
 
   // window.removeEventListener("beforeunload", leaveSession(true));
-=======
-      alert('퇴실합니다.')
-    })
-
-  // window.removeEventListener("beforeunload", leaveSession);
->>>>>>> 4855651a848bbfa0fecc1605937772facfbd6bb1
 }
 
 const updateMainVideoStreamManager = (stream) => {
@@ -401,7 +354,6 @@ const togglePause = () => {
 }
 
 onMounted(() => {
-<<<<<<< HEAD
   leaveSession().then(()=>{
     joinSession();
   });
@@ -411,11 +363,6 @@ onBeforeUnmount(() => {
   alert("스터디룸에서 다른 페이지로 라우팅!")
   leaveSession();
 });
-=======
-  console.log('방에 입장합니다.')
-  joinSession()
-})
->>>>>>> 4855651a848bbfa0fecc1605937772facfbd6bb1
 </script>
 
 <style>
