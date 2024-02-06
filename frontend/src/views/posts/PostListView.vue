@@ -24,6 +24,7 @@ import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useBoardStore } from '@/stores/board'
 import PostItem from '@/components/posts/PostItem.vue'
+import SimpleDagak from '@/components/dagak/SimpleDagak.vue';
 const router = useRouter()
 const boardStore = useBoardStore()
 

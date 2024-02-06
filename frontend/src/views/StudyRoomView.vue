@@ -3,7 +3,7 @@
     <div class="studyroomheader">
       <div class="nowname">
 
-        <div class="nametag">Python 마스터 {{ subscribers }}</div>
+        <div class="nametag">Python 마스터</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
         <img class="pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중" />
         <button class="btn btn-outline-dark me-2" @click="leaveStudyRoom">나가기</button>
