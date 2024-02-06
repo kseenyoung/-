@@ -77,7 +77,7 @@ public class RoomServiceImpl implements RoomService {
         String sessionName = enterRoomDTO.getSessionName();
         Session session;
 
-        if(enterRoomDTO.getPrevConnectionId() == null){
+        if(enterRoomDTO.getPrevSession() == null){
             sessionName = getRandomroom(sessionName);
         }  else { // 기존연결이 있다면 재접속
             sessionName = enterRoomDTO.getPrevSession();
@@ -190,12 +190,13 @@ public class RoomServiceImpl implements RoomService {
         ObjectMapper om = new ObjectMapper();
 
         // RDB에 질문 저장
-        QuestionRedis questionRedis = questionRedisRepository.findQuestionRedisByQuestionId(answerDTO.getQuestionId());
+        QuestionRedis questionRedis = questionRedisRepository.findById(answerDTO.getQuestionId());
         Question question = questionRedis.toEntity();
         questionRepository.save(question);
 
         //RDB에 답변 저장
         Answer answer = answerRedis.toEntity();
+        answerRepository.save(answer);
 
         OpenviduRequestDTO openviduRequestDTO = new OpenviduRequestDTO(sessionId,"answer",om.writeValueAsString(answerVO));
         URI uri = UriComponentsBuilder
@@ -235,7 +236,6 @@ public class RoomServiceImpl implements RoomService {
         questionRedis = questionRedisRepository.save(questionRedis);
         return questionRedis;
     }
-
 
     @Override
     public List<AnswerVO> findAnswerByQuestionId(String questionId) throws Exception {

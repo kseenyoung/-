@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuestionRedisRepository extends CrudRepository<QuestionRedis, Integer> {
-    QuestionRedis findQuestionRedisByQuestionId(String questionId);
+    QuestionRedis findById(String questionId);
 }
