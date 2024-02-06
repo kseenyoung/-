@@ -4,7 +4,12 @@
       <div class="nowname">
         <div class="nametag">Python 마스터</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
-        <img class="pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중" />
+        <img
+          class="pause"
+          @click="togglePause"
+          src="@/assets/img/studyroom/pause.png"
+          alt="휴식중"
+        />
         <button @click="leaveStudyRoom">나가기</button>
       </div>
       <div class="lastlater">
@@ -26,300 +31,326 @@
             </div>
           </div>
           <div class="video-player-1">
-            <user-video class="videog1" ref="video1" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video2" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video3" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video4" :stream-manager="publisher"
-              @click.native="updateMainVideoStreamManager(publisher)" />
-            <user-video class="videog1" ref="video5" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
-              :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
+            <user-video
+              class="videog1"
+              ref="video1"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+            <user-video
+              class="videog1"
+              ref="video2"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+            <user-video
+              class="videog1"
+              ref="video3"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+            <user-video
+              class="videog1"
+              ref="video4"
+              :stream-manager="publisher"
+              @click.native="updateMainVideoStreamManager(publisher)"
+            />
+            <user-video
+              class="videog1"
+              ref="video5"
+              v-for="sub in subscribers"
+              :key="sub.stream.connection.connectionId"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
           </div>
         </div>
 
         <div class="video-player-2">
-          <user-video class="videog2" ref="video6" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video7" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video8" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video9" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
-          <user-video class="videog2" ref="video10" :stream-manager="publisher"
-            @click.native="updateMainVideoStreamManager(publisher)" />
+          <user-video
+            class="videog2"
+            ref="video6"
+            :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)"
+          />
+          <user-video
+            class="videog2"
+            ref="video7"
+            :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)"
+          />
+          <user-video
+            class="videog2"
+            ref="video8"
+            :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)"
+          />
+          <user-video
+            class="videog2"
+            ref="video9"
+            :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)"
+          />
+          <user-video
+            class="videog2"
+            ref="video10"
+            :stream-manager="publisher"
+            @click.native="updateMainVideoStreamManager(publisher)"
+          />
         </div>
       </div>
-      <div class="bar">
+      <!-- <div class="bar">
         <button class="ratetoggle" @click="toggleRate">달성률</button>
         <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
+      </div> -->
+      <div>
+        <RouterLink :to="{ name: 'studyRate' }">달성률</RouterLink>
+        <br />
+        <RouterLink :to="{ name: 'QnAList' }">질문하기</RouterLink>
       </div>
-      <div class="utility">
-        <div class="achievement">
-          <div class="rate" v-if="showRate">
-            <p class="titletag">공부시간</p>
-            <div class="studytime">01:30:32</div>
-            <hr />
-            <p class="titletag">달성률</p>
-            <div class="dagak">
-              <!-- <img src="@/assets/img/studyroom/hexagon.png" style="transform: rotate(30deg)" alt="" /> -->
-              <Dagak />
-            </div>
-            <div class="ratedetail">
-              java 마스터 --- <b>140%</b><br />
-              Python 마스터 --- <b>75%</b><br />
-              C++ 마스터 ---- <b>0%</b>
-            </div>
-          </div>
+      <transition name="flip" mode="out-in">
+        <div class="mypage-content flex-fill" :key="$route.fullPath">
+          <RouterView />
         </div>
-      </div>
-      <div class="QnA">
-        <div v-if="showQuestion">
-          <QnAListView />
-        </div>
-      </div>
+      </transition>
     </div>
 
     <div class="black" v-if="isPause">
       <p class="resttitle">휴식중</p>
       <p class="resttime">~00:30</p>
-      <img class="play" @click="togglePause" src="@/assets/img/studyroom/whiteplay.png" alt="다시시작" />
+      <img
+        class="play"
+        @click="togglePause"
+        src="@/assets/img/studyroom/whiteplay.png"
+        alt="다시시작"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { OpenVidu, Stream } from 'openvidu-browser';
-import { useUserStore } from '@/stores/user';
-import QnAListView from "@/components/room/QnAListView.vue";
-import UserVideo from "@/components/room/UserVideo.vue";
-import Dagak from "@/components/dagak/Dagak.vue";
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import { OpenVidu, Stream } from 'openvidu-browser'
+import { useUserStore } from '@/stores/user'
+import UserVideo from '@/components/room/UserVideo.vue'
+import { useRouter } from 'vue-router'
+import Dagak from '@/components/dagak/Dagak.vue'
 
+axios.defaults.headers.post['Content-Type'] = 'application/json'
 
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-
-const router = useRouter();
-const store = useUserStore();
+const router = useRouter()
+const store = useUserStore()
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/';
+  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/'
 
-const OV = ref(undefined);
-const session = ref(undefined);
-const mySession = ref(store.loginUserInfo.sub);
-const mainStreamManager = ref(undefined);
-const publisher = ref(undefined);
-const subscribers = ref([]);
-const question = ref("");
-const answer = ref("");
+const OV = ref(undefined)
+const session = ref(undefined)
+const mySession = ref(store.loginUserInfo.sub)
+const mainStreamManager = ref(undefined)
+const publisher = ref(undefined)
+const subscribers = ref([])
+const question = ref('')
+const answer = ref('')
 
-
-console.log("STORE USER  :  ", store.loginUser);
+console.log('STORE USER  :  ', store.loginUser)
 // 초기 데이터(계정 세션 아이디, 계정 이름)
-const myUserName = ref(store.myUserName);
+const myUserName = ref(store.myUserName)
 
 // 방 입장
 const enterRoom = async (sessionId) => {
-  let token = await createSession(sessionId);
-  return token;
-};
+  let token = await createSession(sessionId)
+  return token
+}
 
 // 방 생성
 const createSession = async (sessionId) => {
   const response = await axios.post(
-    APPLICATION_SERVER_URL + "room",
-    { sign: "enterRandomroom", userId: store.myUserName, sessionName: store.loginUserInfo.sub, videoCodec: "VP8"},
+    APPLICATION_SERVER_URL + 'room',
     {
-      headers: { "Content-Type": "application/json" },
+      sign: 'enterRandomroom',
+      userId: store.myUserName,
+      sessionName: store.loginUserInfo.sub,
+      videoCodec: 'VP8'
     },
-  );
-  console.log(response.data.result.session);
-  mySession.value = response.data.result.session;
+    {
+      headers: { 'Content-Type': 'application/json' }
+    }
+  )
+  console.log(response.data.result.session)
+  mySession.value = response.data.result.session
   // store.loginUserInfo.sub = response.data.result.session;
-  return response.data.result.token;
-};
+  return response.data.result.token
+}
 
 const askQuestion = async () => {
-  console.log(mySession.value+ "에서 질문합니다! ");
+  console.log(mySession.value + '에서 질문합니다! ')
   const response = await axios.post(
-    APPLICATION_SERVER_URL + "room",
-    { sign: "askQuestion", session: mySession.value, data: question.value },
+    APPLICATION_SERVER_URL + 'room',
+    { sign: 'askQuestion', session: mySession.value, data: question.value },
     {
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' }
     }
-  );
-  return response.data.result;
-};
+  )
+  return response.data.result
+}
 
 const answerQuestion = async () => {
-  console.log(mySession.value+ "에서 답변합니다! ");
+  console.log(mySession.value + '에서 답변합니다! ')
   const response = await axios.post(
-    APPLICATION_SERVER_URL + "room",
-    { sign: "answerQuestion", session: mySession.value, data: question.value },
+    APPLICATION_SERVER_URL + 'room',
+    { sign: 'answerQuestion', session: mySession.value, data: question.value },
     {
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' }
     }
-  );
-  return response.data.result;
-};
+  )
+  return response.data.result
+}
 
 const joinSession = () => {
-  OV.value = new OpenVidu();
-  session.value = OV.value.initSession();
+  OV.value = new OpenVidu()
+  session.value = OV.value.initSession()
 
-  session.value.on("signal:question", ( stream ) => {
-    alert("질문이 들어왔습니다!");
-    console.log("질문 내용:"+ stream.data);
-    const data = JSON.parse(stream.data);
+  session.value.on('signal:question', (stream) => {
+    alert('질문이 들어왔습니다!')
+    console.log('질문 내용:' + stream.data)
+    const data = JSON.parse(stream.data)
     console.log(data.questionId)
-  });
+  })
 
-  session.value.on("signal:answer", ( stream ) => {
-    alert("답변이 달렸습니다!");
-    console.log("답변 내용:"+ stream.data);
-  });
+  session.value.on('signal:answer', (stream) => {
+    alert('답변이 달렸습니다!')
+    console.log('답변 내용:' + stream.data)
+  })
 
-  session.value.on("streamCreated", ({ stream }) => {
-    const subscriber = session.value.subscribe(stream);
-    subscribers.value.push(subscriber);
-  });
+  session.value.on('streamCreated', ({ stream }) => {
+    const subscriber = session.value.subscribe(stream)
+    subscribers.value.push(subscriber)
+  })
 
-  session.value.on("streamDestroyed", ({ stream }) => {
-    const index = subscribers.value.indexOf(stream.streamManager, 0);
+  session.value.on('streamDestroyed', ({ stream }) => {
+    const index = subscribers.value.indexOf(stream.streamManager, 0)
     if (index >= 0) {
-      subscribers.value.splice(index, 1);
+      subscribers.value.splice(index, 1)
     }
-  });
+  })
 
-  session.value.on("exception", ({ exception }) => {
-    console.warn(exception);
-    console.log("새로고침!!!!!");
-  });
+  session.value.on('exception', ({ exception }) => {
+    console.warn(exception)
+    console.log('새로고침!!!!!')
+  })
 
   enterRoom(store.loginUserInfo.sub).then((token) => {
-    console.log("token"+token);
-    store.studyRoomSessionToken = token;
-    session.value.connect(token, store.myUserName).then(() => {
-      publisher.value = OV.value.initPublisher(undefined, {
-        audioSource: undefined,
-        videoSource: undefined,
-        publishAudio: true,
-        publishVideo: true,
-        resolution: "640x480",
-        frameRate: 30,
-        insertMode: "APPEND",
-        mirror: false,
-      });
+    console.log('token' + token)
+    store.studyRoomSessionToken = token
+    session.value
+      .connect(token, store.myUserName)
+      .then(() => {
+        publisher.value = OV.value.initPublisher(undefined, {
+          audioSource: undefined,
+          videoSource: undefined,
+          publishAudio: true,
+          publishVideo: true,
+          resolution: '640x480',
+          frameRate: 30,
+          insertMode: 'APPEND',
+          mirror: false
+        })
 
-      mainStreamManager.value = publisher.value;
+        mainStreamManager.value = publisher.value
 
-      session.value.publish(publisher.value);
-      store.isInSession = true;
-    }).catch((error) => {
-      console.log("There was an error connecting to the session:", error.code, error.message);
-    });
-  });
+        session.value.publish(publisher.value)
+        store.isInSession = true
+      })
+      .catch((error) => {
+        console.log('There was an error connecting to the session:', error.code, error.message)
+      })
+  })
 
   // window.addEventListener("beforeunload", leaveSession);
-};
+}
 
-const leaveStudyRoom = async() => {
-  console.log("스터디룸을 나갑니다.");
-  await leaveSession();
-  console.log("홈화면으로 돌아갑니다.");
-  router.push('/');
+const leaveStudyRoom = async () => {
+  console.log('스터디룸을 나갑니다.')
+  await leaveSession()
+  console.log('홈화면으로 돌아갑니다.')
+  router.push('/')
 }
 
 const leaveSession = async () => {
-  if (session.value) session.value.disconnect();
+  if (session.value) session.value.disconnect()
 
-  session.value = undefined;
-  mainStreamManager.value = undefined;
-  publisher.value = undefined;
-  subscribers.value = [];
-  OV.value = undefined;
+  session.value = undefined
+  mainStreamManager.value = undefined
+  publisher.value = undefined
+  subscribers.value = []
+  OV.value = undefined
 
-  const response = await axios.post(
-    APPLICATION_SERVER_URL + "room",
-    { sign: "leaveSession"},
-    {
-      headers: { "Content-Type": "application/json" },
-    },
-  ).then(()=>{
-    alert("퇴실합니다.")
-  });
+  const response = await axios
+    .post(
+      APPLICATION_SERVER_URL + 'room',
+      { sign: 'leaveSession' },
+      {
+        headers: { 'Content-Type': 'application/json' }
+      }
+    )
+    .then(() => {
+      alert('퇴실합니다.')
+    })
 
   // window.removeEventListener("beforeunload", leaveSession);
-};
+}
 
 const updateMainVideoStreamManager = (stream) => {
-  if (mainStreamManager.value === stream) return;
-  mainStreamManager.value = stream;
-};
+  if (mainStreamManager.value === stream) return
+  mainStreamManager.value = stream
+}
 
+const video1 = ref(null)
+const video2 = ref(null)
+const video3 = ref(null)
+const video4 = ref(null)
+const video5 = ref(null)
+const video6 = ref(null)
+const video7 = ref(null)
+const video8 = ref(null)
+const video9 = ref(null)
+const video10 = ref(null)
+const video11 = ref(null)
+const video12 = ref(null)
+const video13 = ref(null)
 
-const video1 = ref(null);
-const video2 = ref(null);
-const video3 = ref(null);
-const video4 = ref(null);
-const video5 = ref(null);
-const video6 = ref(null);
-const video7 = ref(null);
-const video8 = ref(null);
-const video9 = ref(null);
-const video10 = ref(null);
-const video11 = ref(null);
-const video12 = ref(null);
-const video13 = ref(null);
-
-const showRate = ref(true);
-const showQuestion = ref(true);
-const isPause = ref(false);
+const showRate = ref(true)
+const showQuestion = ref(true)
+const isPause = ref(false)
 
 const toggleRate = () => {
-  showRate.value = !showRate.value;
-};
+  showRate.value = !showRate.value
+}
 
 const toggleQuestion = () => {
-  showQuestion.value = !showQuestion.value;
-};
+  showQuestion.value = !showQuestion.value
+}
 
 const toggleMute = (video) => {
   if (video && video.value instanceof HTMLVideoElement) {
-    video.value.muted = !video.value.muted;
+    video.value.muted = !video.value.muted
   }
-};
+}
 
 const togglePause = () => {
-  isPause.value = !isPause.value;
-};
+  isPause.value = !isPause.value
+}
 
 onMounted(() => {
-  console.log("방에 입장합니다.");
-  joinSession();
-  
-  // 공부 시간 보내기
-  // await axios.get(`${import.meta.env.VITE_API_BASE_URL}user`  + "/kakaoOAuth?code=" + code)
-  // .then((res) => {
-  //     if (res.data.code == 1000) {
-  //       userStore.getLoginUserInfo();
-  //       alert("로그인에 성공했습니다.")
-  //       router.push({
-  //           name: 'home',
-  //         });
-  //     } 
-  //   })
-
-});
+  console.log('방에 입장합니다.')
+  joinSession()
+})
 </script>
 
 <style>
 .room {
-  flex-direction: column;  
+  flex-direction: column;
   height: 60%;
 }
 
