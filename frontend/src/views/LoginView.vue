@@ -53,12 +53,8 @@
         </button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
-          <a
-            href="https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:8080/dagak/user/googleOauth&response_type=code&scope=email"
-          >
-            <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" />
-          </a>
-          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인" />
+          <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" @click="googleLogin()"/>
+          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인" @click="kakaoLogin()" />
         </div>
       </div>
     </div>
@@ -99,7 +95,19 @@ const disableInputPassword = ref(true);
 const disableCheckId = ref(true);
 const disableLoginButton = ref(true);
 
-//로그인
+
+// 구글 로그인 페이지로 이동
+const googleLogin = async function() {
+  window.location.replace("https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:5173/googleLogin&response_type=code&scope=email");
+}
+
+// 카카오 로그인 페이지로 이동
+const kakaoLogin = async function() {
+  window.location.replace("https://kauth.kakao.com/oauth/authorize?client_id=891949d64302e510fe79f05131e7d972&redirect_uri=https://localhost:5173/kakaoLogin&response_type=code");
+}
+
+
+// 로그인 
 const login = async function () {
   const body = {
     sign: 'login',
@@ -126,6 +134,12 @@ const login = async function () {
   id.value = '';
   password.value = '';
 };
+
+
+
+
+
+
 
 const recaptchaExpired = async function (response) {
   disableInputId.value = true;
