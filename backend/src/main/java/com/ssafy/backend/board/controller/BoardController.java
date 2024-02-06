@@ -60,46 +60,34 @@ public class BoardController {
             case "addBoard":
                 String boardTitle = (String) body.get("boardTitle");
                 String boardContent = (String) body.get("boardContent");
-                Object tagId = body.get("tagId");
-                //tagId가 숫자일때
-                if (tagId == null) throw new BaseException(JSON_PROCESSING_ERROR);
-                if (isNumeric((String) tagId)) {
-                    BoardAddRequestDTO DTO = BoardAddRequestDTO.builder()
-                            .boardContent(boardContent)
-                            .boardTitle(boardTitle)
-                            .tagId((int) tagId).build();
-                    boardService.addBoard(DTO, userId);
-                    return new BaseResponse<>(SUCCESS);
-                }
-                break;
+                int tagId = (int) body.get("tagId");
+                BoardAddRequestDTO addRequestDTO = BoardAddRequestDTO.builder()
+                        .boardContent(boardContent)
+                        .boardTitle(boardTitle)
+                        .tagId(tagId)
+                        .build();
+                boardService.addBoard(addRequestDTO, userId);
+                return new BaseResponse<>(SUCCESS);
             case "deletePost":
-                String boardId = (String) body.get("boardId");
-                if (boardId == null) throw new MyException("숫자입력 아니야", HttpStatus.BAD_REQUEST);
-                if (isNumeric(boardId)) {
-                    BoardDeleteRequestDTO dto = BoardDeleteRequestDTO
-                            .builder().boardId(Long.parseLong(boardId)).build();
-                    boardService.deleteBoard(dto, userId);
+                long boardId = (long) body.get("boardId");
+                BoardDeleteRequestDTO dto = BoardDeleteRequestDTO
+                        .builder()
+                        .boardId(boardId).build();
+                boardService.deleteBoard(dto, userId);
                     return new BaseResponse<>(SUCCESS);
-                }
-                break;
             case "modifyPost":
                 boardTitle = (String) body.get("boardTitle");
                 boardContent = (String) body.get("boardContent");
-                tagId = body.get("tagId");
-                boardId = (String) body.get("boardId");
+                tagId =(int) body.get("tagId");
+                boardId = (long) body.get("boardId");
                 //tagId가 숫자일때
-                if (tagId == null) throw new BaseException(JSON_PROCESSING_ERROR);
-                if (boardId == null) throw new BaseException(JSON_PROCESSING_ERROR);
-                if (isNumeric((String) tagId) && isNumeric(boardId)) {
-                    BoardModifyRequestDTO dto = BoardModifyRequestDTO.builder()
-                            .boardId(Long.parseLong(boardId))
-                            .boardTitle(boardTitle)
-                            .boardContent(boardContent)
-                            .build();
-                    boardService.modifyBoard(dto, userId);
-                    return new BaseResponse<>(SUCCESS);
-                }
-                break;
+                BoardModifyRequestDTO modifyRequestDTO = BoardModifyRequestDTO.builder()
+                        .boardId((boardId))
+                        .boardTitle(boardTitle)
+                        .boardContent(boardContent)
+                        .build();
+                boardService.modifyBoard(modifyRequestDTO, userId);
+                return new BaseResponse<>(SUCCESS);
         }
         throw new BaseException(NOT_MATCH_SIGN);
     }
@@ -117,64 +105,52 @@ public class BoardController {
         switch (sign){
             case "addComment":
                 String comment = (String) body.get("comment");
-                String boardId =(String) body.get("boardId");
+                long boardId =(long) body.get("boardId");
                 //boardId 가 숫자 일 때
-                if (boardId == null) throw new BaseException(JSON_PARSING_ERROR);
-                if (isNumeric( boardId)) {
-                    //request dto
-                    CommentCreateRequestDTO requestDTO = CommentCreateRequestDTO.builder()
-                            .boardId(Long.parseLong(boardId))
-                            .comment(comment).build();
-                    long commentId = commentService.addComment(requestDTO, userId);
+                //request dto
+                CommentCreateRequestDTO requestDTO = CommentCreateRequestDTO.builder()
+                        .boardId(boardId)
+                        .comment(comment).build();
+                long commentId = commentService.addComment(requestDTO, userId);
 
-                    //response dto
-                    CommentVO commentVO = CommentVO.builder()
-                            .commentId(commentId)
-                            .boardId(Long.parseLong(boardId))
-                            .comment(comment).build();
-                    return new BaseResponse<>(commentVO);
-                }
-                break;
+                //response dto
+                CommentVO commentVO = CommentVO.builder()
+                        .commentId(commentId)
+                        .boardId(boardId)
+                        .comment(comment).build();
+                return new BaseResponse<>(commentVO);
             case "modifyComment":
-                String commentId = (String) body.get("commentId");
+                commentId = (long) body.get("commentId");
                 comment = (String) body.get("comment");
-                boardId =(String) body.get("boardId");
+                boardId =(long) body.get("boardId");
 
-                if (boardId == null) throw new BaseException(JSON_PARSING_ERROR);
-                if (commentId == null) throw new BaseException(JSON_PARSING_ERROR);
-                if (isNumeric(boardId) && isNumeric(commentId)) {
-                    //request dto
-                    CommentModifyRequestDTO dto = CommentModifyRequestDTO.builder()
-                            .boardId(Long.parseLong(boardId))
-                            .comment(comment)
-                            .commentId(Long.parseLong(commentId))
-                            .build();
-                    //response dto
-                    long responseCommentId = commentService.modifyComment(dto, userId);
-                    CommentVO commentVO = CommentVO.builder()
-                            .commentId(responseCommentId)
-                            .boardId(Long.parseLong(boardId))
-                            .comment(comment).build();
-                    return new BaseResponse(commentVO);
-                }
-                break;
+                //request dto
+                CommentModifyRequestDTO dto = CommentModifyRequestDTO.builder()
+                        .boardId(boardId)
+                        .comment(comment)
+                        .commentId(commentId)
+                        .build();
+                //response dto
+                long responseCommentId = commentService.modifyComment(dto, userId);
+                commentVO = CommentVO.builder()
+                        .commentId(responseCommentId)
+                        .boardId(boardId)
+                        .comment(comment)
+                        .build();
+                return new BaseResponse(commentVO);
             case "deleteComment":
-                commentId = (String) body.get("commentId");
-                boardId =(String) body.get("boardId");
-                if (boardId == null) throw new BaseException(JSON_PARSING_ERROR);
-                if (commentId == null) throw new BaseException(JSON_PARSING_ERROR);
-                if (isNumeric(boardId) && isNumeric(commentId)) {
-                    CommentDeleteRequestDTO dto = CommentDeleteRequestDTO.builder()
-                            .boardId(Long.parseLong(boardId))
-                            .commentId(Long.parseLong(commentId))
-                            .build();
-                    commentService.deleteComment(dto, userId);
-                    return new BaseResponse(SUCCESS);
-                }
-
+                commentId = (long) body.get("commentId");
+                boardId =(long) body.get("boardId");
+                CommentDeleteRequestDTO commentDeleteRequestDTO= CommentDeleteRequestDTO.builder()
+                        .boardId(boardId)
+                        .commentId(commentId)
+                        .build();
+                commentService.deleteComment(commentDeleteRequestDTO, userId);
+                return new BaseResponse(SUCCESS);
         }
         throw new BaseException(NOT_MATCH_SIGN);
     }
+
 
 }
 

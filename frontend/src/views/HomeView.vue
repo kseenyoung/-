@@ -11,12 +11,26 @@
 
         <div
           style="color: white;"
-          v-if="userStore.loginUserInfo.userId"
-          @click="navigateToStudyRoom"
-        >
-          <h3 style="display:inline-block;"> <VueWriter :array="arr" style="display:inline-block;" class="is-typed cursor" :caret="underscore" /></h3>
+          v-if="userStore.loginUserInfo.userId == null"
+          @click="navigateToLogin">
+          <div class="is-typed">
+            <h3 style="display:inline-block;"> 
+              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+            </h3>
         <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
-    </div>
+        </div>
+      </div>
+        <div
+          style="color: white;"
+          v-else
+          @click="navigateToStudyRoom">
+          <div class="is-typed">
+            <h3 style="display:inline-block;"> 
+              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+            </h3>
+        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+        </div>
+      </div>
       </div>
       </div>
         <div class="background">
@@ -41,6 +55,7 @@ import MokkojiRanking from '@/components/home/MokkojiRanking.vue'
 import { useUserStore } from '@/stores/user'
 import { useCategoryStore } from '@/stores/category'
 import { useAlarmStore } from '@/stores/alarm'
+import { useDagakStore } from '@/stores/dagak'
 import SimpleDagak from '@/components/dagak/SimpleDagak.vue'
 
 const arr = ref([
@@ -55,8 +70,16 @@ const userStore = useUserStore()
 const categoryStore = useCategoryStore()
 const alarmStore = useAlarmStore()
 const router = useRouter()
+const dagakStore = useDagakStore()
+
+const navigateToLogin = () => {
+  alert("로그인해주세요!")
+  router.push('/login')
+}
+
 
 const navigateToStudyRoom = () => {
+  if(dagakStore.todayDagak.value == null)
   router.push('/studyroom')
 }
 
@@ -64,10 +87,22 @@ onMounted(async () => {
   // store.login();
   alarmStore.getUnReadAlarmList()
   categoryStore.getCategoryList()
+  if(userStore.loginUserInfo.userId != null){
+    dagakStore.getTodayDagak();
+    arr = [];
+  }
 })
 </script>
 
 <style lang="scss" scoped>
+.is-typed {
+  user-select: none;
+  
+}
+.is-typed:hover {
+  cursor: pointer;
+  color : black;
+}
 .title {
   font-size: 15rem;
   font-weight: bold;
@@ -635,7 +670,7 @@ div[id^='bsquare'] {
   right: 0;
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.2); /* 흰색에 대한 배경 투명도 조절 가능 */
-  z-index: 1; /* 이미지 위에 배치하려면 z-index 값을 조절하세요 */
+  z-index: 0; /* 이미지 위에 배치하려면 z-index 값을 조절하세요 */
 }
 .font-weight-bold {
   margin-top: 10%;
