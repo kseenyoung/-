@@ -3,18 +3,15 @@
     <div class="studyroomheader">
       <div class="nowname">
 
-        <div class="nametag">Python 마스터</div>
+        <div class="nametag"> Python 마스터</div>
+
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
         <img class="pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중" />
-        <button class="btn btn-outline-dark me-2" @click="leaveStudyRoom">나가기</button>
+        <button class="btn btn-outline-dark me-2 leave" @click="leaveStudyRoom">나가기</button>
       </div>
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
-        <!-- <textarea id="message" name="message" rows="4" cols="30" v-model="question" placeholder="-- 질문을 입력하세요--"></textarea>
-        <button @click="askQuestion">질문하기</button>
-        <textarea id="message" name="message" rows="4" cols="30" v-model="answer" placeholder="-- 답변을 입력하세요--"></textarea>
-        <button @click="answerQuestion">답변하기</button> -->
       </div>
     </div>
 
@@ -133,10 +130,11 @@ const mySession = ref(store.loginUserInfo.sub);
 const mainStreamManager = ref(undefined);
 const publisher = ref(undefined);
 const subscribers = ref([]);
+
 const question = ref("");
 const answer = ref("");
 
-
+console.log('구독자들: ',subscribers.value)
 console.log("STORE USER  :  ", store.loginUser);
 // 초기 데이터(계정 세션 아이디, 계정 이름)
 const myUserName = ref(store.myUserName);
@@ -321,6 +319,9 @@ onMounted(() => {
   console.log("방에 입장합니다.");
   joinSession();
 
+  dagakStore.getTodayDagak();
+  console.log("다각을 가져옵니다.")
+
   
   // 공부 시간 보내기
   // await axios.get(`${import.meta.env.VITE_API_BASE_URL}user`  + "/kakaoOAuth?code=" + code)
@@ -333,11 +334,9 @@ onMounted(() => {
   //         });
   //     } 
   //   })
-
-  dagakStore.getTodayDagak();
-  console.log("다각을 가져옵니다.")
-
 });
+console.log('구독자들: ',subscribers.length)
+console.log('구독자들: ',subscribers.value.length)
 </script>
 
 <style>
@@ -593,6 +592,6 @@ onMounted(() => {
 }
 
 .leave {
-  border: none;
+  margin: 3px;
 }
 </style>
