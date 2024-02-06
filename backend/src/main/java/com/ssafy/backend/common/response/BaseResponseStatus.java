@@ -35,6 +35,7 @@ public enum BaseResponseStatus {
     SUCCESS_LEAVE_SESSION(true, 1404, "세션을 나가는데 성공했습니다"),
 
     FAIL_TO_LOGIN(true, 1405, "로그인에 실패했습니다."),
+    SUCCESS_GET_EMAIL(true, 1406, "이메일 불러오기 성공."),
 
     /**
      * 2000 : Request 오류

@@ -108,18 +108,14 @@ public class DagakServiceImpl implements DagakService {
 
     @Override
     public CalendarDagakVO getDagak(String userId, LocalDate today) {
-        Calendar todayCalender = calendarRepository.findCalendarByCalendarDateAndAndUserId(today, userId)
+        Calendar todayCalender = calendarRepository.findCalendarByCalendarDateAndUserId(today, userId)
                 .orElseThrow(() ->
                     new BaseException(NOT_FOUND_TODAY_DAGAK));
         CalendarDagakVO todayCalendarDagakVO = new CalendarDagakVO();
         todayCalendarDagakVO.setUserId(todayCalender.getUserId());
         todayCalendarDagakVO.setDagakId(todayCalender.getDagakId());
-        todayCalendarDagakVO.setCalendarDate(todayCalender.getCalendarDate());
-        todayCalendarDagakVO.setCalendarDagakId(todayCalendarDagakVO.getCalendarDagakId());
+        todayCalendarDagakVO.setGaks(gakRepository.findAllByDagakId(todayCalender.getDagakId()));
 
-        todayCalendarDagakVO.setGaks(gakRepository.findAllByDagakId(todayCalendarDagakVO.getDagakId()));
-        log.info("todayCalendarDagakVO.getGaks() : ", todayCalendarDagakVO.getGaks());
-        
         return todayCalendarDagakVO;
     }
 

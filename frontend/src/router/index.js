@@ -14,6 +14,16 @@ const router = createRouter({
       component: () => import('@/views/LoginView.vue')
     },
     {
+      path: '/googleLogin',
+      name: 'googleLogin',
+      component: () => import('@/views/GoogleLoginView.vue'),
+    },
+    {
+      path: '/kakaoLogin',
+      name: 'kakaoLogin',
+      component: () => import('@/views/kakaoLoginView.vue'),
+    },
+    {
       path: '/regist',
       name: 'regist',
       component: () => import('@/components/user/UserRegist.vue')
@@ -74,7 +84,19 @@ const router = createRouter({
     {
       path: '/studyroom',
       name: 'studyroom',
-      component: () => import('@/views/StudyRoomView.vue')
+      component: () => import('@/views/StudyRoomView.vue'),
+      children: [
+        {
+          path: 'qna',
+          name: 'QnAList',
+          component: () => import('@/components/room/QnAListView.vue'),
+        },
+        {
+          path: 'studyRate',
+          name: 'studyRate',
+          component: () => import('@/components/room/StudyRateView.vue'),
+        }
+      ]
     },
     {
       // :모꼬지pk 나중에 넣자
