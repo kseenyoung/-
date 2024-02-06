@@ -224,5 +224,10 @@ public class DagakServiceImpl implements DagakService {
 
     }
 
+    @Override
+    public List<GakHistory> getGaksOfHistory(String userId, LocalDate today) {
+        return gakHistoryRepository.findByUserIdAndCreatedDate(userId, today);
+    }
+
 
 }
