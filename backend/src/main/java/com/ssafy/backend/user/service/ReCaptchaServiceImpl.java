@@ -13,12 +13,12 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_TO_CONNE
 
 
 @Service
-public class ReCaptchaService {
+public class ReCaptchaServiceImpl implements VerifyService {
 
     @Value("${google.recaptcha.key}")
-    private static String googlekey;
+    private String googlekey;
 
-    public static boolean isBot(String recaptchaResponse) {
+    public boolean isVerified(String recaptchaResponse) {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL("https://www.google.com/recaptcha/api/siteverify")
                     .openConnection();

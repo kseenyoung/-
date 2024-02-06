@@ -27,6 +27,8 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 import './assets/main.css';
+import VueWriter from "vue-writer";
+
 const app = createApp(App);
 
 //pinia-plugin-persistedstate
@@ -38,6 +40,7 @@ app.use(router);
 
 //부트스트랩
 app.use(BootstrapVue3);
+app.use(VueWriter);
 //데이트피커
 app.component('VueDatePicker', VueDatePicker);
 

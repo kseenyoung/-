@@ -1,7 +1,7 @@
 package com.ssafy.backend.board.service;
 
 import com.ssafy.backend.board.model.domain.Board;
-import com.ssafy.backend.board.model.domain.Comment;
+import com.ssafy.backend.board.model.domain.BoardComment;
 import com.ssafy.backend.board.model.dto.CommentCreateRequestDTO;
 import com.ssafy.backend.board.model.dto.CommentDeleteRequestDTO;
 import com.ssafy.backend.board.model.dto.CommentModifyRequestDTO;
@@ -36,18 +36,18 @@ public class CommentServiceImpl implements CommentService {
     public long modifyComment(CommentModifyRequestDTO dto, String userId) {
         Board board = boardRepository.findById(dto.getBoardId())
                 .orElseThrow(() -> new BaseException(NOT_FOUND_BOARD));
-        Comment comment = commentRepository.findByCommentIdAndUserId(dto.getCommentId(),userId)
+        BoardComment boardComment = commentRepository.findByCommentIdAndUserId(dto.getCommentId(),userId)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_COMMENT));
-        comment.modifyComment(dto.getComment());
-        return commentRepository.save(comment).getCommentId();
+        boardComment.modifyComment(dto.getComment());
+        return commentRepository.save(boardComment).getCommentId();
     }
 
     @Override
     public void deleteComment(CommentDeleteRequestDTO dto, String userId) {
         Board board = boardRepository.findById(dto.getBoardId())
                 .orElseThrow(() -> new BaseException(NOT_FOUND_BOARD));
-        Comment comment = commentRepository.findByCommentIdAndUserId(dto.getCommentId(),userId)
+        BoardComment boardComment = commentRepository.findByCommentIdAndUserId(dto.getCommentId(),userId)
                 .orElseThrow(() -> new BaseException(NOT_FOUND_BOARD));
-         commentRepository.delete(comment);
+         commentRepository.delete(boardComment);
     }
 }

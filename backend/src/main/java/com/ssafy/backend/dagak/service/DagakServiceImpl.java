@@ -109,10 +109,12 @@ public class DagakServiceImpl implements DagakService {
 
     @Override
     public CalendarDagakVO getDagak(String userId, LocalDate today) {
-        Calendar todayCalender = calendarRepository.findCalendarByCalendarDateAndAndUserId(today, userId);
+        Calendar todayCalender = calendarRepository.findCalendarByCalendarDateAndUserId(today, userId);
         CalendarDagakVO todayCalendarDagakVO = new CalendarDagakVO();
         todayCalendarDagakVO.setUserId(todayCalender.getUserId());
         todayCalendarDagakVO.setDagakId(todayCalender.getDagakId());
+        todayCalendarDagakVO.setGaks(gakRepository.findAllByDagakId(todayCalender.getDagakId()));
+
         return todayCalendarDagakVO;
     }
 
