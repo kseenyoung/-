@@ -75,7 +75,7 @@ google:
     scope: email
   login:
     url: https://accounts.google.com
-  redirect.uri: https://localhost:8080/dagak/user/googleOauth
+  redirect.uri: https://localhost:5173/googleLogin
   client:
     id: ENC(tp1c63jVBYQIRFiP2bwwUGIONiskvDMHTGdo+ljhAPdCdmSxbQG0ObNU3oVoi83J0+BSRB6WPpT8JIW4AHL6WcNG0T0aQm5oDRajvJwVGrhsD+LXNXsW0A==)
   secret: ENC(mOXhqgPNISKfS9rHypLRVJI/iBKZVWzTJn9wFHfAS0N8tfSGiFo6cGzh685eKCQa)
