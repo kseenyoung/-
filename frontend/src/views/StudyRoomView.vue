@@ -2,7 +2,8 @@
   <div class="room">
     <div class="studyroomheader">
       <div class="nowname">
-        <div class="nametag">Python 마스터</div>
+
+        <div class="nametag">Python 마스터 {{ subscribers }}</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
         <img class="pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중" />
         <button class="btn btn-outline-dark me-2" @click="leaveStudyRoom">나가기</button>
@@ -22,6 +23,21 @@
         <div class="column">
           <div class="video-player-3">
             <div class="bigvideo" ref="video13">
+              <user-video :stream-manager="subscribers[0]" @click.native="updateMainVideoStreamManager(subscribers[0])" />
+            </div>
+          </div>
+        </div>
+        <div class="video-player-2">
+          <user-video :stream-manager="mainStreamManager" />
+          <user-video class="videog2" v-for="(sub, index) in subscribers.splice(1, 5)"
+            :key="sub.stream.connection.connectionId" v-if="index > 0" :stream-manager="sub"
+            @click.native="updateMainVideoStreamManager(sub)" />
+        </div>
+      </div>
+      <!-- <div class="video-players">
+        <div class="column">
+          <div class="video-player-3">
+            <div class="bigvideo" ref="video13">
               <user-video :stream-manager="mainStreamManager" />
             </div>
           </div>
@@ -37,8 +53,21 @@
             <user-video class="videog2" v-for="sub in subscribers" :key="sub.stream.connection.connectionId"
               :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
         </div>
-      </div>
-      <div class="bar">
+      </div> -->
+
+      <!-- <div class="video-players">
+        <div class="column">
+          <div class="bigvideo" ref="video1">
+            <user-video v-if="subscribers.length == 1" :stream-manager="mainStreamManager" />
+          </div>
+        </div>
+        <div class="video-player-2">
+          <user-video class="videog2" v-for="sub in subscribers.slice(1, 5)" :key="sub.stream.connection.connectionId"
+            :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
+        </div>
+      </div> -->
+
+   <div class="bar">
         <button class="ratetoggle" @click="toggleRate">달성률</button>
         <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
       </div>
@@ -121,7 +150,7 @@ const enterRoom = async (sessionId) => {
 const createSession = async (sessionId) => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
-    { sign: "enterRandomroom", userId: store.myUserName, sessionName: store.loginUserInfo.sub, videoCodec: "VP8"},
+    { sign: "enterRandomroom", userId: store.myUserName, sessionName: store.loginUserInfo.sub, videoCodec: "VP8" },
     {
       headers: { "Content-Type": "application/json" },
     },
@@ -133,7 +162,7 @@ const createSession = async (sessionId) => {
 };
 
 const askQuestion = async () => {
-  console.log(mySession.value+ "에서 질문합니다! ");
+  console.log(mySession.value + "에서 질문합니다! ");
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
     { sign: "askQuestion", session: mySession.value, data: question.value },
@@ -145,7 +174,7 @@ const askQuestion = async () => {
 };
 
 const answerQuestion = async () => {
-  console.log(mySession.value+ "에서 답변합니다! ");
+  console.log(mySession.value + "에서 답변합니다! ");
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
     { sign: "answerQuestion", session: mySession.value, data: question.value },
@@ -160,16 +189,16 @@ const joinSession = () => {
   OV.value = new OpenVidu();
   session.value = OV.value.initSession();
 
-  session.value.on("signal:question", ( stream ) => {
+  session.value.on("signal:question", (stream) => {
     alert("질문이 들어왔습니다!");
-    console.log("질문 내용:"+ stream.data);
+    console.log("질문 내용:" + stream.data);
     const data = JSON.parse(stream.data);
     console.log(data.questionId)
   });
 
-  session.value.on("signal:answer", ( stream ) => {
+  session.value.on("signal:answer", (stream) => {
     alert("답변이 달렸습니다!");
-    console.log("답변 내용:"+ stream.data);
+    console.log("답변 내용:" + stream.data);
   });
 
   session.value.on("streamCreated", ({ stream }) => {
@@ -190,7 +219,7 @@ const joinSession = () => {
   });
 
   enterRoom(store.loginUserInfo.sub).then((token) => {
-    console.log("token"+token);
+    console.log("token" + token);
     store.studyRoomSessionToken = token;
     session.value.connect(token, store.myUserName).then(() => {
       publisher.value = OV.value.initPublisher(undefined, {
@@ -216,7 +245,7 @@ const joinSession = () => {
   // window.addEventListener("beforeunload", leaveSession);
 };
 
-const leaveStudyRoom = async() => {
+const leaveStudyRoom = async () => {
   console.log("스터디룸을 나갑니다.");
   await leaveSession();
   console.log("홈화면으로 돌아갑니다.");
@@ -234,11 +263,11 @@ const leaveSession = async () => {
 
   const response = await axios.post(
     APPLICATION_SERVER_URL + "room",
-    { sign: "leaveSession"},
+    { sign: "leaveSession" },
     {
       headers: { "Content-Type": "application/json" },
     },
-  ).then(()=>{
+  ).then(() => {
     alert("퇴실합니다.")
   });
 
@@ -297,7 +326,7 @@ onMounted(() => {
 
 <style>
 .room {
-  flex-direction: column;  
+  flex-direction: column;
   height: 60%;
 }
 
@@ -397,6 +426,11 @@ onMounted(() => {
   flex: 4;
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
+}
+
+.column2 {
+  display: flex;
   flex-direction: column;
 }
 
@@ -541,6 +575,7 @@ onMounted(() => {
   background-color: white;
   /* border-bottom: 2px solid white;*/
 }
+
 .leave {
   border: none;
 }
