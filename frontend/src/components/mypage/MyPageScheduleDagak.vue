@@ -1,6 +1,13 @@
 <template>
   <div>다각목록</div>
-  <button @click="goToCalander">캘린더로</button>
+  <button class="btn common-btn" @click="goToCalander">캘린더로</button>
+  <button
+    class="btn common-btn"
+    data-bs-toggle="modal"
+    data-bs-target="#MyPageScheduleDagakAddModal"
+  >
+    새 다각 만들기
+  </button>
   <div class="dagak-list-wrapper">
     <div
       class="dagak-detail-wrapper common-pointer"
@@ -115,6 +122,7 @@
       </div>
     </div>
     <!-- 각 상세정보 모달 -->
+    <MyPageScheduleDagakAddModal @updateDagakList="getAllDagakList" />
   </div>
 </template>
 
@@ -124,6 +132,7 @@ import { useCategoryStore } from '@/stores/category';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import draggable from 'vuedraggable';
+import MyPageScheduleDagakAddModal from './MyPageScheduleDagakAddModal.vue';
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
@@ -188,6 +197,7 @@ const deleteGak = function (gakId) {
       gakId: gakId,
       remainGakInformation: remainGakInformation,
     };
+    console.log(body);
     axios
       .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
       .then((res) => {
