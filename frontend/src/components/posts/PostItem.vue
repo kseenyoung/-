@@ -1,7 +1,8 @@
 <template>
-  <div class="card" style="width: 18rem">
+  <div class="card" >
     <div class="card-body">
       <h5 class="card-title">{{ title }}</h5>
+      <button class="btn tag">{{ tag }}</button>
       <p class="card-text">
         {{ content }}
       </p>
@@ -16,6 +17,9 @@ defineProps({
     type: String,
     required: true
   },
+  tag: {
+    type: [String, Number, Object]
+  },
   content: {
     type: String
   },
@@ -25,4 +29,13 @@ defineProps({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.tag {
+  background-color: orange;
+  color: white;
+  font-size: 12px; 
+  padding: 2px 5px;
+}
+
+
+</style>

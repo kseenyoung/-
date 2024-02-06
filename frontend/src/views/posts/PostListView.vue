@@ -3,10 +3,11 @@
     <h2>게시글 목록</h2>
     <hr class="my-4" />
     <div class="row g-3">
-      <div v-for="post in posts.data.result.boards" :key="post.boardId" class="col-6">
+      <div v-for="post in posts" :key="post.boardId" class="col-6">
         <PostItem
           :title="post.boardTitle"
           :created-date="formatDate(post.createdDate)"
+          :tag="post.tag.tagName"
           @click="goDetailPage(post.boardId)"
         ></PostItem>
       </div>
@@ -34,8 +35,10 @@ const goCreatePage = () => {
 const posts = ref([])
 const fetchPosts = () => {
   boardStore.getPosts();
+  console.log('총 포스트:', boardStore.posts)
   posts.value = boardStore.posts;
 }
+
 fetchPosts()
 const goDetailPage = (id) => {
   router.push({

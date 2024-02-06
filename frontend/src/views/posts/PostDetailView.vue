@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <h2> {{detail.boardTitle}} </h2>
+    <button class="btn tag">{{ detail.tag.tagName }}</button>
     <p>{{detail.boardContent}}</p>
     <p class="text-muted">{{ formatDate(detail.createdDate) }}</p>
     <hr class="my-4" />
@@ -66,4 +67,11 @@ const formatDate = (timestampArray) => {
 .container {
   margin: 80px;
 }
+.tag {
+  background-color: orange;
+  color: white;
+  font-size: 12px; 
+  padding: 2px 5px;
+}
+
 </style>

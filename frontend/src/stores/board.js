@@ -9,18 +9,13 @@ import axios from 'axios'
 export const useBoardStore = defineStore(
   'boardStore',
   () => {
-
-
     const posts = ref([])
-
-
     const getPosts = async function () {
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}board/list?page=0&keyword=`);
-        posts.value = response
-
+        posts.value = response.data.result.boards
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
     const postDetail = ref([])
@@ -28,9 +23,8 @@ export const useBoardStore = defineStore(
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}board/detail/${id-1}`);
         postDetail.value = response.data.result.board
-
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
 
