@@ -4,13 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.domain.Question;
+import com.ssafy.backend.room.model.domain.redis.AnswerRedis;
+import com.ssafy.backend.room.model.domain.redis.QuestionRedis;
 import com.ssafy.backend.room.model.dto.AnswerDTO;
+import com.ssafy.backend.room.model.repository.AnswerRepository;
+import com.ssafy.backend.room.model.repository.QuestionRepository;
 import com.ssafy.backend.room.model.vo.AnswerVO;
 import com.ssafy.backend.room.model.vo.ConnectionVO;
 import com.ssafy.backend.room.model.dto.QuestionDTO;
 import com.ssafy.backend.room.model.dto.EnterRoomDTO;
-import com.ssafy.backend.room.model.repository.AnswerRepository;
-import com.ssafy.backend.room.model.repository.QuestionRepository;
+import com.ssafy.backend.room.model.repository.redis.AnswerRedisRepository;
+import com.ssafy.backend.room.model.repository.redis.QuestionRedisRepository;
 import com.ssafy.backend.room.model.vo.QuestionVO;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDTO;
 import io.openvidu.java.client.*;
@@ -42,6 +46,8 @@ public class RoomServiceImpl implements RoomService {
     @Value("${openvidu.secret}")
     private String OPENVIDU_SECRET;
 
+    private final AnswerRedisRepository answerRedisRepository;
+    private final QuestionRedisRepository questionRedisRepository;
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
 
@@ -71,7 +77,7 @@ public class RoomServiceImpl implements RoomService {
         String sessionName = enterRoomDTO.getSessionName();
         Session session;
 
-        if(enterRoomDTO.getPrevConnectionId() == null){
+        if(enterRoomDTO.getPrevSession() == null){
             sessionName = getRandomroom(sessionName);
         }  else { // 기존연결이 있다면 재접속
             sessionName = enterRoomDTO.getPrevSession();
@@ -138,8 +144,8 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // DB에 질문 저장
-        Question question = saveQuestion(questionDTO);
-        QuestionVO questionVO = new QuestionVO(question.getQuestionId(),questionDTO.getUserId(),questionDTO.getSession(),questionDTO.getData());
+        QuestionRedis questionRedis = saveQuestion(questionDTO);
+        QuestionVO questionVO = new QuestionVO(questionRedis.getQuestionId(),questionDTO.getUserId(),questionDTO.getSession(),questionDTO.getData());
 
         ObjectMapper om = new ObjectMapper();
         OpenviduRequestDTO openviduRequestDTO = new OpenviduRequestDTO(sessionId,"question",om.writeValueAsString(questionVO));
@@ -177,9 +183,20 @@ public class RoomServiceImpl implements RoomService {
             throw new BaseException(NOT_EXIST_SESSION);
         }
 
-        Answer answer = saveAnswer(answerDTO);
-        AnswerVO answerVO = new AnswerVO(answer.getAnswerId(),answerDTO.getUserId(),answerDTO.getSession(),answerDTO.getData(),answerDTO.getQuestionId());
+        // Redis에 답변 저장
+        AnswerRedis answerRedis = saveAnswer(answerDTO);
+        System.out.println("AnswerId: "+ answerRedis.getAnswerId());
+        AnswerVO answerVO = new AnswerVO(answerRedis.getAnswerId(),answerDTO.getUserId(),answerDTO.getSession(),answerDTO.getData(),answerDTO.getQuestionId());
         ObjectMapper om = new ObjectMapper();
+
+        // RDB에 질문 저장
+        QuestionRedis questionRedis = questionRedisRepository.findById(answerDTO.getQuestionId());
+        Question question = questionRedis.toEntity();
+        questionRepository.save(question);
+
+        //RDB에 답변 저장
+        Answer answer = answerRedis.toEntity();
+        answerRepository.save(answer);
 
         OpenviduRequestDTO openviduRequestDTO = new OpenviduRequestDTO(sessionId,"answer",om.writeValueAsString(answerVO));
         URI uri = UriComponentsBuilder
@@ -207,25 +224,24 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Answer saveAnswer(AnswerDTO answerDTO) throws Exception {
-        Answer answer = answerDTO.toEntity();
-        answer = answerRepository.save(answer);
-        return answer;
+    public AnswerRedis saveAnswer(AnswerDTO answerDTO) throws Exception {
+        AnswerRedis answerRedis = answerDTO.toEntity();
+        answerRedis = answerRedisRepository.save(answerRedis);
+        return answerRedis;
     }
 
     @Override
-    public Question saveQuestion(QuestionDTO questionDTO) throws Exception {
-        Question question = questionDTO.toEntity();
-        question = questionRepository.save(question);
-        return question;
+    public QuestionRedis saveQuestion(QuestionDTO questionDTO) throws Exception {
+        QuestionRedis questionRedis = questionDTO.toEntity();
+        questionRedis = questionRedisRepository.save(questionRedis);
+        return questionRedis;
     }
-
 
     @Override
     public List<AnswerVO> findAnswerByQuestionId(String questionId) throws Exception {
-        List<Answer> answers = answerRepository.findByQuestionId(questionId);
-        List<AnswerVO> answerVOS = answers.stream()
-                .map(a -> new AnswerVO(a.getUserId(),a.getSession(),a.getAnswer(),a.getQuestionId()))
+        List<AnswerRedis> answerRedis = answerRedisRepository.findByQuestionId(questionId);
+        List<AnswerVO> answerVOS = answerRedis.stream()
+                .map(a -> new AnswerVO(a.getAnswerId(),a.getUserId(),a.getSession(),a.getAnswerContent(),a.getQuestionId()))
                 .collect(Collectors.toList());
         return answerVOS;
     }
