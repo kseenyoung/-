@@ -136,11 +136,13 @@ import { useUserStore } from '@/stores/user'
 import UserVideo from '@/components/room/UserVideo.vue'
 import { useRouter } from 'vue-router'
 import Dagak from '@/components/dagak/Dagak.vue'
+import { useQuestionStore } from '@/stores/qustion'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 const router = useRouter()
 const store = useUserStore()
+// const useQuestionStore = useQuestionStore()
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/'
 
@@ -214,6 +216,10 @@ const joinSession = () => {
   session.value.on('signal:question', (stream) => {
     alert('질문이 들어왔습니다!')
     console.log('질문 내용:' + stream.data)
+
+    // 질문 넣어줌
+    useQuestionStore.setQuestion(JSON.parse(stream.data))
+
     const data = JSON.parse(stream.data)
     console.log(data.questionId)
   })
