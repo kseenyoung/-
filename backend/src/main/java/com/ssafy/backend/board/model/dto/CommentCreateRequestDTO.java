@@ -1,7 +1,7 @@
 package com.ssafy.backend.board.model.dto;
 
 import com.ssafy.backend.board.model.domain.Board;
-import com.ssafy.backend.board.model.domain.Comment;
+import com.ssafy.backend.board.model.domain.BoardComment;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,8 +11,8 @@ public class CommentCreateRequestDTO {
     private long boardId;
     private String comment;
 
-    public Comment toEntity(Board board,String userId) {
-        return Comment.builder()
+    public BoardComment toEntity(Board board, String userId) {
+        return BoardComment.builder()
                 .comment(comment)
                 .boardId(board)
                 .userId(userId)
