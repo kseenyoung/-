@@ -47,13 +47,13 @@
           <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
         </div>
 
-        <div style="display:flex; flex-direction: column; float: right; margin-right: -20%; margin-top: -5%; width: 40%; height: auto; ">
+        <div style="display:flex; flex-direction: column; float: right; margin-right: -20%; margin-top: -3%; width: 40%; height: auto; ">
           <div class="bubble medium bottom" style="height: auto; float: right; margin-right: 0%;">
-            친구 <b style="color: red;">10</b>명이 <br/> 로그인중이에요
+            친구 <b style="color: red;">{{ userStore.friends.length }}</b> 명이 <br/> 로그인중이에요
             <br/>
     
           </div>
-          <img src="@/assets/friends.png" @click="showFriends" style="width: 50%; height: auto; float: right; margin-right: 8%;margin-top: 0%;"/>
+          <img src="@/assets/friends.png" @click="showFriends" style="width: 40%; height: auto; float: right; margin-right: 8%;margin-top: 0%;"/>
 
       </div>
         
