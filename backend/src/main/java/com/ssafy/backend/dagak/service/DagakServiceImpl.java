@@ -15,6 +15,7 @@ import com.ssafy.backend.dagak.model.repository.DagakRepository;
 import com.ssafy.backend.dagak.model.repository.GakHistoryRepository;
 import com.ssafy.backend.dagak.model.repository.GakRepository;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
+import com.ssafy.backend.dagak.model.vo.TodayGakVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -112,9 +113,11 @@ public class DagakServiceImpl implements DagakService {
                 .orElseThrow(() ->
                     new BaseException(NOT_FOUND_TODAY_DAGAK));
         CalendarDagakVO todayCalendarDagakVO = new CalendarDagakVO();
+        todayCalendarDagakVO.setCalendarDagakId(todayCalender.getCalendarDagakId());
         todayCalendarDagakVO.setUserId(todayCalender.getUserId());
         todayCalendarDagakVO.setDagakId(todayCalender.getDagakId());
         todayCalendarDagakVO.setGaks(gakRepository.findAllByDagakId(todayCalender.getDagakId()));
+        todayCalendarDagakVO.setTotalTime(dagakRepository.findByDagakId(todayCalender.getDagakId()).getTotalTime());
 
         return todayCalendarDagakVO;
     }
@@ -227,6 +230,39 @@ public class DagakServiceImpl implements DagakService {
     @Override
     public List<GakHistory> getGaksOfHistory(String userId, LocalDate today) {
         return gakHistoryRepository.findByUserIdAndCreatedDate(userId, today);
+    }
+
+    @Override
+    public TodayGakVO enterRoomGetGakToStudy(String userId) {
+        TodayGakVO todayGakVO = new TodayGakVO();
+        LocalDate today = LocalDate.now();
+        CalendarDagakVO todayDagakVO = getDagak(userId, today);
+        Integer calendarId = todayDagakVO.getCalendarDagakId();
+        List<Gak> todayGaks = todayDagakVO.getGaks();
+        List<GakHistory> historyGaks = getGaksOfHistory(userId, today);
+
+        if (historyGaks == null) {  // 공부 아예 처음 시작.
+            Gak todayGak = todayGaks.get(0);
+            todayGakVO.setUserId(userId);
+            todayGakVO.setCalendarId(calendarId);
+            todayGakVO.setGakId(todayGak.getGakId());
+            todayGakVO.setTotalTime(todayGak.getRunningTime());
+            todayGakVO.setCategoryId(todayGak.getCategoryId());
+            todayGakVO.setMemoryTime(0);
+        } else { // 루틴 수행 도중일 때.
+            Gak todayGak = todayGaks.get(historyGaks.size()-1);
+            int nowStudyingTime = 0;
+            for (int i = 0; i < historyGaks.size() ; i++) {
+                nowStudyingTime += historyGaks.get(i).getMemoryTime();
+            }
+            todayGakVO.setUserId(userId);
+            todayGakVO.setCalendarId(calendarId);
+            todayGakVO.setGakId(todayGak.getGakId());
+            todayGakVO.setCategoryId(todayGak.getCategoryId());
+            todayGakVO.setTotalTime(todayDagakVO.getTotalTime());
+            todayGakVO.setMemoryTime(nowStudyingTime);
+        }
+        return todayGakVO;
     }
 
 

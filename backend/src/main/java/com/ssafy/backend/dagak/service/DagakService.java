@@ -8,6 +8,7 @@ import com.ssafy.backend.dagak.model.dto.GakDTO;
 import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
 import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDTO;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
+import com.ssafy.backend.dagak.model.vo.TodayGakVO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,5 +43,7 @@ public interface DagakService {
     void modifyMemoryTime(UpdateMemoryTimeDTO updateStartTimeDto);
 
     List<GakHistory> getGaksOfHistory(String userId, LocalDate today);
+
+    TodayGakVO enterRoomGetGakToStudy(String userId);
 }
 
