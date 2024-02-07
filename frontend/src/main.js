@@ -26,6 +26,8 @@ import '@vuepic/vue-datepicker/dist/main.css';
 // npm i pinia-plugin-persistedstate
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
+// npm i -S vuedraggable@next
+
 import './assets/main.css';
 import VueWriter from "vue-writer";
 

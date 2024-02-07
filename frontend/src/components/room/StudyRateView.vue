@@ -5,7 +5,7 @@
         <p class="titletag">공부시간</p>
         <div class="studytime">01:30:32</div>
         <hr />
-        <p class="titletag">달성률</p>
+        <p class="titletag">달성률 {{ store.achievementRate }}</p>
         <div class="dagak">
           <Dagak />
         </div>
@@ -27,6 +27,11 @@
 <script setup>
 import QnAListView from './QnAListView.vue'
 import Dagak from '@/components/dagak/Dagak.vue'
+import { useUserStore } from '@/stores/user'
+
+const store = useUserStore()
+
+
 </script>
 
 <style lang="scss" scoped>
