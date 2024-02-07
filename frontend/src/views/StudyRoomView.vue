@@ -129,12 +129,13 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount, onMounted } from 'vue'
+import { ref, onBeforeUnmount, onBeforeMount, onMounted } from 'vue'
 import axios from 'axios'
 import { OpenVidu, Stream } from 'openvidu-browser'
 import { useUserStore } from '@/stores/user'
 import QnAListView from '@/components/room/QnAListView.vue'
 import UserVideo from '@/components/room/UserVideo.vue'
+import StudyRateView from '@/components/room/StudyRateView.vue'
 import { useRouter } from 'vue-router'
 import Dagak from '@/components/dagak/Dagak.vue'
 
@@ -153,6 +154,21 @@ const publisher = ref(undefined)
 const subscribers = ref([])
 const question = ref('')
 const leave = ref("refresh");
+const achievementRate = ref(0);
+
+onBeforeMount (async() => {
+    await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
+    .then((res) => {
+      const result = res.data.result;
+      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId
+      // categoryId로 방 이동 바랍니다.
+      alert(result.categoryId + "(는 영어) 방에 입장합니다.");
+      const achievementRate = result.memoryTime/result.totalTime;
+      store.achievementRate = achievementRate;
+    })
+  })
+
+
 
 console.log('STORE USER  :  ', store.loginUser)
 // 초기 데이터(계정 세션 아이디, 계정 이름)

@@ -12,6 +12,7 @@ export const useUserStore = defineStore(
     const studyRoomSessionToken = ref('');
     const loginUserInfo = ref({});
     const isInSession = ref(false);
+    const achievementRate = ref(0);
 
     //로그인 세션 test
     const login = function () {

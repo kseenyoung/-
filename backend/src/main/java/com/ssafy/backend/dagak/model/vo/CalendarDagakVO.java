@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 public class CalendarDagakVO {
     private Integer calendarDagakId;
-    private Integer dagakId;
+    private Integer dagakId, totalTime;
     private LocalDate calendarDate;
     private List<Gak> gaks;
     private String userId;
@@ -42,6 +42,8 @@ public class CalendarDagakVO {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public void setTotalTime(Integer totalTime) {this.totalTime = totalTime;}
 
     @Override
     public String toString() {
