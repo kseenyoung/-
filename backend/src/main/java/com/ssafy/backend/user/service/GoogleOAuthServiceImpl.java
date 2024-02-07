@@ -1,7 +1,7 @@
 package com.ssafy.backend.user.service;
 
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.user.model.vo.GoogleOAuthRequest;
+import com.ssafy.backend.user.model.vo.GoogleOAuthRequestVO;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class GoogleOAuthServiceImpl implements OAuthService {
     public String getToken(String authCode){
         RestTemplate restTemplate = new RestTemplate();
 
-        GoogleOAuthRequest googleOAuthRequestParam = GoogleOAuthRequest
+        GoogleOAuthRequestVO googleOAuthRequestParam = GoogleOAuthRequestVO
                 .builder()
                 .clientId(clientId)
                 .clientSecret(clientSecret)

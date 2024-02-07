@@ -45,7 +45,11 @@
                 <div>{{ alarm.createdDate }}</div>
               </div>
               <div class="alarm-content-body">
-                <div v-if="alarm.tagId === 2 || alarm.tagId === 4">
+                <div
+                  v-if="
+                    alarm.tagId === 2 || alarm.tagId === 4 || alarm.tagId === 5
+                  "
+                >
                   {{ alarm.requestedUserId }}님의
                   {{ getAlarmMessage(alarm.tagId) }}
                 </div>
