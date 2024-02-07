@@ -13,6 +13,7 @@
   "dependencies": {
     "@vuepic/vue-datepicker": "^7.4.1",
     "axios": "^1.6.5",
+    "bootstrap": "^5.3.1",
     "bootstrap-icons": "^1.11.3",
     "bootstrap-vue": "^2.23.1",
     "bootstrap-vue-3": "^0.5.1",
@@ -24,6 +25,7 @@
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5",
+    "vue-writer": "^1.2.0",
     "vue3-cookies": "^1.0.6",
     "vue3-recaptcha-v2": "^2.0.2",
     "vue3-recaptcha2": "^1.8.0",

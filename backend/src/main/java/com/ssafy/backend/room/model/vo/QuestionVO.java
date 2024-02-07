@@ -1,6 +1,6 @@
 package com.ssafy.backend.room.model.vo;
 
-import com.ssafy.backend.room.model.domain.Question;
+import com.ssafy.backend.room.model.domain.redis.QuestionRedis;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -45,11 +45,11 @@ public class QuestionVO {
         this.data = data;
     }
 
-    public Question toEntity(){
-        return Question.builder()
+    public QuestionRedis toEntity(){
+        return QuestionRedis.builder()
                 .userId(this.userId)
                 .session(this.session)
-                .question(this.data)
+                .questionContent(this.data)
                 .build();
     }
 
