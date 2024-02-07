@@ -12,6 +12,7 @@ import com.ssafy.backend.dagak.model.dto.GakDTO;
 import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
 import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDTO;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
+import com.ssafy.backend.dagak.model.vo.TodayGakVO;
 import com.ssafy.backend.dagak.service.DagakFacade;
 import com.ssafy.backend.dagak.service.DagakService;
 import com.ssafy.backend.user.model.domain.User;
@@ -221,26 +222,16 @@ public class DagakController {
         return new BaseResponse<>(categories);
     }
 
-    @GetMapping("getGakToStudy")
+    @GetMapping("enterRoomGetGakToStudy")
     public BaseResponse<?> getGakToStudy(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         User user = (User) session.getAttribute("User");
         if (session == null)
             return new BaseResponse<>(EMPTY_SESSION);
+
         String userId = user.getUserId();
-        LocalDate today = LocalDate.now();
-        CalendarDagakVO todayDagakVO = dagakService.getDagak(userId, today);
+        TodayGakVO todayGakVO = dagakService.enterRoomGetGakToStudy(userId);
 
-        List<Gak> todayGaks = todayDagakVO.getGaks();
-        List<GakHistory> historyGaks = dagakService.getGaksOfHistory(userId, today);
-
-        System.out.println(todayGaks);
-        System.out.println(historyGaks);
-
-        for (GakHistory historyGak: historyGaks) {
-            
-        }
-
-        return new BaseResponse<>(todayDagakVO);
+        return new BaseResponse<>(todayGakVO);
     }
 }
