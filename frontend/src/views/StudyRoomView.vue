@@ -165,7 +165,7 @@ const publisher = ref(undefined)
 const subscribers = ref([])
 const question = ref('')
 const leave = ref('refresh')
-const achievementRate = ref(0)
+// const achievementRate = ref(0)
 
 const stopFlag = ref(false);
 
@@ -226,7 +226,7 @@ onBeforeMount (async() => {
       categoryName.value = result.categoryName;
       const achievementRate = result.memoryTime/result.totalTime;
       if (achievementRate >= 1) {
-        achievementRate = 1;
+        achievementRate.value = 1;
       } else {
         // remainTime.value = (result.totalTime - result.memoryTime)*60;
       }
