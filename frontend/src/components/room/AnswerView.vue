@@ -1,49 +1,45 @@
 <template>
-    <div class="answerbox">
-        <!-- <p class="answertitle"># 이건 뭐고 저건 뭡니다.</p> -->
-    <div class="answerlabel">답</div>
+  <div class="answerbox">
+    <div class="answerlabel">답변</div>
     <div class="answerdetail">
-    <p class="nametag"><b>mory</b></p>
-    <p >dfs로 풀되 예외 처리를 하나 해 줘야 합니다. 모든 경우의 수를 잘 생각해보세요.</p>
+      <p class="nametag"><b>mory</b></p>
+      <p>dfs로 풀되 예외 처리를 하나 해 줘야 합니다. 모든 경우의 수를 잘 생각해보세요.</p>
     </div>
-    </div>
+  </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style scoped>
-
 /* .answertitle{
     font-weight: 800;
     text-align: left;
     padding-left: 10px;
     padding-right: 10px;
 } */
-.nametag{
-    margin: 0;
+.nametag {
+  margin: 0;
 }
-.answerlabel{
-    font-weight: 800;
-    padding: 3px;
-    font-size: 20px;
-    border: 1px black dashed;
+.answerlabel {
+  font-weight: 800;
+  padding: 3px;
+  font-size: 20px;
+  border: 1px black dashed;
 }
-.answerdetail{
-    text-align: left;
-    padding-left: 10px;
-    padding-right: 10px;
-    flex: 7;
+.answerdetail {
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  flex: 7;
 }
 
-.answerbox{
-    border: 2px solid black;
+.answerbox {
+  border: 2px solid black;
 
-    background-color: azure;
-    margin-left: 5px;
-    margin-right: 5px;
-    display: flex;
-    padding: 3px;
+  background-color: azure;
+  margin-left: 5px;
+  margin-right: 5px;
+  display: flex;
+  padding: 3px;
 }
 </style>
