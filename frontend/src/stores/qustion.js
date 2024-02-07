@@ -1,13 +1,19 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios'
 
 export const useQuestionStore = defineStore('questionStore', () => {
+  // state: () => {
+  //   return {
+  //     // all these properties will have their type inferred automatically
+  //     question: []
+  //   }
+  // }
   const question = ref([])
 
-  const setQuestion = async function (question) {
-    console.log('question : ' + question)
-    question.value.push(question)
+  const setQuestion = async function (data) {
+    console.log('question : ' + data)
+
+    question.value.push(data)
   }
 
   return { question, setQuestion }

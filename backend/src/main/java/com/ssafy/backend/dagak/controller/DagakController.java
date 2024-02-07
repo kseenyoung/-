@@ -6,6 +6,7 @@ import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
+import com.ssafy.backend.dagak.model.domain.GakHistory;
 import com.ssafy.backend.dagak.model.dto.DagakDTO;
 import com.ssafy.backend.dagak.model.dto.GakDTO;
 import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
@@ -220,5 +221,26 @@ public class DagakController {
         return new BaseResponse<>(categories);
     }
 
+    @GetMapping("getGakToStudy")
+    public BaseResponse<?> getGakToStudy(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute("User");
+        if (session == null)
+            return new BaseResponse<>(EMPTY_SESSION);
+        String userId = user.getUserId();
+        LocalDate today = LocalDate.now();
+        CalendarDagakVO todayDagakVO = dagakService.getDagak(userId, today);
 
+        List<Gak> todayGaks = todayDagakVO.getGaks();
+        List<GakHistory> historyGaks = dagakService.getGaksOfHistory(userId, today);
+
+        System.out.println(todayGaks);
+        System.out.println(historyGaks);
+
+        for (GakHistory historyGak: historyGaks) {
+            
+        }
+
+        return new BaseResponse<>(todayDagakVO);
+    }
 }

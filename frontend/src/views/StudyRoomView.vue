@@ -137,11 +137,13 @@ import QnAListView from '@/components/room/QnAListView.vue'
 import UserVideo from '@/components/room/UserVideo.vue'
 import { useRouter } from 'vue-router'
 import Dagak from '@/components/dagak/Dagak.vue'
+import { useQuestionStore } from '@/stores/qustion'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 const router = useRouter()
 const store = useUserStore()
+const questionStore = useQuestionStore()
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/'
 
@@ -152,7 +154,7 @@ const mainStreamManager = ref(undefined)
 const publisher = ref(undefined)
 const subscribers = ref([])
 const question = ref('')
-const leave = ref("refresh");
+const leave = ref('refresh')
 
 console.log('STORE USER  :  ', store.loginUser)
 // 초기 데이터(계정 세션 아이디, 계정 이름)
@@ -215,8 +217,11 @@ const joinSession = () => {
   session.value.on('signal:question', (stream) => {
     alert('질문이 들어왔습니다!')
     console.log('질문 내용:' + stream.data)
+
     const data = JSON.parse(stream.data)
-    console.log(data.questionId)
+    console.log(data.data)
+
+    questionStore.setQuestion(data.data)
   })
 
   session.value.on('signal:answer', (stream) => {
@@ -226,7 +231,7 @@ const joinSession = () => {
 
   session.value.on('streamCreated', ({ stream }) => {
     const subscriber = session.value.subscribe(stream)
-    console.log("subscribers: "+subscriber.value);
+    console.log('subscribers: ' + subscriber.value)
     subscribers.value.push(subscriber)
   })
 
@@ -281,13 +286,13 @@ const joinSession = () => {
 
 const leaveStudyRoom = async () => {
   alert('나가기 버튼을 눌렀습니다.')
-  leave.value = "leave";
+  leave.value = 'leave'
   await leaveSession()
   router.push('/')
 }
 
 const leaveSession = async () => {
-  if(leave.value == "leave") alert("의도적으로 나갑니다");
+  if (leave.value == 'leave') alert('의도적으로 나갑니다')
   alert('나갑니다.')
   if (session.value) session.value.disconnect()
 
@@ -300,7 +305,7 @@ const leaveSession = async () => {
   const response = await axios
     .post(
       APPLICATION_SERVER_URL + 'room',
-      { sign: 'leaveSession', leave: leave.value},
+      { sign: 'leaveSession', leave: leave.value },
       {
         headers: { 'Content-Type': 'application/json' }
       }
@@ -354,15 +359,15 @@ const togglePause = () => {
 }
 
 onMounted(() => {
-  leaveSession().then(()=>{
-    joinSession();
-  });
+  leaveSession().then(() => {
+    joinSession()
+  })
 })
 
 onBeforeUnmount(() => {
-  alert("스터디룸에서 다른 페이지로 라우팅!")
-  leaveSession();
-});
+  alert('스터디룸에서 다른 페이지로 라우팅!')
+  leaveSession()
+})
 </script>
 
 <style>
@@ -612,4 +617,3 @@ onBeforeUnmount(() => {
   /* border-bottom: 2px solid white;*/
 }
 </style>
-

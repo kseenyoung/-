@@ -2,6 +2,7 @@ package com.ssafy.backend.dagak.service;
 
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
+import com.ssafy.backend.dagak.model.domain.GakHistory;
 import com.ssafy.backend.dagak.model.dto.DagakDTO;
 import com.ssafy.backend.dagak.model.dto.GakDTO;
 import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
@@ -39,5 +40,7 @@ public interface DagakService {
     void deleteDagak(Integer deleteDagakId);
 
     void modifyMemoryTime(UpdateMemoryTimeDTO updateStartTimeDto);
+
+    List<GakHistory> getGaksOfHistory(String userId, LocalDate today);
 }
 
