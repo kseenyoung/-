@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static com.ssafy.backend.common.response.BaseResponseStatus.EMPTY_SIGN;
 import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_SESSION;
 
 @Service
@@ -190,11 +191,14 @@ public class RoomServiceImpl implements RoomService {
         ObjectMapper om = new ObjectMapper();
 
         // RDB에 질문 저장
-        QuestionRedis questionRedis = questionRedisRepository.findById(answerDTO.getQuestionId());
+        System.out.println(answerDTO.getQuestionId());
+        QuestionRedis questionRedis = questionRedisRepository.findById(answerDTO.getQuestionId()).orElseThrow(() ->
+            new BaseException(EMPTY_SIGN)
+        );
         Question question = questionRedis.toEntity();
         questionRepository.save(question);
 
-        //RDB에 답변 저장
+        //RDB에 답변 저장;
         Answer answer = answerRedis.toEntity();
         answerRepository.save(answer);
 
