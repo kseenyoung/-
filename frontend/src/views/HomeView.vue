@@ -94,7 +94,6 @@ import { useUserStore } from '@/stores/user'
 import { useCategoryStore } from '@/stores/category'
 import { useAlarmStore } from '@/stores/alarm'
 import { useDagakStore } from '@/stores/dagak'
-import SimpleDagak from '@/components/dagak/SimpleDagak.vue'
 
 const arr = ref([
   " \"정보처리기사\"",
