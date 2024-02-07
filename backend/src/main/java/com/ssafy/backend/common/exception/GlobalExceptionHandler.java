@@ -24,21 +24,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = MyException.class)
     public ResponseEntity<HttpResponseBody<?>> catchMyException(MyException e) {
         log.info(e.getMessage());
-        e.printStackTrace();
+//        e.printStackTrace();
         return new ResponseEntity(new HttpResponseBody<>("FAIL", e.getMessage()), e.getStatus());
     }
 
     @ExceptionHandler(BaseException.class)
     public BaseResponse<BaseResponseStatus> baseException(BaseException e) {
         log.warn("Handle CommonException: {}", e.getStatus());
-        e.printStackTrace();
+//        e.printStackTrace();
         return new BaseResponse<>(e.getStatus());
     }
 
     @ExceptionHandler(value = RuntimeException.class)
     public BaseResponse<BaseResponseStatus> baseException(RuntimeException e) {
         log.warn("Handle CommonException: {}", e.getCause());
-        e.printStackTrace();
+//        e.printStackTrace();
         return new BaseResponse<>(BaseResponseStatus.OOPS);
     }
 
