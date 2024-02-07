@@ -1,4 +1,4 @@
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
@@ -12,10 +12,12 @@ export const useUserStore = defineStore(
     const studyRoomSessionToken = ref('');
     const loginUserInfo = ref({});
     const isInSession = ref(false);
-    const leave =ref("refresh");
+    const achievementRate = ref(0);
+
     //로그인 세션 test
-    const login = async function () {
-      return await loginSession();
+    const login = function () {
+      loginSession();
+      alert('방입장 성공');
     };
 
     const OVMy = ref(undefined);
@@ -83,7 +85,7 @@ export const useUserStore = defineStore(
             error.message,
           );
         });
-      // 시그널 처리 문 
+      // 시그널 처리 문
       mySession.value.on('streamCreated', (event) => {
         const stream = event.stream;
         mySession.value.subscribe(stream);
@@ -135,7 +137,7 @@ export const useUserStore = defineStore(
       const body = {
         sign: 'getMyPage',
       };
-      
+
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
           headers: {
             'Content-Type': 'application/json',
@@ -157,7 +159,7 @@ export const useUserStore = defineStore(
       logoutSignal();
     };
 
-    onBeforeUnmount(() => { 
+    onBeforeUnmount(() => {
       alert("user.js 새로고침 이벤트 발생")
     });
     onMounted(async () => {

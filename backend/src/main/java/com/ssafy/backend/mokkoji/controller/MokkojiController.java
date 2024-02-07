@@ -77,12 +77,12 @@ public class MokkojiController {
         switch (sign){
             case "deleteMokkoji":
                 mokkojiFacade.deleteMokkoji(userId);
-                return new BaseResponse<>(SUCCESS_DELETE_MOKKOJI);
+                return new BaseResponse<>(SUCCESS);
             case "kickMember":
                 String member = (String) body.get("member");
                 if(member == null) throw new BaseException(NOT_EXIST_KICK_USER);
                 mokkojiFacade.kickUser(userId,member);
-                return new BaseResponse<>(SUCCESS_KICK_MOKKOJI_MEMBER);
+                return new BaseResponse<>(SUCCESS);
             case "addMokkoji":
                 String mokkojiName = (String) body.get("mokkojiName");
                 String mokkjiStatus = (String) body.get("mokkojiStatus");
@@ -100,7 +100,7 @@ public class MokkojiController {
                 return new BaseResponse<>(SUCCESS);
             //모꼬지 가입 신청 나중에 ParseInt 수정해야됨
             case "requestMokkoji":
-                String mokkojiId = (String) body.get("mokkojiId");
+                String mokkojiId = String.valueOf(body.get("mokkojiId"));
                 mokkojiFacade.applyForMokkoji(
                         MokkojiApplyForRequestDTO.builder()
                                 .userId(userId)
