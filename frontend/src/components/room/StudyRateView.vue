@@ -3,9 +3,10 @@
     <div class="achievement">
       <div class="rate">
         <p class="titletag">공부시간</p>
-        <div class="studytime">01:30:32</div>
+        <div class="studytime">{{ convertedTime }}</div>
         <hr />
-        <p class="titletag">달성률 {{ store.achievementRate }}</p>
+        <p class="titletag">달성률 {{ store.achievementRate }} %</p>
+        <div>[{{ categoryName }}] 남은 시간 : {{ convertedRemainTime }}</div>
         <div class="dagak">
           <Dagak />
         </div>
@@ -25,12 +26,45 @@
 </template>
 
 <script setup>
+import { ref, defineProps, watch } from 'vue'
 import QnAListView from './QnAListView.vue'
 import Dagak from '@/components/dagak/Dagak.vue'
 import { useUserStore } from '@/stores/user'
+import StudyRoomView from '@/views/StudyRoomView.vue'
+import { useRouter } from 'vue-router'
 
 const store = useUserStore()
+const route = useRouter();
+const props = defineProps({
+  sec: Number,
+  remainTime : Number,
+  categoryName : String
+})
 
+const convertTime = (seconds) => {
+	let hour, min, sec
+
+	hour = parseInt(seconds/3600);
+	min = parseInt((seconds%3600)/60);
+	sec = seconds%60;
+
+	if (hour.toString().length==1) hour = "0" + hour;
+	if (min.toString().length==1) min = "0" + min;
+	if (sec.toString().length==1) sec = "0" + sec;
+
+	return `${hour}:${min}:${sec}`;
+}
+
+const convertedTime = ref(convertTime(props.sec))
+const convertedRemainTime = ref(convertTime(props.remainTime))
+
+watch(props, (newTime) => {
+  convertedTime.value = convertTime(newTime.sec);
+})
+
+watch(props, (newTime) => {
+  convertedRemainTime.value = convertTime(newTime.remainTime);
+})
 
 </script>
 

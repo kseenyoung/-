@@ -45,6 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected BaseResponse<BaseResponseStatus> handleException(AmazonS3Exception e) {
         log.error("AmazonS3Exception", e);
+        e.printStackTrace();
         return new BaseResponse<>(BaseResponseStatus.OOPS);
     }
 }

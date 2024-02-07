@@ -107,6 +107,7 @@ const router = createRouter({
           path: 'studyRate',
           name: 'studyRate',
           component: () => import('@/components/room/StudyRateView.vue'),
+          props : true
         }
       ]
     },

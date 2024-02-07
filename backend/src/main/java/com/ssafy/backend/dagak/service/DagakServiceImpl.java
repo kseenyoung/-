@@ -1,5 +1,6 @@
 package com.ssafy.backend.dagak.service;
 
+import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.model.repository.CategoryRepository;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.dagak.model.domain.Calendar;
@@ -249,6 +250,10 @@ public class DagakServiceImpl implements DagakService {
             todayGakVO.setTotalTime(todayGak.getRunningTime());
             todayGakVO.setCategoryId(todayGak.getCategoryId());
             todayGakVO.setMemoryTime(0);
+
+            Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
+            todayGakVO.setCategoryName(category.getCategoryName());
+
         } else { // 루틴 수행 도중일 때.
             Gak todayGak = todayGaks.get(historyGaks.size()-1);
             int nowStudyingTime = 0;
@@ -261,6 +266,9 @@ public class DagakServiceImpl implements DagakService {
             todayGakVO.setCategoryId(todayGak.getCategoryId());
             todayGakVO.setTotalTime(todayDagakVO.getTotalTime());
             todayGakVO.setMemoryTime(nowStudyingTime);
+
+            Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
+            todayGakVO.setCategoryName(category.getCategoryName());
         }
         return todayGakVO;
     }
