@@ -1,6 +1,6 @@
 <template>
   <header :class="{ 'header-hidden': headerHidden }">
-    <nav>
+    <nav style="font-size: 22px;">
       <div>
         <RouterLink to="/">다각</RouterLink>
       </div>
