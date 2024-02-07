@@ -10,7 +10,9 @@
       </button>
       <button @click="goToToday" class="btn common-btn">오늘</button>
       <button @click="goToMyDagak" class="btn common-btn">내 다각</button>
-      <button @click="test">테스트</button>
+      <button @click="goToMyAddDate" class="btn common-btn">
+        스케줄에 추가하기
+      </button>
     </div>
     <table>
       <thead>
@@ -25,10 +27,15 @@
               {{ day.day }}
             </span>
             <div v-if="day.date" class="dagak-wrapper">
-              <div v-for="gak in getGaks(day.date)" :key="gak.id">
-                {{ getCategoryName(gak.categoryId) }}
+              <div
+                v-for="event in getEventsForDate(day.date)"
+                :key="event.dagakId"
+                class="dagak-item"
+              >
+                {{ event.dagakId }}
+                {{ event.calendarDagakId }}
                 <img
-                  v-if="gak.categoryId"
+                  v-if="event.dagakId"
                   src="@/assets/img/mypage/hexagon_thin.png"
                   class="dagak-figure"
                 />
@@ -38,6 +45,7 @@
         </tr>
       </tbody>
     </table>
+    <MyPageScheduleAddDate />
   </div>
 </template>
 
@@ -46,6 +54,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import MyPageScheduleAddDate from './MyPageScheduleAddDate.vue';
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
@@ -56,38 +65,7 @@ onMounted(() => {
   getAllCalendarList();
 });
 
-const goToMyDagak = function () {
-  router.push({
-    name: 'myPageScheduleDagak',
-  });
-};
-
-const getGaks = (date) => {
-  const dateString = date.toDateString();
-  return calendarList.value.flatMap((event) => {
-    const eventDate = new Date(
-      event.calendarDate[0],
-      event.calendarDate[1] - 1,
-      event.calendarDate[2],
-    );
-    if (eventDate.toDateString() === dateString && event.gaks) {
-      return event.gaks.map((gak) => ({
-        id: gak.id,
-        title: gak.title,
-        categoryId: gak.categoryId,
-      }));
-    }
-    return [];
-  });
-};
-
-const getCategoryName = (categoryId) => {
-  const category = categoryStore.categoryList.find(
-    (cat) => cat.categoryId === categoryId,
-  );
-  return category ? category.categoryName : 'Unknown Category';
-};
-
+//모든 캘린더 다각 가져오기
 const getAllCalendarList = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
@@ -95,6 +73,19 @@ const getAllCalendarList = function () {
       console.log(res);
       calendarList.value = res.data.result;
     });
+};
+
+//다각 날짜 반환
+const getEventsForDate = function (date) {
+  const eventsForDate = calendarList.value.filter((event) => {
+    const [year, month, day] = event.calendarDate;
+    return (
+      year === date.getFullYear() &&
+      month === date.getMonth() + 1 &&
+      day === date.getDate()
+    );
+  });
+  return eventsForDate;
 };
 
 // Get todos for a specific date
@@ -195,6 +186,17 @@ const goToToday = () => {
 const todoList = ref({
   // 'Wed Jan 17 2024': ['일정1']
 });
+
+const goToMyDagak = function () {
+  router.push({
+    name: 'myPageScheduleDagak',
+  });
+};
+const goToMyAddDate = function () {
+  router.push({
+    name: 'myPageScheduleAddDate',
+  });
+};
 
 // 날짜 선택 후 일정 추가
 // const selectDate = (day) => {

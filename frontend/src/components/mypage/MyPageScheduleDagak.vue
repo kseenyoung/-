@@ -109,11 +109,14 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-secondary">닫기</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              닫기
+            </button>
             <button
               type="button"
               class="btn btn-danger"
               data-bs-dismiss="modal"
+              @click="deleteDagak"
             >
               다각 삭제
             </button>
@@ -175,6 +178,26 @@ const openModal = function (id) {
     });
 };
 
+//다각 삭제
+const deleteDagak = function () {
+  if (window.confirm('수정하시겠습니까?')) {
+    const body = {
+      sign: 'deleteDagak',
+      deleteDagakId: selectedDagakId.value,
+    };
+    axios
+      .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
+      .then((res) => {
+        if (res.data.code === 1000) {
+          //삭제 성공
+          getAllDagakList();
+        } else {
+          alert('실패했습니다.');
+        }
+      });
+  }
+};
+
 //카테고리Id를 카테고리Name으로 반환
 const getCategoryName = (categoryId) => {
   const category = categoryStore.categoryList.find(
@@ -191,13 +214,11 @@ const deleteGak = function (gakId) {
       gakId: gak.gakId,
       gakOrder: index + 1,
     }));
-    console.log(remainGakInformation);
     const body = {
       sign: 'deleteGak',
       gakId: gakId,
       remainGakInformation: remainGakInformation,
     };
-    console.log(body);
     axios
       .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
       .then((res) => {
@@ -256,10 +277,17 @@ const updateGakOrder = function () {
   axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
     if (res.data.code === 1000) {
       //순서 수정 성공
+      getAllCalendarList();
     } else {
       alert('실패했습니다.');
     }
   });
+};
+
+const getAllCalendarList = function () {
+  axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
+    .then(() => {});
 };
 </script>
 

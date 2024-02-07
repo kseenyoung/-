@@ -50,6 +50,12 @@ const router = createRouter({
             import('@/components/mypage/MyPageScheduleDagak.vue'),
         },
         {
+          path: 'adddate',
+          name: 'myPageScheduleAddDate',
+          component: () =>
+            import('@/components/mypage/MyPageScheduleAddDate.vue'),
+        },
+        {
           path: 'friend',
           name: 'myPageFriend',
           component: () => import('@/components/mypage/MyPageFriend.vue'),
