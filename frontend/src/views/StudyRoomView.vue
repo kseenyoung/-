@@ -2,9 +2,7 @@
   <div class="room">
     <div class="studyroomheader">
       <div class="nowname">
-
-        <div class="nametag"> Python 마스터</div>
-
+        <div class="nametag"> Python 마스터 ({{ subscribers.length + 1 }})</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
         <img
             class="pause"
@@ -133,23 +131,66 @@
           
         <br />
         <!-- <QnAListView />질문하기 -->
+        <div>
+        <RouterLink :to="{ name: 'studyRate' }">달성률</RouterLink>
+        |
+        <RouterLink :to="{ name: 'QnAList' }">질문하기</RouterLink>
       </div>
+      </div>
+    </div>
+    <div class="containers">
+      <div class="video-players">
+          <div class="video-player-3">
+            <div class="bigvideo" ref="video13">
+              <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
+              <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
+              <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
+              <user-video v-else :stream-manager="subscribers[0]"
+                @click.native="updateMainVideoStreamManager(subscribers[0])" />
+            </div>
+          </div>
+        <div class="video-player-2" v-if="subscribers.length > 0 ">
+            <!-- 총 2명 -->
+            <template v-if="subscribers.length === 1">
+              <user-video class="videog2" :stream-manager="mainStreamManager" />
+            </template>
+            <!-- 총 3명 -->
+            <template v-if="subscribers.length === 2">
+              <user-video class="videog3" :stream-manager="mainStreamManager" />
+              <user-video class="videog3" v-for="(sub, index) in subscribers.slice(1, 2)" :key="index"
+                :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
+            </template>
+            <!-- 총 4명 -->
+            <template v-else-if="subscribers.length === 3">
+              <user-video class="videog4" :stream-manager="mainStreamManager" />
+              <user-video class="videog4" v-for="(sub, index) in subscribers.slice(1, 3)" :key="index"
+                :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
+            </template>
+            <!-- 총 5명 -->
+            <template v-else-if="subscribers.length === 4">
+              <user-video class="videog5" :stream-manager="mainStreamManager" />
+              <user-video class="videog5" v-for="(sub, index) in subscribers.slice(1, 4)" :key="index"
+                :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
+            </template>
+            <!-- 총 6명 -->
+            <template v-else-if="subscribers.length === 5">
+              <user-video class="videog6" :stream-manager="mainStreamManager" />
+              <user-video class="videog6" v-for="(sub, index) in subscribers.slice(1, 5)" :key="index"
+                :stream-manager="sub" @click.native="updateMainVideoStreamManager(sub)" />
+            </template>
+        </div>
+      </div>
+
       <transition name="flip" mode="out-in">
         <div class="mypage-content flex-fill" :key="$route.fullPath">
           <RouterView />
         </div>
       </transition>
     </div>
-
     <div class="black" v-if="isPause">
       <p class="resttitle">휴식중</p>
       <p class="resttime">~00:30</p>
-      <img
-        class="play"
-        @click="togglePause"
-        src="@/assets/img/studyroom/whiteplay.png"
-        alt="다시시작"
-      />
+      <img class="play" @click="togglePause" src="@/assets/img/studyroom/whiteplay.png" alt="다시시작" />
     </div>
   </div>
 </template>
@@ -256,6 +297,7 @@ onBeforeMount (async() => {
 
 
 
+console.log('구독자들: ', subscribers.value)
 console.log('STORE USER  :  ', store.loginUser)
 // 초기 데이터(계정 세션 아이디, 계정 이름)
 const myUserName = ref(store.myUserName)
@@ -331,11 +373,13 @@ const joinSession = () => {
 
   session.value.on('streamCreated', ({ stream }) => {
     const subscriber = session.value.subscribe(stream)
-    console.log('subscribers: ' + subscriber.value)
+    console.log("subscribers: " + subscriber.value);
     subscribers.value.push(subscriber)
   })
 
   session.value.on('streamDestroyed', ({ stream }) => {
+    // const updatedSubscribers = subscribers.value.filter(sub => sub !== stream.streamManager);
+    // subscribers.value = updatedSubscribers;
     const index = subscribers.value.indexOf(stream.streamManager, 0)
     if (index >= 0) {
       subscribers.value.splice(index, 1)
@@ -392,7 +436,7 @@ const leaveStudyRoom = async () => {
 }
 
 const leaveSession = async () => {
-  if(leave.value == "leave") alert("총" + Math.round(sec.value/60) + "분 동안 공부했습니다. 의도적으로 나갑니다");
+  if (leave.value == "leave") alert("의도적으로 나갑니다");
   alert('나갑니다.')
   if (session.value) session.value.disconnect()
 
@@ -401,31 +445,6 @@ const leaveSession = async () => {
   publisher.value = undefined
   subscribers.value = []
   OV.value = undefined
-
-  const updateMemoryTime = Math.round(sec.value/60);
-  const modifyMemoryTime = async function () {
-    const body = {
-      sign: 'modifyMemoryTime',
-      gakId : gakId.value,
-      memoryTime: 321890109287,
-      categoryId: categoryId.value,
-      calendarId: calendarId.value,
-    };
-    await axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}/dagak`, body, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((res) => {
-        if (res.data.code === 1000) {
-          userStore.getLoginUserInfo();
-          alert("공부한 시간 업데이트 성공!.");
-        } else  {
-          alert(res.data.result);
-        }
-      });
-    }
 
   const response = await axios
     .post(
@@ -442,9 +461,13 @@ const leaveSession = async () => {
   // window.removeEventListener("beforeunload", leaveSession(true));
 }
 
+// const updateMainVideoStreamManager = (stream) => {
+//   if (mainStreamManager.value === stream) return
+//   mainStreamManager.value = stream
+// }
+
 const updateMainVideoStreamManager = (stream) => {
-  if (mainStreamManager.value === stream) return
-  mainStreamManager.value = stream
+  mainStreamManager.value = stream;
 }
 
 const video1 = ref(null)
@@ -484,7 +507,7 @@ const togglePause = () => {
 }
 
 onMounted(() => {
-  leaveSession().then(()=>{
+  leaveSession().then(() => {
     joinSession();
   });
   startCount();
@@ -494,6 +517,8 @@ onBeforeUnmount(() => {
   alert("스터디룸에서 다른 페이지로 라우팅!")
   leaveSession();
 });
+console.log('구독자들: ', subscribers.length)
+console.log('구독자들: ', subscribers.value.length)
 </script>
 
 <style>
@@ -569,17 +594,17 @@ onBeforeUnmount(() => {
 
 .containers {
   width: 100%;
+
   display: flex;
   margin-top: 110px;
 }
 
 .video-players {
   display: flex;
+  height: 50%;
   flex-wrap: wrap;
-  /* border: 10px black solid; */
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  flex: 5;
 }
 
 .bar {
@@ -594,52 +619,48 @@ onBeforeUnmount(() => {
   /* 90도 회전 */
 }
 
-.column {
-  flex: 4;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-}
-
-.column2 {
-  display: flex;
-  flex-direction: column;
-}
 
 .video-player-2 {
-  flex: 1;
+  flex: 4;
   background-color: white;
+  display: flex;
+  flex-wrap: wrap; /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
+  /* flex-direction: column;  */
 }
-
 .video-player-3 {
   flex: 4;
 }
 
-.video-player-1 {
-  flex: 1;
-  display: flex;
-  border-top: white solid 5px;
-  border-bottom: white solid 5px;
-  flex-direction: row;
-}
-
-.videog1 {
-  width: 25%;
-  height: auto;
-  border: 5px white solid;
-  box-sizing: border-box;
-}
 
 .videog2 {
-  width: 100%;
-  height: auto;
+  width: 100%; 
+  border: 5px white solid;
+  box-sizing: border-box;
+  flex-grow: 1;
+}
+.videog3{
+  width:50%;  
   border: 5px white solid;
   box-sizing: border-box;
 }
-
+.videog4{
+  width:50%;  
+  border: 5px white solid;
+  box-sizing: border-box;
+}
+.videog5 {
+  width:50%; 
+  border: 5px white solid;
+  box-sizing: border-box;
+}
+.videog6 {
+  height: calc(100% / 5);
+  border: 5px white solid;
+  box-sizing: border-box;
+  flex-direction: column;
+}
 .bigvideo {
-  height: 100%;
-  width: auto;
+  width:100%;
   display: flex;
   border: 5px white solid;
   box-sizing: border-box;
