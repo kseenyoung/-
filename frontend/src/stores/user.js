@@ -131,7 +131,8 @@ export const useUserStore = defineStore(
         .then((res) => {
           loginUserInfo.value = res.data.result;
           loginUserInfo.value.sub = 'SQLD';
-        }).then(()=> login())
+        })
+        .then(() => login());
     };
 
     const deleteLoginUserInfo = () => {
