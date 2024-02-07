@@ -32,6 +32,7 @@ public class QuestionRedis {
                 .questionId(this.questionId)
                 .questionContent(this.questionContent)
                 .session(this.session)
+                .userId(this.userId)
                 .build();
     }
 
