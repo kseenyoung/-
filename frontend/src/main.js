@@ -31,6 +31,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import './assets/main.css';
 import VueWriter from "vue-writer";
 
+
 const app = createApp(App);
 
 //pinia-plugin-persistedstate

@@ -1,6 +1,6 @@
 <template>
   <header :class="{ 'header-hidden': headerHidden }">
-    <nav>
+    <nav style="font-size: 22px;">
       <div>
         <RouterLink to="/">다각</RouterLink>
       </div>
@@ -81,12 +81,12 @@ const getSessionId = function () {
 
 //로그아웃
 const logout = async function () {
+  // await userStore.deleteLoginUserInfo()
   const body = {
     sign: 'logout'
   }
   await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => res.data)
-  userStore.loginUserInfo = {}
-  localStorage.removeItem('useStore')
+  localStorage.removeItem('userStore')
   //성공 시 홈으로
   router.push({
     name: 'login'

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 public class Question {
 
     @Id
+    @Column(columnDefinition = "varchar(40)")
     String questionId;
 
     @Column(columnDefinition = "varchar(20)")

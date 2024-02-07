@@ -12,9 +12,10 @@ import javax.persistence.Id;
 @Entity
 public class Answer {
     @Id
+    @Column(columnDefinition = "varchar(40)")
     private String answerId;
 
-    @Column(columnDefinition = "integer")
+    @Column(columnDefinition = "varchar(40)")
     private String questionId;
 
     @Column(columnDefinition = "varchar(200)")

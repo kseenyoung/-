@@ -1,10 +1,7 @@
 <template>
-  <div class="QnA">
-    <p>질문 게시판</p>
-    <div class="qnalist">
-      <QuestionView />
-      <AnswerView />
-    </div>
+  <div class="QnA overflow-auto">
+    <h4>**질문 게시판**</h4>
+    <QuestionView />
     <QuestionField />
   </div>
 </template>
