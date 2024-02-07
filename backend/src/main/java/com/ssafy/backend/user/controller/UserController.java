@@ -18,6 +18,7 @@ import com.ssafy.backend.user.model.vo.UserViewVO;
 import com.ssafy.backend.user.service.*;
 import io.openvidu.java.client.OpenVidu;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
@@ -42,6 +43,7 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("user")
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -162,35 +164,35 @@ public class UserController {
                                 }
 
                                 // 로그인 성공시 친구들에게 시그널 전송
-                                List<FriendVO> friendList = friendService.listFriends(loginUserId);
-
-                                for (FriendVO friend : friendList) {
-                                    System.out.println(friend.getUserId() + "에게 로그인 신호");
-                                    OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "login", loginUserId);
-                                    URI uri = UriComponentsBuilder
-                                            .fromUriString(OPENVIDU_URL)
-                                            .path("/openvidu/api/signal")
-                                            .encode()
-                                            .build()
-                                            .toUri();
-
-                                    String secret = "Basic " + OPENVIDU_SECRET;
-                                    secret = Base64.getEncoder().encodeToString(secret.getBytes());
-
-                                    RequestEntity<String> requestEntity = RequestEntity
-                                            .post(uri)
-                                            .header("Content-Type", "application/json")
-                                            .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
-                                            .body(openviduRequestDto.toJson());
-
-                                    RestTemplate restTemplate = new RestTemplate();
-                                    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-                                    try {
-                                        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
-                                    } catch (Exception e) {
-                                        System.out.println("error: " + e);
-                                    }
-                                }
+//                                List<FriendVO> friendList = friendService.listFriends(loginUserId);
+//
+//                                for (FriendVO friend : friendList) {
+//                                    System.out.println(friend.getUserId() + "에게 로그인 신호");
+//                                    OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "login", loginUserId);
+//                                    URI uri = UriComponentsBuilder
+//                                            .fromUriString(OPENVIDU_URL)
+//                                            .path("/openvidu/api/signal")
+//                                            .encode()
+//                                            .build()
+//                                            .toUri();
+//
+//                                    String secret = "Basic " + OPENVIDU_SECRET;
+//                                    secret = Base64.getEncoder().encodeToString(secret.getBytes());
+//
+//                                    RequestEntity<String> requestEntity = RequestEntity
+//                                            .post(uri)
+//                                            .header("Content-Type", "application/json")
+//                                            .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
+//                                            .body(openviduRequestDto.toJson());
+//
+//                                    RestTemplate restTemplate = new RestTemplate();
+//                                    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+//                                    try {
+//                                        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
+//                                    } catch (Exception e) {
+//                                        System.out.println("error: " + e);
+//                                    }
+//                                }
                                 loginHistoryService.successLogin(loginUserId, loginUserIp);
                                 return new BaseResponse<>(SUCCESS);
                             } else {  // 로그인 실패 시
@@ -497,6 +499,76 @@ public class UserController {
                     } else {
                         throw new BaseException(NEED_LOGIN);
                     }
+                case "loginSignal":
+                    // 로그인 성공시 친구들에게 시그널 전송
+                    log.info("login 후 새로고침하면 세션끊기잖아? 다시 연결해서 로그인시그널 주기 ");
+                    session = request.getSession(false);
+                    User user = (User) session.getAttribute("User");
+                    String userId = user.getUserId();
+                    List<FriendVO> friendList = friendService.listFriends(userId);
+
+                    for (FriendVO friend : friendList) {
+                        OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "login", userId);
+                        URI uri = UriComponentsBuilder
+                                .fromUriString(OPENVIDU_URL)
+                                .path("/openvidu/api/signal")
+                                .encode()
+                                .build()
+                                .toUri();
+
+                        String secret = "Basic " + OPENVIDU_SECRET;
+                        secret = Base64.getEncoder().encodeToString(secret.getBytes());
+
+                        RequestEntity<String> requestEntity = RequestEntity
+                                .post(uri)
+                                .header("Content-Type", "application/json")
+                                .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
+                                .body(openviduRequestDto.toJson());
+
+                        RestTemplate restTemplate = new RestTemplate();
+                        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+                        try {
+                            ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
+                        } catch (Exception e) {
+                            System.out.println("error: " + e);
+                        }
+                    }
+                    return new BaseResponse<>(SUCCESS);
+                case "logoutSignal":
+                    // 로그인 성공시 친구들에게 시그널 전송
+                    log.info("logout 후 세션 끊어졌다고 알려주기");
+                    session = request.getSession(false);
+                    user = (User) session.getAttribute("User");
+                    userId = user.getUserId();
+                    friendList = friendService.listFriends(userId);
+                    log.info("logoutSignal test {}",body);
+                    for (FriendVO friend : friendList) {
+                        System.out.println("friend: "+ friend);
+                        OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "logout", userId);
+                        URI uri = UriComponentsBuilder
+                                .fromUriString(OPENVIDU_URL)
+                                .path("/openvidu/api/signal")
+                                .encode()
+                                .build()
+                                .toUri();
+                        String secret = "Basic " + OPENVIDU_SECRET;
+                        secret = Base64.getEncoder().encodeToString(secret.getBytes());
+
+                        RequestEntity<String> requestEntity = RequestEntity
+                                .post(uri)
+                                .header("Content-Type", "application/json")
+                                .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
+                                .body(openviduRequestDto.toJson());
+
+                        RestTemplate restTemplate = new RestTemplate();
+                        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+                        try {
+                            ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
+                        } catch (Exception e) {
+                            System.out.println("error: " + e);
+                        }
+                    }
+                    return new BaseResponse<>(SUCCESS);
             }
         }
         throw new BaseException(NOT_MATCH_SIGN);
