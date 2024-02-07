@@ -1,10 +1,9 @@
-<template>
+<!-- <template>
   <div>
     <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-      <!-- Circle -->
-      <!-- <circle cx="100" cy="100" r="90" fill="lightgray" stroke="black" stroke-width="2" /> -->
 
-      <!-- Dynamic Pizza Slices with Labels -->
+      <circle cx="100" cy="100" r="90" fill="lightgray" stroke="black" stroke-width="2" />
+
       <g v-for="(slice, index) in pizzaSlices" :key="index">
         <polygon :points="slice.points" :fill="slice.color" stroke="black" stroke-width="2" />
         <text
@@ -19,12 +18,12 @@
       </g>
     </svg>
   </div>
-</template>
+</template> -->
 
    <template>
     <div>
       <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
-        <!-- Dynamic Pizza Slices with Labels -->
+   
         <g v-for="(slice, index) in pizzaSlices" :key="index">
           <polygon :points="slice.points" :fill="slice.color" stroke="black" stroke-width="2" />
           <text :x="slice.labelX" :y="slice.labelY" text-anchor="middle" dominant-baseline="middle" fill="black">{{ slice.label }}</text>
