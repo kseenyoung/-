@@ -1,13 +1,17 @@
 <template>
-  <div>다각목록</div>
-  <button class="btn common-btn" @click="goToCalander">캘린더로</button>
-  <button
-    class="btn common-btn"
-    data-bs-toggle="modal"
-    data-bs-target="#MyPageScheduleDagakAddModal"
-  >
-    새 다각 만들기
-  </button>
+  <div class="common-mypage-wrapper">
+    <div class="common-mypage-title">내 다각 목록</div>
+    <button class="btn common-btn go-back-btn" @click="goToCalander">
+      <i class="bi bi-arrow-90deg-left"></i>
+    </button>
+    <button
+      class="btn common-btn add-btn"
+      data-bs-toggle="modal"
+      data-bs-target="#MyPageScheduleDagakAddModal"
+    >
+      새 다각 만들기
+    </button>
+  </div>
   <div class="dagak-list-wrapper">
     <div
       class="dagak-detail-wrapper common-pointer"
@@ -18,10 +22,8 @@
       @click="openModal(dagak.dagakId)"
     >
       <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" />
-      <!-- <MyPageScheduleDagakModal :dagak-id="dagak.dagakId" /> -->
-      {{ dagak.dagakId }}
+      <div class="dagak-title">{{ dagak.dagakId }}</div>
     </div>
-
     <!-- 각 상세정보 모달 -->
     <div
       class="modal fade"
@@ -34,7 +36,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="MyPageScheduleDagakModal">
-              [{{ selectedDagakId }} - 다각아이디(제목으로 수정해야)]
+              다각 상세정보
             </h5>
             <button
               type="button"
@@ -299,10 +301,22 @@ const getAllCalendarList = function () {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  max-width: 710px;
+  margin: 0 auto;
   .dagak-detail-wrapper {
+    text-align: center;
     border: 1px solid black;
+    border-radius: 4px;
+    padding: 20px 10px 0px;
+    width: 115px;
+    min-height: 160px;
+    margin: 0px 10px 30px;
+    box-shadow: 5px 5px #ccc;
     .dagak-figure {
       width: 78px;
+    }
+    .dagak-title {
+      margin-top: 10px;
     }
   }
 }
@@ -345,6 +359,19 @@ const getAllCalendarList = function () {
         }
       }
     }
+  }
+}
+.common-mypage-wrapper {
+  .common-mypage-title {
+    display: inline-block;
+  }
+  .go-back-btn {
+    position: relative;
+    top: -8px;
+    left: 10px;
+  }
+  .add-btn {
+    display: block;
   }
 }
 </style>

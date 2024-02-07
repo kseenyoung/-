@@ -1,6 +1,7 @@
 <template>
   <div class="calendar-container">
     <div class="calendar-header">
+      <button @click="goToToday" class="btn common-btn">오늘</button>
       <button @click="prevMonth" class="cal-btn">
         <i class="bi bi-caret-left-square-fill"></i>
       </button>
@@ -8,10 +9,9 @@
       <button @click="nextMonth" class="cal-btn">
         <i class="bi bi-caret-right-square-fill"></i>
       </button>
-      <button @click="goToToday" class="btn common-btn">오늘</button>
       <button @click="goToMyDagak" class="btn common-btn">내 다각</button>
       <button @click="goToMyAddDate" class="btn common-btn">
-        스케줄에 추가하기
+        스케줄에 추가
       </button>
     </div>
     <table>

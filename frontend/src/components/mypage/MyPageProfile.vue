@@ -19,13 +19,15 @@
       <span>{{ userStore.loginUserInfo.userPoint }}P</span>
     </div>
     <div>
-      <span>{{ userStatusMessage }}</span>
+      <span v-if="userStatusMessage">{{ userStatusMessage }}</span>
+      <span v-else>상태메시지가 없습니다.</span>
       <i
         class="bi bi-pencil-fill common-pointer"
         data-bs-toggle="collapse"
         data-bs-target="#statusmsg-accordion"
         aria-expanded="true"
         aria-controls="collapseOne"
+        v-if="userStatusMessage"
       ></i>
       <div
         id="statusmsg-accordion"
