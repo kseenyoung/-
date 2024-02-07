@@ -184,6 +184,7 @@ export const useUserStore = defineStore(
       mySessionToken,
       studyRoomSessionToken,
       isInSession,
+      achievementRate
     };
   },
   //store를 localStorage에 저장하기 위해서(새로고침 시 데이터 날라감 방지)

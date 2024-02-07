@@ -104,9 +104,17 @@
         <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
       </div> -->
       <div>
-        <RouterLink :to="{ name: 'studyRate' }">달성률</RouterLink>
+        <!-- <RouterLink 
+        :to="{ name: 'studyRate', query : {sec: sec}}"
+        >달성률</RouterLink> -->
+        <StudyRateView 
+        :sec="sec"
+        :remainTime="remainTime" 
+        :categoryName="categoryName"
+        />
+          
         <br />
-        <RouterLink :to="{ name: 'QnAList' }">질문하기</RouterLink>
+        <!-- <QnAListView />질문하기 -->
       </div>
       <transition name="flip" mode="out-in">
         <div class="mypage-content flex-fill" :key="$route.fullPath">
@@ -140,6 +148,7 @@ import { useRouter } from 'vue-router'
 import Dagak from '@/components/dagak/Dagak.vue'
 import { useQuestionStore } from '@/stores/qustion'
 
+
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
 const router = useRouter()
@@ -158,18 +167,76 @@ const question = ref('')
 const leave = ref('refresh')
 const achievementRate = ref(0)
 
-onBeforeMount(async () => {
-  await axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
+const stopFlag = ref(false);
+
+const userId = ref('');
+const sec = ref(0);
+const remainTime = ref(10);
+const categoryName = ref('');
+const gakId = ref(0);
+const categoryId = ref(0);
+const calendarId = ref(0);
+
+// setInterval(() => sec.value +=1, 1000)
+// setInterval(() => remainTime.value -=1, 1000)
+
+const startCount = () => {
+  const countUpInterval = setInterval(()=>{
+    // 공부한 시간 증가
+    sec.value++;
+  }, 1000);
+  
+  const countDownInterval = setInterval(()=>{
+    remainTime.value--;
+    if (remainTime.value <= 0) {
+      clearInterval(countDownInterval);
+      clearInterval(countUpInterval);
+      const continueCount = confirm(categoryName.value+"공부가 끝났습니다. 방 이동 하시겠습니까?");
+      if (!continueCount) {
+        CountAfterComplete();
+      } else {
+        leave.value = "leave";
+        leaveSession();
+      }
+      
+    }
+  }, 1000);
+}
+
+const CountAfterComplete = () => {
+  const countUpInterval = setInterval(()=>{
+    // 공부한 시간 증가
+    sec.value++;
+  }, 1000);
+}
+
+
+onBeforeMount (async() => {
+    await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
     .then((res) => {
-      const result = res.data.result
-      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId
+      const result = res.data.result;
+      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName
       // categoryId로 방 이동 바랍니다.
-      alert(result.categoryId + '(는 영어) 방에 입장합니다.')
-      const achievementRate = result.memoryTime / result.totalTime
-      store.achievementRate = achievementRate
+      categoryId.value = result.categoryId;
+      calendarId.value = result.calendarId;
+      gakId.value = result.gakId;
+      userId.value = result.userId;
+
+      alert(result.categoryName + "방에 입장합니다.");
+      categoryName.value = result.categoryName;
+      const achievementRate = result.memoryTime/result.totalTime;
+      if (achievementRate >= 1) {
+        achievementRate = 1;
+      } else {
+        // remainTime.value = (result.totalTime - result.memoryTime)*60;
+      }
+      store.achievementRate = achievementRate*100;
+      sec.value = result.memoryTime*60;  // 공부했던 시간.
+      
     })
 })
+
+
 
 console.log('STORE USER  :  ', store.loginUser)
 // 초기 데이터(계정 세션 아이디, 계정 이름)
@@ -307,7 +374,7 @@ const leaveStudyRoom = async () => {
 }
 
 const leaveSession = async () => {
-  if (leave.value == 'leave') alert('의도적으로 나갑니다')
+  if(leave.value == "leave") alert("총" + Math.round(sec.value/60) + "분 동안 공부했습니다. 의도적으로 나갑니다");
   alert('나갑니다.')
   if (session.value) session.value.disconnect()
 
@@ -316,6 +383,31 @@ const leaveSession = async () => {
   publisher.value = undefined
   subscribers.value = []
   OV.value = undefined
+
+  const updateMemoryTime = Math.round(sec.value/60);
+  const modifyMemoryTime = async function () {
+    const body = {
+      sign: 'modifyMemoryTime',
+      gakId : gakId.value,
+      memoryTime: 321890109287,
+      categoryId: categoryId.value,
+      calendarId: calendarId.value,
+    };
+    await axios
+      .post(`${import.meta.env.VITE_API_BASE_URL}/dagak`, body, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((res) => {
+        if (res.data.code === 1000) {
+          userStore.getLoginUserInfo();
+          alert("공부한 시간 업데이트 성공!.");
+        } else  {
+          alert(res.data.result);
+        }
+      });
+    }
 
   const response = await axios
     .post(
@@ -374,9 +466,10 @@ const togglePause = () => {
 }
 
 onMounted(() => {
-  leaveSession().then(() => {
-    joinSession()
-  })
+  leaveSession().then(()=>{
+    joinSession();
+  });
+  startCount();
 })
 
 onBeforeUnmount(() => {
