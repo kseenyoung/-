@@ -1,8 +1,7 @@
 package com.ssafy.backend.room.model.dto;
 
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.common.response.BaseResponseStatus;
-import com.ssafy.backend.room.model.domain.Answer;
+import com.ssafy.backend.room.model.domain.redis.AnswerRedis;
 import lombok.Getter;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_TO_CONNECT;
@@ -65,11 +64,11 @@ public class AnswerDTO {
         }
     }
 
-    public Answer toEntity(){
-        return Answer.builder()
+    public AnswerRedis toEntity(){
+        return AnswerRedis.builder()
                 .userId(this.userId)
                 .session(this.session)
-                .answer(this.data)
+                .answerContent(this.data)
                 .questionId(this.questionId)
                 .build();
     }
