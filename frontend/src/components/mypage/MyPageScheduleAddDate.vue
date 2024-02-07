@@ -26,20 +26,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useCategoryStore } from '@/stores/category';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import axios from 'axios';
 
-const categoryStore = useCategoryStore();
 const router = useRouter();
 
 const dagakList = ref([]);
 const selectDagak = ref('');
 const dates = ref();
-const selectedDates = ref([]);
 
 onMounted(() => {
   getAllDagakList();
@@ -72,17 +69,14 @@ const addDagakDate = function () {
       date.getMonth() + 1,
       date.getDate(),
     ]);
-    // selectedDates.value = selectedDates.value.concat(formattedDates);
     const body = {
       sign: 'addDagakDate',
       dagakId: String(selectDagak.value),
       calendarDate: formattedDates,
     };
-    console.log(body);
     axios
       .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
       .then((res) => {
-        console.log(res);
         if (res.data.code === 1000) {
           //캘린더 추가 성공
           router.push({

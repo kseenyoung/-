@@ -45,7 +45,6 @@
         </tr>
       </tbody>
     </table>
-    <MyPageScheduleAddDate />
   </div>
 </template>
 
@@ -54,7 +53,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import MyPageScheduleAddDate from './MyPageScheduleAddDate.vue';
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
