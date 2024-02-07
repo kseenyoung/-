@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
@@ -149,14 +149,14 @@ export const useUserStore = defineStore(
         alert(res.data.message);
       }
       if(loginUserInfo.value.userId != null || loginUserInfo.value.userId != undefined){
-        await login();
-        await loginSignal();
+        login();
+        loginSignal();
       }
     };
 
-    const deleteLoginUserInfo = () => {
+    const deleteLoginUserInfo = async () => {
       loginUserInfo.value = {};
-      logoutSignal();
+      await logoutSignal();
     };
 
     onBeforeUnmount(() => {
