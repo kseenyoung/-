@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
@@ -26,15 +26,36 @@ export const useUserStore = defineStore(
     const publisherMySession = ref(undefined);
     const APPLICATION_SERVER_URL =
       process.env.NODE_ENV === 'production'
-        ? ''
-        : 'https://localhost:8080/dagak/';
+        ? `${import.meta.env.VITE_API_BASE_URL}`
+        : `${import.meta.env.VITE_API_BASE_URL}`;
 
     // 계정 방 입장
     const enterMyRoom = async () => {
-      let token = await createMyRoom();
-      return token;
+      return await createMyRoom();
     };
 
+    const logoutSignal = async() =>{
+      const response = await axios.post(
+      APPLICATION_SERVER_URL + 'user',
+      { sign: 'logoutSignal'},
+      {
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+      console.log(response.data.result);
+      return response.data.result;
+    };
+    // 로그인 시그널 친구들한테 보내기
+    const loginSignal = async () => {
+      const response = await axios.post(
+        APPLICATION_SERVER_URL + 'user',
+        { sign: 'loginSignal'},
+        {
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+      return response.data.result;
+    };
     // 계정 방 생성
     const createMyRoom = async () => {
       console.log('loginUser : ', loginUserInfo.value.userId);
@@ -48,10 +69,28 @@ export const useUserStore = defineStore(
       return response.data.result;
     };
 
-    const loginSession = () => {
+    const loginSession = async () => {
       OVMy.value = new OpenVidu();
       // 전체 참여 세션
       mySession.value = OVMy.value.initSession();
+      let token = await enterMyRoom();
+      mySession.value
+        .connect(token, loginUserInfo.value.userId)
+        .then(() => {
+        })
+        .catch((error) => {
+          console.log(
+            '다음 세션에 로그인하는데 오류가 발생했습니다!:',
+            error.code,
+            error.message,
+          );
+        });
+      // 시그널 처리 문
+      mySession.value.on('streamCreated', (event) => {
+        const stream = event.stream;
+        mySession.value.subscribe(stream);
+      });
+
       mySession.value.on('signal:login', async (stream) => {
         // 로그인 시그널 수신
         console.log(stream.data, '님이 로그인했습니다.');
@@ -61,57 +100,33 @@ export const useUserStore = defineStore(
           // 로그인 콜백
           'https://i10a404.p.ssafy.io/openvidu/api/signal',
           {
-            session: stream.data,
-            type: 'signal:login-callBack',
-            data: loginUserInfo.value.userId,
+            session: `${stream.data}`,
+            type: "signal:login-callBack",
+            data: `${loginUserInfo.value.userId}`,
           },
           {
             headers: {
               'Content-Type': 'application/json',
               Authorization: 'Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU',
             },
+            withCredentials: false,
           },
         );
       });
-
-      mySession.value.on('signal:login-callBack', ({ stream }) => {
-        console.log('[콜백] 친구 ', stream, '님이 로그인했습니다.');
+      mySession.value.on('signal:login-callBack', async (stream) => {
+        console.log('[콜백] 친구 ', stream.data, '님이 로그인했습니다.');
         alert('콜백이 왔어요');
       });
 
-      mySession.value.on('exception', ({ exception }) => {
-        console.warn(exception);
+      mySession.value.on('signal:logout', async (stream) => {
+        console.log("tqtqtqtqtq");
+        // 로그인 시그널 수신
+        console.log(stream.data, '님이 로그아웃 했습니다.');
+        alert('친구가 로그아웃했어요!');
       });
 
-      enterMyRoom().then((token) => {
-        mySession.value
-          .connect(token, loginUserInfo.value.userId)
-          .then(() => {
-            publisherMySession.value = OVMy.value.initPublisher(undefined, {
-              audioSource: undefined,
-              videoSource: undefined,
-              publishAudio: false,
-              publishVideo: false,
-              resolution: '640x480',
-              frameRate: 30,
-              insertMode: 'APPEND',
-              mirror: false,
-            });
-
-            // Set the main video in the page to display our webcam and store our Publisher
-            mainStreamManagerMySession.value = publisherMySession;
-
-            // --- 6) Publish your stream ---;
-            mySession.value.publish(publisherMySession.value);
-            // console.log(loginUser.value.id + '에 로그인했습니다.');
-          })
-          .catch((error) => {
-            console.log(
-              '다음 세션에 로그인하는데 오류가 발생했습니다!:',
-              error.code,
-              error.message,
-            );
-          });
+      mySession.value.on('exception', (exception) => {
+        console.warn(exception);
       });
     };
 
@@ -122,22 +137,37 @@ export const useUserStore = defineStore(
       const body = {
         sign: 'getMyPage',
       };
-      axios
-        .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
+
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
           headers: {
             'Content-Type': 'application/json',
-          },
-        })
-        .then((res) => {
-          loginUserInfo.value = res.data.result;
-          loginUserInfo.value.sub = 'SQLD';
-        })
-        .then(() => login());
+          }});
+      if (res.data.code === 1000) {
+        loginUserInfo.value = res.data.result;
+        loginUserInfo.value.sub = 'SQLD';
+      } else {
+        alert(res.data.message);
+      }
+      if(loginUserInfo.value.userId != null || loginUserInfo.value.userId != undefined){
+        login();
+        loginSignal();
+      }
     };
 
-    const deleteLoginUserInfo = () => {
+    const deleteLoginUserInfo = async () => {
       loginUserInfo.value = {};
+      await logoutSignal();
     };
+
+    onBeforeUnmount(() => {
+      alert("user.js 새로고침 이벤트 발생")
+    });
+    onMounted(async () => {
+      if(loginUserInfo.value.userId != null  || loginUserInfo.value.userId != undefined ||
+        loginUserInfo.value.userId != ""){
+        await getLoginUserInfo();
+      }});
+
     return {
       APPLICATION_SERVER_URL,
       login,
@@ -153,7 +183,7 @@ export const useUserStore = defineStore(
       deleteLoginUserInfo,
       mySessionToken,
       studyRoomSessionToken,
-      isInSession
+      isInSession,
     };
   },
   //store를 localStorage에 저장하기 위해서(새로고침 시 데이터 날라감 방지)
