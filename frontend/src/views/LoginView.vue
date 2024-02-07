@@ -128,7 +128,7 @@ const login = async function () {
           name: 'home',
         });
       } else if (res.data.code === 1405) {
-        alert(res.data.result);
+        alert(res.data.result,"asdasd");
       }
     });
   id.value = '';

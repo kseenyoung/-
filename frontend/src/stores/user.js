@@ -12,6 +12,7 @@ export const useUserStore = defineStore(
     const studyRoomSessionToken = ref('');
     const loginUserInfo = ref({});
     const isInSession = ref(false);
+    const friends = ref([]);
     const achievementRate = ref(0);
 
     //로그인 세션 test
@@ -86,8 +87,7 @@ export const useUserStore = defineStore(
           );
         });
       // 시그널 처리 문
-      mySession.value.on('streamCreated', (event) => {
-        const stream = event.stream;
+      mySession.value.on('streamCreated', ({stream}) => {
         mySession.value.subscribe(stream);
       });
 
@@ -95,14 +95,14 @@ export const useUserStore = defineStore(
         // 로그인 시그널 수신
         console.log(stream.data, '님이 로그인했습니다.');
         alert('친구가 로그인했어요!');
-
+        
         await axios.post(
           // 로그인 콜백
           'https://i10a404.p.ssafy.io/openvidu/api/signal',
           {
-            session: `${stream.data}`,
+            session: stream.data,
             type: "signal:login-callBack",
-            data: `${loginUserInfo.value.userId}`,
+            data: loginUserInfo.value.userId,
           },
           {
             headers: {
@@ -115,11 +115,11 @@ export const useUserStore = defineStore(
       });
       mySession.value.on('signal:login-callBack', async (stream) => {
         console.log('[콜백] 친구 ', stream.data, '님이 로그인했습니다.');
+        friends.value.push(stream.data);
         alert('콜백이 왔어요');
       });
 
       mySession.value.on('signal:logout', async (stream) => {
-        console.log("tqtqtqtqtq");
         // 로그인 시그널 수신
         console.log(stream.data, '님이 로그아웃 했습니다.');
         alert('친구가 로그아웃했어요!');
@@ -138,20 +138,18 @@ export const useUserStore = defineStore(
         sign: 'getMyPage',
       };
 
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
+      axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
           headers: {
             'Content-Type': 'application/json',
-          }});
-      if (res.data.code === 1000) {
-        loginUserInfo.value = res.data.result;
-        loginUserInfo.value.sub = 'SQLD';
-      } else {
-        alert(res.data.message);
-      }
-      if(loginUserInfo.value.userId != null || loginUserInfo.value.userId != undefined){
-        login();
-        loginSignal();
-      }
+          }})
+          .then((res) =>{
+            console.log(res.data.result);
+            loginUserInfo.value = res.data.result;
+            loginUserInfo.value.sub = 'SQLD';    
+          }).then(() => {
+            login();
+            loginSignal();
+          });
     };
 
     const deleteLoginUserInfo = async () => {
@@ -163,12 +161,14 @@ export const useUserStore = defineStore(
       alert("user.js 새로고침 이벤트 발생")
     });
     onMounted(async () => {
-      if(loginUserInfo.value.userId != null  || loginUserInfo.value.userId != undefined ||
-        loginUserInfo.value.userId != ""){
-        await getLoginUserInfo();
-      }});
+      // if(loginUserInfo.value.userId != null  || loginUserInfo.value.userId != undefined ||
+      //   loginUserInfo.value.userId != ""){
+      //   await getLoginUserInfo();
+      // }}
+    });
 
     return {
+      friends,
       APPLICATION_SERVER_URL,
       login,
       OVMy,

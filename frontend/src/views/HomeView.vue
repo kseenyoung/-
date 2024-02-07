@@ -8,7 +8,6 @@
           다각
         <h2><div style="color:black ;font-weight:bold" class="">다같이 랜덤 스터디</div></h2>
         </div>
-
         <div
           style="color: white;"
           v-if="userStore.loginUserInfo.userId == null"
@@ -20,14 +19,44 @@
         <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
         </div>
       </div>
-        <div
-          style="color: white;"
-          v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
-          @click="navigateToMyPageSchedule">
-          <div class="is-typed">
-            <h3 style="display:inline-block;"> </h3>
-        <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
+
+
+      <!-- <div
+        style="color: white;"
+        v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
+        @click="navigateToMyPageSchedule">
+
+        <div class="is-typed">
+          <h3 style="display:inline-block;"> </h3>
+          <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
         </div>
+
+        <div style="display: inline-block;">
+          <div class="pixel"><p>하이</p></div>
+        </div>
+      </div> -->
+
+
+
+      <div
+        style="color: white;"
+        v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
+        >
+        <div class="is-typed" style="width: 20%;margin: 0 auto;" @click="navigateToMyPageSchedule">
+          <h3 style="display:inline-block;"> </h3>
+          <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
+        </div>
+
+        <div style="display:flex; flex-direction: column; float: right; margin-right: -20%; margin-top: -3%; width: 40%; height: auto; ">
+          <div class="bubble medium bottom" style="height: auto; float: right; margin-right: 0%;">
+            친구 <b style="color: red;">{{ userStore.friends.length }}</b> 명이 <br/> 로그인중이에요
+            <br/>
+    
+          </div>
+          <img src="@/assets/friends.png" @click="showFriends" style="width: 40%; height: auto; float: right; margin-right: 8%;margin-top: 0%;"/>
+
+      </div>
+        
       </div>
         <div
           style="color: white;"
@@ -75,12 +104,17 @@ const arr = ref([
 ]);
 const myGaks = ref([]);
 const categories = ref([]);
-
+const isFriendList = ref(false);
 const userStore = useUserStore()
 const categoryStore = useCategoryStore()
 const alarmStore = useAlarmStore()
 const router = useRouter()
 const dagakStore = useDagakStore()
+
+const showFriends = ()=>{
+  alert("친구들!");
+  isFriendList.value = isFriendList.value == true?false:true;
+}
 
 const navigateToMyPageSchedule= () =>{
   router.push('/mypage');
@@ -705,5 +739,150 @@ div[id^='bsquare'] {
 .font-weight-bold {
   margin-top: 10%;
 }
+
+.container {
+  margin: 50px;
+  display: block;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+$black: #000;
+$white: #fff;
+$shadow: rgba(0,0,0,0.1);
+
+$px: 4px;
+
+body {
+	background-color:#6e6565;
+	padding: 60px;
+}
+
+$bubble-border: 0 -1*$px $white, 
+		0 -2*$px $black, 
+		$px 0 $white, 
+		$px -1*$px $black, 
+		2*$px 0 $black, 
+		0 $px $white, 
+		0 2*$px $black, 
+		-1*$px 0 $white, 
+		-1*$px  $px $black, 
+		-2*$px 0 $black, 
+		-1*$px -1*$px $black, 
+		$px $px $black;
+
+.bubble {
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	font-size: 16px;
+	line-height:1.3em;
+	letter-spacing: -0.04em;
+	background-color: $white;
+	color: $black;
+	padding: 3*$px;
+	box-shadow: $bubble-border;
+		
+	box-sizing: border-box;
+	width:200px;
+
+	&::after {
+		content: '';
+		display: block;
+		position: absolute;
+		box-sizing: border-box;	
+	}
+
+	&.medium { width:30%; }
+	
+	&.top::after {
+		height: $px;
+		width: $px;
+		top: -2*$px;
+		left: 8*$px;
+		box-shadow: 
+			0 -1*$px $black, 
+			0 -2*$px $black, 
+			0 -3*$px $black, 
+			0 -4*$px $black, 
+			-1*$px -3*$px $black, 
+			-2*$px -2*$px $black, 
+			-3*$px -1*$px $black, 
+			-1*$px -1*$px $white, 
+			-2*$px -1*$px $white, 
+			-1*$px -2*$px $white, 
+			-1*$px 0 $white, 
+			-2*$px 0 $white, 
+			-3*$px 0 $white;
+	}
+	
+	&.right::after {
+		height: $px;
+		width: $px;
+		top: 21*$px;
+		right: -2*$px;
+		background: white;
+		box-shadow: 
+			1*$px -1*$px $white,
+			1*$px 0 $white,
+			2*$px 0 $white,
+			0 -2*$px $white,
+			1*$px 1*$px $black, 
+			2*$px 1*$px $black, 
+			3*$px 1*$px $black, 
+			4*$px 1*$px $black,
+			3*$px 0 $black, 
+			2*$px -1*$px $black, 
+			1*$px -2*$px $black,
+			0 -1*$px $white;
+	}
+	
+	&.bottom::after {
+		height: $px;
+		width: $px;
+		bottom: -2*$px;
+		left: 6*$px;
+		box-shadow: 
+			0 $px $black, 
+			0 2*$px $black, 
+			0 3*$px $black, 
+			0 4*$px $black, 
+			-1*$px 3*$px $black, 
+			-2*$px 2*$px $black, 
+			-3*$px 1*$px $black, 
+			-1*$px $px $white, 
+			-2*$px $px $white, 
+			-1*$px 2*$px $white, 
+			-1*$px 0 $white, 
+			-2*$px 0 $white, 
+			-3*$px 0 $white;
+	}
+	
+	&.left::after {
+		height: $px;
+		width: $px;
+		top: 5*$px;
+		left: -2*$px;
+		background: white;
+		box-shadow: 
+			-1*$px -1*$px $white,
+			-1*$px 0 $white,
+			-2*$px 0 $white,
+			0 -2*$px $white,
+			-1*$px 1*$px $black, 
+			-2*$px 1*$px $black, 
+			-3*$px 1*$px $black, 
+			-4*$px 1*$px $black,
+			-3*$px 0 $black, 
+			-2*$px -1*$px $black, 
+			-1*$px -2*$px $black,
+			0 -1*$px $white;
+	}
+}
+
+
+
 </style>
 

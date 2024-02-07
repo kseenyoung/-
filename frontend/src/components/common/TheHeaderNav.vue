@@ -1,6 +1,6 @@
 <template>
   <header :class="{ 'header-hidden': headerHidden }">
-    <nav>
+    <nav style="font-size: 22px;">
       <div>
         <RouterLink to="/">다각</RouterLink>
       </div>
@@ -81,7 +81,7 @@ const getSessionId = function () {
 
 //로그아웃
 const logout = async function () {
-  await userStore.deleteLoginUserInfo()
+  // await userStore.deleteLoginUserInfo()
   const body = {
     sign: 'logout'
   }
