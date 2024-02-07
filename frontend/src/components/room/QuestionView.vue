@@ -1,10 +1,8 @@
 <template>
   <div v-for="(q, index) in questions" :key="index">
-    <div class="questionbox" @click="showAnswer(index)">
-      <div class="questionlabel">
-        <div>
-          <b>{{ q }}</b>
-        </div>
+    <div class="questionbox">
+      <div class="questionlabel" @click="showAnswer(index)">
+        <b>{{ q }}</b>
       </div>
       <div class="questiondetail">
         <p>질문자 : dory</p>
