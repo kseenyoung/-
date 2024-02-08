@@ -56,6 +56,7 @@ public class DagakController {
 
         switch (sign) {
             case "addDagak":
+                String dagakName = (String)body.get("dagakName");
                 List<Map<String, String>> json = (List<Map<String, String>>) body.get("gaks");
                 List<GakDTO> gaks = new ArrayList<>();
 
@@ -71,7 +72,7 @@ public class DagakController {
                 }
 
                 // 다각 생성
-                DagakDTO dagakDTO = new DagakDTO(userId, totalTime);
+                DagakDTO dagakDTO = new DagakDTO(userId, totalTime, dagakName);
                 dagakFacade.addDagak(dagakDTO, gaks);
 
                 return new BaseResponse<>(SUCCESS);
