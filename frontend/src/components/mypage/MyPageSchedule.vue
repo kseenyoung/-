@@ -28,6 +28,11 @@
             </span>
             <div v-if="day.date" class="dagak-wrapper">
               <div
+                v-if="!hasEventsForDate(day.date)"
+                @click="goToMyAddDate"
+                class="dagak-goto-add"
+              ></div>
+              <div
                 v-for="event in getEventsForDate(day.date)"
                 :key="event.dagakId"
                 class="dagak-item"
@@ -41,7 +46,7 @@
                   )
                 "
               >
-                {{ event.dagakName }}
+                <div class="dagak-name">{{ event.dagakName }}</div>
                 <img
                   v-if="event.dagakId"
                   src="@/assets/img/mypage/hexagon_thin.png"
@@ -130,6 +135,12 @@ const selectedDagakName = ref('');
 onMounted(() => {
   getAllCalendarList();
 });
+
+//해당 날짜에 이벤트가 있는지 여부를 확인하는 메서드
+const hasEventsForDate = (date) => {
+  const eventsForDate = getEventsForDate(date);
+  return eventsForDate.length > 0;
+};
 
 //모든 캘린더 다각 가져오기
 const getAllCalendarList = function () {
@@ -372,6 +383,14 @@ td {
 }
 
 .dagak-wrapper {
+  height: 100%;
+  .dagak-name {
+    position: relative;
+    top: 30px;
+  }
+  .dagak-goto-add {
+    height: 100%;
+  }
   > div {
     font-size: 1rem;
     height: 20px;

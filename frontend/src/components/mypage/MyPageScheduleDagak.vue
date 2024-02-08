@@ -19,7 +19,7 @@
       :key="dagak.dagakId"
       data-bs-toggle="modal"
       data-bs-target="#MyPageScheduleDagakModal"
-      @click="openModal(dagak.dagakId)"
+      @click="openModal(dagak.dagakId, dagak.dagakName)"
     >
       <!-- <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" /> -->
       <DagakImg :gak-length="dagak.gakLength" />
@@ -47,9 +47,7 @@
             ></button>
           </div>
           <div class="modal-body">
-            <div class="modal-body-title">
-              [{{ selectedDagakId }} - 다각아이디(제목으로 수정해야)]
-            </div>
+            <div class="modal-body-title">[ {{ selectedDagakName }} ]</div>
             <div class="gak-wrapper">
               <draggable
                 v-model="gakList"
@@ -127,13 +125,13 @@
         </div>
       </div>
     </div>
-    <!-- 더각 생성 모달 -->
+    <!-- 다각 생성 모달 -->
     <MyPageScheduleDagakAddModal @updateDagakList="getAllDagakList" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
@@ -147,6 +145,7 @@ const router = useRouter();
 const dagakList = ref([]);
 const gakList = ref([]);
 const selectedDagakId = ref(null);
+const selectedDagakName = ref('');
 
 onMounted(() => {
   getAllDagakList();
@@ -203,8 +202,10 @@ const goToCalander = function () {
 };
 
 //다각 클릭 시 각 목록+상세정보 불러와서 저장
-const openModal = function (id) {
+const openModal = function (id, name) {
   selectedDagakId.value = id;
+  selectedDagakName.value = name;
+
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
       params: { dagakId: id },
@@ -256,7 +257,7 @@ const deleteGak = function (gakId) {
       .then((res) => {
         if (res.data.code === 1000) {
           //삭제 성공
-          openModal(selectedDagakId.value);
+          openModal(selectedDagakId.value, selectedDagakName.value);
         } else {
           alert('실패했습니다.');
         }
@@ -280,7 +281,7 @@ const updateGak = function (gakId, categoryId, runningTime) {
       .then((res) => {
         if (res.data.code === 1000) {
           //수정 성공
-          openModal(selectedDagakId.value);
+          openModal(selectedDagakId.value, selectedDagakName.value);
           alert('수정되었습니다.');
         } else {
           alert('실패했습니다.');
@@ -348,6 +349,11 @@ const getAllCalendarList = function () {
   }
 }
 .modal-body {
+  .modal-body-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+  }
   .gak-wrapper {
     font-size: 1.3rem;
     .gak-detail-wrapper {
