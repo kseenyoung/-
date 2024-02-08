@@ -265,6 +265,7 @@ public class DagakServiceImpl implements DagakService {
             todayGakVO.setCategoryId(todayGak.getCategoryId());
             todayGakVO.setTotalTime(todayDagakVO.getTotalTime());
             todayGakVO.setMemoryTime(nowStudyingTime);
+            todayGakVO.setRequiredStudyTime(todayGak.getRunningTime()- historyGaks.get(historyGaks.size()-1).getMemoryTime());
 
             Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
             todayGakVO.setCategoryName(category.getCategoryName());
