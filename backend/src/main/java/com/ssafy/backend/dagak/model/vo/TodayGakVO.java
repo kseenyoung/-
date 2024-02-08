@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class TodayGakVO {
-    private Integer gakId, totalTime, memoryTime, calendarId, categoryId;
+    private Integer gakId, totalTime, memoryTime, calendarId, categoryId, requiredStudyTime;
     private String userId, categoryName;
 }
