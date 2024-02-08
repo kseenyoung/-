@@ -7,10 +7,7 @@ import com.ssafy.backend.dagak.model.domain.Calendar;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.domain.GakHistory;
-import com.ssafy.backend.dagak.model.dto.DagakDTO;
-import com.ssafy.backend.dagak.model.dto.GakDTO;
-import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
-import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDTO;
+import com.ssafy.backend.dagak.model.dto.*;
 import com.ssafy.backend.dagak.model.repository.CalendarRepository;
 import com.ssafy.backend.dagak.model.repository.DagakRepository;
 import com.ssafy.backend.dagak.model.repository.GakHistoryRepository;
@@ -21,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -271,6 +269,16 @@ public class DagakServiceImpl implements DagakService {
             todayGakVO.setCategoryName(category.getCategoryName());
         }
         return todayGakVO;
+    }
+
+    @Override
+    @Transactional
+    public void deleteCalendarDagak(DeleteCalendarDagakDTO deleteCalendarDagakDTO) {
+        try{
+            calendarRepository.deleteByCalendarDagakIdAndUserId(deleteCalendarDagakDTO.getCalendarDagakId(), deleteCalendarDagakDTO.getUserId());
+        } catch (Exception e){
+            throw new BaseException(NOT_FOUND_CALENDAR_DAGAK);
+        }
     }
 
 
