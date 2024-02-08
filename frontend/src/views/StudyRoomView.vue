@@ -109,8 +109,11 @@ import UserVideo from '@/components/room/UserVideo.vue'
 import StudyRateView from '@/components/room/StudyRateView.vue'
 import { useRouter } from 'vue-router'
 import { useQuestionStore } from '@/stores/qustion'
+import { useDagakStore } from '@/stores/dagak'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+const dagakStore = useDagakStore();
 
 const router = useRouter()
 const store = useUserStore()
@@ -128,72 +131,93 @@ const question = ref('')
 const leave = ref('refresh')
 // const achievementRate = ref(0)
 
-const stopFlag = ref(false)
+const change = ref(false);
 
-const userId = ref('')
-const sec = ref(0)
-const remainTime = ref(10)
-const categoryName = ref('')
-const gakId = ref(0)
-const categoryId = ref(0)
-const calendarId = ref(0)
+const userId = ref('');
+const sec = ref(0);
+const remainTime = ref(10);
+const categoryName = ref('');
+const gakId = ref(0);
+const categoryId = ref(0);
+const calendarId = ref(0);
+const gakOrder = ref(0);
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
 
 const startCount = () => {
-  const countUpInterval = setInterval(() => {
+  const countUpInterval = setInterval(()=>{
     // 공부한 시간 증가
-    sec.value++
-  }, 1000)
+    sec.value++;
+  }, 1000);
 
-  const countDownInterval = setInterval(() => {
-    remainTime.value--
+  const countDownInterval = setInterval(()=>{
+    remainTime.value--;
     if (remainTime.value <= 0) {
-      clearInterval(countDownInterval)
-      clearInterval(countUpInterval)
-      const continueCount = confirm(categoryName.value + '공부가 끝났습니다. 방 이동 하시겠습니까?')
+      clearInterval(countDownInterval);
+      clearInterval(countUpInterval);
+      // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
+
+
+      const continueCount = confirm(categoryName.value+"공부가 끝났습니다.\n[" + dagakStore.categoryNameToStudy.value[gakOrder.value+1] + "]방으로 이동 하시겠습니까?");
       if (!continueCount) {
-        CountAfterComplete()
+        CountAfterComplete();
       } else {
-        leave.value = 'leave'
-        leaveSession()
+        // leave.value = "leave";
+        // leaveSession();
+
+        // db에 공부한 시간 저장해야함.
+        // 다음각을 불러와서
+        // 다음각을
+
+//dagakStore.categoryNameToStudy.value[gakOrder.value+1]
+        store.loginUserInfo.sub = "Korean";
+        leaveSession().then(() => {
+          change.value = true;
+          joinSession();
+        });
       }
+
     }
-  }, 1000)
+  }, 1000);
 }
 
 const CountAfterComplete = () => {
-  const countUpInterval = setInterval(() => {
+  const countUpInterval = setInterval(()=>{
     // 공부한 시간 증가
-    sec.value++
-  }, 1000)
+    sec.value++;
+  }, 1000);
 }
 
-onBeforeMount(async () => {
-  await axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
+onBeforeMount (async() => {
+    await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
     .then((res) => {
-      const result = res.data.result
-      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName
-      // categoryId로 방 이동 바랍니다.
-      categoryId.value = result.categoryId
-      calendarId.value = result.calendarId
-      gakId.value = result.gakId
-      userId.value = result.userId
+      const result = res.data.result;
+      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
+      // 그에 따른 categoryId로 방 이동 바랍니다.
+      categoryId.value = result.categoryId;
+      calendarId.value = result.calendarId;
+      gakId.value = result.gakId;
+      userId.value = result.userId;
+      gakOrder.value = result.gakOrder;
 
-      alert(result.categoryName + '방에 입장합니다.')
-      categoryName.value = result.categoryName
-      const achievementRate = result.memoryTime / result.totalTime
+      alert(result.categoryName + "방에 입장합니다.");
+      categoryName.value = result.categoryName;
+      const achievementRate = result.memoryTime/result.totalTime;
       if (achievementRate >= 1) {
         achievementRate.value = 1
       } else {
-        // remainTime.value = (result.totalTime - result.memoryTime)*60;
+        // remainTime.value = (result.totalTime - result.memoryTime);
+        remainTime.value = result.requiredStudyTime;
       }
-      store.achievementRate = achievementRate * 100
-      sec.value = result.memoryTime * 60 // 공부했던 시간.
+      store.achievementRate = Math.floor(achievementRate*100);
+      sec.value = result.memoryTime;  // 공부했던 시간.
+
     })
 })
+
+// 플래그
+const change = ref(false);
 
 console.log('구독자들: ', subscribers.value)
 console.log('STORE USER  :  ', store.loginUser)
@@ -202,12 +226,45 @@ const myUserName = ref(store.myUserName)
 
 // 방 입장
 const enterRoom = async (sessionId) => {
-  let token = await createSession(sessionId)
+  let token = null;
+  if(change.value == true){
+    token = await changeSession(sessionId);
+    change.value = false;
+  }else{
+    token = await createSession(sessionId)
+  }
   return token
 }
 
+// 과목 변경
+const changeSession = async () => {
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + 'room',
+    {
+      sign: 'changeSession',
+      userId: store.myUserName,
+      sessionName: store.loginUserInfo.sub,
+      videoCodec: 'VP8'
+    },
+    {
+      headers: { 'Content-Type': 'application/json' }
+    }
+  )
+  mySession.value = response.data.result.session
+  // store.loginUserInfo.sub = response.data.result.session;
+  return response.data.result.token
+}
+
+
+
+console.log('구독자들: ', subscribers.value)
+console.log('STORE USER  :  ', store.loginUser)
+// 초기 데이터(계정 세션 아이디, 계정 이름)
+const myUserName = ref(store.myUserName)
+
+
 // 방 생성
-const createSession = async (sessionId) => {
+const createSession = async () => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + 'room',
     {
@@ -406,15 +463,15 @@ const togglePause = () => {
 
 onMounted(() => {
   leaveSession().then(() => {
-    joinSession()
-  })
-  startCount()
+    joinSession();
+  });
+  startCount();
 })
 
 onBeforeUnmount(() => {
-  alert('스터디룸에서 다른 페이지로 라우팅!')
-  leaveSession()
-})
+  alert("스터디룸에서 다른 페이지로 라우팅!")
+  leaveSession();
+});
 console.log('구독자들: ', subscribers.length)
 console.log('구독자들: ', subscribers.value.length)
 </script>
@@ -507,10 +564,13 @@ console.log('구독자들: ', subscribers.value.length)
 .bar {
   flex: 3;
   position: relative;
+  /* background-color: black; */
   width: 100%;
   display: flex;
   flex-direction: row;
   transform-origin: left top;
+  transform: rotate(90deg);
+  /* 90도 회전 */
 }
 
 .video-player-2 {
@@ -525,6 +585,7 @@ console.log('구독자들: ', subscribers.value.length)
 .video-player-3 {
   flex: 4;
 }
+
 
 .videog2 {
   width: 100%;
@@ -542,22 +603,19 @@ console.log('구독자들: ', subscribers.value.length)
   border: 5px white solid;
   box-sizing: border-box;
 }
-
 .videog5 {
-  width: 50%;
+  width:50%;
   border: 5px white solid;
   box-sizing: border-box;
 }
-
 .videog6 {
   height: calc(100% / 5);
   border: 5px white solid;
   box-sizing: border-box;
   flex-direction: column;
 }
-
 .bigvideo {
-  width: 100%;
+  width:100%;
   display: flex;
   border: 5px white solid;
   box-sizing: border-box;

@@ -57,6 +57,7 @@ public class RoomController {
         String questionId="";
         HttpSession session = request.getSession(false);
         String isLeave="";
+        ConnectionVO connectionVO;
 
         switch (sign){
             case "enterRandomroom":
@@ -68,7 +69,18 @@ public class RoomController {
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
                 EnterRoomDTO randomEnterRoomDTO = new EnterRoomDTO(userId,sessionName,videoCodec,connectionId,studyRoom);
-                ConnectionVO connectionVO = roomService.enterRandomroom(randomEnterRoomDTO);
+                connectionVO = roomService.enterRandomroom(randomEnterRoomDTO);
+
+                session.setAttribute("connectionId", connectionVO.getConnectionId());
+                session.setAttribute("studyRoom", connectionVO.getSession());
+
+                return new BaseResponse<>(connectionVO);
+            case "changeSession":
+                sessionName = (String) body.get("sessionName");
+                videoCodec = (String) body.get("videoCodec");
+
+                EnterRoomDTO changeSubjectDTO = new EnterRoomDTO(userId,sessionName,videoCodec,connectionId,studyRoom);
+                connectionVO = roomService.changeSubject(changeSubjectDTO);
 
                 session.setAttribute("connectionId", connectionVO.getConnectionId());
                 session.setAttribute("studyRoom", connectionVO.getSession());
