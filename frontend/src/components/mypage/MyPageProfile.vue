@@ -27,7 +27,6 @@
         data-bs-target="#statusmsg-accordion"
         aria-expanded="true"
         aria-controls="collapseOne"
-        v-if="userStatusMessage"
       ></i>
       <div
         id="statusmsg-accordion"

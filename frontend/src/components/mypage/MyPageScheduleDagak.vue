@@ -21,8 +21,9 @@
       data-bs-target="#MyPageScheduleDagakModal"
       @click="openModal(dagak.dagakId)"
     >
-      <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" />
-      <div class="dagak-title">{{ dagak.dagakId }}</div>
+      <!-- <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" /> -->
+      <DagakImg :gak-length="dagak.gakLength" />
+      <div class="dagak-title">{{ dagak.dagakId }}:{{ dagak.gakLength }}개</div>
     </div>
     <!-- 각 상세정보 모달 -->
     <div
@@ -126,7 +127,7 @@
         </div>
       </div>
     </div>
-    <!-- 각 상세정보 모달 -->
+    <!-- 더각 생성 모달 -->
     <MyPageScheduleDagakAddModal @updateDagakList="getAllDagakList" />
   </div>
 </template>
@@ -138,6 +139,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import draggable from 'vuedraggable';
 import MyPageScheduleDagakAddModal from './MyPageScheduleDagakAddModal.vue';
+import DagakImg from '@/components/dagak/DagakImg.vue';
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
@@ -151,12 +153,48 @@ onMounted(() => {
 });
 
 //전체 다각 목록 불러오기
-const getAllDagakList = function () {
-  axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`)
-    .then((res) => {
-      dagakList.value = res.data.result;
-    });
+// const getAllDagakList = function () {
+//   axios
+//     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`)
+//     .then((res) => {
+//       dagakList.value = res.data.result;
+
+//       //다각의 각 개수 가져오기
+//       dagakList.value.forEach((dagak) => {
+//         const id = dagak.dagakId;
+//         axios
+//           .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
+//             params: { dagakId: id },
+//           })
+//           .then((res) => {
+//             dagak.gakLength = res.data.result.length;
+//           });
+//       });
+//     });
+// };
+//다각 리스트 불러오기 + 다각의 각 갯수 불러와서 저장
+const getAllDagakList = async function () {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`,
+    );
+    const dagaks = response.data.result;
+
+    const gakLengthPromises = dagaks.map((dagak) =>
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
+        params: { dagakId: dagak.dagakId },
+      }),
+    );
+
+    const gakLengthResponses = await Promise.all(gakLengthPromises);
+
+    dagakList.value = dagaks.map((dagak, index) => ({
+      ...dagak,
+      gakLength: gakLengthResponses[index].data.result.length,
+    }));
+  } catch (error) {
+    console.error('Error:', error);
+  }
 };
 
 //뒤로가기(캘린더로)
@@ -198,14 +236,6 @@ const deleteDagak = function () {
         }
       });
   }
-};
-
-//카테고리Id를 카테고리Name으로 반환
-const getCategoryName = (categoryId) => {
-  const category = categoryStore.categoryList.find(
-    (cat) => cat.categoryId === categoryId,
-  );
-  return category ? category.categoryName : 'Unknown Category';
 };
 
 //각 삭제

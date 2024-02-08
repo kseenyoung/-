@@ -22,7 +22,7 @@
       </thead>
       <tbody>
         <tr v-for="week in weeks" :key="week">
-          <td v-for="day in week" :key="day.date" @click="selectDate(day)">
+          <td v-for="day in week" :key="day.date">
             <span class="span-date" :class="{ 'red-text': isToday(day.date) }">
               {{ day.day }}
             </span>
@@ -31,6 +31,9 @@
                 v-for="event in getEventsForDate(day.date)"
                 :key="event.dagakId"
                 class="dagak-item"
+                data-bs-toggle="modal"
+                data-bs-target="#dagakScheduleDetail"
+                @click="openModal(event.dagakId, event.calendarDagakId)"
               >
                 {{ event.dagakId }}
                 {{ event.calendarDagakId }}
@@ -46,6 +49,60 @@
       </tbody>
     </table>
   </div>
+  <div
+    class="modal fade"
+    id="dagakScheduleDetail"
+    tabindex="-1"
+    aria-labelledby="dagakScheduleDetail"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="dagakScheduleDetail">
+            다각 상세정보
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-body-title">
+            [{{ selectedDagakId }} - 다각아이디(제목으로 수정해야), 넘겨줄때
+            캘린더id도 넘겨주자]
+          </div>
+          <div class="gak-wrapper">
+            <div
+              class="gak-detail-wrapper"
+              v-for="gak in gakList"
+              :key="gak.gakId"
+            >
+              <div class="gak-detail-order">{{ gak.gakOrder }}.</div>
+              <div class="gak-detail-tag">
+                {{ getCategoryName(gak.categoryId) }}
+              </div>
+              <div class="gak-detail-time">{{ gak.runningTime }}분</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            닫기
+          </button>
+          <button type="button" class="btn btn-danger" @click="deleteDagakDate">
+            스케줄에서 삭제
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -58,6 +115,9 @@ const categoryStore = useCategoryStore();
 const router = useRouter();
 
 const calendarList = ref([]);
+const gakList = ref([]);
+const selectedDagakId = ref(null);
+const selectedScheduleId = ref(null);
 
 onMounted(() => {
   getAllCalendarList();
@@ -68,7 +128,6 @@ const getAllCalendarList = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
     .then((res) => {
-      console.log(res);
       calendarList.value = res.data.result;
     });
 };
@@ -84,12 +143,6 @@ const getEventsForDate = function (date) {
     );
   });
   return eventsForDate;
-};
-
-// Get todos for a specific date
-const getTodos = (date) => {
-  const dateString = date.toDateString();
-  return todoList.value[dateString] || [];
 };
 
 // 현재 날짜 정보
@@ -180,11 +233,32 @@ const goToToday = () => {
   currentDate.value = new Date(); // 현재 날짜로 설정
 };
 
-// 다각 배열
-const todoList = ref({
-  // 'Wed Jan 17 2024': ['일정1']
-});
+//클릭 시 다각의 상세정보 불러오기
+const openModal = function (id, calId) {
+  selectedDagakId.value = id;
+  selectedScheduleId.value = calId;
+  axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
+      params: { dagakId: id },
+    })
+    .then((res) => {
+      //각 목록을 gakOrder 기준으로 오름차순 정렬
+      const sortedGakList = res.data.result.sort(
+        (a, b) => a.gakOrder - b.gakOrder,
+      );
+      gakList.value = sortedGakList;
+    });
+};
 
+//카테고리Id를 카테고리Name으로 반환
+const getCategoryName = function (categoryId) {
+  const category = categoryStore.categoryList.find(
+    (cat) => cat.categoryId === categoryId,
+  );
+  return category ? category.categoryName : 'Unknown Category';
+};
+
+//라우터 이동 메서드
 const goToMyDagak = function () {
   router.push({
     name: 'myPageScheduleDagak',
@@ -195,27 +269,6 @@ const goToMyAddDate = function () {
     name: 'myPageScheduleAddDate',
   });
 };
-
-// 날짜 선택 후 일정 추가
-// const selectDate = (day) => {
-//   if (day.date) {
-//     console.log('Selected Date:', day.date);
-//     const newTodo = prompt('Enter Todo:');
-//     if (newTodo) {
-//       addTodo(day.date, newTodo);
-//     }
-//     console.log(todoList.value);
-//   }
-// };
-
-// 배열에 일정 추가
-// const addTodo = (date, todo) => {
-//   const dateString = date.toDateString();
-//   if (!todoList.value[dateString]) {
-//     todoList.value[dateString] = [];
-//   }
-//   todoList.value[dateString].push(todo);
-// };
 </script>
 
 <style lang="scss" scoped>
@@ -314,5 +367,28 @@ td {
   border-radius: 5px;
   margin-bottom: 5px;
   display: inline-block;
+}
+
+.gak-wrapper {
+  font-size: 1.3rem;
+  .gak-detail-wrapper {
+    margin: 20px 0px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    .gak-detail-order {
+      width: 30px;
+      height: 30px;
+      text-align: center;
+    }
+    .gak-detail-tag {
+      margin-left: 5px;
+    }
+    .gak-detail-time {
+      margin-left: 10px;
+    }
+  }
 }
 </style>

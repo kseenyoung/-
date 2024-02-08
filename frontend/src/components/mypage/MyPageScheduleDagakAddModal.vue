@@ -60,9 +60,10 @@
           <div class="modal-body-result">
             <div class="modal-body-result-title">각 목록</div>
             <div
-              class="modal-body-result-detail"
+              class="modal-body-result-detail common-pointer"
               v-for="(gak, index) in gaks"
               :key="index"
+              @click="deleteGak"
             >
               <div>{{ index + 1 }}.</div>
               <div>{{ getCategoryName(gak.category) }}</div>
@@ -78,7 +79,7 @@
           <button class="btn btn-secondary" data-bs-dismiss="modal">
             닫기
           </button>
-          <button class="btn common-btn" @click="clear">초기화</button>
+          <button class="btn common-btn" @click="clear">지우기</button>
           <button
             class="btn btn-primary"
             data-bs-dismiss="modal"
@@ -169,6 +170,7 @@ const addDagak = function () {
     if (res.data.code === 1000) {
       //생성 성공
       emit('updateDagakList');
+      clear();
     } else {
       alert('실패했습니다.');
     }
