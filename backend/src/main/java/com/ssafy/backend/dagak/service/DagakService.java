@@ -44,5 +44,7 @@ public interface DagakService {
     TodayGakVO enterRoomGetGakToStudy(String userId);
 
     void deleteCalendarDagak(DeleteCalendarDagakDTO deleteCalendarDagakDTO);
+
+    List<CalendarDagakVO> getDagakName(List<CalendarDagakVO> calendarDagakList);
 }
 

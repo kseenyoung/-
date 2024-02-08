@@ -282,5 +282,16 @@ public class DagakServiceImpl implements DagakService {
         }
     }
 
+    @Override
+    public List<CalendarDagakVO> getDagakName(List<CalendarDagakVO> calendarDagakList) {
+        for (CalendarDagakVO calendarDagakVO : calendarDagakList) {
+            Dagak byDagakId = dagakRepository.findByDagakId(calendarDagakVO.getDagakId());
+            String dagakName = byDagakId.getDagakName();
+            calendarDagakVO.setDagakName(dagakName);
+        }
+
+        return calendarDagakList;
+    }
+
 
 }
