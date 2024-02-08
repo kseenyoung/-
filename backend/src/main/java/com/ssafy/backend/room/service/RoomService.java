@@ -26,4 +26,6 @@ public interface RoomService {
     QuestionRedis saveQuestion(QuestionDTO questionDto) throws Exception;
     List<AnswerVO> findAnswerByQuestionId(String questionId) throws Exception;
     void leaveSession(EnterRoomDTO enterRoomDTO) throws Exception;
+
+    ConnectionVO changeSubject(EnterRoomDTO changeSubjectDTO) throws Exception;
 }

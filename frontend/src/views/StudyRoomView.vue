@@ -98,7 +98,7 @@ const question = ref('')
 const leave = ref('refresh')
 // const achievementRate = ref(0)
 
-const stopFlag = ref(false);
+const change = ref(false);
 
 const userId = ref('');
 const sec = ref(0);
@@ -176,12 +176,36 @@ const myUserName = ref(store.myUserName)
 
 // 방 입장
 const enterRoom = async (sessionId) => {
-  let token = await createSession(sessionId)
+  let token = null;
+  if(change.value == true){
+    token = await changeSession(sessionId);
+    change.value = false;
+  }else{
+    token = await createSession(sessionId)
+  }
   return token
 }
 
+const changeSession = async () => {
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + 'room',
+    {
+      sign: 'changeSession',
+      userId: store.myUserName,
+      sessionName: store.loginUserInfo.sub,
+      videoCodec: 'VP8'
+    },
+    {
+      headers: { 'Content-Type': 'application/json' }
+    }
+  )
+  mySession.value = response.data.result.session
+  // store.loginUserInfo.sub = response.data.result.session;
+  return response.data.result.token
+}
+
 // 방 생성
-const createSession = async (sessionId) => {
+const createSession = async () => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + 'room',
     {
