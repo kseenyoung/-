@@ -181,14 +181,13 @@ const updateTime = function () {
 const addDagak = function () {
   const body = {
     sign: 'addDagak',
-    // dagakName:
+    dagakName: dagakName.value,
     gaks: gaks.value.map(({ category, runningTime }) => ({
       category: String(category),
       runningTime: String(runningTime),
     })),
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
-    console.log(res);
     if (res.data.code === 1000) {
       //생성 성공
       emit('updateDagakList');

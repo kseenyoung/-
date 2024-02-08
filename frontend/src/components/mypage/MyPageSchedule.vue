@@ -33,10 +33,15 @@
                 class="dagak-item"
                 data-bs-toggle="modal"
                 data-bs-target="#dagakScheduleDetail"
-                @click="openModal(event.dagakId, event.calendarDagakId)"
+                @click="
+                  openModal(
+                    event.dagakId,
+                    event.calendarDagakId,
+                    event.dagakName,
+                  )
+                "
               >
-                {{ event.dagakId }}
-                {{ event.calendarDagakId }}
+                {{ event.dagakName }}
                 <img
                   v-if="event.dagakId"
                   src="@/assets/img/mypage/hexagon_thin.png"
@@ -70,10 +75,7 @@
           ></button>
         </div>
         <div class="modal-body">
-          <div class="modal-body-title">
-            [{{ selectedDagakId }} - 다각아이디(제목으로 수정해야), 넘겨줄때
-            캘린더id도 넘겨주자]
-          </div>
+          <div class="modal-body-title">[ {{ selectedDagakName }} ]</div>
           <div class="gak-wrapper">
             <div
               class="gak-detail-wrapper"
@@ -123,6 +125,7 @@ const calendarList = ref([]);
 const gakList = ref([]);
 const selectedDagakId = ref(null);
 const selectedScheduleId = ref(null);
+const selectedDagakName = ref('');
 
 onMounted(() => {
   getAllCalendarList();
@@ -133,7 +136,6 @@ const getAllCalendarList = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
     .then((res) => {
-      console.log(res);
       calendarList.value = res.data.result;
     });
 };
@@ -240,9 +242,11 @@ const goToToday = () => {
 };
 
 //클릭 시 다각의 상세정보 불러오기
-const openModal = function (id, calId) {
+const openModal = function (id, calId, name) {
   selectedDagakId.value = id;
   selectedScheduleId.value = calId;
+  selectedDagakName.value = name;
+
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
       params: { dagakId: id },
@@ -395,6 +399,11 @@ td {
   display: inline-block;
 }
 
+.modal-body-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
 .gak-wrapper {
   font-size: 1.3rem;
   .gak-detail-wrapper {
@@ -403,7 +412,7 @@ td {
     border: 1px solid #ccc;
     border-radius: 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     .gak-detail-order {
       width: 30px;
       height: 30px;
