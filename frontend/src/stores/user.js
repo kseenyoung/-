@@ -78,6 +78,7 @@ export const useUserStore = defineStore(
       mySession.value
         .connect(token, loginUserInfo.value.userId)
         .then(() => {
+          loginSignal();
         })
         .catch((error) => {
           console.log(
@@ -148,23 +149,28 @@ export const useUserStore = defineStore(
             loginUserInfo.value.sub = 'SQLD';    
           }).then(() => {
             login();
-            loginSignal();
           });
     };
 
     const deleteLoginUserInfo = async () => {
       loginUserInfo.value = {};
-      await logoutSignal();
+      console.log("mySession.value : ", mySession.value);
+      if (mySession.value) {
+        mySession.value.disconnect();
+        logoutSignal();
+      }
     };
 
     onBeforeUnmount(() => {
       alert("user.js 새로고침 이벤트 발생")
-    });
+    }); 
     onMounted(async () => {
-      // if(loginUserInfo.value.userId != null  || loginUserInfo.value.userId != undefined ||
-      //   loginUserInfo.value.userId != ""){
-      //   await getLoginUserInfo();
-      // }}
+      let data = localStorage.getItem('userStore');
+      data = JSON.parse(data);
+      console.log(data.loginUserInfo.userId);
+      if(data.loginUserInfo.userId){
+          login();
+        }
     });
 
     return {
