@@ -217,12 +217,9 @@ onBeforeMount (async() => {
 })
 
 // 플래그
-const change = ref(false);
 
-console.log('구독자들: ', subscribers.value)
-console.log('STORE USER  :  ', store.loginUser)
-// 초기 데이터(계정 세션 아이디, 계정 이름)
-const myUserName = ref(store.myUserName)
+
+
 
 // 방 입장
 const enterRoom = async (sessionId) => {
