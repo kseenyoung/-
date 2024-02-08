@@ -51,6 +51,7 @@ public class DagakServiceImpl implements DagakService {
                 Dagak.builder()
                         .userId(dagakDTO.getUserId())
                         .totalTime(dagakDTO.getTotalTime())
+                        .dagakName(dagakDTO.getDagakName())
                         .build()
         ).getDagakId();
     }
