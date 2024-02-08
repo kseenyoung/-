@@ -494,7 +494,7 @@ console.log('구독자들: ', subscribers.value.length)
   display: flex;
   flex-wrap: wrap;
   /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
-  /* flex-direction: column;  */
+  flex-direction: column; 
 }
 
 .video-player-3 {
