@@ -6,11 +6,7 @@ import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
-import com.ssafy.backend.dagak.model.domain.GakHistory;
-import com.ssafy.backend.dagak.model.dto.DagakDTO;
-import com.ssafy.backend.dagak.model.dto.GakDTO;
-import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
-import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDTO;
+import com.ssafy.backend.dagak.model.dto.*;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
 import com.ssafy.backend.dagak.model.vo.TodayGakVO;
 import com.ssafy.backend.dagak.service.DagakFacade;
@@ -89,6 +85,14 @@ public class DagakController {
 
                     dagakService.addDagakDate(addDagakDateDto);
                 }
+
+                return new BaseResponse<>(SUCCESS);
+
+            case "deleteCalendarDagak":
+                String calendarDagakId = (String) body.get("calendarDagakId");
+                DeleteCalendarDagakDTO deleteCalendarDagakDTO = new DeleteCalendarDagakDTO(userId, calendarDagakId);
+
+                dagakService.deleteCalendarDagak(deleteCalendarDagakDTO);
 
                 return new BaseResponse<>(SUCCESS);
 

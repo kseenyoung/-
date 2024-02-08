@@ -66,6 +66,7 @@ public enum BaseResponseStatus {
     NOT_EXIST_POINT(false, 2028, "존재하지 않는 포인트입니다."),
     INSUFFICIENT_POINT(false, 2029, "포인트가 부족합니다."),
     NOT_MATCH_SIGN(false, 2030, "일치하는 sign 정보가 없습니다."),
+    NOT_EXIST_DATA(false, 2030, "누락된 데이터 없이 전부 입력해주세요."),
     NOT_EXIST_TAG_ID(false, 2031, "일치하는 태그 번호가 없습니다."),
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
     NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다."),
@@ -142,13 +143,11 @@ public enum BaseResponseStatus {
 
     /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
     JSON_PARSING_ERROR(false, 2300, "알맞은 타입으로 요청해주세요"),
-
-    /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
-//    WRONG_TYPE(false,2400,"자료형이 일치하지 않습니다."),
     DATA_NOT_CHANGED(false,2400,"변경된 데이터가 없습니다."),
     NOT_EXIST_GAK(false,2401,"데이터가 존재하지 않습니다."),
     NOT_EXIST_DAGAK(false,2401,"유효하지 않은 다각 아이디입니다."),
     NOT_FOUND_TODAY_DAGAK(false, 2402, "등록된 오늘의 다각이 없습니다"),
+    NOT_FOUND_CALENDAR_DAGAK(false, 2403, "해당하는 캘린더 다각이 없습니다."),
 
 
     /**
