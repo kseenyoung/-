@@ -14,6 +14,7 @@ export const useUserStore = defineStore(
     const isInSession = ref(false);
     const friends = ref([]);
     const achievementRate = ref(0);
+  
 
     //로그인 세션 test
     const login = function () {

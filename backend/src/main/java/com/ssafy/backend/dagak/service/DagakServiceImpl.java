@@ -249,6 +249,7 @@ public class DagakServiceImpl implements DagakService {
             todayGakVO.setTotalTime(todayGak.getRunningTime());
             todayGakVO.setCategoryId(todayGak.getCategoryId());
             todayGakVO.setMemoryTime(0);
+            todayGakVO.setGakOrder(0);
 
             Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
             todayGakVO.setCategoryName(category.getCategoryName());
@@ -266,6 +267,7 @@ public class DagakServiceImpl implements DagakService {
             todayGakVO.setTotalTime(todayDagakVO.getTotalTime());
             todayGakVO.setMemoryTime(nowStudyingTime);
             todayGakVO.setRequiredStudyTime(todayGak.getRunningTime()- historyGaks.get(historyGaks.size()-1).getMemoryTime());
+            todayGakVO.setGakOrder(historyGaks.size()-1);
 
             Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
             todayGakVO.setCategoryName(category.getCategoryName());

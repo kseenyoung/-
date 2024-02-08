@@ -137,6 +137,7 @@ const getGaks = async () =>{
     categories.value.forEach(category =>{
       if(gak.categoryId === category.categoryId){
         arr.value.push(`\"${category.categoryName}\"`);
+        dagakStore.categoryNameToStudy.value = arr;
       }
     });
   });
