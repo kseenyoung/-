@@ -96,7 +96,12 @@
           >
             닫기
           </button>
-          <button type="button" class="btn btn-danger" @click="deleteDagakDate">
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-bs-dismiss="modal"
+            @click="deleteCalendarDagak(selectedScheduleId)"
+          >
             스케줄에서 삭제
           </button>
         </div>
@@ -248,6 +253,26 @@ const openModal = function (id, calId) {
       );
       gakList.value = sortedGakList;
     });
+};
+
+//캘린더에서 빼기
+const deleteCalendarDagak = function (calId) {
+  if (window.confirm('스케줄에서 삭제하시겠습니까?')) {
+    const body = {
+      sign: 'deleteCalendarDagak',
+      calendarDagakId: String(calId),
+    };
+    axios
+      .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
+      .then((res) => {
+        if (res.data.code === 1000) {
+          //삭제 성공
+          getAllCalendarList();
+        } else {
+          alert('실패했습니다.');
+        }
+      });
+  }
 };
 
 //카테고리Id를 카테고리Name으로 반환
