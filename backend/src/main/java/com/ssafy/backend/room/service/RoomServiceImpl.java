@@ -90,14 +90,12 @@ public class RoomServiceImpl implements RoomService {
         if(session == null){    // 방이 존재하지 않다면 생성하라
             System.out.println("========================================");
             System.out.println("존재하지 않는 방에 입장합니다: "+sessionName);
-//            deletePreviousConnection(enterRoomDTO);
             HashMap<String,String> SessionPropertyJson = enterRoomDTO.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             openvidu.createSession(properties);
         } else{                 // 새로고침할떄 다른 세션에 있는 나의 연결을 삭제한다.
             System.out.println("========================================");
             System.out.println("존재하는 방에 입장합니다: "+sessionName);
-//            deletePreviousConnection(enterRoomDTO);
         }
 
         openvidu.fetch();
@@ -107,6 +105,38 @@ public class RoomServiceImpl implements RoomService {
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             session = openvidu.createSession(properties);
         }
+
+        ConnectionProperties properties = new ConnectionProperties.Builder().build();
+        Connection connection = session.createConnection(properties);
+        ConnectionVO connectionVO = new ConnectionVO(connection.getConnectionId(),sessionName,connection.getToken());
+        System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
+        return connectionVO;
+    }
+
+    @Override
+    public ConnectionVO changeSubject(EnterRoomDTO changeSubjectDTO) throws Exception {
+        String sessionName = changeSubjectDTO.getSessionName();
+        Session session;
+
+        sessionName = getRandomroom(sessionName);
+        changeSubjectDTO.setSessionName(sessionName);
+
+        openvidu.fetch();
+        session = openvidu.getActiveSession(sessionName);
+
+        if(session == null){    // 방이 존재하지 않다면 생성하라
+            System.out.println("========================================");
+            System.out.println("존재하지 않는 방에 입장합니다: "+sessionName);
+            HashMap<String,String> SessionPropertyJson = changeSubjectDTO.toSessionPropertyJson();
+            SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
+            openvidu.createSession(properties);
+        } else{
+            System.out.println("========================================");
+            System.out.println("존재하는 방에 입장합니다: "+sessionName);
+        }
+
+        openvidu.fetch();
+        session = openvidu.getActiveSession(sessionName);
 
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
         Connection connection = session.createConnection(properties);
@@ -275,4 +305,6 @@ public class RoomServiceImpl implements RoomService {
             }
         }
     }
+
+
 }
