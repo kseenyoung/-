@@ -4,7 +4,7 @@
         <div class="background">
       <div class="part one">
         
-        <div class="title m-0" style="color:#000000; font-size:10rem;">
+        <div class="title" style="color:#000000; font-size:10rem;">
           다각
         <h2><div style="color:black ;font-weight:bold" class="">다같이 랜덤 스터디</div></h2>
         </div>
@@ -42,21 +42,18 @@
         style="color: white;"
         v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
         >
-        <div class="is-typed" style="width: 20%;margin: 0 auto;" @click="navigateToMyPageSchedule">
-          <h3 style="display:inline-block;"> </h3>
-          <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
+        <div class="is-typed" style="" @click="navigateToMyPageSchedule">
+          <h3 style=""> </h3>
+          <p style="" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
         </div>
-
-        <div style="display:flex; flex-direction: column; float: right; margin-right: -20%; margin-top: -3%; width: 40%; height: auto; ">
-          <div class="bubble medium bottom" style="height: auto; float: right; margin-right: 0%;">
-            친구 <b style="color: red;">{{ userStore.friends.length }}</b> 명이 <br/> 로그인중이에요
-            <br/>
-    
-          </div>
-          <img src="@/assets/friends.png" @click="showFriends" style="width: 40%; height: auto; float: right; margin-right: 8%;margin-top: 0%;"/>
-
-      </div>
         
+        <div class="friends">
+          <div class="bubble medium bottom" style="margin-left : 80%;">
+              친구 <b style="color: red;">{{ userStore.friends.length }}</b> 명이 <br/> 로그인중이에요
+              <br/>
+          </div>
+            <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
+        </div>
       </div>
         <div
           style="color: white;"
@@ -72,9 +69,12 @@
       </div>
       </div>
         <div class="background">
-      <div class="part two">
-        <MyRanking />
-        <MokkojiRanking />
+      <div class="part2">
+          <img src="@/assets/board.png" class="board">
+          <div class="two"> 
+            <MyRanking style="z-index : 1" />
+            <MokkojiRanking style="z-index : 1" />
+          </div>
       </div>
       </div>
         <div class="background">
@@ -161,6 +161,7 @@ watch(() => userStore.loginUserInfo.userId, (newUserId) => {
 <style lang="scss" scoped>
 .is-typed {
   user-select: none;
+  
   
 }
 .is-typed:hover {
@@ -255,12 +256,18 @@ watch(() => userStore.loginUserInfo.userId, (newUserId) => {
 }
 
 .part {
-  height: 100vh;
+  width: 100%;
   scroll-snap-align: start;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh; /* 뷰포트 높이로 제한 */
+  overflow: hidden; /* 페이지를 벗어나는 내용 숨김 */
+
 }
 
 .one {
+
   background-size: cover;
   background-position: center;
 }
@@ -621,93 +628,25 @@ div[id^='bsquare'] {
   // border: 20px solid #373737;
   // border-radius: 4px 4px 4px 4px;
 }
-
-#square1 {
-  transition-timing-function: ease-in;
-  animation: move1h 2s forwards;
-}
-
-#bsquare1 {
-  transition-timing-function: ease-in;
-  animation: move1h_1 2s forwards;
-}
-
-#square2 {
-  transition-timing-function: ease-in;
-  animation: move2h 2s forwards;
-}
-
-#square3 {
-  transition-timing-function: ease-in;
-  animation: move3h 2s forwards;
-}
-
-#square4 {
-  transition-timing-function: ease-in;
-  animation: move4h 2s forwards;
-}
-
-#square5 {
-  transition-timing-function: ease-in;
-  animation: move5h 2s forwards;
-}
-
-#bsquare5 {
-  transition-timing-function: ease-in;
-  animation: move5h_1 2s forwards;
-}
-
-#square6 {
-  transition-timing-function: ease-in;
-  animation: move6h 2s forwards;
-}
-
-#square7 {
-  transition-timing-function: ease-in;
-  animation: move7h 2s forwards;
-}
-
-#bsquare7 {
-  transition-timing-function: ease-in;
-  animation: move7h_1 2s forwards;
-}
-
-#square8 {
-  transition-timing-function: ease-in;
-  animation: move8h 2s forwards;
-}
-
-#square9 {
-  transition-timing-function: ease-in;
-  animation: move9h 2s forwards;
-}
-
-#square10 {
-  transition-timing-function: ease-in;
-  animation: move10h 2s forwards;
-}
-
-#bsquare10 {
-  transition-timing-function: ease-in;
-  animation: move10h_1 2s forwards;
-}
-
-#square11 {
-  transition-timing-function: ease-in;
-  animation: move11h 2s forwards;
-}
-
-#square12 {
-  transition-timing-function: ease-in;
-  animation: move12h 2s forwards;
+.friends {
+  width: 100%;
+  height: auto;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .two {
-  // background-color: gray;
-  display: flex;
+  background-size: cover;
+  background-position: center;
+  width: 70%;
+  height: 50%;  
+  justify-content: center;
   align-items: center;
-  position: relative;
-  font-family: 'NanumSquareNeo';
+  display: flex;
+  align-items: flex-start;
 }
 
 .three {
@@ -718,24 +657,30 @@ div[id^='bsquare'] {
 .background {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: url('@/assets/background.gif') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
-
-.background::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.2); /* 흰색에 대한 배경 투명도 조절 가능 */
-  z-index: 0; /* 이미지 위에 배치하려면 z-index 값을 조절하세요 */
+.part2{
+  width: 100%;
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
+.board {
+  margin-top: 10%;
+  position: absolute; 
+  z-index: 0; 
+  width : 70% ; 
+  height: 70%;
+}
+
+
 .font-weight-bold {
   margin-top: 10%;
 }
@@ -795,7 +740,7 @@ $bubble-border: 0 -1*$px $white,
 		box-sizing: border-box;	
 	}
 
-	&.medium { width:30%; }
+	&.medium { width:10%; }
 	
 	&.top::after {
 		height: $px;
