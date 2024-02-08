@@ -36,17 +36,15 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .title {
-  font-size: 20px;
+  font-size: 1.3rem;
   font-weight: 700;
 }
 
 .ranking {
-  font-size: 10px;
-  border: 4px black dashed;
-  border-radius: 16px;
+  margin-top: 20%;
+  font-size: 1.1rem;
+  color: white;
   padding: 50px;
-  background-color: whitesmoke;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 40%;
   line-height: 0.5;
 }
@@ -60,10 +58,8 @@ table {
   border-collapse: collapse;
 }
 
-th,
-td {
-  border: 2px solid black;
-  padding: 8px;
+th, td {
+  padding: 10px;
   text-align: center;
 }
 </style>
