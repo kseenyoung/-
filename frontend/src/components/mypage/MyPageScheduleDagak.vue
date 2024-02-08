@@ -221,7 +221,7 @@ const openModal = function (id, name) {
 
 //다각 삭제
 const deleteDagak = function () {
-  if (window.confirm('수정하시겠습니까?')) {
+  if (window.confirm('삭제하시겠습니까?')) {
     const body = {
       sign: 'deleteDagak',
       deleteDagakId: selectedDagakId.value,
