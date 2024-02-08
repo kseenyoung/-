@@ -1,36 +1,28 @@
 package com.ssafy.backend.dagak.model.dto;
 
+import com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.response.BaseResponseStatus;
 import lombok.Getter;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
 
 @Getter
 public class DagakDTO {
 
-    @Id
-    @Column
-    private Integer dagakId;
+    private String userId, dagakName;
 
-    @Column
-    private String userId;
-
-    @Column
     private Integer totalTime;
 
     public DagakDTO() {
     }
 
-    public DagakDTO(String userId, Integer totalTime) {
-        this.userId = userId;
-        this.totalTime = totalTime;
-    }
-
-    public void setDagakId(Integer dagakId) {
-        this.dagakId = dagakId;
+    public DagakDTO(String userId, Integer totalTime, String dagakName) {
+        setUserId(userId);
+        setTotalTime(totalTime);
+        setDagakName(dagakName);
     }
 
     public void setUserId(String userId) {
+        if(userId == null)
+            throw new BaseException(BaseResponseStatus.NOT_EXIST_DATA);
         this.userId = userId;
     }
 
@@ -38,11 +30,17 @@ public class DagakDTO {
         this.totalTime = totalTime;
     }
 
+    public void setDagakName(String dagakName) {
+        if(dagakName == null)
+            throw new BaseException(BaseResponseStatus.NOT_EXIST_DATA);
+        this.dagakName = dagakName;
+    }
+
     @Override
     public String toString() {
         return "DagakDTO{" +
-                "dagakId=" + dagakId +
-                ", userId='" + userId + '\'' +
+                "userId='" + userId + '\'' +
+                ", dagakName='" + dagakName + '\'' +
                 ", totalTime=" + totalTime +
                 '}';
     }
