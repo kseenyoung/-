@@ -1,13 +1,17 @@
 <template>
-  <div>다각목록</div>
-  <button class="btn common-btn" @click="goToCalander">캘린더로</button>
-  <button
-    class="btn common-btn"
-    data-bs-toggle="modal"
-    data-bs-target="#MyPageScheduleDagakAddModal"
-  >
-    새 다각 만들기
-  </button>
+  <div class="common-mypage-wrapper">
+    <div class="common-mypage-title">내 다각 목록</div>
+    <button class="btn common-btn go-back-btn" @click="goToCalander">
+      <i class="bi bi-arrow-90deg-left"></i>
+    </button>
+    <button
+      class="btn common-btn add-btn"
+      data-bs-toggle="modal"
+      data-bs-target="#MyPageScheduleDagakAddModal"
+    >
+      새 다각 만들기
+    </button>
+  </div>
   <div class="dagak-list-wrapper">
     <div
       class="dagak-detail-wrapper common-pointer"
@@ -15,13 +19,12 @@
       :key="dagak.dagakId"
       data-bs-toggle="modal"
       data-bs-target="#MyPageScheduleDagakModal"
-      @click="openModal(dagak.dagakId)"
+      @click="openModal(dagak.dagakId, dagak.dagakName)"
     >
-      <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" />
-      <!-- <MyPageScheduleDagakModal :dagak-id="dagak.dagakId" /> -->
-      {{ dagak.dagakId }}
+      <!-- <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" /> -->
+      <DagakImg :gak-length="dagak.gakLength" />
+      <div class="dagak-title">{{ dagak.dagakName }}</div>
     </div>
-
     <!-- 각 상세정보 모달 -->
     <div
       class="modal fade"
@@ -34,7 +37,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="MyPageScheduleDagakModal">
-              [{{ selectedDagakId }} - 다각아이디(제목으로 수정해야)]
+              다각 상세정보
             </h5>
             <button
               type="button"
@@ -44,9 +47,7 @@
             ></button>
           </div>
           <div class="modal-body">
-            <div class="modal-body-title">
-              [{{ selectedDagakId }} - 다각아이디(제목으로 수정해야)]
-            </div>
+            <div class="modal-body-title">[ {{ selectedDagakName }} ]</div>
             <div class="gak-wrapper">
               <draggable
                 v-model="gakList"
@@ -124,18 +125,19 @@
         </div>
       </div>
     </div>
-    <!-- 각 상세정보 모달 -->
+    <!-- 다각 생성 모달 -->
     <MyPageScheduleDagakAddModal @updateDagakList="getAllDagakList" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import draggable from 'vuedraggable';
 import MyPageScheduleDagakAddModal from './MyPageScheduleDagakAddModal.vue';
+import DagakImg from '@/components/dagak/DagakImg.vue';
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
@@ -143,18 +145,55 @@ const router = useRouter();
 const dagakList = ref([]);
 const gakList = ref([]);
 const selectedDagakId = ref(null);
+const selectedDagakName = ref('');
 
 onMounted(() => {
   getAllDagakList();
 });
 
 //전체 다각 목록 불러오기
-const getAllDagakList = function () {
-  axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`)
-    .then((res) => {
-      dagakList.value = res.data.result;
-    });
+// const getAllDagakList = function () {
+//   axios
+//     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`)
+//     .then((res) => {
+//       dagakList.value = res.data.result;
+
+//       //다각의 각 개수 가져오기
+//       dagakList.value.forEach((dagak) => {
+//         const id = dagak.dagakId;
+//         axios
+//           .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
+//             params: { dagakId: id },
+//           })
+//           .then((res) => {
+//             dagak.gakLength = res.data.result.length;
+//           });
+//       });
+//     });
+// };
+//다각 리스트 불러오기 + 다각의 각 갯수 불러와서 저장
+const getAllDagakList = async function () {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`,
+    );
+    const dagaks = response.data.result;
+
+    const gakLengthPromises = dagaks.map((dagak) =>
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
+        params: { dagakId: dagak.dagakId },
+      }),
+    );
+
+    const gakLengthResponses = await Promise.all(gakLengthPromises);
+
+    dagakList.value = dagaks.map((dagak, index) => ({
+      ...dagak,
+      gakLength: gakLengthResponses[index].data.result.length,
+    }));
+  } catch (error) {
+    console.error('Error:', error);
+  }
 };
 
 //뒤로가기(캘린더로)
@@ -163,8 +202,10 @@ const goToCalander = function () {
 };
 
 //다각 클릭 시 각 목록+상세정보 불러와서 저장
-const openModal = function (id) {
+const openModal = function (id, name) {
   selectedDagakId.value = id;
+  selectedDagakName.value = name;
+
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
       params: { dagakId: id },
@@ -180,7 +221,7 @@ const openModal = function (id) {
 
 //다각 삭제
 const deleteDagak = function () {
-  if (window.confirm('수정하시겠습니까?')) {
+  if (window.confirm('삭제하시겠습니까?')) {
     const body = {
       sign: 'deleteDagak',
       deleteDagakId: selectedDagakId.value,
@@ -196,14 +237,6 @@ const deleteDagak = function () {
         }
       });
   }
-};
-
-//카테고리Id를 카테고리Name으로 반환
-const getCategoryName = (categoryId) => {
-  const category = categoryStore.categoryList.find(
-    (cat) => cat.categoryId === categoryId,
-  );
-  return category ? category.categoryName : 'Unknown Category';
 };
 
 //각 삭제
@@ -224,7 +257,7 @@ const deleteGak = function (gakId) {
       .then((res) => {
         if (res.data.code === 1000) {
           //삭제 성공
-          openModal(selectedDagakId.value);
+          openModal(selectedDagakId.value, selectedDagakName.value);
         } else {
           alert('실패했습니다.');
         }
@@ -248,7 +281,7 @@ const updateGak = function (gakId, categoryId, runningTime) {
       .then((res) => {
         if (res.data.code === 1000) {
           //수정 성공
-          openModal(selectedDagakId.value);
+          openModal(selectedDagakId.value, selectedDagakName.value);
           alert('수정되었습니다.');
         } else {
           alert('실패했습니다.');
@@ -299,14 +332,28 @@ const getAllCalendarList = function () {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  max-width: 710px;
+  margin: 0 auto;
   .dagak-detail-wrapper {
+    text-align: center;
     border: 1px solid black;
+    border-radius: 4px;
+    padding: 20px 10px 0px;
+    width: 115px;
+    min-height: 160px;
+    margin: 0px 10px 30px;
+    box-shadow: 5px 5px #ccc;
     .dagak-figure {
       width: 78px;
     }
   }
 }
 .modal-body {
+  .modal-body-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+  }
   .gak-wrapper {
     font-size: 1.3rem;
     .gak-detail-wrapper {
@@ -345,6 +392,19 @@ const getAllCalendarList = function () {
         }
       }
     }
+  }
+}
+.common-mypage-wrapper {
+  .common-mypage-title {
+    display: inline-block;
+  }
+  .go-back-btn {
+    position: relative;
+    top: -8px;
+    left: 10px;
+  }
+  .add-btn {
+    display: block;
   }
 }
 </style>

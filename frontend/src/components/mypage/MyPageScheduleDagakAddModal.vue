@@ -21,8 +21,19 @@
         </div>
         <div class="modal-body">
           <div class="modal-body-form">
+            <label for="dagakName" class="form-label">다각 제목</label>
             <input
               type="text"
+              id="dagakName"
+              class="form-control form-dagak-name"
+              placeholder="다각 제목 입력"
+              :value="dagakName"
+              @input="onInputGakName"
+            />
+            <label for="dagakCategory" class="form-label">카테고리</label>
+            <input
+              type="text"
+              id="dagakCategory"
               class="form-control"
               v-model="categorySearch"
               placeholder="카테고리 검색"
@@ -43,6 +54,7 @@
                 class="form-control"
                 type="number"
                 id="gakRunningTime"
+                placeholder="공부시간"
                 v-model="gakRunningTime"
                 min="1"
                 required
@@ -58,11 +70,15 @@
             </div>
           </div>
           <div class="modal-body-result">
-            <div class="modal-body-result-title">각 목록</div>
+            <div class="modal-body-result-title" v-if="dagakName != ''">
+              [ {{ dagakName }} ]
+            </div>
+            <div class="modal-body-result-title" v-else>[ 다각 이름 ]</div>
             <div
-              class="modal-body-result-detail"
+              class="modal-body-result-detail common-pointer"
               v-for="(gak, index) in gaks"
               :key="index"
+              @click="deleteGak"
             >
               <div>{{ index + 1 }}.</div>
               <div>{{ getCategoryName(gak.category) }}</div>
@@ -78,12 +94,12 @@
           <button class="btn btn-secondary" data-bs-dismiss="modal">
             닫기
           </button>
-          <button class="btn common-btn" @click="clear">초기화</button>
+          <button class="btn common-btn" @click="clear">지우기</button>
           <button
             class="btn btn-primary"
             data-bs-dismiss="modal"
             @click="addDagak"
-            :disabled="gaks.length == 0"
+            :disabled="gaks.length == 0 || dagakName == ''"
           >
             생성
           </button>
@@ -94,7 +110,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import axios from 'axios';
 
@@ -105,7 +121,13 @@ const categorySearch = ref('');
 const gakCategory = ref('');
 const gakRunningTime = ref(1);
 const totalTime = ref(0);
+const dagakName = ref('');
 const gaks = ref([]);
+
+//한글 입력 이슈
+const onInputGakName = function (event) {
+  dagakName.value = event.currentTarget.value;
+};
 
 //태그 검색 메서드
 const filteredCategoryList = computed(() => {
@@ -159,16 +181,17 @@ const updateTime = function () {
 const addDagak = function () {
   const body = {
     sign: 'addDagak',
+    dagakName: dagakName.value,
     gaks: gaks.value.map(({ category, runningTime }) => ({
       category: String(category),
       runningTime: String(runningTime),
     })),
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
-    console.log(res);
     if (res.data.code === 1000) {
       //생성 성공
       emit('updateDagakList');
+      clear();
     } else {
       alert('실패했습니다.');
     }
@@ -181,20 +204,27 @@ const clear = function () {
   gakRunningTime.value = 1;
   totalTime.value = 0;
   gaks.value = [];
+  dagakName.value = '';
 };
 </script>
 
 <style lang="scss" scoped>
 .modal-body {
   .modal-body-form {
+    .form-label {
+      font-weight: bold;
+    }
+    .form-dagak-name {
+      margin-bottom: 20px;
+    }
   }
   .modal-body-result {
     margin: 0px 80px;
     text-align: center;
     padding: 10px;
-    border: 10px solid aliceblue;
+    border: 2px solid #ccc;
     border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: 5px 5px #ccc;
     .modal-body-result-title {
       border-bottom: 1px solid #ccc;
       font-weight: 500;
