@@ -12,7 +12,7 @@ public class CalendarDagakVO {
     private Integer dagakId, totalTime;
     private LocalDate calendarDate;
     private List<Gak> gaks;
-    private String userId;
+    private String userId, dagakName;
 
     public CalendarDagakVO() {
     }
@@ -45,13 +45,21 @@ public class CalendarDagakVO {
 
     public void setTotalTime(Integer totalTime) {this.totalTime = totalTime;}
 
+
+    public void setDagakName(String dagakName) {
+        this.dagakName = dagakName;
+    }
+
     @Override
     public String toString() {
         return "CalendarDagakVO{" +
                 "calendarDagakId=" + calendarDagakId +
                 ", dagakId=" + dagakId +
+                ", totalTime=" + totalTime +
                 ", calendarDate=" + calendarDate +
                 ", gaks=" + gaks +
+                ", userId='" + userId + '\'' +
+                ", dagakName='" + dagakName + '\'' +
                 '}';
     }
 }
