@@ -2,7 +2,7 @@
   <div class="room">
     <div class="studyroomheader">
       <div class="nowname">
-        <div class="nametag"> {{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
+        <div class="nametag">{{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
         <img
           class="pause"

@@ -42,6 +42,8 @@ public class DagakFacade {
         List<CalendarDagakVO> calendarDagakList = dagakService.getCalendarList(userId);
         // dagakId로 gak들 정보 가져오기
         dagakService.getCalendarGaks(calendarDagakList);
+        // dagakId로 dagakName 정보 가져오기
+        dagakService.getDagakName(calendarDagakList);
 
         return calendarDagakList;
 
