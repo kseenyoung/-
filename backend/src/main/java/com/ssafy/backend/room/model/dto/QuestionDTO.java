@@ -7,6 +7,7 @@ import lombok.*;
 import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_TO_CONNECT;
 
 @Getter
+@ToString
 public class QuestionDTO {
     private String questionId;
     private String userId;
@@ -45,6 +46,9 @@ public class QuestionDTO {
     }
 
     public QuestionRedis toEntity(){
+        System.out.println("userId: "+this.userId);
+        System.out.println("session: "+ this.session);
+        System.out.println("data: "+this.data);
         return QuestionRedis.builder()
                 .userId(this.userId)
                 .session(this.session)
