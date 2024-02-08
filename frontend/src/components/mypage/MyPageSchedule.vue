@@ -133,6 +133,7 @@ const getAllCalendarList = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
     .then((res) => {
+      console.log(res);
       calendarList.value = res.data.result;
     });
 };

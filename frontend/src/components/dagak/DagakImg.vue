@@ -45,7 +45,6 @@
       />
     </g>
   </svg>
-  {{ props.gakLength }}
 </template>
 
 <script setup>

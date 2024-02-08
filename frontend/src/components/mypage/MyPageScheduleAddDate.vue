@@ -28,7 +28,7 @@
         @click="addDagakList(dagak.dagakId)"
       >
         <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" />
-        <div class="dagak-title">{{ dagak.dagakId }}</div>
+        <div class="dagak-title">{{ dagak.dagakName }}</div>
       </div>
     </div>
   </div>

@@ -23,7 +23,7 @@
     >
       <!-- <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" /> -->
       <DagakImg :gak-length="dagak.gakLength" />
-      <div class="dagak-title">{{ dagak.dagakId }}:{{ dagak.gakLength }}개</div>
+      <div class="dagak-title">{{ dagak.dagakName }}</div>
     </div>
     <!-- 각 상세정보 모달 -->
     <div
@@ -344,9 +344,6 @@ const getAllCalendarList = function () {
     box-shadow: 5px 5px #ccc;
     .dagak-figure {
       width: 78px;
-    }
-    .dagak-title {
-      margin-top: 10px;
     }
   }
 }
