@@ -7,7 +7,6 @@ import org.springframework.data.redis.core.RedisHash;
 
 
 @Getter
-@Builder
 @RedisHash("question")
 public class QuestionRedis {
     @Id
@@ -16,6 +15,12 @@ public class QuestionRedis {
     String session;
     String questionContent;
 
+    @Builder
+    public QuestionRedis(String userId, String session, String questionContent) {
+        this.userId = userId;
+        this.session = session;
+        this.questionContent = questionContent;
+    }
 
     public QuestionRedis(String questionId, String session, String questionContent, String userId) {
         this.questionId = questionId;
