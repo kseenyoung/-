@@ -81,7 +81,7 @@ const getSessionId = function () {
 
 //로그아웃
 const logout = async function () {
-  // await userStore.deleteLoginUserInfo()
+  userStore.deleteLoginUserInfo()
   const body = {
     sign: 'logout'
   }
