@@ -12,7 +12,7 @@
       cx="100"
       cy="100"
       r="90"
-      fill="lightgray"
+      :fill="shuffledColors[0]"
       stroke="black"
       stroke-width="2"
     />
@@ -23,13 +23,13 @@
         cx="100"
         cy="100"
         r="90"
-        fill="lightgray"
+        :fill="shuffledColors[0]"
         stroke="black"
         stroke-width="2"
       />
       <path
         d="M100 10 A90 90, 0, 1, 0, 100 190 Z"
-        fill="gray"
+        :fill="shuffledColors[1]"
         stroke="black"
         stroke-width="2"
       />
@@ -64,13 +64,32 @@ const pizzaSlices = computed(() => {
   return calculatePizzaSlices(numSlices.value, radius, cx, cy);
 });
 
+const colors = [
+  'white',
+  'black',
+  'lightgray',
+  'gray',
+  'aqua',
+  'aquamarine',
+  'cadetblue',
+  'coral',
+  'cornflowerblue',
+  'darkgreen',
+  'darkorange',
+  'deepskyblue',
+  'forestgreen',
+  'gold',
+  'greenyellow',
+];
+
+const shuffledColors = colors.slice().sort(() => Math.random() - 0.5);
+
 const calculatePizzaSlices = (slices, radius, cx, cy) => {
   const angleIncrement = (2 * Math.PI) / slices;
-  const startAngle = -Math.PI / 2; // Start from the 12 o'clock direction
-  const labelOffset = 15; // Adjust the label offset from the center
+  const startAngle = -Math.PI / 2;
+  const labelOffset = 15;
 
   const slicePolygons = [];
-  const colors = ['white', 'black', 'lightgray', 'gray']; // Add more colors as needed
 
   for (let i = 0; i < slices; i++) {
     const angle1 = startAngle + i * angleIncrement;
@@ -82,12 +101,11 @@ const calculatePizzaSlices = (slices, radius, cx, cy) => {
     const x2 = cx + radius * Math.cos(angle2);
     const y2 = cy + radius * Math.sin(angle2);
 
-    // Include the center of the circle as a vertex to create a triangle
     const slicePoints = `${cx},${cy} ${x1},${y1} ${x2},${y2}`;
 
     // Calculate label position
     const labelAngle = angle1 + angleIncrement / 2;
-    const labelRadius = radius + labelOffset; // Adjust label distance from the center
+    const labelRadius = radius + labelOffset;
     const labelX = cx + labelRadius * Math.cos(labelAngle);
     const labelY = cy + labelRadius * Math.sin(labelAngle);
 
@@ -96,7 +114,8 @@ const calculatePizzaSlices = (slices, radius, cx, cy) => {
       label: `과목 ${i + 1}`,
       labelX,
       labelY,
-      color: colors[i % colors.length], // Assign colors in a circular manner
+      // color: colors[i % colors.length],
+      color: shuffledColors[i % shuffledColors.length], // Random color
     });
   }
 

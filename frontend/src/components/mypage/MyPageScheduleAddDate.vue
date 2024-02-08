@@ -114,17 +114,6 @@ const isSelectedDagak = (dagakId) => {
   return selectDagak.value === dagakId;
 };
 
-//css 토글 메서드
-const toggleDagakSelection = (dagakId) => {
-  if (isSelectedDagak(dagakId)) {
-    // 이미 선택된 다각을 누르면 선택 취소
-    selectDagak.value = '';
-  } else {
-    // 선택되지 않은 다각을 누르면 선택
-    selectDagak.value = dagakId;
-  }
-};
-
 //뒤로가기(캘린더로)
 const goToCalander = function () {
   router.go(-1);
