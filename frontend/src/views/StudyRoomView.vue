@@ -128,11 +128,7 @@ const question = ref('')
 const leave = ref('refresh')
 // const achievementRate = ref(0)
 
-<<<<<<< HEAD
 const change = ref(false);
-=======
-const stopFlag = ref(false)
->>>>>>> d3e32bd311c3133440e1a1a95805afde0ecb6a83
 
 const userId = ref('')
 const sec = ref(0)
