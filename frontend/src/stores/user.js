@@ -158,7 +158,7 @@ export const useUserStore = defineStore(
 
     const deleteLoginUserInfo = async () => {
       loginUserInfo.value = {};
-      cookiesStorage.deleteItem("userStore");
+      cookiesStorage.deleteItem('userStore');
       console.log('mySession.value : ', mySession.value);
       if (mySession.value) {
         mySession.value.disconnect();
