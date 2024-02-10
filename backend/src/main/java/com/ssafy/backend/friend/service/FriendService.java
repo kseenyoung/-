@@ -2,6 +2,8 @@ package com.ssafy.backend.friend.service;
 
 import com.ssafy.backend.friend.model.domain.UserId;
 import com.ssafy.backend.friend.model.vo.FriendVO;
+import com.ssafy.backend.user.model.domain.redis.LoginRedis;
+import com.ssafy.backend.user.model.vo.LoginRedisVO;
 
 import java.util.List;
 
@@ -20,4 +22,5 @@ public interface FriendService {
 
     boolean isFriend(UserId PK);
 
+    List<LoginRedisVO> getLoginFriends(String userId);
 }

@@ -6,11 +6,15 @@ import com.ssafy.backend.friend.model.domain.UserId;
 import com.ssafy.backend.friend.model.mapper.FriendMapper;
 import com.ssafy.backend.friend.model.repository.FriendRepository;
 import com.ssafy.backend.friend.model.vo.FriendVO;
+import com.ssafy.backend.user.model.domain.redis.LoginRedis;
+import com.ssafy.backend.user.model.repository.redis.LoginRedisRepository;
+import com.ssafy.backend.user.model.vo.LoginRedisVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +25,9 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.ALREADY_EXIST
 public class FriendServiceImpl implements FriendService {
     @Autowired
     FriendRepository friendRepository;
+
+    @Autowired
+    LoginRedisRepository loginRedisRepository;
     @Autowired
     FriendMapper friendMapper;
 
@@ -97,6 +104,22 @@ public class FriendServiceImpl implements FriendService {
         return false;
     }
 
+    @Override
+    public List<LoginRedisVO> getLoginFriends(String userId) {
+        List<LoginRedisVO> loginRedisList = new ArrayList<>();
+        List<FriendVO> friendListVOS = listFriends(userId);
+        for(FriendVO friendVO: friendListVOS){
+            LoginRedis loginRedis = loginRedisRepository.findByUserId(friendVO.getUserId());
+            if(loginRedis == null) {
+                loginRedisList.add(new LoginRedisVO(friendVO.getUserId(), false));
+            } else {
+                loginRedisList.add(new LoginRedisVO(loginRedis.getUserId(), loginRedis.getIsLogin()));
+            }
+
+        }
+
+        return loginRedisList;
+    }
 
 
 }
