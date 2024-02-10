@@ -4,10 +4,11 @@
     <div class="inven-content-wrapper">
       <div class="inven-wearing">
         <div class="inven-wearing-now" ref="captureArea">
-          <img src="/public/img/item/정육면체.png" class="main-item" />
+          <!-- <img src="/public/img/item/정육면체.png" class="main-item" /> -->
+          <img src="@/assets/img/item/cube.png" class="main-item" />
           <template v-for="item in inventories" :key="item.inventoryId">
             <img
-              :src="item.productImage"
+              :src="`/src/assets/img/item/${item.productImage}.png`"
               v-if="item.isWearing"
               class="main-item"
             />
@@ -18,7 +19,7 @@
           <div v-for="item in inventories" :key="item.inventoryId">
             <div v-if="item.isWearing">
               <img
-                :src="item.productImage"
+                :src="`/src/assets/img/item/${item.productImage}.png`"
                 @dblclick="changeItem(item.inventoryId)"
               />
             </div>
@@ -29,7 +30,7 @@
       <div class="inven-list text-center">
         <div v-for="item in inventories" :key="item.inventoryId">
           <img
-            :src="item.productImage"
+            :src="`/src/assets/img/item/${item.productImage}.png`"
             :class="{ 'is-wearing': item.isWearing }"
             @dblclick="changeItem(item.inventoryId)"
           />
@@ -59,12 +60,16 @@ async function changeItem(inventoryId) {
       } else {
         inventories.value
           .filter((filterItem) => filterItem.inventoryId != inventoryId)
-          .forEach( item => {
-            if(e.category.productCategoryId == item.category.productCategoryId){
-              if(item.isWearing == 1){
+          .forEach((item) => {
+            if (
+              e.category.productCategoryId == item.category.productCategoryId
+            ) {
+              if (item.isWearing == 1) {
                 item.isWearing = 0;
-                const body  = {sign : "unEquip", takeOffItem : e.inventoryId};
-                axios.post(`${import.meta.env.VITE_API_BASE_URL}inventory/`, body);
+                const body = { sign: 'unEquip', takeOffItem: e.inventoryId };
+                axios.post(
+                  `${import.meta.env.VITE_API_BASE_URL}inventory/`,
+                  body,
                 );
               }
             }
@@ -128,16 +133,13 @@ const captureAndSend = async () => {
 
 onMounted(async () => {
   const response = await getInventory();
-  if(response.data.code === 1000){
+  if (response.data.code === 1000) {
     console.log(response.data);
     inventories.value = response.data.result.inventories;
-  }
-  else{
+  } else {
     alert(response.data.message);
   }
 });
-
-
 </script>
 
 <style lang="scss" scoped>
