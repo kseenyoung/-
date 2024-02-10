@@ -34,6 +34,9 @@ public enum BaseResponseStatus {
     SUCCESS_SELL_PRODUCT(true,1403 ,"상품 판매에 성공했습니다" ),
     SUCCESS_LEAVE_SESSION(true, 1404, "세션을 나가는데 성공했습니다"),
 
+    FAIL_TO_LOGIN(true, 1405, "로그인에 실패했습니다."),
+    SUCCESS_GET_EMAIL(true, 1406, "이메일 불러오기 성공."),
+
     /**
      * 2000 : Request 오류
      */
@@ -63,6 +66,7 @@ public enum BaseResponseStatus {
     NOT_EXIST_POINT(false, 2028, "존재하지 않는 포인트입니다."),
     INSUFFICIENT_POINT(false, 2029, "포인트가 부족합니다."),
     NOT_MATCH_SIGN(false, 2030, "일치하는 sign 정보가 없습니다."),
+    NOT_EXIST_DATA(false, 2030, "누락된 데이터 없이 전부 입력해주세요."),
     NOT_EXIST_TAG_ID(false, 2031, "일치하는 태그 번호가 없습니다."),
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
     NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다."),
@@ -84,10 +88,10 @@ public enum BaseResponseStatus {
 
     FAIL_TO_DELETE_USER(false, 2041, "회원 탈퇴 실패."),
 
-
     NEED_LOGIN(false, 2042,"로그인이 필요한 서비스입니다."),
     NEED_KAKAO_LINK(false, 2043,"기존 회원 로그인 후 카카오 서비스와 연동 하시겠습니까?"),
     NEED_GOOGLE_LINK(false, 2044,"기존 회원 로그인 후 구글 서비스와 연동 하시겠습니까?"),
+    NEED_AGAIN_LOGIN(false, 2045,"다시 로그인을 해주세요."),
 
     NOT_MATCH_EMAIL(false, 2045,"기존 이메일이 일치하지 않습니다"),
     NOT_MATCH_CODE(false, 2046,"인증코드가 일치하지 않습니다"),
@@ -118,6 +122,8 @@ public enum BaseResponseStatus {
     NOT_MOKKOJI_LEADER(false, 2109, "모꼬지장이 아닙니다."),
     NOT_MOKKOJI_MEMBER(false, 2110, "해당 회원을 찾을 수 없습니다."),
 
+
+
     /* 보드 관련 BAD REQUEST */
     NOT_FOUND_TAG(false, 2110, "태그가 존재하지 않습니다."),
     NOT_FOUND_BOARD(false, 2111, "글이 존재하지 않습니다."),
@@ -127,6 +133,7 @@ public enum BaseResponseStatus {
     TWO_UP_PUT_ON_CLOTH(false, 2120, "같은 카테고리의 옷을 두 개 이상 입을 수 없습니다"),
     DUPLICATE_INVENTORY_ID(false, 2121, "중복된 아이템 착용 요청입니다."),
     EMPTY_INVENTORY(false, 2122, "존재하는 아이템이 인벤토리에 없습니다"),
+    DUPLICATE_PURCHASE_ITEM(false,2123 , "중복된 아이템을 구매할 수 없습니다."),
 
     /* 친구 관련 에러 이넘 클래스 BAD REQUEST*/
     ALREADY_EXIST_FRIEND(false, 2200, "이미 친구입니다."),
@@ -136,12 +143,11 @@ public enum BaseResponseStatus {
 
     /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
     JSON_PARSING_ERROR(false, 2300, "알맞은 타입으로 요청해주세요"),
-
-    /* 다각 관련 에러 이넘 클래스 BAD REQUEST*/
-//    WRONG_TYPE(false,2400,"자료형이 일치하지 않습니다."),
     DATA_NOT_CHANGED(false,2400,"변경된 데이터가 없습니다."),
     NOT_EXIST_GAK(false,2401,"데이터가 존재하지 않습니다."),
     NOT_EXIST_DAGAK(false,2401,"유효하지 않은 다각 아이디입니다."),
+    NOT_FOUND_TODAY_DAGAK(false, 2402, "등록된 오늘의 다각이 없습니다"),
+    NOT_FOUND_CALENDAR_DAGAK(false, 2403, "해당하는 캘린더 다각이 없습니다."),
 
 
     /**

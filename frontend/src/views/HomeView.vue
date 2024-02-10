@@ -1,127 +1,181 @@
 <template>
-  <div class="parent">
-    <div class="part one">
-      <!-- <div class="title">多角</div>
-      <div id="square1">JAVA</div>
-      <div id="square2">python</div>
-      <div id="square3">C++</div>
-      <div id="square4">민법</div>
-      <div id="square5">수능수학</div>
-      <div id="square6">수능국어</div>
-      <div id="square7">재수</div>
-      <div id="square8">이모티콘제작</div>
-      <div id="square9">입시미술</div>
-      <div id="square10">도전만화</div>
-      <div id="square11">수능영어</div>
-      <div id="square12">OPIc</div>
-      <div id="bsquare1">flutter</div>
-      <div id="bsquare5">민사소송법</div>
-      <div id="bsquare7">미분적분학</div>
-      <div id="bsquare10">R</div> -->
 
-      <div class="title">多角</div>
-      <div id="square1">
-        <SimpleDagak />
-      </div>
-      <div id="square2">
-        <SimpleDagak />
-      </div>
-      <div id="square3">
-        <SimpleDagak />
-      </div>
-      <div id="square4">
-        <SimpleDagak />
-      </div>
-      <div id="square5">
-        <SimpleDagak />
-      </div>
-      <!-- <div id="square6"><SimpleDagak/></div> -->
-      <div id="square7">
-        <SimpleDagak />
-      </div>
-      <div id="square8">
-        <SimpleDagak />
-      </div>
-      <div id="square9">
-        <SimpleDagak />
-      </div>
-      <div id="square10">
-        <SimpleDagak />
-      </div>
-      <div id="square11">
-        <SimpleDagak />
-      </div>
-      <div id="square12">
-        <SimpleDagak />
-      </div>
-      <div id="bsquare1">
-        <SimpleDagak />
-      </div>
-      <div id="bsquare5">
-        <SimpleDagak />
-      </div>
-      <div id="bsquare7">
-        <SimpleDagak />
-      </div>
-      <div id="bsquare10">
-        <SimpleDagak />
+    <div class="parent">
+        <div class="background">
+      <div class="part one">
+        
+        <div class="title" style="color:#000000; font-size:10rem;">
+          다각
+        <h2><div style="color:black ;font-weight:bold" class="">다같이 랜덤 스터디</div></h2>
+        </div>
+        <div
+          style="color: white;"
+          v-if="userStore.loginUserInfo.userId == null"
+          @click="navigateToLogin">
+          <div class="is-typed">
+            <h3 style="display:inline-block;"> 
+              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+            </h3>
+        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+        </div>
       </div>
 
-      <button
-        class="startbutton"
-        v-if="userStore.loginUserInfo.userId"
-        @click="navigateToStudyRoom"
-      >
-        공부시작
-      </button>
+
+      <!-- <div
+        style="color: white;"
+        v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
+        @click="navigateToMyPageSchedule">
+
+        <div class="is-typed">
+          <h3 style="display:inline-block;"> </h3>
+          <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
+        </div>
+
+        <div style="display: inline-block;">
+          <div class="pixel"><p>하이</p></div>
+        </div>
+      </div> -->
+
+
+
+      <div
+        style="color: white;"
+        v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
+        >
+        <div class="is-typed" style="" @click="navigateToMyPageSchedule">
+          <h3 style=""> </h3>
+          <p style="" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
+        </div>
+        
+        <div class="friends">
+          <div class="bubble medium bottom" style="margin-left : 80%;">
+              친구 <b style="color: red;">{{ userStore.friends.length }}</b> 명이 <br/> 로그인중이에요
+              <br/>
+          </div>
+            <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
+        </div>
+      </div>
+        <div
+          style="color: white;"
+          v-else
+          @click="navigateToStudyRoom">
+          <div class="is-typed">
+            <h3 style="display:inline-block;"> 
+              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+            </h3>
+        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+        </div>
+      </div>
+      </div>
+      </div>
+        <div class="background">
+      <div class="part2">
+          <img src="@/assets/board.png" class="board">
+          <div class="two"> 
+            <MyRanking style="z-index : 1" />
+            <MokkojiRanking style="z-index : 1" />
+          </div>
+      </div>
+      </div>
+        <div class="background">
+      <div class="part three">
+        3
+      </div>
+        </div>
     </div>
-    <div class="part two">
-      <MyRanking />
-      <MokkojiRanking />
-    </div>
-    <div class="part three">3</div>
-  </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import MyRanking from '@/components/home/MyRanking.vue';
-import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
-import { useUserStore } from '@/stores/user';
-import { useRankStore } from '@/stores/rank';
-import { useCategoryStore } from '@/stores/category';
-import { useAlarmStore } from '@/stores/alarm';
-import SimpleDagak from '@/components/dagak/SimpleDagak.vue';
-const userStore = useUserStore();
-const rankstore = useRankStore();
-const categoryStore = useCategoryStore();
-const alarmStore = useAlarmStore();
-const router = useRouter();
-const API_URL = 'https://localhost:8080';
-const mokkojiRank = ref([]);
+import { onMounted,ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import MyRanking from '@/components/home/MyRanking.vue'
+import MokkojiRanking from '@/components/home/MokkojiRanking.vue'
+import { useUserStore } from '@/stores/user'
+import { useCategoryStore } from '@/stores/category'
+import { useAlarmStore } from '@/stores/alarm'
+import { useDagakStore } from '@/stores/dagak'
+
+const arr = ref([
+  " \"정보처리기사\"",
+  "\"SQLD\"",
+  "\"생활과윤리\"",
+  "\"JLPT\"",
+]);
+const myGaks = ref([]);
+const categories = ref([]);
+const isFriendList = ref(false);
+const userStore = useUserStore()
+const categoryStore = useCategoryStore()
+const alarmStore = useAlarmStore()
+const router = useRouter()
+const dagakStore = useDagakStore()
+
+const showFriends = ()=>{
+  alert("친구들!");
+  isFriendList.value = isFriendList.value == true?false:true;
+}
+
+const navigateToMyPageSchedule= () =>{
+  router.push('/mypage');
+}
+
+const navigateToLogin = () => {
+  alert("로그인해주세요!")
+  router.push('/login')
+}
+
 
 const navigateToStudyRoom = () => {
-  router.push('/studyroom');
+  if(dagakStore.todayDagak.value == null)
+  router.push('/studyroom')
+}
+const getGaks = async () =>{ 
+  myGaks.value = dagakStore.todayDagak.gaks;
+  categories.value = categoryStore.categoryList;
+  arr.value = [];
+  myGaks.value.forEach(gak =>{
+    categories.value.forEach(category =>{
+      if(gak.categoryId === category.categoryId){
+        arr.value.push(`\"${category.categoryName}\"`);
+        dagakStore.categoryNameToStudy.value = arr;
+      }
+    });
+  });
 };
-
 onMounted(async () => {
   // store.login();
-  alarmStore.getUnReadAlarmList();
-  categoryStore.getCategoryList();
-  await rankstore.getMokkojiRank();
-  console.log('mokkojiRank.value: ', rankstore.mokkojiRank);
+  alarmStore.getUnReadAlarmList()
+  await categoryStore.getCategoryList()
+  await dagakStore.getTodayDagak()
+   if(userStore.loginUserInfo.userId != null){
+      await getGaks();
+    }
+})
+watch(() => userStore.loginUserInfo.userId, (newUserId) => {
+  if (newUserId != null) {
+    getGaks();
+  }
 });
 </script>
 
 <style lang="scss" scoped>
+.is-typed {
+  user-select: none;
+  
+  
+}
+.is-typed:hover {
+  cursor: pointer;
+  color : black;
+}
 .title {
-  padding-top: 5%;
-  font-size: 22rem;
+  font-size: 15rem;
   font-weight: bold;
   position: relative;
-  z-index: 20;
+  z-index: 30;
   color: black;
+  padding-top: 10%;
+  padding-bottom: 0;
 }
 
 .title::before {
@@ -141,6 +195,8 @@ onMounted(async () => {
   // 기존 스타일 유지
   background-color: #639b9d;
   /* 적절한 배경색으로 변경 */
+  bottom: 50px;
+  z-index: 100;
   border: none;
   color: white;
   padding: 15px 30px;
@@ -200,19 +256,18 @@ onMounted(async () => {
 }
 
 .part {
-  height: 100vh;
+  width: 100%;
   scroll-snap-align: start;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh; /* 뷰포트 높이로 제한 */
+  overflow: hidden; /* 페이지를 벗어나는 내용 숨김 */
+
 }
 
 .one {
-  // background-image: url('https://img.freepik.com/free-vector/abstract-3d-perspective-indoor-wireframe-vector-design_1017-39916.jpg?w=1060&t=st=1705037743~exp=1705038343~hmac=abc423a6b1c37e3cfec62d1e9af305e6f3989f5421e7c351a80a494cad1a4629');
-  // background-image: url('https://img.freepik.com/free-vector/detailed-wireframe-terrain-landscape-in-black-and-white_1048-11902.jpg?w=1380&t=st=1705038502~exp=1705039102~hmac=ab8142a255e5fb577d99e6111f45612933a987327ade60ae55e02646d932400a');
-  // background-image: url('https://previews.123rf.com/images/roxiller/roxiller1608/roxiller160800030/61554592-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%B2%A1%ED%84%B0-%ED%95%98%ED%94%84-%ED%86%A4-%EC%A7%88%EA%B0%90%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%B6%94%EC%83%81-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%ED%95%98%ED%94%84-%ED%86%A4-%ED%8C%A8%ED%84%B4%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%A0%90%EC%9D%B4%EC%9E%88%EB%8A%94-%ED%85%8D%EC%8A%A4%EC%B2%98-%EA%B2%80%EC%9D%80-%ED%8C%A8%ED%84%B4-%EB%B2%A1%ED%84%B0.jpg');
-  // background-image: url('@/assets/img/home/square.png');
-  // z-index: -1;
 
-  // filter: invert(100%);
   background-size: cover;
   background-position: center;
 }
@@ -573,105 +628,206 @@ div[id^='bsquare'] {
   // border: 20px solid #373737;
   // border-radius: 4px 4px 4px 4px;
 }
-
-#square1 {
-  transition-timing-function: ease-in;
-  animation: move1h 2s forwards;
-}
-
-#bsquare1 {
-  transition-timing-function: ease-in;
-  animation: move1h_1 2s forwards;
-}
-
-#square2 {
-  transition-timing-function: ease-in;
-  animation: move2h 2s forwards;
-}
-
-#square3 {
-  transition-timing-function: ease-in;
-  animation: move3h 2s forwards;
-}
-
-#square4 {
-  transition-timing-function: ease-in;
-  animation: move4h 2s forwards;
-}
-
-#square5 {
-  transition-timing-function: ease-in;
-  animation: move5h 2s forwards;
-}
-
-#bsquare5 {
-  transition-timing-function: ease-in;
-  animation: move5h_1 2s forwards;
-}
-
-#square6 {
-  transition-timing-function: ease-in;
-  animation: move6h 2s forwards;
-}
-
-#square7 {
-  transition-timing-function: ease-in;
-  animation: move7h 2s forwards;
-}
-
-#bsquare7 {
-  transition-timing-function: ease-in;
-  animation: move7h_1 2s forwards;
-}
-
-#square8 {
-  transition-timing-function: ease-in;
-  animation: move8h 2s forwards;
-}
-
-#square9 {
-  transition-timing-function: ease-in;
-  animation: move9h 2s forwards;
-}
-
-#square10 {
-  transition-timing-function: ease-in;
-  animation: move10h 2s forwards;
-}
-
-#bsquare10 {
-  transition-timing-function: ease-in;
-  animation: move10h_1 2s forwards;
-}
-
-#square11 {
-  transition-timing-function: ease-in;
-  animation: move11h 2s forwards;
-}
-
-#square12 {
-  transition-timing-function: ease-in;
-  animation: move12h 2s forwards;
+.friends {
+  width: 100%;
+  height: auto;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .two {
-  // background-color: gray;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  font-family: 'NanumSquareNeo';
-  font-weight: 700;
-  // background-image: url('@/assets/img/home/navymountain.jpg');
-  // background-image: url('@/assets/img/home/square.png');
-  background-image: url('@/assets/img/home/sky.jpg');
   background-size: cover;
   background-position: center;
+  width: 70%;
+  height: 50%;  
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  align-items: flex-start;
 }
 
 .three {
   // background-color: rgb(195, 195, 195);
-  background-image: url('@/assets/img/home/sky.jpg');
   background-size: cover;
   background-position: center;
 }
+.background {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: url('@/assets/background.gif') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+.part2{
+  width: 100%;
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.board {
+  margin-top: 10%;
+  position: absolute; 
+  z-index: 0; 
+  width : 70% ; 
+  height: 70%;
+}
+
+
+.font-weight-bold {
+  margin-top: 10%;
+}
+
+.container {
+  margin: 50px;
+  display: block;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+$black: #000;
+$white: #fff;
+$shadow: rgba(0,0,0,0.1);
+
+$px: 4px;
+
+body {
+	background-color:#6e6565;
+	padding: 60px;
+}
+
+$bubble-border: 0 -1*$px $white, 
+		0 -2*$px $black, 
+		$px 0 $white, 
+		$px -1*$px $black, 
+		2*$px 0 $black, 
+		0 $px $white, 
+		0 2*$px $black, 
+		-1*$px 0 $white, 
+		-1*$px  $px $black, 
+		-2*$px 0 $black, 
+		-1*$px -1*$px $black, 
+		$px $px $black;
+
+.bubble {
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	font-size: 16px;
+	line-height:1.3em;
+	letter-spacing: -0.04em;
+	background-color: $white;
+	color: $black;
+	padding: 3*$px;
+	box-shadow: $bubble-border;
+		
+	box-sizing: border-box;
+	width:200px;
+
+	&::after {
+		content: '';
+		display: block;
+		position: absolute;
+		box-sizing: border-box;	
+	}
+
+	&.medium { width:10%; }
+	
+	&.top::after {
+		height: $px;
+		width: $px;
+		top: -2*$px;
+		left: 8*$px;
+		box-shadow: 
+			0 -1*$px $black, 
+			0 -2*$px $black, 
+			0 -3*$px $black, 
+			0 -4*$px $black, 
+			-1*$px -3*$px $black, 
+			-2*$px -2*$px $black, 
+			-3*$px -1*$px $black, 
+			-1*$px -1*$px $white, 
+			-2*$px -1*$px $white, 
+			-1*$px -2*$px $white, 
+			-1*$px 0 $white, 
+			-2*$px 0 $white, 
+			-3*$px 0 $white;
+	}
+	
+	&.right::after {
+		height: $px;
+		width: $px;
+		top: 21*$px;
+		right: -2*$px;
+		background: white;
+		box-shadow: 
+			1*$px -1*$px $white,
+			1*$px 0 $white,
+			2*$px 0 $white,
+			0 -2*$px $white,
+			1*$px 1*$px $black, 
+			2*$px 1*$px $black, 
+			3*$px 1*$px $black, 
+			4*$px 1*$px $black,
+			3*$px 0 $black, 
+			2*$px -1*$px $black, 
+			1*$px -2*$px $black,
+			0 -1*$px $white;
+	}
+	
+	&.bottom::after {
+		height: $px;
+		width: $px;
+		bottom: -2*$px;
+		left: 6*$px;
+		box-shadow: 
+			0 $px $black, 
+			0 2*$px $black, 
+			0 3*$px $black, 
+			0 4*$px $black, 
+			-1*$px 3*$px $black, 
+			-2*$px 2*$px $black, 
+			-3*$px 1*$px $black, 
+			-1*$px $px $white, 
+			-2*$px $px $white, 
+			-1*$px 2*$px $white, 
+			-1*$px 0 $white, 
+			-2*$px 0 $white, 
+			-3*$px 0 $white;
+	}
+	
+	&.left::after {
+		height: $px;
+		width: $px;
+		top: 5*$px;
+		left: -2*$px;
+		background: white;
+		box-shadow: 
+			-1*$px -1*$px $white,
+			-1*$px 0 $white,
+			-2*$px 0 $white,
+			0 -2*$px $white,
+			-1*$px 1*$px $black, 
+			-2*$px 1*$px $black, 
+			-3*$px 1*$px $black, 
+			-4*$px 1*$px $black,
+			-3*$px 0 $black, 
+			-2*$px -1*$px $black, 
+			-1*$px -2*$px $black,
+			0 -1*$px $white;
+	}
+}
+
+
+
 </style>
+

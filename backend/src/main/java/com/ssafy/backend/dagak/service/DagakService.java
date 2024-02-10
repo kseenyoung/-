@@ -2,11 +2,10 @@ package com.ssafy.backend.dagak.service;
 
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
-import com.ssafy.backend.dagak.model.dto.DagakDTO;
-import com.ssafy.backend.dagak.model.dto.GakDTO;
-import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
-import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDTO;
+import com.ssafy.backend.dagak.model.domain.GakHistory;
+import com.ssafy.backend.dagak.model.dto.*;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
+import com.ssafy.backend.dagak.model.vo.TodayGakVO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,5 +38,13 @@ public interface DagakService {
     void deleteDagak(Integer deleteDagakId);
 
     void modifyMemoryTime(UpdateMemoryTimeDTO updateStartTimeDto);
+
+    List<GakHistory> getGaksOfHistory(String userId, LocalDate today);
+
+    TodayGakVO enterRoomGetGakToStudy(String userId);
+
+    void deleteCalendarDagak(DeleteCalendarDagakDTO deleteCalendarDagakDTO);
+
+    List<CalendarDagakVO> getDagakName(List<CalendarDagakVO> calendarDagakList);
 }
 

@@ -19,6 +19,13 @@ public class BaseResponse<T> {
         this.code = status.getCode();
     }
 
+    public BaseResponse(BaseResponseStatus status, T result) {
+        this.isSuccess = status.isSuccess();
+        this.message = status.getMessage();
+        this.code = status.getCode();
+        this.result = result;
+    }
+
     public Boolean getSuccess() {
         return isSuccess;
     }

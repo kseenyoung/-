@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 public class BaseException extends RuntimeException{
     private BaseResponseStatus status;
-
     public BaseException(BaseResponseStatus status) {
         this.status = status;
     }
+
 }

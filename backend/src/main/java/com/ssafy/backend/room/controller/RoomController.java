@@ -55,7 +55,9 @@ public class RoomController {
         String studyRoom="";
         String token="";
         String questionId="";
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
+        String isLeave="";
+        ConnectionVO connectionVO;
 
         switch (sign){
             case "enterRandomroom":
@@ -67,12 +69,21 @@ public class RoomController {
                 sessionName = (String) body.get("sessionName");
                 videoCodec = (String) body.get("videoCodec");
                 EnterRoomDTO randomEnterRoomDTO = new EnterRoomDTO(userId,sessionName,videoCodec,connectionId,studyRoom);
-                ConnectionVO connectionVO = roomService.enterRandomroom(randomEnterRoomDTO);
+                connectionVO = roomService.enterRandomroom(randomEnterRoomDTO);
 
-                if (session != null) {
-                    session.setAttribute("connectionId", connectionVO.getConnectionId());
-                    session.setAttribute("studyRoom", connectionVO.getSession());
-                }
+                session.setAttribute("connectionId", connectionVO.getConnectionId());
+                session.setAttribute("studyRoom", connectionVO.getSession());
+
+                return new BaseResponse<>(connectionVO);
+            case "changeSession":
+                sessionName = (String) body.get("sessionName");
+                videoCodec = (String) body.get("videoCodec");
+
+                EnterRoomDTO changeSubjectDTO = new EnterRoomDTO(userId,sessionName,videoCodec,connectionId,studyRoom);
+                connectionVO = roomService.changeSubject(changeSubjectDTO);
+
+                session.setAttribute("connectionId", connectionVO.getConnectionId());
+                session.setAttribute("studyRoom", connectionVO.getSession());
 
                 return new BaseResponse<>(connectionVO);
             case "enterMyroom":
@@ -103,6 +114,8 @@ public class RoomController {
                 sessionName = (String) body.get("session");
                 String answerData = (String) body.get("data");
                 questionId = (String) body.get("questionId");
+                userId = (String) body.get("userId");
+
                 AnswerDTO answerDTO = new AnswerDTO(userId,sessionName,answerData,questionId);
                 AnswerVO answerVO = roomService.answerQuestion(answerDTO);
 
@@ -112,6 +125,25 @@ public class RoomController {
                 List<AnswerVO> answerVOS = roomService.findAnswerByQuestionId(questionId);
 
                 return new BaseResponse<>(answerVOS);
+            case "leaveSession":
+                System.out.println("세션을 나갑니다!");
+                if (session != null) {
+                    connectionId = (String) session.getAttribute("connectionId");
+                    studyRoom = (String) session.getAttribute("studyRoom");
+                }
+                isLeave = (String) body.get("leave");
+
+                EnterRoomDTO enterRoomDTO = new EnterRoomDTO(connectionId, studyRoom);
+                roomService.leaveSession(enterRoomDTO);
+
+                if (session != null) {
+                    session.setAttribute("connectionId", null);
+                    if("leave".equals(isLeave)){
+                        session.setAttribute("studyRoom", null);
+                    }
+                }
+                return new BaseResponse<>(SUCCESS);
+
         }
         throw new BaseException(EMPTY_SIGN);
     }

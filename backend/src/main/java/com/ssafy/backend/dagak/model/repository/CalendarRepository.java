@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CalendarRepository extends JpaRepository<Calendar, Integer> {
@@ -16,7 +17,7 @@ public interface CalendarRepository extends JpaRepository<Calendar, Integer> {
 
     List<Calendar> findAllByDagakId(Integer dagakId);
 
-    void deleteByCalendarDagakId(Integer dagakId);
+    void deleteByCalendarDagakIdAndUserId(Integer dagakId, String userId);
 
-    Calendar findCalendarByCalendarDateAndAndUserId(LocalDate today, String userId);
+    Optional<Calendar> findCalendarByCalendarDateAndUserId(LocalDate today, String userId);
 }

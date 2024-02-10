@@ -21,15 +21,14 @@ import com.ssafy.backend.user.model.vo.UserViewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Transactional(rollbackFor = {Exception.class, BaseException.class} ,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = {Exception.class} ,propagation = Propagation.REQUIRES_NEW)
     @Override
     public void signUp(UserSignupDTO userSignupDTO) throws Exception {
         SecurityDTO securityDTO = new SecurityDTO();
@@ -82,8 +81,6 @@ public class UserServiceImpl implements UserService {
         userSignupDTO.setUserPassword(safePassword);
 
         securityMapper.addSalt(securityDTO);
-        //트랜잭션 테스트
-        userSignupDTO.setUserId(null);
         userMapper.signUp(userSignupDTO);
     }
 
@@ -124,7 +121,6 @@ public class UserServiceImpl implements UserService {
         log.info("모꼬지가 있는지 확인합니다. mokkojiId : {}",user.getMokkojiId());
         // 이미 존재하는 길드, 포인트 부족
         if(user.getMokkojiId() != null ) throw new BaseException(OOPS);
-        if(user.getUserPoint() - point <0) throw new BaseException(OOPS);
         user.usePoint(point);
         return user;
     }

@@ -1,12 +1,13 @@
 package com.ssafy.backend.room.model.dto;
 
 import com.ssafy.backend.common.exception.BaseException;
-import com.ssafy.backend.room.model.domain.Question;
+import com.ssafy.backend.room.model.domain.redis.QuestionRedis;
 import lombok.*;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.FAIL_TO_CONNECT;
 
 @Getter
+@ToString
 public class QuestionDTO {
     private String questionId;
     private String userId;
@@ -44,11 +45,14 @@ public class QuestionDTO {
         setData(data);
     }
 
-    public Question toEntity(){
-        return Question.builder()
+    public QuestionRedis toEntity(){
+        System.out.println("userId: "+this.userId);
+        System.out.println("session: "+ this.session);
+        System.out.println("data: "+this.data);
+        return QuestionRedis.builder()
                 .userId(this.userId)
                 .session(this.session)
-                .question(this.data)
+                .questionContent(this.data)
                 .build();
     }
 }

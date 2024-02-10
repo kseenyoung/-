@@ -1,6 +1,6 @@
 package com.ssafy.backend.board.model.dto;
 
-import com.ssafy.backend.board.model.domain.Tag;
+import com.ssafy.backend.board.model.domain.BoardTag;
 
 public class TagCreateRequestDTO {
 
@@ -23,7 +23,7 @@ public class TagCreateRequestDTO {
         this.tagName = tagName;
     }
 
-    public Tag toEntity(){
-        return Tag.builder().tagId(tagId).tagName(tagName).build();
+    public BoardTag toEntity(){
+        return BoardTag.builder().tagId(tagId).tagName(tagName).build();
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +42,8 @@ public class DagakFacade {
         List<CalendarDagakVO> calendarDagakList = dagakService.getCalendarList(userId);
         // dagakId로 gak들 정보 가져오기
         dagakService.getCalendarGaks(calendarDagakList);
+        // dagakId로 dagakName 정보 가져오기
+        dagakService.getDagakName(calendarDagakList);
 
         return calendarDagakList;
 

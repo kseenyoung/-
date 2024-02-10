@@ -1,31 +1,30 @@
 package com.ssafy.backend.dagak.service;
 
+import com.ssafy.backend.category.model.domain.Category;
 import com.ssafy.backend.category.model.repository.CategoryRepository;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.dagak.model.domain.Calendar;
 import com.ssafy.backend.dagak.model.domain.Dagak;
 import com.ssafy.backend.dagak.model.domain.Gak;
 import com.ssafy.backend.dagak.model.domain.GakHistory;
-import com.ssafy.backend.dagak.model.dto.DagakDTO;
-import com.ssafy.backend.dagak.model.dto.GakDTO;
-import com.ssafy.backend.dagak.model.dto.AddDagakDateDTO;
-import com.ssafy.backend.dagak.model.dto.UpdateMemoryTimeDTO;
+import com.ssafy.backend.dagak.model.dto.*;
 import com.ssafy.backend.dagak.model.repository.CalendarRepository;
 import com.ssafy.backend.dagak.model.repository.DagakRepository;
 import com.ssafy.backend.dagak.model.repository.GakHistoryRepository;
 import com.ssafy.backend.dagak.model.repository.GakRepository;
 import com.ssafy.backend.dagak.model.vo.CalendarDagakVO;
+import com.ssafy.backend.dagak.model.vo.TodayGakVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_DAGAK;
-import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_GAK;
+import static com.ssafy.backend.common.response.BaseResponseStatus.*;
 
 @Service
 @Slf4j
@@ -52,6 +51,7 @@ public class DagakServiceImpl implements DagakService {
                 Dagak.builder()
                         .userId(dagakDTO.getUserId())
                         .totalTime(dagakDTO.getTotalTime())
+                        .dagakName(dagakDTO.getDagakName())
                         .build()
         ).getDagakId();
     }
@@ -109,10 +109,16 @@ public class DagakServiceImpl implements DagakService {
 
     @Override
     public CalendarDagakVO getDagak(String userId, LocalDate today) {
-        Calendar todayCalender = calendarRepository.findCalendarByCalendarDateAndAndUserId(today, userId);
+        Calendar todayCalender = calendarRepository.findCalendarByCalendarDateAndUserId(today, userId)
+                .orElseThrow(() ->
+                    new BaseException(NOT_FOUND_TODAY_DAGAK));
         CalendarDagakVO todayCalendarDagakVO = new CalendarDagakVO();
+        todayCalendarDagakVO.setCalendarDagakId(todayCalender.getCalendarDagakId());
         todayCalendarDagakVO.setUserId(todayCalender.getUserId());
         todayCalendarDagakVO.setDagakId(todayCalender.getDagakId());
+        todayCalendarDagakVO.setGaks(gakRepository.findAllByDagakId(todayCalender.getDagakId()));
+        todayCalendarDagakVO.setTotalTime(dagakRepository.findByDagakId(todayCalender.getDagakId()).getTotalTime());
+
         return todayCalendarDagakVO;
     }
 
@@ -219,6 +225,75 @@ public class DagakServiceImpl implements DagakService {
             gakHistoryRepository.save(gakHistory);
         }
 
+    }
+
+    @Override
+    public List<GakHistory> getGaksOfHistory(String userId, LocalDate today) {
+        return gakHistoryRepository.findByUserIdAndCreatedDate(userId, today);
+    }
+
+    @Override
+    public TodayGakVO enterRoomGetGakToStudy(String userId) {
+        TodayGakVO todayGakVO = new TodayGakVO();
+        LocalDate today = LocalDate.now();
+        CalendarDagakVO todayDagakVO = getDagak(userId, today);
+        Integer calendarId = todayDagakVO.getCalendarDagakId();
+        List<Gak> todayGaks = todayDagakVO.getGaks();
+        List<GakHistory> historyGaks = getGaksOfHistory(userId, today);
+
+        if (historyGaks == null) {  // 공부 아예 처음 시작.
+            Gak todayGak = todayGaks.get(0);
+            todayGakVO.setUserId(userId);
+            todayGakVO.setCalendarId(calendarId);
+            todayGakVO.setGakId(todayGak.getGakId());
+            todayGakVO.setTotalTime(todayGak.getRunningTime());
+            todayGakVO.setCategoryId(todayGak.getCategoryId());
+            todayGakVO.setMemoryTime(0);
+            todayGakVO.setGakOrder(0);
+
+            Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
+            todayGakVO.setCategoryName(category.getCategoryName());
+
+        } else { // 루틴 수행 도중일 때.
+            Gak todayGak = todayGaks.get(historyGaks.size()-1);
+            int nowStudyingTime = 0;
+            for (int i = 0; i < historyGaks.size() ; i++) {
+                nowStudyingTime += historyGaks.get(i).getMemoryTime();
+            }
+            todayGakVO.setUserId(userId);
+            todayGakVO.setCalendarId(calendarId);
+            todayGakVO.setGakId(todayGak.getGakId());
+            todayGakVO.setCategoryId(todayGak.getCategoryId());
+            todayGakVO.setTotalTime(todayDagakVO.getTotalTime());
+            todayGakVO.setMemoryTime(nowStudyingTime);
+            todayGakVO.setRequiredStudyTime(todayGak.getRunningTime()- historyGaks.get(historyGaks.size()-1).getMemoryTime());
+            todayGakVO.setGakOrder(historyGaks.size()-1);
+
+            Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
+            todayGakVO.setCategoryName(category.getCategoryName());
+        }
+        return todayGakVO;
+    }
+
+    @Override
+    @Transactional
+    public void deleteCalendarDagak(DeleteCalendarDagakDTO deleteCalendarDagakDTO) {
+        try{
+            calendarRepository.deleteByCalendarDagakIdAndUserId(deleteCalendarDagakDTO.getCalendarDagakId(), deleteCalendarDagakDTO.getUserId());
+        } catch (Exception e){
+            throw new BaseException(NOT_FOUND_CALENDAR_DAGAK);
+        }
+    }
+
+    @Override
+    public List<CalendarDagakVO> getDagakName(List<CalendarDagakVO> calendarDagakList) {
+        for (CalendarDagakVO calendarDagakVO : calendarDagakList) {
+            Dagak byDagakId = dagakRepository.findByDagakId(calendarDagakVO.getDagakId());
+            String dagakName = byDagakId.getDagakName();
+            calendarDagakVO.setDagakName(dagakName);
+        }
+
+        return calendarDagakList;
     }
 
 

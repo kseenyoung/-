@@ -11,7 +11,7 @@
         새로 만들기
       </button>
     </div>
-    <ApplyMokkojiCreateModal @update-list="getMokkojiList()" />
+    <ApplyMokkojiCreateModal @update-list="getMokkojiList" />
     <!-- 검색 -->
     <div class="apply-search input-group mb-3">
       <input
@@ -76,12 +76,7 @@
       <nav aria-label="...">
         <ul class="pagination">
           <li class="page-item" :class="{ disabled: currentPage === 0 }">
-            <a
-              class="page-link"
-              tabindex="-1"
-              aria-disabled="true"
-              @click="changePage(currentPage - 1)"
-            >
+            <a class="page-link" @click="changePage(currentPage - 1)">
               <i class="bi bi-chevron-left"></i>
             </a>
           </li>
@@ -130,11 +125,13 @@ onMounted(() => {
   categoryStore.getCategoryList();
 });
 
+//페이지네이션 숫자 클릭으로 이동
 const changePage = (newPage) => {
   currentPage.value = newPage;
   getSearchMokkojiList();
 };
 
+//전체 모꼬지 목록
 const getMokkojiList = function () {
   axios.get(`${import.meta.env.VITE_API_BASE_URL}mokkoji/list`).then((res) => {
     mokkojiList.value = res.data.result.list;
@@ -142,7 +139,8 @@ const getMokkojiList = function () {
   });
 };
 
-// eslint-disable-next-line vue/return-in-computed-property
+//길드명 or 태그로 검색
+//eslint-disable-next-line vue/return-in-computed-property
 const apiUrl = computed(() => {
   if (searchChoose.value === 'keyword') {
     return `${import.meta.env.VITE_API_BASE_URL}mokkoji/list?categories=&keyword=${searchText.value}&page=${currentPage.value}`;

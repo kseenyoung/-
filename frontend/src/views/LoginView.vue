@@ -44,13 +44,17 @@
           />
           <label class="form-check-label" for="rememberId">아이디 저장</label>
         </div>
-        <button class="btn btn-primary common-btn" :disabled="disableLoginButton" @click="login">
+        <button
+          class="btn btn-primary common-btn"
+          :disabled="disableLoginButton"
+          @click="login"
+        >
           로그인
         </button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
-          <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" />
-          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인" />
+          <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" @click="googleLogin()"/>
+          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인" @click="kakaoLogin()" />
         </div>
       </div>
     </div>
@@ -85,20 +89,31 @@ const id = ref('');
 const password = ref('');
 // const rememberId = ref(false);
 
-// reCAPTCHA 
+// reCAPTCHA
 const disableInputId = ref(true);
 const disableInputPassword = ref(true);
 const disableCheckId = ref(true);
 const disableLoginButton = ref(true);
 
-//로그인
+
+// 구글 로그인 페이지로 이동
+const googleLogin = async function() {
+  window.location.replace("https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:5173/googleLogin&response_type=code&scope=email");
+}
+
+// 카카오 로그인 페이지로 이동
+const kakaoLogin = async function() {
+  window.location.replace("https://kauth.kakao.com/oauth/authorize?client_id=891949d64302e510fe79f05131e7d972&redirect_uri=https://localhost:5173/kakaoLogin&response_type=code");
+}
+
+
+// 로그인 
 const login = async function () {
   const body = {
     sign: 'login',
     userId: id.value,
     userPassword: password.value,
   };
-  console.log(body);
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
@@ -106,24 +121,31 @@ const login = async function () {
       },
     })
     .then((res) => {
-      if (res.data.result === null) {
+      if (res.data.code === 1000) {
         userStore.getLoginUserInfo();
         //성공 시 홈으로
         router.push({
           name: 'home',
         });
-      } else if (res.data.result === '로그인 실패') {
-        alert('로그인 실패');
+      } else if (res.data.code === 1405) {
+        alert(res.data.result,"asdasd");
       }
     });
   id.value = '';
   password.value = '';
 };
 
+
+
+
+
+
+
 const recaptchaExpired = async function (response) {
   disableInputId.value = true;
   disableInputPassword.value = true;
-  disableCheckId.value = true;``
+  disableCheckId.value = true;
+  ``;
   disableLoginButton.value = true;
   const body = {
     recaptchaResponse: '만료',
@@ -132,7 +154,7 @@ const recaptchaExpired = async function (response) {
     headers: {
       'Content-Type': 'application/json',
     },
-  })
+  });
 };
 
 const recaptchaVerified = async function (response) {
@@ -143,12 +165,13 @@ const recaptchaVerified = async function (response) {
   const body = {
     recaptchaResponse: response,
   };
-  await axios.post(`${import.meta.env.VITE_API_BASE_URL}user/recaptcha`, body, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) => res.data);
-  userStore.getLoginUserInfo();;
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}user/recaptcha`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => res.data);
 };
 </script>
 

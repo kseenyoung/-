@@ -1,28 +1,43 @@
 package com.ssafy.backend.room.model.domain;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
+import lombok.Builder;
+import lombok.Getter;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 
 @Getter
-@Builder
-@RedisHash("answer")
+@Entity
 public class Answer {
     @Id
-    String answerId;
+    @Column(columnDefinition = "varchar(40)")
+    private String answerId;
 
-    @Indexed
-    String questionId;
-    String answer;
-    String session;
-    String userId;
+    @Column(columnDefinition = "varchar(40)")
+    private String questionId;
 
-    public Answer(String answerId, String questionId, String answer, String session, String userId) {
+    @Column(columnDefinition = "varchar(200)")
+    private String answerContent;
+
+    @Column(columnDefinition = "varchar(45)")
+    private String session;
+
+    @Column(columnDefinition = "varchar(20)")
+    private String userId;
+
+    @Column(columnDefinition = "varchar(200)")
+    private String createdDate;
+
+    @Column(columnDefinition = "varchar(200)")
+    private String updatedDate;
+
+    @Builder
+    public Answer(String answerId, String questionId, String answerContent, String session, String userId) {
         this.answerId = answerId;
         this.questionId = questionId;
-        this.answer = answer;
+        this.answerContent = answerContent;
         this.session = session;
         this.userId = userId;
     }
@@ -38,8 +53,8 @@ public class Answer {
         this.questionId = questionId;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAnswerContent(String answerContent) {
+        this.answerContent = answerContent;
     }
 
     public void setSession(String session) {

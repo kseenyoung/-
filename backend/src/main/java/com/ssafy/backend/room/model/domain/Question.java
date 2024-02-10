@@ -1,25 +1,41 @@
 package com.ssafy.backend.room.model.domain;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
+import lombok.Builder;
+import lombok.Getter;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 
 @Getter
-@Builder
-@RedisHash("question")
+@Entity
 public class Question {
+
     @Id
+    @Column(columnDefinition = "varchar(40)")
     String questionId;
-    String session;
-    String question;
+
+    @Column(columnDefinition = "varchar(20)")
     String userId;
 
-    public Question(String questionId, String session, String question, String userId) {
-        this.questionId = questionId;
-        this.session = session;
-        this.question = question;
-        this.userId = userId;
+    @Column(columnDefinition = "varchar(45)")
+    String session;
+
+    @Column(columnDefinition = "varchar(100)")
+    String questionContent;
+
+    @Column(columnDefinition = "varchar(200)")
+    String createdDate;
+
+    @Column(columnDefinition = "varchar(200)")
+    String updatedDate;
+
+    @Builder
+    public Question(String questionId, String session, String questionContent, String userId) {
+        setQuestionId(questionId);
+        setSession(session);
+        setQuestionContent(questionContent);
+        setUserId(userId);
     }
 
     public Question() {
@@ -33,8 +49,8 @@ public class Question {
         this.session = session;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setQuestionContent(String questionContent) {
+        this.questionContent = questionContent;
     }
 
     public void setUserId(String userId) {

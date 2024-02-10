@@ -17,7 +17,7 @@ public class MokkojiCategory {
     private long MokkojiCategoryId;
 
     @ManyToOne
-    @JoinColumn(name = "MokkojiId")
+    @JoinColumn(name = "mokkojiId")
     private Mokkoji mokkoji;
 
     @ManyToOne

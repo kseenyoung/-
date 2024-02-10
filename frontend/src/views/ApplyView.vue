@@ -3,8 +3,8 @@
     <div class="apply-wrapper">
       <ApplyFriend />
       <ApplyMokkoji />
-      <img src="@/assets/img/mypage/notespring2.png" class="img-spring" />
     </div>
+    <img src="@/assets/img/mypage/notespring2.png" class="img-spring" />
   </div>
 </template>
 
@@ -39,10 +39,12 @@ import ApplyMokkoji from '@/components/apply/ApplyMokkoji.vue';
     flex-basis: 50%;
     border-left: 10px solid white;
   }
-  .img-spring {
-    width: 70px;
-    position: absolute;
-    left: 724px;
-  }
+}
+.img-spring {
+  width: 77px;
+  height: 650px;
+  position: relative;
+  top: -710px;
+  left: 47%;
 }
 </style>
