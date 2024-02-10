@@ -5,7 +5,7 @@ import com.ssafy.backend.board.model.dto.*;
 import com.ssafy.backend.board.model.vo.BoardDetailVO;
 import com.ssafy.backend.board.service.BoardService;
 import com.ssafy.backend.board.service.CommentService;
-import com.ssafy.backend.board.service.TagService;
+import com.ssafy.backend.board.service.BoardTagService;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.common.utils.HttpResponseBody;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.SUCCESS_TAG_C
 public class TestController {
 
     private final BoardService boardService;
-    private final TagService tagService;
+    private final BoardTagService tagService;
     private final CommentService commentService;
 
     @PostMapping("/tagCreate")
