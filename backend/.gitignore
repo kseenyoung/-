@@ -37,3 +37,4 @@ out/
 .vscode/
 
 backend/src/main/java/com/ssafy/backend/common/config/JasyptConfig.java
+/src/main/resources/application.yml
