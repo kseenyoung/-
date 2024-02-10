@@ -721,3 +721,7 @@ yarn-error.log
 
 I10A404T.pem
 /backend/src/main/java/com/ssafy/backend/common/config/JasyptConfig.java
+frontend/localhost-key.pem
+frontend/localhost.pem
+frontend/localhost+3-key.pem
+frontend/localhost+3.pem

@@ -24,23 +24,38 @@ const question = ref('')
 const userStore = useUserStore()
 const loginUserInfo = userStore.loginUserInfo
 
+const checkStore = function () {
+  console.log('userStore : ' + userStore)
+  if (userStore == null || userStore == undefined) {
+    userStore = useUserStore()
+    loginUserInfo = userStore.loginUserInfo
+  }
+}
+
 const sendQuestion = async function () {
   // console.log('question : ' + question.value)
-  console.log('loginUserInfo : ' + loginUserInfo.value)
+  checkStore()
+  // alert('질문이 등록되었습니다.')
+  console.log('loginUserInfo : ' + loginUserInfo)
 
+  sendAxios(1)
+  sendAxios(2)
+  sendAxios(3)
+  question.value = ''
+}
+
+const sendAxios = function (sessionNumbser) {
   const body = {
     sign: 'askQuestion',
-    session: 'SQLD3',
-    userId: 'ssafy',
-    data: '질문1'
+    session: loginUserInfo.sub + sessionNumbser,
+    userId: loginUserInfo.userId,
+    data: question.value
   }
+  // alert(body.session + body.userId + body.data)
 
-  // axios
-  //   .post(`${import.meta.env.VITE_API_BASE_URL}room`, body)
-  //   .then((res) => {
-  //     console.log(res.data.result)
-  //     // dagakList.value = res.data.result;
-  //   });
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}room`, body).then((res) => {
+    console.log(res.data.result)
+  })
 }
 </script>
 
