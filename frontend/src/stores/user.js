@@ -2,6 +2,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
+import { cookiesStorage } from '@/utils/CookiesUtil';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -14,7 +15,6 @@ export const useUserStore = defineStore(
     const isInSession = ref(false);
     const friends = ref([]);
     const achievementRate = ref(0);
-  
 
     //로그인 세션 test
     const login = function () {
@@ -36,14 +36,14 @@ export const useUserStore = defineStore(
       return await createMyRoom();
     };
 
-    const logoutSignal = async() =>{
+    const logoutSignal = async () => {
       const response = await axios.post(
-      APPLICATION_SERVER_URL + 'user',
-      { sign: 'logoutSignal'},
-      {
-        headers: { 'Content-Type': 'application/json' },
-      },
-    );
+        APPLICATION_SERVER_URL + 'user',
+        { sign: 'logoutSignal' },
+        {
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
       console.log(response.data.result);
       return response.data.result;
     };
@@ -51,7 +51,7 @@ export const useUserStore = defineStore(
     const loginSignal = async () => {
       const response = await axios.post(
         APPLICATION_SERVER_URL + 'user',
-        { sign: 'loginSignal'},
+        { sign: 'loginSignal' },
         {
           headers: { 'Content-Type': 'application/json' },
         },
@@ -89,21 +89,22 @@ export const useUserStore = defineStore(
           );
         });
       // 시그널 처리 문
-      mySession.value.on('streamCreated', ({stream}) => {
+      mySession.value.on('streamCreated', ({ stream }) => {
         mySession.value.subscribe(stream);
       });
 
       mySession.value.on('signal:login', async (stream) => {
         // 로그인 시그널 수신
         console.log(stream.data, '님이 로그인했습니다.');
+        friends.value.push(stream.data);
         alert('친구가 로그인했어요!');
-        
+
         await axios.post(
           // 로그인 콜백
           'https://i10a404.p.ssafy.io/openvidu/api/signal',
           {
             session: stream.data,
-            type: "signal:login-callBack",
+            type: 'signal:login-callBack',
             data: loginUserInfo.value.userId,
           },
           {
@@ -133,29 +134,31 @@ export const useUserStore = defineStore(
     };
 
     //로그인 즉시 유저정보 저장
-    //userId, userName, userNickname, userPicture, userEmail, userPhonenumber, userBirthday, userPoint, mokkojiId, mokkojiName, userRank
-
     const getLoginUserInfo = async function () {
       const body = {
         sign: 'getMyPage',
       };
 
-      axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
+      axios
+        .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
           headers: {
             'Content-Type': 'application/json',
-          }})
-          .then((res) =>{
-            console.log(res.data.result);
-            loginUserInfo.value = res.data.result;
-            loginUserInfo.value.sub = 'SQLD';    
-          }).then(() => {
-            login();
-          });
+          },
+        })
+        .then((res) => {
+          console.log(res.data.result);
+          loginUserInfo.value = res.data.result;
+          loginUserInfo.value.sub = 'SQLD';
+        })
+        .then(() => {
+          login();
+        });
     };
 
     const deleteLoginUserInfo = async () => {
       loginUserInfo.value = {};
-      console.log("mySession.value : ", mySession.value);
+      cookiesStorage.deleteItem('userStore');
+      console.log('mySession.value : ', mySession.value);
       if (mySession.value) {
         mySession.value.disconnect();
         logoutSignal();
@@ -163,17 +166,18 @@ export const useUserStore = defineStore(
     };
 
     onBeforeUnmount(() => {
-      alert("user.js 새로고침 이벤트 발생")
-    }); 
+      alert('user.js 새로고침 이벤트 발생');
+    });
     onMounted(async () => {
-      let data = localStorage.getItem('userStore');
-      data = JSON.parse(data);
-      console.log(data.loginUserInfo.userId);
-      if(data.loginUserInfo.userId){
+      let data = cookiesStorage.getItem('userStore');
+      if (data) {
+        data = JSON.parse(data);
+        console.log(data);
+        if (data.loginUserInfo.userId) {
           login();
         }
+      }
     });
-
     return {
       friends,
       APPLICATION_SERVER_URL,
@@ -191,9 +195,14 @@ export const useUserStore = defineStore(
       mySessionToken,
       studyRoomSessionToken,
       isInSession,
-      achievementRate
+      achievementRate,
     };
   },
+
   //store를 localStorage에 저장하기 위해서(새로고침 시 데이터 날라감 방지)
-  { persist: true },
+  {
+    persist: {
+      storage: cookiesStorage,
+    },
+  },
 );
