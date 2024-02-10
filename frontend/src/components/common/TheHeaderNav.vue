@@ -1,6 +1,6 @@
 <template>
   <header :class="{ 'header-hidden': headerHidden }">
-    <nav style="font-size: 22px;">
+    <nav style="font-size: 22px">
       <div>
         <RouterLink to="/">다각</RouterLink>
       </div>
@@ -61,56 +61,53 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import axios from 'axios'
-import Alarm from './Alarm.vue'
-import AlarmModal from './AlarmModal.vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { useAlarmStore } from '@/stores/alarm'
-
-const userStore = useUserStore()
-const alarmStore = useAlarmStore()
-const router = useRouter()
-
-//로그인할 때 생성한 sessionStorage의 정보
-const loginId = ref('')
-const getSessionId = function () {
-  loginId.value = sessionStorage.getItem('loginSession')
-}
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import axios from "axios";
+import Alarm from "./Alarm.vue";
+import AlarmModal from "./AlarmModal.vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user";
+import { useAlarmStore } from "@/stores/alarm";
+import { cookiesStorage } from "@/utils/CookiesUtil";
+const userStore = useUserStore();
+const alarmStore = useAlarmStore();
+const router = useRouter();
 
 //로그아웃
 const logout = async function () {
-  userStore.deleteLoginUserInfo()
+  userStore.deleteLoginUserInfo();
   const body = {
-    sign: 'logout'
-  }
-  await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => res.data)
-  localStorage.removeItem('userStore')
+    sign: "logout",
+  };
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body)
+    .then((res) => res.data);
+  localStorage.removeItem("userStore");
   //성공 시 홈으로
   router.push({
-    name: 'login'
-  })
-}
+    name: "login",
+  });
+};
 
 // 헤더 스크롤
-const headerHidden = ref(false)
-let lastScrollTop = 0
+const headerHidden = ref(false);
+let lastScrollTop = 0;
 
 const handleScroll = () => {
-  const scrollTop = window.scrollY || document.documentElement.scrollTop
-  headerHidden.value = scrollTop > lastScrollTop && scrollTop > 70
-  lastScrollTop = scrollTop
-}
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  headerHidden.value = scrollTop > lastScrollTop && scrollTop > 70;
+  lastScrollTop = scrollTop;
+};
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-  getSessionId()
-  alarmStore.getUnReadAlarmList()
-})
+  window.addEventListener("scroll", handleScroll);
+  if (userStore.loginUserInfo.userId != null) {
+    alarmStore.getUnReadAlarmList();
+  }
+});
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
+  window.removeEventListener("scroll", handleScroll);
+});
 </script>
 
 <style lang="scss" scoped>
