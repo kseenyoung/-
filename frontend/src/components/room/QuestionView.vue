@@ -1,15 +1,19 @@
 <template>
-  <div v-for="(q, index) in questions" :key="index">
+  <div v-for="(question, index) in questions" :key="index">
     <div class="questionbox">
       <div class="questionlabel" @click="showAnswer(index)">
-        <b>{{ q }}</b>
+        <b>{{ question.data }}</b>
       </div>
       <div class="questiondetail">
-        <p>질문자 : {{ userId }}</p>
+        <p>질문자 : {{ question.userId }}</p>
       </div>
       <div v-show="answer[index]">
-        <AnswerView />
-        <AnswerField />
+        <AnswerView
+          v-for="(answer, index2) in answers"
+          :key="index2"
+          :questionId="question.questionId"
+        />
+        <AnswerField :questionId="question.questionId" />
       </div>
     </div>
   </div>
@@ -25,9 +29,9 @@ import { useUserStore } from '@/stores/user'
 // 질문(pinia)
 const questionStore = useQuestionStore()
 const questions = questionStore.question
+const answers = questionStore.answer
 const userStore = useUserStore()
 const loginUserInfo = userStore.loginUserInfo
-const userId = loginUserInfo.userId
 
 // 답변
 const answer = reactive(questions.map(() => false))
