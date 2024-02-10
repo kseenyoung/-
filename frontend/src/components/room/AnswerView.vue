@@ -1,14 +1,25 @@
 <template>
-  <div class="answerbox">
-    <div class="answerlabel">답변</div>
+  <div class="answerbox" v-for="(answer, index) in answers" key="index">
+    <div class="answerlabel">{{ answer.userId }}</div>
     <div class="answerdetail">
-      <p class="nametag"><b>mory</b></p>
-      <p>dfs로 풀되 예외 처리를 하나 해 줘야 합니다. 모든 경우의 수를 잘 생각해보세요.</p>
+      <p class="nametag">
+        <b>{{ answer.data }}</b>
+      </p>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import axios from 'axios'
+import { useQuestionStore } from '@/stores/qustion'
+import { defineProps, ref } from 'vue'
+
+const props = defineProps({ questionId: String })
+const qId = ref(props.questionId)
+
+const questionStore = useQuestionStore()
+const answers = questionStore.answer.get(qId.value)
+</script>
 
 <style scoped>
 /* .answertitle{
