@@ -7,11 +7,10 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted } from 'vue';
-import { RouterView } from 'vue-router';
-import TheHeaderNav from './components/common/TheHeaderNav.vue';
-import TheFooter from './components/common/TheFooter.vue';
-
+import { onBeforeUnmount, onMounted } from "vue";
+import { RouterView } from "vue-router";
+import TheHeaderNav from "./components/common/TheHeaderNav.vue";
+import TheFooter from "./components/common/TheFooter.vue";
 </script>
 <style lang="scss" scoped>
 #wrapper {
