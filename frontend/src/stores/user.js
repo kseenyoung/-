@@ -96,6 +96,7 @@ export const useUserStore = defineStore(
       mySession.value.on('signal:login', async (stream) => {
         // 로그인 시그널 수신
         console.log(stream.data, '님이 로그인했습니다.');
+        friends.value.push(stream.data);
         alert('친구가 로그인했어요!');
 
         await axios.post(
@@ -133,8 +134,6 @@ export const useUserStore = defineStore(
     };
 
     //로그인 즉시 유저정보 저장
-    //userId, userName, userNickname, userPicture, userEmail, userPhonenumber, userBirthday, userPoint, mokkojiId, mokkojiName, userRank
-
     const getLoginUserInfo = async function () {
       const body = {
         sign: 'getMyPage',
@@ -171,10 +170,12 @@ export const useUserStore = defineStore(
     });
     onMounted(async () => {
       let data = cookiesStorage.getItem('userStore');
-      data = JSON.parse(data);
-      console.log(data);
-      if (data.loginUserInfo.userId) {
-        login();
+      if (data) {
+        data = JSON.parse(data);
+        console.log(data);
+        if (data.loginUserInfo.userId) {
+          login();
+        }
       }
     });
     return {
