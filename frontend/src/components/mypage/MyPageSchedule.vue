@@ -47,11 +47,12 @@
                 "
               >
                 <div class="dagak-name">{{ event.dagakName }}</div>
-                <img
+                <!-- <img
                   v-if="event.dagakId"
                   src="@/assets/img/mypage/hexagon_thin.png"
                   class="dagak-figure"
-                />
+                /> -->
+                <DagakImg :gak-length="event.gakLength" />
               </div>
             </div>
           </td>
@@ -122,6 +123,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import DagakImg from '@/components/dagak/DagakImg.vue';
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
@@ -143,12 +145,38 @@ const hasEventsForDate = (date) => {
 };
 
 //모든 캘린더 다각 가져오기
-const getAllCalendarList = function () {
-  axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
-    .then((res) => {
-      calendarList.value = res.data.result;
-    });
+// const getAllCalendarList = function () {
+//   axios
+//     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
+//     .then((res) => {
+//       calendarList.value = res.data.result;
+//     });
+// };
+const getAllCalendarList = async function () {
+  try {
+    //전체 캘린더 다각 목록
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`,
+    );
+    const dagaks = response.data.result;
+
+    //다각의 각 목록
+    const gakLengthPromises = dagaks.map((dagak) =>
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
+        params: { dagakId: dagak.dagakId },
+      }),
+    );
+
+    const gakLengthResponses = await Promise.all(gakLengthPromises);
+
+    //다각 리스트에 각 개수 데이터 저장
+    calendarList.value = dagaks.map((dagak, index) => ({
+      ...dagak,
+      gakLength: gakLengthResponses[index].data.result.length,
+    }));
+  } catch (error) {
+    console.error('Error:', error);
+  }
 };
 
 //다각 날짜 반환
@@ -386,15 +414,17 @@ td {
   height: 100%;
   .dagak-name {
     position: relative;
-    top: 30px;
+    top: 77px;
   }
   .dagak-goto-add {
     height: 100%;
   }
   > div {
     font-size: 1rem;
-    height: 20px;
+    height: 58px; //20px
     text-align: center;
+    position: relative; //추가
+    top: -15px; //추가
   }
   .dagak-figure {
     position: absolute;

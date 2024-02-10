@@ -2,6 +2,7 @@ package com.ssafy.backend.dagak.model.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import org.hibernate.annotations.DynamicInsert;

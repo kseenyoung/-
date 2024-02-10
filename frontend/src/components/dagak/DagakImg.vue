@@ -11,8 +11,8 @@
       v-if="props.gakLength === 1"
       cx="100"
       cy="100"
-      r="90"
-      :fill="shuffledColors[0]"
+      r="70"
+      :fill="colors[0]"
       stroke="black"
       stroke-width="2"
     />
@@ -21,15 +21,15 @@
     <g v-else-if="props.gakLength === 2">
       <circle
         cx="100"
-        cy="100"
-        r="90"
-        :fill="shuffledColors[0]"
+        cy="80"
+        r="70"
+        :fill="colors[0]"
         stroke="black"
         stroke-width="2"
       />
       <path
-        d="M100 10 A90 90, 0, 1, 0, 100 190 Z"
-        :fill="shuffledColors[1]"
+        d="M100 10 A70 70, 0, 1, 0, 100 150 Z"
+        :fill="colors[1]"
         stroke="black"
         stroke-width="2"
       />
@@ -64,21 +64,21 @@ const pizzaSlices = computed(() => {
 });
 
 const colors = [
+  'deepskyblue',
+  'greenyellow',
+  'gold',
+  'coral',
+  'darkgreen',
+  'gray',
+  'forestgreen',
+  'aquamarine',
+  'darkorange',
   'white',
   'black',
   'lightgray',
-  'gray',
   'aqua',
-  'aquamarine',
   'cadetblue',
-  'coral',
   'cornflowerblue',
-  'darkgreen',
-  'darkorange',
-  'deepskyblue',
-  'forestgreen',
-  'gold',
-  'greenyellow',
 ];
 
 const shuffledColors = colors.slice().sort(() => Math.random() - 0.5);
@@ -113,8 +113,8 @@ const calculatePizzaSlices = (slices, radius, cx, cy) => {
       label: `과목 ${i + 1}`,
       labelX,
       labelY,
-      // color: colors[i % colors.length],
-      color: shuffledColors[i % shuffledColors.length], // Random color
+      color: colors[i % colors.length],
+      // color: shuffledColors[i % shuffledColors.length], // Random color
     });
   }
 
