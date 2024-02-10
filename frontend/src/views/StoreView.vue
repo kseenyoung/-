@@ -2,15 +2,28 @@
   <div class="marketpage">
     <img src="@/assets/board.png" class="board" />
     <div class="market-wrapper">
-      <div>보유 포인트:</div>
+      <div v-if="userPoint != null">
+        보유 포인트: {{ userPoint }}
+        <img src="@/assets/img/item/coin.png" class="coin" />
+      </div>
+      <div v-else>보유 포인트: 로그인이 필요한 서비스입니다.</div>
       <div class="market-index">
-        <button>전체</button>
-        <button>전체</button>
+        <button @click="selectCategory(null)" class="btn common-btn my-bc-btn">
+          전체
+        </button>
+        <template v-for="(categoryItems, category) in products" :key="category">
+          <button
+            @click="selectCategory(category)"
+            class="btn common-btn my-bc-btn"
+          >
+            {{ category }}
+          </button>
+        </template>
       </div>
       <div class="market-content">
         <div
           class="market-items"
-          v-for="(categoryItems, category) in products"
+          v-for="(categoryItems, category) in filteredProducts"
           :key="category"
         >
           <div class="market-items-category">{{ category }}</div>
@@ -19,16 +32,29 @@
               class="market-items-detail"
               v-for="item in categoryItems"
               :key="item.productId"
+              :title="item.productDescription"
             >
               <img
-                src="@/assets/img/item/아이템_1.png"
+                :src="`/src/assets/img/store/${item.productImage}.png`"
                 class="market-items-detail-img"
               />
+              <div
+                class="market-items-detail-descript"
+                :class="{ visible: item.showDescription }"
+              >
+                {{ item.productDescription }}
+              </div>
               <div class="market-items-detail-name">{{ item.productName }}</div>
               <div class="market-items-detail-price">
                 {{ item.productPrice }}
+                <img src="@/assets/img/item/coin.png" class="coin" />
               </div>
-              <button class="market-items-detail-buy">구매</button>
+              <button
+                class="market-items-detail-buy btn common-btn my-bc-btn"
+                @click="buyProduct(item.productId)"
+              >
+                구매하기
+              </button>
             </div>
           </div>
         </div>
@@ -38,19 +64,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const products = ref({});
 const totalPage = ref(1);
+const userPoint = ref(null);
+const selectedCategory = ref(null);
 
 onMounted(() => {
   getProductList();
+  getLoginUserPoint();
 });
 
 const getProductList = function () {
   axios.get(`${import.meta.env.VITE_API_BASE_URL}product/list`).then((res) => {
-    console.log(res.data.result.productList);
     if (res.data.code === 1000) {
       //전체 상품 목록
       const productList = res.data.result.productList;
@@ -66,21 +97,58 @@ const getProductList = function () {
       });
       //페이지 저장
       totalPage.value = res.data.result.totalPage;
-      console.log(products.value);
     } else {
       alert(res.data.message);
     }
   });
 };
+
 const buyProduct = function (productId) {
-  const body = { sign: 'buy', productId: `${productId}` };
-  axios
-    .post(`${import.meta.env.VITE_API_BASE_URL}product`, body)
-    .then((res) => {
-      console.log(res);
-      alert(res.data.message);
-    });
+  if (userPoint.value == null) {
+    if (window.confirm('로그인이 필요한 서비스입니다. 로그인 하시겠습니까?')) {
+      //로그인창으로 이동
+      router.push({
+        name: 'login',
+      });
+    }
+  } else {
+    const body = { sign: 'buy', productId: `${productId}` };
+    axios
+      .post(`${import.meta.env.VITE_API_BASE_URL}product`, body)
+      .then((res) => {
+        if (res.data.code === 1000) {
+          alert('구매하였습니다.');
+          getLoginUserPoint(); //포인트 새로고침
+        } else {
+          alert(res.data.message);
+        }
+      });
+  }
 };
+
+//로그인 한 유저의 포인트 정보
+const getLoginUserPoint = async function () {
+  const body = {
+    sign: 'getMyPage',
+  };
+
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => {
+    userPoint.value = res.data.result.userPoint;
+  });
+};
+
+//클릭한 카테고리 저장
+const selectCategory = function (category) {
+  selectedCategory.value = category;
+};
+
+//카테고리 별 목록 저장
+const filteredProducts = computed(() => {
+  if (!selectedCategory.value) {
+    return products.value;
+  }
+  return { [selectedCategory.value]: products.value[selectedCategory.value] };
+});
 </script>
 
 <style scoped>
@@ -97,6 +165,20 @@ const buyProduct = function (productId) {
   height: 80%;
   position: absolute;
 }
+.my-bc-btn {
+  color: black;
+  background-color: #e9be00;
+  margin: 0px 5px;
+  border: none;
+  transition: none;
+  box-shadow: 2px 3px 3px black;
+}
+.my-bc-btn:active {
+  box-shadow: none;
+  color: black;
+  background-color: #e9be00;
+  box-shadow: 1px 1px 1px black;
+}
 .market-wrapper {
   color: white;
   z-index: 1;
@@ -104,7 +186,11 @@ const buyProduct = function (productId) {
   height: 54%;
   display: flex;
   flex-direction: column;
+  .coin {
+    width: 35px;
+  }
   .market-index {
+    height: 50px;
   }
   .market-content {
     display: flex;
@@ -123,6 +209,8 @@ const buyProduct = function (productId) {
         display: flex;
         flex-wrap: wrap;
         .market-items-detail {
+          width: 150px;
+          padding: 0px 5px 8px;
           color: black;
           font-size: 1rem;
           text-align: center;
@@ -137,8 +225,23 @@ const buyProduct = function (productId) {
           .market-items-detail-name {
             font-weight: bold;
           }
+          .market-items-detail-descript {
+            color: white;
+            background-color: #494949;
+            padding: 15px 20px;
+            border-radius: 5px;
+            display: none;
+            transition: all ease 0.5s;
+            position: absolute;
+          }
           .market-items-detail-price {
             font-weight: bold;
+            .coin {
+              width: 25px;
+              position: relative;
+              top: -1px;
+              left: -3px;
+            }
           }
         }
       }

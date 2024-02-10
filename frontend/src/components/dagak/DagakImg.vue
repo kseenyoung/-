@@ -11,7 +11,7 @@
       v-if="props.gakLength === 1"
       cx="100"
       cy="100"
-      r="90"
+      r="70"
       :fill="colors[0]"
       stroke="black"
       stroke-width="2"
@@ -21,14 +21,14 @@
     <g v-else-if="props.gakLength === 2">
       <circle
         cx="100"
-        cy="100"
-        r="90"
+        cy="80"
+        r="70"
         :fill="colors[0]"
         stroke="black"
         stroke-width="2"
       />
       <path
-        d="M100 10 A90 90, 0, 1, 0, 100 190 Z"
+        d="M100 10 A70 70, 0, 1, 0, 100 150 Z"
         :fill="colors[1]"
         stroke="black"
         stroke-width="2"
@@ -66,16 +66,16 @@ const pizzaSlices = computed(() => {
 const colors = [
   'deepskyblue',
   'greenyellow',
-  'coral',
   'gold',
+  'coral',
+  'darkgreen',
+  'gray',
+  'forestgreen',
   'aquamarine',
   'darkorange',
-  'darkgreen',
-  'forestgreen',
   'white',
   'black',
   'lightgray',
-  'gray',
   'aqua',
   'cadetblue',
   'cornflowerblue',

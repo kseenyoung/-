@@ -414,15 +414,17 @@ td {
   height: 100%;
   .dagak-name {
     position: relative;
-    top: 30px;
+    top: 77px;
   }
   .dagak-goto-add {
     height: 100%;
   }
   > div {
     font-size: 1rem;
-    height: 20px;
+    height: 58px; //20px
     text-align: center;
+    position: relative; //추가
+    top: -15px; //추가
   }
   .dagak-figure {
     position: absolute;
