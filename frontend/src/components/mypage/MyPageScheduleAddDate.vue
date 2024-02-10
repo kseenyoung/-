@@ -27,7 +27,8 @@
         }"
         @click="addDagakList(dagak.dagakId)"
       >
-        <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" />
+        <!-- <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" /> -->
+        <DagakImg :gak-length="dagak.gakLength" />
         <div class="dagak-title">{{ dagak.dagakName }}</div>
       </div>
     </div>
@@ -45,6 +46,7 @@ import { useRouter } from 'vue-router';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import axios from 'axios';
+import DagakImg from '@/components/dagak/DagakImg.vue';
 
 const router = useRouter();
 
@@ -57,12 +59,31 @@ onMounted(() => {
 });
 
 //전체 다각 목록 불러오기
-const getAllDagakList = function () {
-  axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`)
-    .then((res) => {
-      dagakList.value = res.data.result;
-    });
+const getAllDagakList = async function () {
+  try {
+    //전체 다각 목록
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`,
+    );
+    const dagaks = response.data.result;
+
+    //다각의 각 목록
+    const gakLengthPromises = dagaks.map((dagak) =>
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
+        params: { dagakId: dagak.dagakId },
+      }),
+    );
+
+    const gakLengthResponses = await Promise.all(gakLengthPromises);
+
+    //다각 리스트에 각 개수 데이터 저장
+    dagakList.value = dagaks.map((dagak, index) => ({
+      ...dagak,
+      gakLength: gakLengthResponses[index].data.result.length,
+    }));
+  } catch (error) {
+    console.error('Error:', error);
+  }
 };
 
 //선택한 다각id 저장
