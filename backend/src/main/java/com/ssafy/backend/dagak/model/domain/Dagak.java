@@ -4,10 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Builder
+@DynamicInsert
 public class Dagak {
 
     @Id
