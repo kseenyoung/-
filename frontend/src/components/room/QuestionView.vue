@@ -5,7 +5,7 @@
         <b>{{ q }}</b>
       </div>
       <div class="questiondetail">
-        <p>질문자 : dory</p>
+        <p>질문자 : {{ userId }}</p>
       </div>
       <div v-show="answer[index]">
         <AnswerView />
@@ -20,10 +20,14 @@ import { useQuestionStore } from '@/stores/qustion'
 import AnswerView from './AnswerView.vue'
 import AnswerField from './AnswerField.vue'
 import { ref, reactive } from 'vue'
+import { useUserStore } from '@/stores/user'
 
 // 질문(pinia)
 const questionStore = useQuestionStore()
 const questions = questionStore.question
+const userStore = useUserStore()
+const loginUserInfo = userStore.loginUserInfo
+const userId = loginUserInfo.userId
 
 // 답변
 const answer = reactive(questions.map(() => false))

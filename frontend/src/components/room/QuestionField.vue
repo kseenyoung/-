@@ -41,6 +41,7 @@ const sendQuestion = async function () {
   sendAxios(1)
   sendAxios(2)
   sendAxios(3)
+  question.value = ''
 }
 
 const sendAxios = function (sessionNumbser) {
@@ -50,7 +51,7 @@ const sendAxios = function (sessionNumbser) {
     userId: loginUserInfo.userId,
     data: question.value
   }
-  alert(body.session + body.userId + body.data)
+  // alert(body.session + body.userId + body.data)
 
   axios.post(`${import.meta.env.VITE_API_BASE_URL}room`, body).then((res) => {
     console.log(res.data.result)

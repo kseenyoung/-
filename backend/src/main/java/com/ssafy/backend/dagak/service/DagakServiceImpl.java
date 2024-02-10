@@ -241,7 +241,9 @@ public class DagakServiceImpl implements DagakService {
         List<Gak> todayGaks = todayDagakVO.getGaks();
         List<GakHistory> historyGaks = getGaksOfHistory(userId, today);
 
-        if (historyGaks == null) {  // 공부 아예 처음 시작.
+        log.info("historyGaks : {}", historyGaks);
+
+        if (historyGaks == null || historyGaks.isEmpty()) {  // 공부 아예 처음 시작.
             Gak todayGak = todayGaks.get(0);
             todayGakVO.setUserId(userId);
             todayGakVO.setCalendarId(calendarId);
