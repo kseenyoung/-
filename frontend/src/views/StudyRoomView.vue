@@ -323,12 +323,12 @@ const joinSession = () => {
   })
 
   session.value.on('signal:answer', (stream) => {
-    alert('답변이 달렸습니다!')
-    console.log('답변 내용:' + stream.data)
+    // alert('답변이 달렸습니다!')
+    // console.log('답변 내용:' + stream.data)
 
     const data = JSON.parse(stream.data)
-    console.log('질문Id : ' + data.questionId)
-    console.log('답변 내용 : ' + data.data)
+    // console.log('질문Id : ' + data.questionId)
+    // console.log('답변 내용 : ' + data.data)
 
     questionStore.setAnswer(data.questionId, data)
   })

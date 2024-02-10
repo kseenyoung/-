@@ -36,7 +36,12 @@ const sendQuestion = async function () {
   // console.log('question : ' + question.value)
   checkStore()
   // alert('질문이 등록되었습니다.')
-  console.log('loginUserInfo : ' + loginUserInfo)
+  // console.log('loginUserInfo : ' + loginUserInfo)
+
+  if (question.value == '') {
+    alert('질문을 입력해주세요.')
+    return
+  }
 
   sendAxios(1)
   sendAxios(2)
@@ -72,9 +77,12 @@ textarea {
   font-family: 'NanumSquareNeo';
   font-weight: 800;
   font-size: 20px;
-  padding: 5px;
-  right: 0;
+  padding: 8px 12px;
+  margin-right: 10px;
+  display: inline-block;
+  float: right; /* 요소를 오른쪽으로 부유(floating)시킵니다. */
 }
+
 #message {
   font-family: 'NanumSquareNeo';
   font-weight: 600;
