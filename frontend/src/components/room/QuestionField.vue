@@ -76,11 +76,11 @@ textarea {
   border: 1px black dashed;
   font-family: 'NanumSquareNeo';
   font-weight: 800;
-  font-size: 20px;
-  padding: 8px 12px;
-  margin-right: 10px;
+  font-size: 16px; /* 작은 크기로 변경 */
+  padding: 5px 8px; /* 내부 패딩 조정 */
+  /* margin-right: 10px; */
   display: inline-block;
-  float: right; /* 요소를 오른쪽으로 부유(floating)시킵니다. */
+  float: right;
 }
 
 #message {
