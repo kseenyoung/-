@@ -8,6 +8,7 @@ import com.ssafy.backend.room.model.vo.ConnectionVO;
 import com.ssafy.backend.room.model.dto.QuestionDTO;
 import com.ssafy.backend.room.model.dto.EnterRoomDTO;
 import com.ssafy.backend.room.model.vo.QuestionVO;
+import com.ssafy.backend.room.model.vo.SessionQnAVO;
 import com.ssafy.backend.room.service.RoomService;
 import io.openvidu.java.client.OpenVidu;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +126,13 @@ public class RoomController {
                 List<AnswerVO> answerVOS = roomService.findAnswerByQuestionId(questionId);
 
                 return new BaseResponse<>(answerVOS);
+            case "getSessionQnA":
+                if (session != null) {
+                    studyRoom = (String) session.getAttribute("studyRoom");
+                }
+
+                SessionQnAVO sessionQnAVO = roomService.getSessionQnA(studyRoom);
+                return new BaseResponse<>(sessionQnAVO);
             case "leaveSession":
                 System.out.println("세션을 나갑니다!");
                 if (session != null) {

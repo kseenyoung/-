@@ -16,6 +16,7 @@ import com.ssafy.backend.room.model.dto.EnterRoomDTO;
 import com.ssafy.backend.room.model.repository.redis.AnswerRedisRepository;
 import com.ssafy.backend.room.model.repository.redis.QuestionRedisRepository;
 import com.ssafy.backend.room.model.vo.QuestionVO;
+import com.ssafy.backend.room.model.vo.SessionQnAVO;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDTO;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
@@ -143,6 +144,20 @@ public class RoomServiceImpl implements RoomService {
         ConnectionVO connectionVO = new ConnectionVO(connection.getConnectionId(),sessionName,connection.getToken());
         System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
         return connectionVO;
+    }
+
+    @Override
+    public SessionQnAVO getSessionQnA(String studyRoom) {
+        List<AnswerRedis> answerRedisList = answerRedisRepository.findBySession(studyRoom);
+        List<QuestionRedis> questionRedisList = questionRedisRepository.findBySession(studyRoom);
+        List<AnswerVO> answerVOList = answerRedisList.stream()
+                .map(answerRedis -> new AnswerVO(answerRedis.getAnswerId(),answerRedis.getUserId(),answerRedis.getSession(),answerRedis.getAnswerContent(),answerRedis.getQuestionId()))
+                .collect(Collectors.toList());
+        List<QuestionVO> questionVOList = questionRedisList.stream()
+                .map(questionRedis -> new QuestionVO(questionRedis.getQuestionId(),questionRedis.getUserId(),questionRedis.getSession(),questionRedis.getQuestionContent()))
+                .collect(Collectors.toList());
+        SessionQnAVO sessionQnAVO = new SessionQnAVO(answerVOList, questionVOList);
+        return sessionQnAVO;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.ssafy.backend.room.model.domain.Question;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 
 @Getter
@@ -12,6 +13,7 @@ public class QuestionRedis {
     @Id
     String questionId;
     String userId;
+    @Indexed
     String session;
     String questionContent;
 
