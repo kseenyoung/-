@@ -2,7 +2,7 @@
 
     <div class="parent">
         <div class="background">
-      <div class="part one">
+       <div class="part one">
         
         <div class="title" style="color:#000000; font-size:10rem;">
           다각
