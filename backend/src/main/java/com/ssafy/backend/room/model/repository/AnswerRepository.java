@@ -11,4 +11,5 @@ import java.util.List;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, String> {
+    List<Answer> findByUserId(String userId);
 }

@@ -3,12 +3,9 @@ package com.ssafy.backend.room.service;
 import com.ssafy.backend.room.model.domain.redis.AnswerRedis;
 import com.ssafy.backend.room.model.domain.redis.QuestionRedis;
 import com.ssafy.backend.room.model.dto.AnswerDTO;
-import com.ssafy.backend.room.model.vo.AnswerVO;
-import com.ssafy.backend.room.model.vo.ConnectionVO;
+import com.ssafy.backend.room.model.vo.*;
 import com.ssafy.backend.room.model.dto.QuestionDTO;
 import com.ssafy.backend.room.model.dto.EnterRoomDTO;
-import com.ssafy.backend.room.model.vo.QuestionVO;
-import com.ssafy.backend.room.model.vo.SessionQnAVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,4 +28,6 @@ public interface RoomService {
     ConnectionVO changeSubject(EnterRoomDTO changeSubjectDTO) throws Exception;
 
     SessionQnAVO getSessionQnA(String studyRoom) throws Exception;
+
+    UserQnAVO getUserQnA(String userId) throws Exception;
 }
