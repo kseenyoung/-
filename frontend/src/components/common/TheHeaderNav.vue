@@ -23,37 +23,45 @@
           class="dropdown-toggle common-pointer show-text"
           data-bs-toggle="dropdown"
           aria-expanded="false"
+          data-bs-auto-close="true"
           v-if="userStore.loginUserInfo.userId"
+          id="dropdownProfileButton"
         >
           <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
         </div>
-        <ul class="dropdown-menu">
-          <div class="d-flex profile-info">
-            <div>
-              <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
-            </div>
-            <div>
-              <div>{{ userStore.loginUserInfo.userId }}</div>
-              <div>{{ userStore.loginUserInfo.userEmail }}</div>
-            </div>
-          </div>
-          <RouterLink to="/mypage" class="dropdown-item">
-            <span class="underline">마이페이지</span>
-          </RouterLink>
-          <!-- 모꼬지가 있을때는 길드페이지로, 없으면 친구/모꼬지 신청 페이지로 이동 -->
-          <RouterLink
-            :to="`/mokkoji/${userStore.loginUserInfo.mokkojiId}`"
-            class="dropdown-item"
-            v-show="userStore.loginUserInfo.mokkojiId != null"
-          >
-            <span class="underline">모꼬지</span>
-          </RouterLink>
+        <ul class="dropdown-menu" aria-labelledby="dropdownProfileButton">
           <li>
-            <a href="#" class="logout dropdown-item" @click="logout">
-              <span>로그아웃</span>
-            </a>
+            <div class="d-flex profile-info">
+              <div>
+                <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
+              </div>
+              <div>
+                <div>{{ userStore.loginUserInfo.userId }}</div>
+                <div>{{ userStore.loginUserInfo.userEmail }}</div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <RouterLink to="/mypage" class="dropdown-item">
+              <span class="underline">마이페이지</span>
+            </RouterLink>
+          </li>
+          <li>
+            <!-- 모꼬지가 있을때는 길드페이지로, 없으면 친구/모꼬지 신청 페이지로 이동 -->
+            <RouterLink
+              :to="`/mokkoji/${userStore.loginUserInfo.mokkojiId}`"
+              class="dropdown-item"
+              v-show="userStore.loginUserInfo.mokkojiId != null"
+            >
+              <span class="underline">모꼬지</span>
+            </RouterLink>
           </li>
         </ul>
+        <div class="show-text">
+          <a href="#" class="logout dropdown-item show-text" @click="logout">
+            <i class="bi bi-box-arrow-right"></i>
+          </a>
+        </div>
       </div>
     </nav>
   </header>
@@ -146,6 +154,10 @@ nav a.router-link-exact-active > .underline {
   padding-bottom: 10px;
   background: linear-gradient(to top, #ff6347 8%, transparent 8%);
 }
+nav a span:hover {
+  transition: 0.4s;
+  color: tomato;
+}
 
 nav a.router-link-exact-active:hover {
   background-color: transparent;
@@ -157,7 +169,7 @@ nav a {
 }
 
 nav a:hover {
-  color: tomato;
+  color: tomato !important;
 }
 
 .profile {
