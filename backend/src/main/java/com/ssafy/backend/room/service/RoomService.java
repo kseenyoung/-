@@ -8,6 +8,7 @@ import com.ssafy.backend.room.model.vo.ConnectionVO;
 import com.ssafy.backend.room.model.dto.QuestionDTO;
 import com.ssafy.backend.room.model.dto.EnterRoomDTO;
 import com.ssafy.backend.room.model.vo.QuestionVO;
+import com.ssafy.backend.room.model.vo.SessionQnAVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface RoomService {
     void leaveSession(EnterRoomDTO enterRoomDTO) throws Exception;
 
     ConnectionVO changeSubject(EnterRoomDTO changeSubjectDTO) throws Exception;
+
+    SessionQnAVO getSessionQnA(String studyRoom) throws Exception;
 }
