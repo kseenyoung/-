@@ -50,7 +50,7 @@
         
         <div class="friends">
           <div class="bubble medium bottom" style="margin-left : 80%;">
-              친구 <b style="color: red;">{{ userStore.friends.length }}</b> 명이 <br/> 로그인중이에요
+              친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
               <br/>
           </div>
             <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
@@ -88,7 +88,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import MyRanking from '@/components/home/MyRanking.vue';
 import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
@@ -96,6 +96,7 @@ import { useUserStore } from '@/stores/user';
 import { useCategoryStore } from '@/stores/category';
 import { useAlarmStore } from '@/stores/alarm';
 import { useDagakStore } from '@/stores/dagak';
+import { useFriendStore } from '@/stores/friend'
 
 const arr = ref([
   " \"정보처리기사\"",
@@ -111,6 +112,10 @@ const categoryStore = useCategoryStore();
 const alarmStore = useAlarmStore();
 const router = useRouter();
 const dagakStore = useDagakStore();
+const friendStore = useFriendStore();
+const loginFriends = computed(() => {
+  return friendStore.loginFriends.filter(friend => friend.login);
+});
 
 const showFriends = ()=>{
   alert("친구들!");

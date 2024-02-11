@@ -4,6 +4,8 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import { cookiesStorage } from '@/utils/CookiesUtil';
 import { useAlarmStore } from '@/stores/alarm';
+import { useFriendStore } from '@/stores/friend'
+
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const useUserStore = defineStore(
@@ -13,11 +15,12 @@ export const useUserStore = defineStore(
     const studyRoomSessionToken = ref('');
     const loginUserInfo = ref({});
     const isInSession = ref(false);
-    const friends = ref([]);
     const achievementRate = ref(0);
+    const friendStore = useFriendStore();
 
     //로그인 세션 test
     const login = function () {
+      friendStore.getLoginFriends(); // 로그인했을때 로그인한 친구들 목록 확인하기
       loginSession();
       alert('방입장 성공');
     };
@@ -96,7 +99,7 @@ export const useUserStore = defineStore(
       mySession.value.on('signal:login', async (stream) => {
         // 로그인 시그널 수신
         console.log(stream.data, '님이 로그인했습니다.');
-        friends.value.push(stream.data);
+        friendStore.getLoginFriends(); // 친구가 로그인했다면 다시한번 레디스에서 읽어오기
         alert('친구가 로그인했어요!');
 
         await axios.post(
@@ -116,21 +119,24 @@ export const useUserStore = defineStore(
           },
         );
       });
+
       mySession.value.on('signal:login-callBack', async (stream) => {
         console.log('[콜백] 친구 ', stream.data, '님이 로그인했습니다.');
-        friends.value.push(stream.data);
+        friendStore.getLoginFriends();
         alert('콜백이 왔어요');
       });
 
       mySession.value.on('signal:logout', async (stream) => {
         // 로그인 시그널 수신
         console.log(stream.data, '님이 로그아웃 했습니다.');
+        friendStore.getLoginFriends(); 
         alert('친구가 로그아웃했어요!');
       });
 
       mySession.value.on('exception', (exception) => {
         console.warn(exception);
       });
+      
       const alarmStore = useAlarmStore();
       mySession.value.on('signal:alarm', async (stream) => {
         console.log(stream.data, 'tete');
@@ -186,7 +192,6 @@ export const useUserStore = defineStore(
       }
     });
     return {
-      friends,
       APPLICATION_SERVER_URL,
       login,
       OVMy,
