@@ -12,8 +12,8 @@ axios.defaults.withCredentials = true;
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 axios.interceptors.response.use(
   (response) => {
-    if (response.data.code === 2045) {
-      alert('로그인페이지로이동합니다 세션만료');
+    if (response.data.code === 2045 || response.data.code === 2042) {
+      alert('로그인이 필요합니다.');
       const userStore = useUserStore();
       userStore.deleteLoginUserInfo();
 
