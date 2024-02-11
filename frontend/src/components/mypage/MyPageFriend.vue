@@ -58,6 +58,7 @@ const getFriends = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}friend/getFriendList`)
     .then((res) => {
+      console.log(res);
       if (res.data.code === 1000) {
         //성공
         totalFriend.value = res.data.result.countFriend;

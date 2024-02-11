@@ -156,13 +156,14 @@ const filteredProducts = computed(() => {
   background-image: url('@/assets/background.gif');
   background-size: cover;
   height: 100vh;
+  padding-top: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .board {
   width: 70%;
-  height: 80%;
+  height: 85%;
   position: absolute;
 }
 .my-bc-btn {
@@ -183,7 +184,7 @@ const filteredProducts = computed(() => {
   color: white;
   z-index: 1;
   width: 55%;
-  height: 54%;
+  height: 65%;
   display: flex;
   flex-direction: column;
   .coin {
@@ -191,6 +192,7 @@ const filteredProducts = computed(() => {
   }
   .market-index {
     height: 50px;
+    margin-bottom: 10px;
   }
   .market-content {
     display: flex;

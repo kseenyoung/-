@@ -12,7 +12,7 @@
       새 다각 만들기
     </button>
   </div>
-  <div class="dagak-list-wrapper">
+  <div class="dagak-list-wrapper" v-if="dagakList.length != 0">
     <div
       class="dagak-detail-wrapper common-pointer"
       v-for="dagak in dagakList"
@@ -128,6 +128,7 @@
     <!-- 다각 생성 모달 -->
     <MyPageScheduleDagakAddModal @updateDagakList="getAllDagakList" />
   </div>
+  <div v-else>생성한 다각이 없습니다. 새로 생성해주세요.</div>
 </template>
 
 <script setup>
