@@ -41,8 +41,8 @@ public class FriendServiceImpl implements FriendService {
         }
 
     @Override
-    public void accessFriend(String accessUserId, String accessUserId2) {
-        UserId PK = new UserId(accessUserId, accessUserId2);
+    public void accessFriend(String userId, String requiringUserId) {
+        UserId PK = new UserId(requiringUserId, userId);
 
         // 이미 친구인지 확인 필요
 

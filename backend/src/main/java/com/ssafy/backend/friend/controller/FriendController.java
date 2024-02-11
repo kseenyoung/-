@@ -60,14 +60,14 @@ public class FriendController {
              * 친구 요청에 대해서 승인
              **/
             case "accessFriend":
-                String accessUserId2 = (String) body.get("userId");
+                String requiringUserId = (String) body.get("userId");
 
                 // 이미 요청 승인을 눌렀는지 확인
 //                alarmService.aVoidDuplicateAlaram(new ReqestAlarmDTO(accessUserId2, userId, 5));
-                if(friendService.isFriend(new UserId(userId, accessUserId2)))
+                if(friendService.isFriend(new UserId(userId, requiringUserId)))
                     throw new BaseException(ALREADY_EXIST_FRIEND);
 
-                friendFacade.accessFriend(userId, accessUserId2);
+                friendFacade.accessFriend(userId, requiringUserId);
 
                 return new BaseResponse<>(SUCCESS);
 
