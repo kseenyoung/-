@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import { cookiesStorage } from '@/utils/CookiesUtil';
-
+import { useAlarmStore } from '@/stores/alarm';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const useUserStore = defineStore(
@@ -130,6 +130,13 @@ export const useUserStore = defineStore(
 
       mySession.value.on('exception', (exception) => {
         console.warn(exception);
+      });
+      const alarmStore = useAlarmStore();
+      mySession.value.on('signal:alarm', async (stream) => {
+        console.log(stream.data, 'tete');
+        const data = JSON.parse(stream.data);
+        console.log(data, 'tete');
+        alarmStore.updateAlarm(data);
       });
     };
 
