@@ -27,7 +27,10 @@
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
         <ul class="dropdown-menu">
           <li>{{ friendDetailInfo.userNickname }}</li>
-          <li>모꼬지: {{ friendDetailInfo.mokkoijiName }}</li>
+          <li v-if="friendDetailInfo.mokkoijiName != null">
+            모꼬지: {{ friendDetailInfo.mokkoijiName }}
+          </li>
+          <li v-else>모꼬지: -</li>
           <li v-if="friendDetailInfo.userRank != null">
             랭크: {{ friendDetailInfo.userRank }} 위
           </li>
@@ -36,7 +39,10 @@
             공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
           </li>
           <li v-else>공부시간: -</li>
-          <li>"{{ friendDetailInfo.userStatusMessage }}"</li>
+          <li v-if="friendDetailInfo.userStatusMessage != null">
+            "{{ friendDetailInfo.userStatusMessage }}"
+          </li>
+          <li v-else>" "</li>
         </ul>
       </div>
     </div>
