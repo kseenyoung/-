@@ -16,8 +16,17 @@ export const useAlarmStore = defineStore(
           alarmUnReadList.value = res.data.result;
         });
     };
-
-    return { alarmUnReadTotal, alarmUnReadList, getUnReadAlarmList };
+    const updateAlarm = async (newValue) => {
+      console.log(newValue);
+      alarmUnReadList.value.push(newValue);
+      alarmUnReadTotal.value = alarmUnReadList.value.length;
+    };
+    return {
+      alarmUnReadTotal,
+      alarmUnReadList,
+      getUnReadAlarmList,
+      updateAlarm,
+    };
   },
   { persist: true },
 );
