@@ -3,15 +3,17 @@
     <div class="calendar-header">
       <button @click="goToToday" class="btn common-btn">오늘</button>
       <button @click="prevMonth" class="cal-btn">
-        <i class="bi bi-caret-left-square-fill"></i>
+        <i class="bi bi-caret-left-square-fill ms-2"></i>
       </button>
       <span class="span-header">{{ currentMonth }}</span>
       <button @click="nextMonth" class="cal-btn">
-        <i class="bi bi-caret-right-square-fill"></i>
+        <i class="bi bi-caret-right-square-fill me-2"></i>
       </button>
-      <button @click="goToMyDagak" class="btn common-btn">내 다각</button>
-      <button @click="goToMyAddDate" class="btn common-btn">
-        스케줄에 추가
+      <button @click="goToMyDagak" class="btn common-btn goto-btn">
+        <i class="bi bi-grid"></i>내 다각
+      </button>
+      <button @click="goToMyAddDate" class="btn common-btn goto-btn">
+        <i class="bi bi-calendar-plus"></i>스케줄에 추가
       </button>
     </div>
     <table>
@@ -356,6 +358,14 @@ const goToMyAddDate = function () {
 .calendar-header {
   margin-bottom: 20px;
   text-align: center;
+  .goto-btn {
+    margin-right: 5px;
+    i {
+      position: relative;
+      top: -2px;
+      left: -3px;
+    }
+  }
 }
 
 table {
@@ -399,7 +409,7 @@ td {
   font-size: 24px;
   font-weight: bold;
   color: #555;
-  margin: 0 15px;
+  margin: 0 10px;
 }
 
 .red-text {
