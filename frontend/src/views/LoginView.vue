@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="login-view-wrapper">
     <div class="card">
       <div class="card-header">
-        <div>로고</div>
+        <div class="card-header-logo">다각</div>
       </div>
       <div class="card-body">
         <div class="mb-3">
@@ -44,6 +44,15 @@
           />
           <label class="form-check-label" for="rememberId">아이디 저장</label>
         </div>
+        <vue-recaptcha
+          v-show="true"
+          sitekey="6Lcufl8pAAAAAN7h2t1u9Dgm1_zo9wKoaYRX59H6"
+          @verify="recaptchaVerified"
+          @expire="recaptchaExpired"
+          @fail="recaptchaFailed"
+          @error="recaptchaError"
+          class="recaptcha"
+        ></vue-recaptcha>
         <button
           class="btn btn-primary common-btn"
           :disabled="disableLoginButton"
@@ -53,26 +62,24 @@
         </button>
         <div class="or-seperator"><i>또는</i></div>
         <div class="text-center social-btn">
-          <img src="@/assets/img/login/googleLoginImg.png" alt="구글로그인" @click="googleLogin()"/>
-          <img src="@/assets/img/login/kakaoLoginImg.png" alt="카카오로그인" @click="kakaoLogin()" />
+          <img
+            src="@/assets/img/login/googleLoginImg.png"
+            alt="구글로그인"
+            @click="googleLogin()"
+          />
+          <img
+            src="@/assets/img/login/kakaoLoginImg.png"
+            alt="카카오로그인"
+            @click="kakaoLogin()"
+          />
         </div>
       </div>
+      <div class="sub-card">
+        <RouterLink to="/findid">아이디 찾기</RouterLink><span>&nbsp;|&nbsp;</span>
+        <RouterLink to="/findpw">비밀번호 찾기</RouterLink><span>&nbsp;|&nbsp;</span>
+        <RouterLink to="/regist">회원가입</RouterLink>
+      </div>
     </div>
-
-    <div class="sub-card">
-      <RouterLink to="/findid">아이디 찾기</RouterLink><span>&nbsp;|&nbsp;</span>
-      <RouterLink to="/findpw">비밀번호 찾기</RouterLink><span>&nbsp;|&nbsp;</span>
-      <RouterLink to="/regist">회원가입</RouterLink>
-    </div>
-
-    <vue-recaptcha
-      v-show="true"
-      sitekey="6Lcufl8pAAAAAN7h2t1u9Dgm1_zo9wKoaYRX59H6"
-      @verify="recaptchaVerified"
-      @expire="recaptchaExpired"
-      @fail="recaptchaFailed"
-      @error="recaptchaError"
-    ></vue-recaptcha>
   </div>
 </template>
 
@@ -82,8 +89,10 @@ import axios from 'axios';
 import vueRecaptcha from 'vue3-recaptcha2';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
+import { useAlarmStore } from '@/stores/alarm';
 
 const userStore = useUserStore();
+const alarmStore = useAlarmStore();
 const router = useRouter();
 const id = ref('');
 const password = ref('');
@@ -95,19 +104,21 @@ const disableInputPassword = ref(true);
 const disableCheckId = ref(true);
 const disableLoginButton = ref(true);
 
-
 // 구글 로그인 페이지로 이동
-const googleLogin = async function() {
-  window.location.replace("https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:5173/googleLogin&response_type=code&scope=email");
-}
+const googleLogin = async function () {
+  window.location.replace(
+    'https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:5173/googleLogin&response_type=code&scope=email',
+  );
+};
 
 // 카카오 로그인 페이지로 이동
-const kakaoLogin = async function() {
-  window.location.replace("https://kauth.kakao.com/oauth/authorize?client_id=891949d64302e510fe79f05131e7d972&redirect_uri=https://localhost:5173/kakaoLogin&response_type=code");
-}
+const kakaoLogin = async function () {
+  window.location.replace(
+    'https://kauth.kakao.com/oauth/authorize?client_id=891949d64302e510fe79f05131e7d972&redirect_uri=https://localhost:5173/kakaoLogin&response_type=code',
+  );
+};
 
-
-// 로그인 
+// 로그인
 const login = async function () {
   const body = {
     sign: 'login',
@@ -122,24 +133,20 @@ const login = async function () {
     })
     .then((res) => {
       if (res.data.code === 1000) {
+        //성공 시 유저정보 + 안읽은 알림 불러오기
         userStore.getLoginUserInfo();
-        //성공 시 홈으로
+        alarmStore.getUnReadAlarmList();
+        //홈으로 이동
         router.push({
           name: 'home',
         });
       } else if (res.data.code === 1405) {
-        alert(res.data.result,"asdasd");
+        alert(res.data.result, 'asdasd');
       }
     });
   id.value = '';
   password.value = '';
 };
-
-
-
-
-
-
 
 const recaptchaExpired = async function (response) {
   disableInputId.value = true;
@@ -181,7 +188,15 @@ const recaptchaVerified = async function (response) {
   margin: 80px auto;
   letter-spacing: -0.4px;
 }
-
+.login-view-wrapper {
+  background-image: url('@/assets/background.gif');
+  background-size: cover;
+  min-height: 100vh;
+  padding: 80px 500px;
+  .recaptcha {
+    margin-bottom: 10px;
+  }
+}
 .card {
   border: 1px solid rgb(226, 226, 226);
   border-radius: 10px;
@@ -197,6 +212,10 @@ const recaptchaVerified = async function (response) {
   padding: 30px 15px 10px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  .card-header-logo {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
 }
 
 img {

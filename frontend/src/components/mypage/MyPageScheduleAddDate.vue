@@ -17,7 +17,7 @@
       :enable-time-picker="false"
     />
     <div class="dagak-main-title">다각 목록</div>
-    <div class="dagak-list-wrapper">
+    <div class="dagak-list-wrapper" v-if="dagakList.length != 0">
       <div
         class="dagak-detail-wrapper common-pointer"
         v-for="dagak in dagakList"
@@ -32,6 +32,7 @@
         <div class="dagak-title">{{ dagak.dagakName }}</div>
       </div>
     </div>
+    <div v-else>생성한 다각이 없습니다. 새로 생성해주세요.</div>
   </div>
   <div class="dagak-add-wrapper">
     <button class="btn common-btn add-btn" @click="addDagakDate">

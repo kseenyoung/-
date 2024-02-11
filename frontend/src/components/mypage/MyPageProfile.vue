@@ -16,7 +16,10 @@
       </span>
       <span v-else>&nbsp;- 위 | </span>
 
-      <span>{{ userStore.loginUserInfo.userPoint }}P</span>
+      <span>
+        {{ userStore.loginUserInfo.userPoint }}
+        <img src="@/assets/img/item/coin.png" class="coin" />
+      </span>
     </div>
     <div>
       <span v-if="userStatusMessage">{{ userStatusMessage }}</span>
@@ -131,6 +134,9 @@ const changeStatus = function () {
 img {
   width: 120px;
   border-radius: 50%;
+}
+.coin {
+  width: 25px;
 }
 
 i {

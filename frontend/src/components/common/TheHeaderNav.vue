@@ -2,25 +2,25 @@
   <header :class="{ 'header-hidden': headerHidden }">
     <nav style="font-size: 22px">
       <div>
-        <RouterLink to="/">다각</RouterLink>
+        <RouterLink to="/" class="show-text">다각</RouterLink>
       </div>
       <div class="d-flex align-items-center">
         <RouterLink to="/posts">
-          <span class="underline">게시판</span>
+          <span class="underline show-text">게시판</span>
         </RouterLink>
         <RouterLink to="/apply">
-          <span class="underline">친구/모꼬지 신청</span>
+          <span class="underline show-text">친구/모꼬지 신청</span>
         </RouterLink>
         <RouterLink to="/store">
-          <span class="underline">상점</span>
+          <span class="underline show-text">상점</span>
         </RouterLink>
         <Alarm v-if="userStore.loginUserInfo.userId" />
         <RouterLink to="/login" v-if="!userStore.loginUserInfo.userId">
-          <span class="underline">로그인</span>
+          <span class="underline show-text">로그인</span>
         </RouterLink>
 
         <div
-          class="dropdown-toggle common-pointer"
+          class="dropdown-toggle common-pointer show-text"
           data-bs-toggle="dropdown"
           aria-expanded="false"
           v-if="userStore.loginUserInfo.userId"
@@ -61,14 +61,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import axios from "axios";
-import Alarm from "./Alarm.vue";
-import AlarmModal from "./AlarmModal.vue";
-import { useRouter } from "vue-router";
-import { useUserStore } from "@/stores/user";
-import { useAlarmStore } from "@/stores/alarm";
-import { cookiesStorage } from "@/utils/CookiesUtil";
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import axios from 'axios';
+import Alarm from './Alarm.vue';
+import AlarmModal from './AlarmModal.vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+import { useAlarmStore } from '@/stores/alarm';
+import { cookiesStorage } from '@/utils/CookiesUtil';
 const userStore = useUserStore();
 const alarmStore = useAlarmStore();
 const router = useRouter();
@@ -77,15 +77,15 @@ const router = useRouter();
 const logout = async function () {
   userStore.deleteLoginUserInfo();
   const body = {
-    sign: "logout",
+    sign: 'logout',
   };
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body)
     .then((res) => res.data);
-  localStorage.removeItem("userStore");
+  localStorage.removeItem('userStore');
   //성공 시 홈으로
   router.push({
-    name: "login",
+    name: 'login',
   });
 };
 
@@ -100,17 +100,20 @@ const handleScroll = () => {
 };
 
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
+  window.addEventListener('scroll', handleScroll);
   if (userStore.loginUserInfo.userId != null) {
     alarmStore.getUnReadAlarmList();
   }
 });
 onBeforeUnmount(() => {
-  window.removeEventListener("scroll", handleScroll);
+  window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
 <style lang="scss" scoped>
+.show-text {
+  color: white;
+}
 header {
   position: fixed;
   top: 0;
@@ -138,6 +141,7 @@ nav a.router-link-exact-active {
   color: #ff6347;
 }
 nav a.router-link-exact-active > .underline {
+  color: #ff6347;
   transition: 0.8s;
   padding-bottom: 10px;
   background: linear-gradient(to top, #ff6347 8%, transparent 8%);

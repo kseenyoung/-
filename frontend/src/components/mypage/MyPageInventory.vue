@@ -1,6 +1,15 @@
 <template>
   <div class="common-mypage-wrapper">
-    <div class="common-mypage-title">인벤토리</div>
+    <div class="common-mypage-title">
+      인벤토리
+      <span>
+        보유: {{ userStore.loginUserInfo.userPoint }}
+        <img src="@/assets/img/item/coin.png" class="coin" />
+      </span>
+      <button @click="saveInventory" class="btn common-btn inven-save-btn">
+        아바타 저장
+      </button>
+    </div>
     <div class="inven-content-wrapper">
       <div class="inven-wearing">
         <div class="inven-wearing-now" ref="captureArea">
@@ -16,13 +25,15 @@
         </div>
         <div class="inven-wearing-list text-center">
           <div>착용중</div>
-          <div v-for="item in inventories" :key="item.inventoryId">
-            <div v-if="item.isWearing">
+          <div class="inven-wearing-list-item-wrapper">
+            <template v-for="item in inventories" :key="item.inventoryId">
               <img
-                :src="`/src/assets/img/item/${item.productImage}.png`"
+                v-if="item.isWearing"
+                class="inven-wearing-list-item item-img"
+                :src="`/src/assets/img/store/${item.productImage}.png`"
                 @dblclick="changeItem(item.inventoryId)"
               />
-            </div>
+            </template>
           </div>
         </div>
       </div>
@@ -30,15 +41,13 @@
       <div class="inven-list text-center">
         <div v-for="item in inventories" :key="item.inventoryId">
           <img
-            :src="`/src/assets/img/item/${item.productImage}.png`"
+            :src="`/src/assets/img/store/${item.productImage}.png`"
             :class="{ 'is-wearing': item.isWearing }"
+            class="item-img"
             @dblclick="changeItem(item.inventoryId)"
           />
         </div>
       </div>
-    </div>
-    <div>
-      <button @click="saveInventory">저장</button>
     </div>
   </div>
 </template>
@@ -47,6 +56,9 @@
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import html2canvas from 'html2canvas';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
 const captureArea = ref(null);
 const inventories = ref([]);
 
@@ -145,6 +157,22 @@ onMounted(async () => {
 <style lang="scss" scoped>
 $box-radius: 8px;
 $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+.common-mypage-title {
+  > span {
+    font-size: 1.3rem;
+    font-weight: bold;
+  }
+  .coin {
+    width: 25px;
+    height: auto;
+    box-shadow: none;
+    padding: 0px;
+    margin: 0px;
+  }
+  .inven-save-btn {
+    margin-left: 10px;
+  }
+}
 .inven-content-wrapper {
   display: flex;
   padding: 10px;
@@ -172,12 +200,9 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     .inven-wearing-list {
       margin-top: 200px;
       background-color: aliceblue;
-      > div:last-child {
+      .inven-wearing-list-item-wrapper {
         display: flex;
         flex-wrap: wrap;
-        > img {
-          background-color: white;
-        }
       }
     }
   }
@@ -209,5 +234,8 @@ img {
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   cursor: pointer;
+}
+.item-img {
+  background-color: white;
 }
 </style>

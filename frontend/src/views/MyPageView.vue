@@ -1,5 +1,5 @@
 <template>
-  <div class="container d-flex flex-column">
+  <div class="d-flex flex-column mypage-view-wrapper">
     <nav class="mypage-wrapper-router">
       <RouterLink :to="{ name: 'myPageSchedule' }">일정</RouterLink>
       <RouterLink :to="{ name: 'myPageFriend' }">친구</RouterLink>
@@ -11,7 +11,10 @@
     <div class="mypage-wrapper-content d-flex">
       <MyPageProfile />
       <div class="mypage-wrapper-spring">
-        <img src="@/assets/img/mypage/notespring2.png" class="notespring" />
+        <img
+          src="@/assets/img/mypage/notespring_pixel2.png"
+          class="notespring"
+        />
       </div>
       <transition name="flip" mode="out-in">
         <div class="mypage-content flex-fill" :key="$route.fullPath">
@@ -36,6 +39,12 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
 .container {
   margin: 115px auto 0px;
 }
+.mypage-view-wrapper {
+  background-image: url('@/assets/background.gif');
+  background-size: cover;
+  min-height: 100vh;
+  padding: 100px 140px;
+}
 .mypage-wrapper-router > a {
   border-width: 1px 1px 0px 1px;
   border-style: solid;
@@ -46,11 +55,14 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
   top: -4px;
   left: 40%;
   padding: 5px 20px;
-  // transition: none;
+  background-color: tomato;
+  transition: none;
 }
 .router-link-exact-active {
-  background-color: tomato;
+  // transform: scale(2, 0.5);
   // font-size: 1.4rem;
+  background-color: gold !important;
+  box-shadow: 4px 0px 3px #2b2b2b;
 }
 
 .mypage-wrapper-spring {
