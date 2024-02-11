@@ -6,10 +6,12 @@ import lombok.Getter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import org.hibernate.annotations.DynamicInsert;
 
 
 @Getter
 @Entity
+@DynamicInsert
 public class Answer {
     @Id
     @Column(columnDefinition = "varchar(40)")
