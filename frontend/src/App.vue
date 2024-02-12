@@ -1,21 +1,29 @@
 <template>
   <TheHeaderNav />
-  <div id="wrapper">
+  <div id="wrapper" class="parent">
     <RouterView />
   </div>
-  <TheFooter />
 </template>
 
 <script setup>
 import { onBeforeUnmount, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import TheHeaderNav from "./components/common/TheHeaderNav.vue";
-import TheFooter from "./components/common/TheFooter.vue";
 </script>
+
 <style lang="scss" scoped>
 #wrapper {
-  height: auto;
+  height: cover;
   min-height: 100%;
-  padding-bottom: $footer-height;
+  // padding-bottom: $footer-height;
 }
+
+// .parent {
+//   overflow: scroll;
+//   height: 100vh;
+//   scroll-snap-type: y mandatory;
+//   text-align: center;
+//   margin: 0 auto;
+// }
+
 </style>

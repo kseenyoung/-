@@ -4,7 +4,7 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import { cookiesStorage } from '@/utils/CookiesUtil';
 import { useAlarmStore } from '@/stores/alarm';
-import { useFriendStore } from '@/stores/friend'
+import { useFriendStore } from '@/stores/friend';
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
