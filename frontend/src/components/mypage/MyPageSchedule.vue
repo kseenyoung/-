@@ -31,7 +31,7 @@
             <div v-if="day.date" class="dagak-wrapper">
               <div
                 v-if="!hasEventsForDate(day.date)"
-                @click="goToMyAddDate"
+                @click="goToMyAddDateClick(day.date)"
                 class="dagak-goto-add"
               ></div>
               <div
@@ -338,6 +338,20 @@ const goToMyDagak = function () {
 const goToMyAddDate = function () {
   router.push({
     name: 'myPageScheduleAddDate',
+  });
+};
+//날짜 클릭 시 -> 날짜 정보 들고 라우터 이동
+const goToMyAddDateClick = function (date) {
+  const formattedDate = new Date(
+    date.getTime() - date.getTimezoneOffset() * 60000,
+  )
+    .toISOString()
+    .split('T')[0];
+  router.push({
+    name: 'myPageScheduleAddDate',
+    query: {
+      selectedDate: formattedDate,
+    },
   });
 };
 </script>
