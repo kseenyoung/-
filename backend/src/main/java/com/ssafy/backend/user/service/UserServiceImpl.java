@@ -10,11 +10,13 @@ import com.ssafy.backend.security.model.dto.SecurityDTO;
 import com.ssafy.backend.security.model.mapper.SecurityMapper;
 import com.ssafy.backend.user.model.domain.User;
 import com.ssafy.backend.user.model.domain.UserRank;
+import com.ssafy.backend.user.model.domain.redis.LoginRedis;
 import com.ssafy.backend.user.model.dto.UserLoginDTO;
 import com.ssafy.backend.user.model.dto.UserSignupDTO;
 import com.ssafy.backend.user.model.mapper.UserMapper;
 import com.ssafy.backend.user.model.repository.UserRankRepository;
 import com.ssafy.backend.user.model.repository.UserRepository;
+import com.ssafy.backend.user.model.repository.redis.LoginRedisRepository;
 import com.ssafy.backend.user.model.vo.MyPageVO;
 import com.ssafy.backend.user.model.vo.UserInformationVO;
 import com.ssafy.backend.user.model.vo.UserViewVO;
@@ -58,6 +60,9 @@ public class UserServiceImpl implements UserService {
     UserRankRepository userRankRepository;
 
     @Autowired
+    LoginRedisRepository loginRedisRepository;
+
+    @Autowired
     private JavaMailSender javaMailSender;
 
     @Autowired
@@ -98,10 +103,17 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return false;
         } else {
+            // 로그인후에 Redis 저장하기
+            LoginRedis loginRedis = loginRedisRepository.findByUserId(loginUserId);
+            if(loginRedis == null){ // 로그인한 정보가 없다면
+                loginRedis = new LoginRedis(loginUserId,true);
+            } else{ // 로그인 정보가 남아있다면
+                loginRedis.setLogin(true);
+            }
+            loginRedisRepository.save(loginRedis);
+
             return user.checkPassword(encryptedLoginPassword);
         }
-
-
     }
 
     @Override
@@ -357,6 +369,15 @@ public class UserServiceImpl implements UserService {
     public void saveProfile(User user,String url) {
         user.changeImage(url);
         userRepository.save(user);
+    }
+
+    @Override
+    public void logout(String userId) {
+        LoginRedis loginRedis = loginRedisRepository.findByUserId(userId);
+        if(loginRedis != null){
+            loginRedis.setLogin(false);
+            loginRedisRepository.save(loginRedis);
+        }
     }
 
     @Override

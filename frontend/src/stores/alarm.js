@@ -18,8 +18,7 @@ export const useAlarmStore = defineStore(
     };
     const updateAlarm = async (newValue) => {
       console.log(newValue);
-      alarmUnReadList.value.push(newValue);
-      alarmUnReadTotal.value = alarmUnReadList.value.length;
+      alarmUnReadTotal.value = alarmUnReadList.value.unshift(newValue);
     };
     return {
       alarmUnReadTotal,

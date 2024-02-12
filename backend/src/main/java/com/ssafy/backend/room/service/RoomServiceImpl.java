@@ -9,13 +9,11 @@ import com.ssafy.backend.room.model.domain.redis.QuestionRedis;
 import com.ssafy.backend.room.model.dto.AnswerDTO;
 import com.ssafy.backend.room.model.repository.AnswerRepository;
 import com.ssafy.backend.room.model.repository.QuestionRepository;
-import com.ssafy.backend.room.model.vo.AnswerVO;
-import com.ssafy.backend.room.model.vo.ConnectionVO;
+import com.ssafy.backend.room.model.vo.*;
 import com.ssafy.backend.room.model.dto.QuestionDTO;
 import com.ssafy.backend.room.model.dto.EnterRoomDTO;
 import com.ssafy.backend.room.model.repository.redis.AnswerRedisRepository;
 import com.ssafy.backend.room.model.repository.redis.QuestionRedisRepository;
-import com.ssafy.backend.room.model.vo.QuestionVO;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDTO;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
@@ -143,6 +141,34 @@ public class RoomServiceImpl implements RoomService {
         ConnectionVO connectionVO = new ConnectionVO(connection.getConnectionId(),sessionName,connection.getToken());
         System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
         return connectionVO;
+    }
+
+    @Override
+    public SessionQnAVO getSessionQnA(String studyRoom) {
+        List<AnswerRedis> answerRedisList = answerRedisRepository.findBySession(studyRoom);
+        List<QuestionRedis> questionRedisList = questionRedisRepository.findBySession(studyRoom);
+        List<AnswerVO> answerVOList = answerRedisList.stream()
+                .map(answerRedis -> new AnswerVO(answerRedis.getAnswerId(),answerRedis.getUserId(),answerRedis.getSession(),answerRedis.getAnswerContent(),answerRedis.getQuestionId()))
+                .collect(Collectors.toList());
+        List<QuestionVO> questionVOList = questionRedisList.stream()
+                .map(questionRedis -> new QuestionVO(questionRedis.getQuestionId(),questionRedis.getUserId(),questionRedis.getSession(),questionRedis.getQuestionContent()))
+                .collect(Collectors.toList());
+        SessionQnAVO sessionQnAVO = new SessionQnAVO(answerVOList, questionVOList);
+        return sessionQnAVO;
+    }
+
+    @Override
+    public UserQnAVO getUserQnA(String userId) throws Exception {
+        List<Answer> answerList = answerRepository.findByUserId(userId);
+        List<Question> questionList = questionRepository.findByUserId(userId);
+        List<AnswerVO> answerVOList = answerList.stream()
+                .map(answer -> new AnswerVO(answer.getAnswerId(),answer.getUserId(),answer.getSession(),answer.getAnswerContent(),answer.getQuestionId()))
+                .collect(Collectors.toList());
+        List<QuestionVO> questionVOList = questionList.stream()
+                .map(question -> new QuestionVO(question.getQuestionId(),question.getUserId(),question.getSession(),question.getQuestionContent()))
+                .collect(Collectors.toList());
+        UserQnAVO userQnAVO = new UserQnAVO(answerVOList, questionVOList);
+        return userQnAVO;
     }
 
     @Override
