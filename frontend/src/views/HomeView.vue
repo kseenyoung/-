@@ -184,7 +184,7 @@ watch(() => userStore.loginUserInfo.userId, (newUserId) => {
   position: relative;
   z-index: 30;
   color: black;
-  padding-top: 10%;
+  padding-top: 17%;
   padding-bottom: 0;
 }
 
