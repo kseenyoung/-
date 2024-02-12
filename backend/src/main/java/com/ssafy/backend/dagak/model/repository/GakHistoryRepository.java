@@ -12,6 +12,6 @@ public interface GakHistoryRepository extends JpaRepository<GakHistory, Integer>
 
     GakHistory findByGakIdAndCreatedDate(Integer dagakId, LocalDate createdDate);
 
-    List<GakHistory> findByUserIdAndCreatedDate(String userId, LocalDate createdDate);
+    List<GakHistory> findAllByUserIdAndCreatedDate(String userId, LocalDate createdDate);
 
 }

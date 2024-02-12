@@ -21,7 +21,8 @@
       <button class="ratetoggle" @click="toggleRate">달성률</button>
       <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
     </div>
-    <QnAListView />
+    <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" />
+    <!-- <QnAListView /> -->
     <div class="containers">
       <div class="video-players">
         <div class="video-player-3">
@@ -143,6 +144,8 @@ const gakId = ref(0)
 const categoryId = ref(0)
 const calendarId = ref(0)
 const gakOrder = ref(0)
+const memoryTime = ref(0)
+const addedTime = ref(0)
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
@@ -163,28 +166,69 @@ const startCount = () => {
       const continueCount = confirm(
         categoryName.value +
           '공부가 끝났습니다.\n[' +
-          dagakStore.categoryNameToStudy.value[gakOrder.value + 1] +
+          dagakStore.categoryNameToStudy.value[gakOrder.value] +
           ']방으로 이동 하시겠습니까?'
       )
       if (!continueCount) {
         CountAfterComplete()
       } else {
-        // leave.value = "leave";
-        // leaveSession();
+        // TODO : 지금까지 한 공부 시간 업데이트 해야함.
+        modifyMemoryTime()
+      }
+    }
+  }, 1000)
+}
 
-        // db에 공부한 시간 저장해야함.
-        // 다음각을 불러와서
-        // 다음각을
-
-        //dagakStore.categoryNameToStudy.value[gakOrder.value+1]
-        store.loginUserInfo.sub = 'Korean'
+const modifyMemoryTime = async function () {
+  const body = {
+    sign: 'modifyMemoryTime',
+    gakId: String(gakId.value),
+    memoryTime: sec.value - memoryTime.value,
+    categoryId: String(categoryId.value),
+    calendarId: String(calendarId.value)
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.data.code === 1000) {
+        //성공
+        store.loginUserInfo.sub = 'Math'
         leaveSession().then(() => {
           change.value = true
           joinSession()
         })
+      } else {
+        alert('저런,,,')
       }
-    }
-  }, 1000)
+    })
+}
+
+const leaveRoomAndModifyMemoryTime = async function () {
+  const body = {
+    sign: 'modifyMemoryTime',
+    gakId: String(gakId.value),
+    memoryTime: sec.value - memoryTime.value,
+    categoryId: String(categoryId.value),
+    calendarId: String(calendarId.value)
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.data.code === 1000) {
+        //성공
+        leaveStudyRoom()
+      } else {
+        alert('저런,,,')
+      }
+    })
 }
 
 const CountAfterComplete = () => {
@@ -206,6 +250,7 @@ onBeforeMount(async () => {
       gakId.value = result.gakId
       userId.value = result.userId
       gakOrder.value = result.gakOrder
+      memoryTime.value = result.memoryTime
 
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
@@ -392,8 +437,30 @@ const joinSession = () => {
 
 const leaveStudyRoom = async () => {
   alert('나가기 버튼을 눌렀습니다.')
+
   leave.value = 'leave'
   await leaveSession()
+
+  const body = {
+    sign: 'modifyMemoryTime',
+    gakId: String(gakId.value),
+    memoryTime: sec.value - memoryTime.value,
+    categoryId: String(categoryId.value),
+    calendarId: String(calendarId.value)
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.data.code === 1000) {
+        alert('순공 시간 저장 성공!!')
+      } else {
+        alert('저런,,,')
+      }
+    })
   router.push('/')
 }
 

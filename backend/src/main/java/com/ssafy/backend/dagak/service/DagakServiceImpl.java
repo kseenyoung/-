@@ -229,7 +229,7 @@ public class DagakServiceImpl implements DagakService {
 
     @Override
     public List<GakHistory> getGaksOfHistory(String userId, LocalDate today) {
-        return gakHistoryRepository.findByUserIdAndCreatedDate(userId, today);
+        return gakHistoryRepository.findAllByUserIdAndCreatedDate(userId, today);
     }
 
     @Override
@@ -242,6 +242,9 @@ public class DagakServiceImpl implements DagakService {
         List<GakHistory> historyGaks = getGaksOfHistory(userId, today);
 
         log.info("historyGaks : {}", historyGaks);
+        System.out.println("님아 왜그러세요 제발");
+        System.out.println(todayGaks);
+        System.out.println(historyGaks);
 
         if (historyGaks == null || historyGaks.isEmpty()) {  // 공부 아예 처음 시작.
             Gak todayGak = todayGaks.get(0);
@@ -252,16 +255,25 @@ public class DagakServiceImpl implements DagakService {
             todayGakVO.setCategoryId(todayGak.getCategoryId());
             todayGakVO.setMemoryTime(0);
             todayGakVO.setGakOrder(0);
+            todayGakVO.setRequiredStudyTime(0);
 
             Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
             todayGakVO.setCategoryName(category.getCategoryName());
 
-        } else { // 루틴 수행 도중일 때.
+        } else if (historyGaks.size() < todayGaks.size()){ // 루틴 수행 도중일 때.
             Gak todayGak = todayGaks.get(historyGaks.size()-1);
             int nowStudyingTime = 0;
             for (int i = 0; i < historyGaks.size() ; i++) {
-                nowStudyingTime += historyGaks.get(i).getMemoryTime();
+                if (todayGaks.get(i).getRunningTime() <= historyGaks.get(i).getMemoryTime()){
+                    nowStudyingTime += todayGaks.get(i).getRunningTime();
+                    if (i == historyGaks.size()-1){
+                        todayGak = todayGaks.get(historyGaks.size());
+                    }
+                }
+                else
+                    nowStudyingTime += historyGaks.get(i).getMemoryTime();
             }
+
             todayGakVO.setUserId(userId);
             todayGakVO.setCalendarId(calendarId);
             todayGakVO.setGakId(todayGak.getGakId());
@@ -269,11 +281,14 @@ public class DagakServiceImpl implements DagakService {
             todayGakVO.setTotalTime(todayDagakVO.getTotalTime());
             todayGakVO.setMemoryTime(nowStudyingTime);
             todayGakVO.setRequiredStudyTime(todayGak.getRunningTime()- historyGaks.get(historyGaks.size()-1).getMemoryTime());
-            todayGakVO.setGakOrder(historyGaks.size()-1);
+            todayGakVO.setGakOrder(historyGaks.size());
 
             Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
             todayGakVO.setCategoryName(category.getCategoryName());
+        } else {  // 마지막 루틴일 때.
+
         }
+        System.out.println(todayGakVO);
         return todayGakVO;
     }
 

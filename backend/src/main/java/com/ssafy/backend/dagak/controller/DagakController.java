@@ -109,6 +109,7 @@ public class DagakController {
                 return new BaseResponse<>(SUCCESS);
 
             case "modifyMemoryTime":
+                System.out.println("아ㅓㄴ뫼ㅏㅈㅁ노ㅓㅏㅣ노미ㅏㅓ노ㅓ미ㅏ외ㅓㅏㅁ오ㅓㄴ망ㄹㅁ니ㅏㅓㄹ멍닐");
                 String gakId = (String) body.get("gakId");
                 Integer memoryTime = (Integer) body.get("memoryTime");
                 String categoryId = (String) body.get("categoryId");
