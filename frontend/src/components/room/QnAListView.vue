@@ -11,6 +11,20 @@
 import AnswerView from './AnswerView.vue'
 import QuestionView from './QuestionView.vue'
 import QuestionField from '@/components/room/QuestionField.vue'
+import { onMounted } from 'vue'
+import axios from 'axios'
+
+onMounted(() => {
+  console.log('QnAListView mounted')
+
+  // TODO : redis에 저장된 질문/ 답변을 불러와서, QnAListView에 뿌려주기
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}/room`, { sign: 'getSessionQnA' }).then((res) => {
+    {
+      console.log('res.data.result : ', res.data.result)
+      // questionStore.setQuestion(res.data.result)
+    }
+  })
+})
 </script>
 
 <style scoped>

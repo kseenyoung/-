@@ -49,10 +49,10 @@
         </div>
         
         <div class="friends">
-          <div class="bubble medium bottom" style="margin-left : 80%;">
+          <!-- <div class="bubble medium bottom" style="margin-left : 80%;">
               친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
               <br/>
-          </div>
+          </div> -->
             <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
         </div>
       </div>

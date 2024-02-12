@@ -219,13 +219,7 @@ onBeforeMount(async () => {
       store.achievementRate = Math.floor(achievementRate * 100)
       sec.value = result.memoryTime // 공부했던 시간.
     })
-
-  // TODO : redis에 저장된 질문/ 답변을 불러와서, QnAListView에 뿌려주기
-  // await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dagak/getQuestionList`).then((res) => {{
-
-  // }
 })
-
 // 플래그
 
 // 방 입장
@@ -323,12 +317,12 @@ const joinSession = () => {
   })
 
   session.value.on('signal:answer', (stream) => {
-    // alert('답변이 달렸습니다!')
-    // console.log('답변 내용:' + stream.data)
+    alert('답변이 달렸습니다!')
+    console.log('답변 내용:' + stream.data)
 
     const data = JSON.parse(stream.data)
-    // console.log('질문Id : ' + data.questionId)
-    // console.log('답변 내용 : ' + data.data)
+    console.log('질문Id : ' + data.questionId)
+    console.log('답변 내용 : ' + data.data)
 
     questionStore.setAnswer(data.questionId, data)
   })
