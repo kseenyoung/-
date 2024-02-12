@@ -2,7 +2,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import { cookiesStorage } from '@/utils/CookiesUtil';
+import { userCookiesStorage } from '@/utils/CookiesUtil';
 import { useAlarmStore } from '@/stores/alarm';
 import { useFriendStore } from '@/stores/friend';
 
@@ -170,7 +170,7 @@ export const useUserStore = defineStore(
 
     const deleteLoginUserInfo = async () => {
       loginUserInfo.value = {};
-      cookiesStorage.deleteItem('userStore');
+      userCookiesStorage.deleteItem('userStore');
       console.log('mySession.value : ', mySession.value);
       if (mySession.value) {
         mySession.value.disconnect();
@@ -182,7 +182,7 @@ export const useUserStore = defineStore(
       alert('user.js 새로고침 이벤트 발생');
     });
     onMounted(async () => {
-      let data = cookiesStorage.getItem('userStore');
+      let data = userCookiesStorage.getItem('userStore');
       if (data) {
         data = JSON.parse(data);
         console.log(data);
@@ -214,7 +214,7 @@ export const useUserStore = defineStore(
   //store를 localStorage에 저장하기 위해서(새로고침 시 데이터 날라감 방지)
   {
     persist: {
-      storage: cookiesStorage,
+      storage: userCookiesStorage,
     },
   },
 );

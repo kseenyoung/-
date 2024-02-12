@@ -10,4 +10,18 @@ export const cookiesStorage = {
   deleteItem(key) {
     return Cookies.remove(key);
   },
+  
+};
+
+export const userCookiesStorage = {
+  setItem(key, state) {
+    return Cookies.set(key, state);
+  },
+  getItem(key) {
+    return Cookies.get(key);
+  },
+  deleteItem(key) {
+    return Cookies.remove(key);
+  },
+  
 };
