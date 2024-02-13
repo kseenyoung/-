@@ -57,7 +57,7 @@
             </RouterLink>
           </li>
         </ul>
-        <div class="show-text">
+        <div v-if="userStore.loginUserInfo.userId" class="show-text">
           <a href="#" class="logout dropdown-item show-text" @click="logout">
             <i class="bi bi-box-arrow-right"></i>
           </a>

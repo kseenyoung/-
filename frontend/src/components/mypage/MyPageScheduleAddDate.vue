@@ -53,10 +53,15 @@ const router = useRouter();
 
 const dagakList = ref([]);
 const selectDagak = ref('');
-const dates = ref();
+const initialDate = new Date();
+const dates = ref([]);
 
 onMounted(() => {
   getAllDagakList();
+  if (router.currentRoute.value.query.selectedDate) {
+    initialDate.value = new Date(router.currentRoute.value.query.selectedDate);
+    dates.value = [initialDate.value];
+  }
 });
 
 //전체 다각 목록 불러오기

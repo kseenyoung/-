@@ -2,22 +2,10 @@
   <div class="common-mypage-wrapper">
     <div class="common-mypage-title">친구 목록</div>
 
-
     <div class="friend-list-wrapper">
       <div class="friend-list-total">
         <i class="bi bi-people-fill"></i> {{ totalFriend }}명
       </div>
-
-
-
-
-
-
-
-
-
-
-
 
       <div
         v-for="(friend, index) in listFriend"
@@ -29,11 +17,10 @@
           class="dropdown-toggle"
           data-bs-toggle="dropdown"
           aria-expanded="false"
-          @click="friendDetail(friend.userId)"
+          @click="friendDetail(friend.userNickname)"
         >
           {{ friend.userId }}
         </div>
-
 
         <div v-if="friend.login" class="friend-onoff friend-online">
           <i class="bi bi-circle-fill"></i>접속중
@@ -43,11 +30,13 @@
           <i class="bi bi-circle-fill"></i>접속종료
         </div>
 
-
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
         <ul class="dropdown-menu">
           <li>{{ friendDetailInfo.userNickname }}</li>
-          <li>모꼬지: {{ friendDetailInfo.mokkoijiName }}</li>
+          <li v-if="friendDetailInfo.mokkoijiName != null">
+            모꼬지: {{ friendDetailInfo.mokkoijiName }}
+          </li>
+          <li v-else>모꼬지: -</li>
           <li v-if="friendDetailInfo.userRank != null">
             랭크: {{ friendDetailInfo.userRank }} 위
           </li>
@@ -56,12 +45,12 @@
             공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
           </li>
           <li v-else>공부시간: -</li>
-          <li>"{{ friendDetailInfo.userStatusMessage }}"</li>
+          <li v-if="friendDetailInfo.userStatusMessage != null">
+            "{{ friendDetailInfo.userStatusMessage }}"
+          </li>
+          <li v-else>" "</li>
         </ul>
       </div>
-
-
-
     </div>
   </div>
 </template>
@@ -74,7 +63,6 @@ import { useFriendStore } from '@/stores/friend';
 const totalFriend = ref('');
 const friendStore = useFriendStore();
 const listFriend = ref(friendStore.loginFriends.value);
-
 
 onMounted(() => {
   getFriends();
@@ -105,11 +93,10 @@ const friendDetail = function (nickname) {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) => res.data)
-    .then((json) => {
-      if (json.code === 1000) {
+    .then((res) => {
+      if (res.data.code === 1000) {
         //성공
-        friendDetailInfo.value = json.result;
+        friendDetailInfo.value = res.data.result;
       } else {
         alert('닉네임이 비어있습니다.');
       }

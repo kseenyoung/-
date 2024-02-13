@@ -56,7 +56,6 @@ public class RoomController {
         HttpSession session = request.getSession(false);
         User user = (User)session.getAttribute("User");
         String userId = user.getUserId();
-
         String isLeave="";
         ConnectionVO connectionVO;
 
@@ -136,6 +135,10 @@ public class RoomController {
             case "getUserQnA":
                 UserQnAVO userQnAVO = roomService.getUserQnA(userId);
                 return new BaseResponse<>(userQnAVO);
+            case "getSessionRanking":
+                System.out.println("call getSessionRanking");
+                List<StudyRoomVO> studyRoomVOList = roomService.getSessionRanking();
+                return new BaseResponse<>(studyRoomVOList);
             case "leaveSession":
                 System.out.println("세션을 나갑니다!");
                 if (session != null) {

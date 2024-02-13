@@ -203,13 +203,14 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
       .inven-wearing-list-item-wrapper {
         display: flex;
         flex-wrap: wrap;
+        padding-left: 15px;
       }
     }
   }
   .inven-list {
-    padding: 10px;
+    padding: 25px 10px 10px 20px;
     flex-grow: 1;
-    flex-basis: 60%;
+    flex-basis: 52%;
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
