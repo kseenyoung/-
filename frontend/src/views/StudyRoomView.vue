@@ -112,7 +112,7 @@ const publisher = ref(undefined)
 const subscribers = ref([])
 const question = ref('')
 const leave = ref('refresh')
-const showQuestion = ref(true)
+const showQuestion = ref(false)
 // const achievementRate = ref(0)
 
 const change = ref(false)
@@ -429,7 +429,6 @@ const updateMainVideoStreamManager = (stream) => {
 const video13 = ref(null)
 
 const showRate = ref(true)
-const showQuestion = ref(false)
 const isPause = ref(false)
 
 const toggleRate = () => {
@@ -558,7 +557,6 @@ console.log('구독자들: ', subscribers.value.length)
   flex-wrap: wrap;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: orange;
 }
 
 .video-player-1 {
@@ -571,7 +569,7 @@ console.log('구독자들: ', subscribers.value.length)
   display: flex;
   /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
   flex-direction: column;
-  background-color: yellow;
+
 }
 
 
