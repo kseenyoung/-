@@ -30,4 +30,6 @@ public interface RoomService {
     SessionQnAVO getSessionQnA(String studyRoom) throws Exception;
 
     UserQnAVO getUserQnA(String userId) throws Exception;
+
+    List<StudyRoomVO> getSessionRanking() throws Exception;
 }
