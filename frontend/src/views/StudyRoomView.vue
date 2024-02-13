@@ -14,6 +14,7 @@
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
+        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
       </div>
     </div>
     <div class="bar">
@@ -28,8 +29,11 @@
             <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
             <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
             <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
-            <user-video v-else :stream-manager="subscribers[0]"
-              @click.native="updateMainVideoStreamManager(subscribers[0])" />
+            <user-video
+              v-else
+              :stream-manager="subscribers[0]"
+              @click.native="updateMainVideoStreamManager(subscribers[0])"
+            />
           </div>
         </div>
         <div class="video-player-2" v-if="subscribers.length > 0">
@@ -40,34 +44,58 @@
           <!-- 총 3명 -->
           <template v-if="subscribers.length === 2">
             <user-video class="videog3" :stream-manager="mainStreamManager" />
-            <user-video class="videog3" v-for="(sub, index) in subscribers.slice(1, 2)" :key="index" :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)" />
+            <user-video
+              class="videog3"
+              v-for="(sub, index) in subscribers.slice(1, 2)"
+              :key="index"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
           </template>
           <!-- 총 4명 -->
           <template v-else-if="subscribers.length === 3">
             <user-video class="videog4" :stream-manager="mainStreamManager" />
-            <user-video class="videog4" v-for="(sub, index) in subscribers.slice(1, 3)" :key="index" :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)" />
+            <user-video
+              class="videog4"
+              v-for="(sub, index) in subscribers.slice(1, 3)"
+              :key="index"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
           </template>
           <!-- 총 5명 -->
           <template v-else-if="subscribers.length === 4">
             <user-video class="videog5" :stream-manager="mainStreamManager" />
-            <user-video class="videog5" v-for="(sub, index) in subscribers.slice(1, 4)" :key="index" :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)" />
+            <user-video
+              class="videog5"
+              v-for="(sub, index) in subscribers.slice(1, 4)"
+              :key="index"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
           </template>
           <!-- 총 6명 -->
           <template v-else-if="subscribers.length === 5">
             <user-video class="videog6" :stream-manager="mainStreamManager" />
-            <user-video class="videog6" v-for="(sub, index) in subscribers.slice(1, 5)" :key="index" :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)" />
+            <user-video
+              class="videog6"
+              v-for="(sub, index) in subscribers.slice(1, 5)"
+              :key="index"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
           </template>
         </div>
-
       </div>
       <div>
-        <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName"
-          @leave-study-room="leaveStudyRoom" @toggle-question="toggleQuestion"/>
-        <QnAListView v-if="showQuestion"/>
+        <StudyRateView
+          :sec="sec"
+          :remainTime="remainTime"
+          :categoryName="categoryName"
+          @leave-study-room="leaveStudyRoom"
+          @toggle-question="toggleQuestion"
+        />
+        <QnAListView v-if="showQuestion" />
       </div>
     </div>
   </div>
@@ -125,9 +153,38 @@ const gakId = ref(0)
 const categoryId = ref(0)
 const calendarId = ref(0)
 const gakOrder = ref(0)
+const memoryTime = ref(0)
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
+
+const modifyMemoryTime = async function () {
+  const body = {
+    sign: 'modifyMemoryTime',
+    gakId: String(gakId.value),
+    memoryTime: sec.value - memoryTime.value,
+    categoryId: String(categoryId.value),
+    calendarId: String(calendarId.value)
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.data.code === 1000) {
+        //성공
+        store.loginUserInfo.sub = 'Math'
+        leaveSession().then(() => {
+          change.value = true
+          joinSession()
+        })
+      } else {
+        alert('저런,,,')
+      }
+    })
+}
 
 const togglePause = () => {
   isPause.value = !isPause.value
@@ -144,7 +201,6 @@ const startCount = () => {
   }, 1000)
 
   const countDownInterval = setInterval(() => {
-    remainTime.value--
     if (remainTime.value <= 0) {
       clearInterval(countDownInterval)
       clearInterval(countUpInterval)
@@ -158,22 +214,17 @@ const startCount = () => {
       )
       if (!continueCount) {
         CountAfterComplete()
+        remainTime.value = 0
       } else {
-        // leave.value = "leave";
-        // leaveSession();
-
-        // db에 공부한 시간 저장해야함.
-        // 다음각을 불러와서
-        // 다음각을
-
-        //dagakStore.categoryNameToStudy.value[gakOrder.value+1]
-        store.loginUserInfo.sub = 'Korean'
-        leaveSession().then(() => {
-          change.value = true
-          joinSession()
-        })
+        modifyMemoryTime()
+        // store.loginUserInfo.sub = 'Korean'
+        // leaveSession().then(() => {
+        //   change.value = true
+        //   joinSession()
+        // })
       }
     }
+    remainTime.value--
   }, 1000)
 }
 
@@ -197,18 +248,13 @@ onBeforeMount(async () => {
       userId.value = result.userId
       gakOrder.value = result.gakOrder
       memoryTime.value = result.memoryTime
-      // store.loginUserInfo.sub = 'Math'
       store.loginUserInfo.sub = mapSubject(result.categoryName)
 
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
       const achievementRate = result.memoryTime / result.totalTime
-      if (achievementRate >= 1) {
-        achievementRate.value = 1
-      } else {
-        // remainTime.value = (result.totalTime - result.memoryTime);
-        remainTime.value = result.requiredStudyTime
-      }
+      remainTime.value = result.requiredStudyTime
+
       store.achievementRate = Math.floor(achievementRate * 100)
       sec.value = result.memoryTime // 공부했던 시간.
     })
@@ -387,9 +433,29 @@ const leaveStudyRoom = async () => {
   alert('나가기 버튼을 눌렀습니다.')
   leave.value = 'leave'
   await leaveSession()
+  const body = {
+    sign: 'modifyMemoryTime',
+    gakId: String(gakId.value),
+    memoryTime: sec.value - memoryTime.value,
+    categoryId: String(categoryId.value),
+    calendarId: String(calendarId.value)
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.data.code === 1000) {
+        alert('순공 시간 저장 성공!!')
+      } else {
+        alert('저런,,,')
+      }
+    })
+
   router.push('/')
 }
-
 
 const leaveSession = async () => {
   if (leave.value == 'leave') alert('의도적으로 나갑니다')
@@ -445,8 +511,6 @@ const toggleMute = (video) => {
   }
 }
 
-
-
 onMounted(() => {
   leaveSession().then(() => {
     joinSession()
@@ -458,8 +522,6 @@ onBeforeUnmount(() => {
   alert('스터디룸에서 다른 페이지로 라우팅!')
   leaveSession()
 })
-
-
 
 console.log('구독자들: ', subscribers.length)
 console.log('구독자들: ', subscribers.value.length)
@@ -569,10 +631,7 @@ console.log('구독자들: ', subscribers.value.length)
   display: flex;
   /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
   flex-direction: column;
-
 }
-
-
 
 .videog2 {
   width: 100%;
