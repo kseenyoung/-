@@ -27,13 +27,20 @@
           v-if="userStore.loginUserInfo.userId"
           id="dropdownProfileButton"
         >
-          <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
+          <img class="profile" v-if="userStore.loginUserInfo.userPicture" :src="useImage(profileImage)" />
+          <img class="profile" v-else src="@/assets/img/default.jpg" />
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownProfileButton">
           <li>
             <div class="d-flex profile-info">
-              <div>
-                <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
+              <div v-if="userStore.loginUserInfo.userPicture">
+                <img class="profile" :src="useImage(profileImage)" />
+              </div>
+              <div v-else-if="userStore.loginUserInfo.userPicture">
+                <img class="profile" :src="useImage(profileImage)" />
+              </div>
+              <div v-else>
+                <img class="profile" src="@/assets/img/default.jpg" />
               </div>
               <div>
                 <div>{{ userStore.loginUserInfo.userId }}</div>
@@ -77,9 +84,14 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { useAlarmStore } from '@/stores/alarm';
 import { cookiesStorage } from '@/utils/CookiesUtil';
+
 const userStore = useUserStore();
 const alarmStore = useAlarmStore();
 const router = useRouter();
+const profileImage = ref("");
+const useImage = (url) => {
+  return new URL(`${url}`, import.meta.url).href;
+};
 
 //로그아웃
 const logout = async function () {
@@ -110,6 +122,7 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll);
   if (userStore.loginUserInfo.userId != null) {
     alarmStore.getUnReadAlarmList();
+    profileImage.value = userStore.loginUserInfo.userPicture;
   }
 });
 onBeforeUnmount(() => {
@@ -172,7 +185,8 @@ nav a:hover {
 }
 
 .profile {
-  width: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50px;
 }
 
