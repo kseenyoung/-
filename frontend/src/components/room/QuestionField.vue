@@ -21,8 +21,8 @@ import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 
 const question = ref('')
-const userStore = useUserStore()
-const loginUserInfo = userStore.loginUserInfo
+let userStore = useUserStore()
+let loginUserInfo = userStore.loginUserInfo
 
 const checkStore = function () {
   console.log('userStore : ' + userStore)

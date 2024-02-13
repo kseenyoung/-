@@ -10,18 +10,17 @@
           src="@/assets/img/studyroom/pause.png"
           alt="휴식중"
         />
-        <button class="btn" @click="leaveStudyRoom">나가기</button>
       </div>
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
+        <!-- <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button>
+        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button> -->
       </div>
     </div>
     <div class="bar">
-      <button class="ratetoggle" @click="toggleRate">달성률</button>
-      <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
+      <!-- <button class="ratetoggle" @click="toggleRate">달성률</button> -->
     </div>
-    <QnAListView />
     <div class="containers">
       <div class="video-players">
         <div class="video-player-3">
@@ -37,11 +36,11 @@
           </div>
         </div>
         <div class="video-player-2" v-if="subscribers.length > 0">
-          <!-- 총 2명 -->
+          <!-- 2명일 경우 -->
           <template v-if="subscribers.length === 1">
             <user-video class="videog2" :stream-manager="mainStreamManager" />
           </template>
-          <!-- 총 3명 -->
+          <!-- 3명일 경우 -->
           <template v-if="subscribers.length === 2">
             <user-video class="videog3" :stream-manager="mainStreamManager" />
             <user-video
@@ -52,7 +51,7 @@
               @click.native="updateMainVideoStreamManager(sub)"
             />
           </template>
-          <!-- 총 4명 -->
+          <!-- 4명일 경우 -->
           <template v-else-if="subscribers.length === 3">
             <user-video class="videog4" :stream-manager="mainStreamManager" />
             <user-video
@@ -63,7 +62,7 @@
               @click.native="updateMainVideoStreamManager(sub)"
             />
           </template>
-          <!-- 총 5명 -->
+          <!-- 5명일 경우 -->
           <template v-else-if="subscribers.length === 4">
             <user-video class="videog5" :stream-manager="mainStreamManager" />
             <user-video
@@ -74,7 +73,7 @@
               @click.native="updateMainVideoStreamManager(sub)"
             />
           </template>
-          <!-- 총 6명 -->
+          <!-- 6명일 경우 -->
           <template v-else-if="subscribers.length === 5">
             <user-video class="videog6" :stream-manager="mainStreamManager" />
             <user-video
@@ -87,6 +86,7 @@
           </template>
         </div>
       </div>
+      <StudyRateView />
     </div>
   </div>
   <!-- <div class="black" v-if="isPause">
@@ -397,6 +397,8 @@ const leaveStudyRoom = async () => {
   router.push('/')
 }
 
+
+
 const leaveSession = async () => {
   if (leave.value == 'leave') alert('의도적으로 나갑니다')
   alert('나갑니다.')
@@ -432,37 +434,25 @@ const updateMainVideoStreamManager = (stream) => {
   mainStreamManager.value = stream
 }
 
-const video1 = ref(null)
-const video2 = ref(null)
-const video3 = ref(null)
-const video4 = ref(null)
-const video5 = ref(null)
-const video6 = ref(null)
-const video7 = ref(null)
-const video8 = ref(null)
-const video9 = ref(null)
-const video10 = ref(null)
-const video11 = ref(null)
-const video12 = ref(null)
 const video13 = ref(null)
 
 const showRate = ref(true)
-const showQuestion = ref(true)
+const showQuestion = ref(false)
 const isPause = ref(false)
 
-const toggleRate = () => {
-  showRate.value = !showRate.value
-}
+// const toggleRate = () => {
+//   showRate.value = !showRate.value
+// }
 
-const toggleQuestion = () => {
-  showQuestion.value = !showQuestion.value
-}
+// const toggleQuestion = () => {
+//   showQuestion.value = !showQuestion.value
+// }
 
-const toggleMute = (video) => {
-  if (video && video.value instanceof HTMLVideoElement) {
-    video.value.muted = !video.value.muted
-  }
-}
+// const toggleMute = (video) => {
+//   if (video && video.value instanceof HTMLVideoElement) {
+//     video.value.muted = !video.value.muted
+//   }
+// }
 
 const togglePause = () => {
   isPause.value = !isPause.value
@@ -556,13 +546,15 @@ console.log('구독자들: ', subscribers.value.length)
 
 .containers {
   width: 100%;
+  height: 100%;
   display: flex;
-  margin-top: 60px;
+  margin-top: 100px;
 }
 
 .video-players {
   display: flex;
-  height: 50%;
+  /* height: 388px; */
+  background-color: aquamarine;
   flex-wrap: wrap;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -584,10 +576,11 @@ console.log('구독자들: ', subscribers.value.length)
   flex: 4;
   background-color: white;
   display: flex;
-  flex-wrap: wrap;
   /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
   flex-direction: column;
 }
+
+
 
 .video-player-3 {
   flex: 4;
@@ -601,13 +594,17 @@ console.log('구독자들: ', subscribers.value.length)
 }
 .videog3 {
   width: 50%;
+  height: 50%;
   border: 5px white solid;
   box-sizing: border-box;
+  /* flex-direction: column;  */
 }
 .videog4 {
   width: 50%;
+  height: 50%;
   border: 5px white solid;
   box-sizing: border-box;
+  flex-direction: row; 
 }
 .videog5 {
   width: 50%;
@@ -618,7 +615,6 @@ console.log('구독자들: ', subscribers.value.length)
   height: calc(100% / 5);
   border: 5px white solid;
   box-sizing: border-box;
-  flex-direction: column;
 }
 .bigvideo {
   width: 100%;
@@ -628,21 +624,6 @@ console.log('구독자들: ', subscribers.value.length)
   object-fit: cover;
 }
 
-.rate {
-  padding: 2px;
-  border: 2px solid black;
-  background-color: white;
-  width: 320px;
-  height: 100%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* 그림자 효과 추가 */
-}
-
-.QnA {
-  position: fixed;
-  right: 0;
-  bottom: 0%;
-}
 
 .achievement {
   position: fixed;
@@ -685,31 +666,37 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .mute {
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
   margin-top: 20px;
 }
 
 .pause {
-  width: 25px;
-  height: 25px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 15px;
   margin-left: 20px;
 }
 
 .questiontoggle {
-  background-color: rgb(200, 200, 200);
-  width: 120px;
-  height: 40px;
   border: gainsboro;
   border-radius: 15px 15px 0 0;
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
   z-index: 10;
-  top: -40px;
+  position: relative;
+  bottom: -5px;
+}
+.closebtn {
+  border: gainsboro;
+  border-radius: 15px 15px 0 0;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+    position: relative;
+  bottom: -5px;
 }
 
 .ratetoggle {
@@ -725,9 +712,10 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .questiontoggle:hover,
-.ratetoggle:hover {
+.ratetoggle:hover,
+.closebtn:hover  {
   background-color: white;
-  /* border-bottom: 2px solid white;*/
+  border: 2px solid black;
 }
 
 .btn {
