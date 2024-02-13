@@ -3,12 +3,11 @@ package com.ssafy.backend.room.controller;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.response.BaseResponse;
 import com.ssafy.backend.room.model.dto.AnswerDTO;
-import com.ssafy.backend.room.model.vo.AnswerVO;
-import com.ssafy.backend.room.model.vo.ConnectionVO;
+import com.ssafy.backend.room.model.vo.*;
 import com.ssafy.backend.room.model.dto.QuestionDTO;
 import com.ssafy.backend.room.model.dto.EnterRoomDTO;
-import com.ssafy.backend.room.model.vo.QuestionVO;
 import com.ssafy.backend.room.service.RoomService;
+import com.ssafy.backend.user.model.domain.User;
 import io.openvidu.java.client.OpenVidu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,7 +47,6 @@ public class RoomController {
     @PostMapping("")
     public BaseResponse<?> room(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
-        String userId = (String) body.get("userId");
         String sessionName="";
         String videoCodec="";
         String connectionId="";
@@ -56,6 +54,8 @@ public class RoomController {
         String token="";
         String questionId="";
         HttpSession session = request.getSession(false);
+        User user = (User)session.getAttribute("User");
+        String userId = user.getUserId();
         String isLeave="";
         ConnectionVO connectionVO;
 
@@ -125,6 +125,20 @@ public class RoomController {
                 List<AnswerVO> answerVOS = roomService.findAnswerByQuestionId(questionId);
 
                 return new BaseResponse<>(answerVOS);
+            case "getSessionQnA":
+                if (session != null) {
+                    studyRoom = (String) session.getAttribute("studyRoom");
+                }
+
+                SessionQnAVO sessionQnAVO = roomService.getSessionQnA(studyRoom);
+                return new BaseResponse<>(sessionQnAVO);
+            case "getUserQnA":
+                UserQnAVO userQnAVO = roomService.getUserQnA(userId);
+                return new BaseResponse<>(userQnAVO);
+            case "getSessionRanking":
+                System.out.println("call getSessionRanking");
+                List<StudyRoomVO> studyRoomVOList = roomService.getSessionRanking();
+                return new BaseResponse<>(studyRoomVOList);
             case "leaveSession":
                 System.out.println("세션을 나갑니다!");
                 if (session != null) {

@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface AnswerRedisRepository extends CrudRepository<AnswerRedis, String> {
-    List<AnswerRedis> findByQuestionId(String questionId) throws Exception;
-
+    List<AnswerRedis> findByQuestionId(String questionId);
+    List<AnswerRedis> findBySession(String session);
 }

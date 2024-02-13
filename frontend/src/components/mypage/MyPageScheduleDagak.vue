@@ -12,7 +12,7 @@
       새 다각 만들기
     </button>
   </div>
-  <div class="dagak-list-wrapper">
+  <div class="dagak-list-wrapper" v-if="dagakList.length != 0">
     <div
       class="dagak-detail-wrapper common-pointer"
       v-for="dagak in dagakList"
@@ -128,6 +128,7 @@
     <!-- 다각 생성 모달 -->
     <MyPageScheduleDagakAddModal @updateDagakList="getAllDagakList" />
   </div>
+  <div v-else>생성한 다각이 없습니다. 새로 생성해주세요.</div>
 </template>
 
 <script setup>
@@ -174,11 +175,13 @@ onMounted(() => {
 //다각 리스트 불러오기 + 다각의 각 갯수 불러와서 저장
 const getAllDagakList = async function () {
   try {
+    //전체 다각 목록
     const response = await axios.get(
       `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`,
     );
     const dagaks = response.data.result;
 
+    //다각의 각 목록
     const gakLengthPromises = dagaks.map((dagak) =>
       axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
         params: { dagakId: dagak.dagakId },
@@ -187,6 +190,7 @@ const getAllDagakList = async function () {
 
     const gakLengthResponses = await Promise.all(gakLengthPromises);
 
+    //다각 리스트에 각 개수 데이터 저장
     dagakList.value = dagaks.map((dagak, index) => ({
       ...dagak,
       gakLength: gakLengthResponses[index].data.result.length,

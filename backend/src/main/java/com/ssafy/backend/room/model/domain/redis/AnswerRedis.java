@@ -17,6 +17,7 @@ public class AnswerRedis {
     @Indexed
     String questionId;
     String answerContent;
+    @Indexed
     String session;
     String userId;
 
