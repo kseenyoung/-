@@ -672,8 +672,7 @@ console.log('구독자들: ', subscribers.value.length)
 
 .questiontoggle {
   background-color: rgb(200, 200, 200);
-  width: 120px;
-  height: 40px;
+
   border: gainsboro;
   border-radius: 15px 15px 0 0;
   transition: background-color 0.3s ease;
