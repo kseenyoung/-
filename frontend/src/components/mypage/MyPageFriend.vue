@@ -62,7 +62,7 @@ import { useFriendStore } from '@/stores/friend';
 
 const totalFriend = ref('');
 const friendStore = useFriendStore();
-const listFriend = ref(friendStore.loginFriends.value);
+const listFriend = ref([]);
 
 onMounted(() => {
   getFriends();
@@ -72,15 +72,26 @@ const getFriends = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}friend/getFriendList`)
     .then((res) => {
-      console.log(res);
       if (res.data.code === 1000) {
         //성공
         totalFriend.value = res.data.result.countFriend;
-        listFriend.value = res.data.result.friends;
+
+        //listFriend에 login여부 추가
+        const loginFriends = friendStore.loginFriends;
+        listFriend.value = res.data.result.friends.map((friend) => {
+          const matchingLoginFriend = loginFriends.find(
+            (loginFriend) => loginFriend.userId === friend.userId,
+          );
+          return {
+            ...friend,
+            login: matchingLoginFriend ? matchingLoginFriend.login : false,
+          };
+        });
       }
     });
 };
 
+//클릭 시 상세정보
 const friendDetailInfo = ref({});
 const friendDetail = function (nickname) {
   const body = {

@@ -105,12 +105,12 @@ const saveInventory = async function () {
     `${import.meta.env.VITE_API_BASE_URL}inventory/`,
     body,
   );
-  captureAndSend()
-  
+  captureAndSend();
+
   alert(response.data.message);
 };
 const getInventory = async function () {
-  return await axios.get(`${import.meta.env.VITE_API_BASE_URL}inventory/get`)
+  return await axios.get(`${import.meta.env.VITE_API_BASE_URL}inventory/get`);
 };
 
 const captureAndSend = async () => {
@@ -146,14 +146,14 @@ const captureAndSend = async () => {
 };
 
 onMounted(async () => {
-  await getInventory().then((response)=>{
+  await getInventory().then((response) => {
     if (response.data.code === 1000) {
-    console.log(response.data);
-    inventories.value = response.data.result.inventories;
-  } else {
-    alert(response.data.message);
-  }
-  })
+      console.log(response.data);
+      inventories.value = response.data.result.inventories;
+    } else {
+      alert(response.data.message);
+    }
+  });
 });
 </script>
 
@@ -184,7 +184,7 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     margin: 0px 30px;
     display: inline-block;
     padding: 50px 0px 20px;
-    padding-left:8%;
+    padding-left: 8%;
     border-radius: $box-radius;
     box-shadow: $box-shadow;
 
@@ -205,7 +205,7 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }
     .inven-wearing-list {
       margin-top: 200px;
-      margin-right: 30px;
+      background-color: $color-light-6;
       .inven-wearing-list-item-wrapper {
         display: inline-flex;
       }
@@ -219,7 +219,7 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     flex-wrap: wrap;
     align-content: flex-start;
     overflow-y: auto;
-    background-color: aliceblue;
+    background-color: $color-light-6;
     border-radius: $box-radius;
     box-shadow: $box-shadow;
     > img {
@@ -227,7 +227,7 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
       background-color: white;
     }
     .is-wearing {
-      border: 3px solid tomato;
+      border: 3px solid $color-dark-1;
     }
   }
 }

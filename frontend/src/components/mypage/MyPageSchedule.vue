@@ -49,11 +49,6 @@
                 "
               >
                 <div class="dagak-name">{{ event.dagakName }}</div>
-                <!-- <img
-                  v-if="event.dagakId"
-                  src="@/assets/img/mypage/hexagon_thin.png"
-                  class="dagak-figure"
-                /> -->
                 <DagakImg :gak-length="event.gakLength" />
               </div>
             </div>
@@ -365,7 +360,7 @@ const goToMyAddDateClick = function (date) {
 
   i {
     font-size: 1.5rem;
-    color: #ff6347;
+    color: $color-light-3;
   }
 }
 
@@ -428,10 +423,11 @@ td {
 
 .red-text {
   color: white;
-  background: linear-gradient(to top, #ff6347 8%, transparent 8%);
-  background-color: #ff6347;
+  background: linear-gradient(to top, $color-light-3 8%, transparent 8%);
+  background-color: $color-light-3;
   border-radius: 3px;
   padding-bottom: 2px;
+  font-weight: bold;
 }
 
 .dagak-wrapper {

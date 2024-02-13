@@ -105,7 +105,6 @@ public class RoomController {
             case "askQuestion":
                 sessionName = (String) body.get("session");
                 String qustionData = (String) body.get("data");
-                userId = (String) body.get("userId");
                 QuestionDTO questionDto = new QuestionDTO(userId, sessionName, qustionData);
                 QuestionVO questionVO = roomService.askQuestion(questionDto);
 
@@ -114,7 +113,6 @@ public class RoomController {
                 sessionName = (String) body.get("session");
                 String answerData = (String) body.get("data");
                 questionId = (String) body.get("questionId");
-                userId = (String) body.get("userId");
 
                 AnswerDTO answerDTO = new AnswerDTO(userId,sessionName,answerData,questionId);
                 AnswerVO answerVO = roomService.answerQuestion(answerDTO);

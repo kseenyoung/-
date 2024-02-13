@@ -322,12 +322,13 @@ $my-shadow:
     display: flex;
     box-shadow: $my-shadow;
     padding: 20px;
-    background-color: whitesmoke;
+    // background-color: whitesmoke;
+    background-color: $color-light-6;
     .mok-content-left {
       flex-basis: 40%;
       padding: 30px;
       > div {
-        background-color: cornsilk;
+        background-color: $color-light-2;
         box-shadow: $my-shadow;
       }
       .mok-subtitle {
@@ -352,7 +353,6 @@ $my-shadow:
           overflow-y: scroll;
           min-height: 300px;
           max-height: 300px;
-          // background-color: antiquewhite;
           .mok-list-detail {
             display: flex;
             align-items: center;
@@ -375,17 +375,15 @@ $my-shadow:
     }
     .mok-content-right {
       flex-grow: 1;
-      // border: 1px solid black;
       margin: 30px;
       .mok-right-info {
-        // border: 1px solid black;
         margin-bottom: 50px;
         border-bottom: 1px solid black;
         min-height: 300px;
         box-shadow: $my-shadow;
         background-color: white;
         .mok-right-info-subtitle {
-          background-color: lightblue;
+          background-color: $color-light-2;
           text-align: center;
           font-size: 1.5rem;
           font-weight: 600;
@@ -421,7 +419,8 @@ $my-shadow:
             display: inline-block;
             padding: 3px 8px;
             margin: 7px 5px;
-            background-color: lightblue;
+            background-color: $color-dark-6;
+            color: white;
             border-radius: 5px;
           }
         }
@@ -433,7 +432,7 @@ $my-shadow:
   display: inline-block;
   padding: 3px 8px;
   margin: 7px 5px;
-  background-color: lightblue;
+  background-color: $color-light-2;
   border-radius: 5px;
 }
 </style>
