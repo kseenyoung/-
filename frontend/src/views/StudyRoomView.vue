@@ -208,6 +208,30 @@ const modifyMemoryTime = async function (subject) {
         alert('저런,,,')
       }
     })
+  // axios 실험
+  await axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
+    .then((res) => {
+      const result = res.data.result
+      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
+      // 그에 따른 categoryId로 방 이동 바랍니다.
+      categoryId.value = result.categoryId
+      calendarId.value = result.calendarId
+      gakId.value = result.gakId
+      userId.value = result.userId
+      gakOrder.value = result.gakOrder
+      memoryTime.value = result.memoryTime
+      store.loginUserInfo.sub = mapSubject(result.categoryName)
+
+      alert(result.categoryName + '방에 입장합니다.')
+      categoryName.value = result.categoryName
+      const achievementRate = result.memoryTime / result.totalTime
+      remainTime.value = result.requiredStudyTime
+
+      store.achievementRate = Math.floor(achievementRate * 100)
+      sec.value = result.memoryTime // 공부했던 시간.
+    })
+  startCount()
 }
 
 const togglePause = () => {
@@ -225,6 +249,7 @@ const startCount = () => {
   }, 1000)
 
   const countDownInterval = setInterval(() => {
+    remainTime.value--
     if (remainTime.value <= 0) {
       clearInterval(countDownInterval)
       clearInterval(countUpInterval)
@@ -260,7 +285,6 @@ const startCount = () => {
         }
       }
     }
-    remainTime.value--
   }, 1000)
 }
 
