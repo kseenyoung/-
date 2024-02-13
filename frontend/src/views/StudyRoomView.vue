@@ -199,6 +199,7 @@ const modifyMemoryTime = async function (subject) {
     .then((res) => {
       if (res.data.code === 1000) {
         //성공
+
         store.loginUserInfo.sub = subject
         leaveSession().then(() => {
           change.value = true
@@ -208,7 +209,7 @@ const modifyMemoryTime = async function (subject) {
         alert('저런,,,')
       }
     })
-  // axios 실험
+  // 순공 시간 업데이트
   await axios
     .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
     .then((res) => {
@@ -242,21 +243,24 @@ const toggleQuestion = () => {
   showQuestion.value = !showQuestion.value
 }
 
+let countDownInterval
+let countUpInterval
+
 const startCount = () => {
-  const countUpInterval = setInterval(() => {
+  countUpInterval = setInterval(() => {
     // 공부한 시간 증가
     sec.value++
   }, 1000)
 
-  const countDownInterval = setInterval(() => {
+  countDownInterval = setInterval(() => {
     remainTime.value--
     if (remainTime.value <= 0) {
       clearInterval(countDownInterval)
       clearInterval(countUpInterval)
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
-      if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
+      if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length - 1) {
         const continueCount = confirm(
-          categoryName.value + '마지막 공부가 끝났습니다.\n퇴장하시겠습니까?'
+          categoryName.value + '공부가 끝났습니다.\n\n마지막 공부입니다.\n퇴장하시겠습니까?'
         )
         if (!continueCount) {
           // 방 이동 안 함
@@ -270,7 +274,7 @@ const startCount = () => {
         const continueCount = confirm(
           categoryName.value +
             '공부가 끝났습니다.\n[' +
-            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
+            dagakStore.categoryNameToStudy.value[gakOrder.value + 1].replace(/["']/g, '') +
             ']방으로 이동 하시겠습니까?'
         )
         if (!continueCount) {
@@ -280,7 +284,9 @@ const startCount = () => {
         } else {
           // 방 이동 함
           modifyMemoryTime(
-            mapSubject(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
+            mapSubject(
+              dagakStore.categoryNameToStudy.value[gakOrder.value + 1].replace(/["']/g, '')
+            )
           )
         }
       }
@@ -513,7 +519,6 @@ const leaveStudyRoom = async () => {
         alert('저런,,,')
       }
     })
-
   router.push('/')
 }
 
@@ -580,6 +585,8 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   alert('스터디룸에서 다른 페이지로 라우팅!')
+  clearInterval(countUpInterval)
+  clearInterval(countDownInterval)
   leaveSession()
 })
 
