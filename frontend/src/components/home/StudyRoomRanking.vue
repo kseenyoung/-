@@ -5,10 +5,10 @@
     </div>
     <table>
       <tbody>
-        <tr v-for="(item, index) in rankingData.slice(0, 10)" :key="index">
+        <tr v-for="(item, index) in studyRoomRanking.slice(0, 10)" :key="index">
           <td>{{ index + 1 }}위</td>
           <td>{{ item.name }}</td>
-          <td>{{ item.score }}명</td>
+          <td>{{ item.count }}명</td>
         </tr>
       </tbody>
     </table>
@@ -17,6 +17,31 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import axios from 'axios';
+const studyRoomRanking = ref([]);
+const APPLICATION_SERVER_URL =
+  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/'
+
+const getStudyRoomRanking = async () => {
+  console.log("call getStudyRoomRanking")
+  await axios
+    .post(
+      APPLICATION_SERVER_URL + 'room',
+      { sign: 'getSessionRanking'},
+      {
+        headers: { 'Content-Type': 'application/json' }
+      }
+    )
+    .then((res) => {
+      studyRoomRanking.value = res.data.result;
+      console.log("랭킹 정보:"+res.data.result[1].name)
+    })
+}
+
+onMounted(()=>
+      getStudyRoomRanking()
+);
+
 const topRankingData = { rank: 1, name: 'dory', score: 29348 };
 
 const rankingData = [
@@ -42,7 +67,7 @@ const rankingData = [
 }
 
 .ranking {
-  margin-top: 19%;
+  margin-top: 16%;
   font-size: 1.1rem;
   color: black;
   padding: 50px;

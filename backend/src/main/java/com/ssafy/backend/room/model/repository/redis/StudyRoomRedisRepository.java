@@ -11,5 +11,5 @@ import java.util.Optional;
 
 @Repository
 public interface StudyRoomRedisRepository extends CrudRepository<StudyRoomRedis, String> {
-    Optional<StudyRoomRedis> findByName(String name);
+    StudyRoomRedis findByName(String name);
 }
