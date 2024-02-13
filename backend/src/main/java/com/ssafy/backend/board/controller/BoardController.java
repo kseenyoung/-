@@ -6,6 +6,7 @@ import com.ssafy.backend.board.model.vo.BoardDetailVO;
 import com.ssafy.backend.board.model.vo.BoardListVO;
 import com.ssafy.backend.board.model.vo.CommentVO;
 import com.ssafy.backend.board.service.BoardService;
+import com.ssafy.backend.board.service.BoardTagService;
 import com.ssafy.backend.board.service.CommentService;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
@@ -30,6 +31,13 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
+    private final BoardTagService boardTagService;
+
+    @GetMapping("/tag/list")
+    public BaseResponse<?> getBoardTag(){
+        return new BaseResponse<>(boardTagService.getTagList());
+    }
+
 
     @GetMapping("/detail/{id:[\\d]+}")
     public BaseResponse<?> getBoardDetail(@PathVariable("id") long id) {

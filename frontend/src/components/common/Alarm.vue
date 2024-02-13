@@ -32,6 +32,7 @@ const alarmStore = useAlarmStore();
     top: -22px;
     left: 0px;
     font-size: 1.4rem;
+    color: white;
   }
 
   .bg-danger {

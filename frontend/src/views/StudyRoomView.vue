@@ -2,9 +2,15 @@
   <div class="room">
     <div class="studyroomheader">
       <div class="nowname">
-        <div class="nametag"> Python 마스터 ({{ subscribers.length + 1 }})</div>
+        <div class="nametag">{{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
-        <img class="pause" @click="togglePause" src="@/assets/img/studyroom/pause.png" alt="휴식중" />
+        <img
+          class="pause"
+          @click="togglePause"
+          src="@/assets/img/studyroom/pause.png"
+          alt="휴식중"
+        />
+        <button class="btn" @click="leaveStudyRoom">나가기</button>
       </div>
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
@@ -17,59 +23,84 @@
       <!-- <button class="ratetoggle" @click="toggleRate">달성률</button> -->
       
     </div>
-  <div class="containers">
-    <div class="video-players">
-      <div class="video-player-3">
-        <div class="bigvideo" ref="video13">
-          <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
-          <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
-          <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
-          <user-video v-else :stream-manager="subscribers[0]"
-            @click.native="updateMainVideoStreamManager(subscribers[0])" />
+    <QnAListView />
+    <div class="containers">
+      <div class="video-players">
+        <div class="video-player-3">
+          <div class="bigvideo" ref="video13">
+            <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
+            <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
+            <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
+            <user-video
+              v-else
+              :stream-manager="subscribers[0]"
+              @click.native="updateMainVideoStreamManager(subscribers[0])"
+            />
+          </div>
         </div>
-      </div>
-      <div class="video-player-2" v-if="subscribers.length > 0">
-        <!-- 총 2명 -->
-        <template v-if="subscribers.length === 1">
-          <user-video class="videog2" :stream-manager="mainStreamManager" />
-        </template>
-        <!-- 총 3명 -->
-        <template v-if="subscribers.length === 2">
-          <user-video class="videog3" :stream-manager="mainStreamManager" />
-          <user-video class="videog3" v-for="(sub, index) in subscribers.slice(1, 2)" :key="index" :stream-manager="sub"
-            @click.native="updateMainVideoStreamManager(sub)" />
-        </template>
-        <!-- 총 4명 -->
-        <template v-else-if="subscribers.length === 3">
-          <user-video class="videog4" :stream-manager="mainStreamManager" />
-          <user-video class="videog4" v-for="(sub, index) in subscribers.slice(1, 3)" :key="index" :stream-manager="sub"
-            @click.native="updateMainVideoStreamManager(sub)" />
-        </template>
-        <!-- 총 5명 -->
-        <template v-else-if="subscribers.length === 4">
-          <user-video class="videog5" :stream-manager="mainStreamManager" />
-          <user-video class="videog5" v-for="(sub, index) in subscribers.slice(1, 4)" :key="index" :stream-manager="sub"
-            @click.native="updateMainVideoStreamManager(sub)" />
-        </template>
-        <!-- 총 6명 -->
-        <template v-else-if="subscribers.length === 5">
-          <user-video class="videog6" :stream-manager="mainStreamManager" />
-          <user-video class="videog6" v-for="(sub, index) in subscribers.slice(1, 5)" :key="index" :stream-manager="sub"
-            @click.native="updateMainVideoStreamManager(sub)" />
-        </template>
+        <div class="video-player-2" v-if="subscribers.length > 0">
+          <!-- 총 2명 -->
+          <template v-if="subscribers.length === 1">
+            <user-video class="videog2" :stream-manager="mainStreamManager" />
+          </template>
+          <!-- 총 3명 -->
+          <template v-if="subscribers.length === 2">
+            <user-video class="videog3" :stream-manager="mainStreamManager" />
+            <user-video
+              class="videog3"
+              v-for="(sub, index) in subscribers.slice(1, 2)"
+              :key="index"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
+          </template>
+          <!-- 총 4명 -->
+          <template v-else-if="subscribers.length === 3">
+            <user-video class="videog4" :stream-manager="mainStreamManager" />
+            <user-video
+              class="videog4"
+              v-for="(sub, index) in subscribers.slice(1, 3)"
+              :key="index"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
+          </template>
+          <!-- 총 5명 -->
+          <template v-else-if="subscribers.length === 4">
+            <user-video class="videog5" :stream-manager="mainStreamManager" />
+            <user-video
+              class="videog5"
+              v-for="(sub, index) in subscribers.slice(1, 4)"
+              :key="index"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
+          </template>
+          <!-- 총 6명 -->
+          <template v-else-if="subscribers.length === 5">
+            <user-video class="videog6" :stream-manager="mainStreamManager" />
+            <user-video
+              class="videog6"
+              v-for="(sub, index) in subscribers.slice(1, 5)"
+              :key="index"
+              :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)"
+            />
+          </template>
+        </div>
       </div>
     </div>
   </div>
-  <div class="black" v-if="isPause">
+  <!-- <div class="black" v-if="isPause">
     <p class="resttitle">휴식중</p>
     <p class="resttime">~00:30</p>
-    <img class="play" @click="togglePause" src="@/assets/img/studyroom/whiteplay.png" alt="다시시작" />
-  </div>
-  
-  <StudyRateView />
-  </div>
-  <QnAListView v-if="showQuestion" />
-
+    <img
+      class="play"
+      @click="togglePause"
+      src="@/assets/img/studyroom/whiteplay.png"
+      alt="다시시작"
+    />
+  </div> -->
 </template>
 
 <script setup>
@@ -77,15 +108,16 @@ import { ref, onBeforeUnmount, onBeforeMount, onMounted } from 'vue'
 import axios from 'axios'
 import { OpenVidu, Stream } from 'openvidu-browser'
 import { useUserStore } from '@/stores/user'
-import QnAListView from '@/components/room/QnAListView.vue'
 import UserVideo from '@/components/room/UserVideo.vue'
 import StudyRateView from '@/components/room/StudyRateView.vue'
 import { useRouter } from 'vue-router'
-import Dagak from '@/components/dagak/Dagak.vue'
 import { useQuestionStore } from '@/stores/qustion'
-
+import { useDagakStore } from '@/stores/dagak'
+import QnAListView from '@/components/room/QnAListView.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+const dagakStore = useDagakStore()
 
 const router = useRouter()
 const store = useUserStore()
@@ -103,15 +135,16 @@ const question = ref('')
 const leave = ref('refresh')
 // const achievementRate = ref(0)
 
-const stopFlag = ref(false);
+const change = ref(false)
 
-const userId = ref('');
-const sec = ref(0);
-const remainTime = ref(10);
-const categoryName = ref('');
-const gakId = ref(0);
-const categoryId = ref(0);
-const calendarId = ref(0);
+const userId = ref('')
+const sec = ref(0)
+const remainTime = ref(10)
+const categoryName = ref('')
+const gakId = ref(0)
+const categoryId = ref(0)
+const calendarId = ref(0)
+const gakOrder = ref(0)
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
@@ -119,74 +152,122 @@ const calendarId = ref(0);
 const startCount = () => {
   const countUpInterval = setInterval(() => {
     // 공부한 시간 증가
-    sec.value++;
-  }, 1000);
+    sec.value++
+  }, 1000)
 
   const countDownInterval = setInterval(() => {
-    remainTime.value--;
+    remainTime.value--
     if (remainTime.value <= 0) {
-      clearInterval(countDownInterval);
-      clearInterval(countUpInterval);
-      const continueCount = confirm(categoryName.value + "공부가 끝났습니다. 방 이동 하시겠습니까?");
-      if (!continueCount) {
-        CountAfterComplete();
-      } else {
-        leave.value = "leave";
-        leaveSession();
-      }
+      clearInterval(countDownInterval)
+      clearInterval(countUpInterval)
+      // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
 
+      const continueCount = confirm(
+        categoryName.value +
+          '공부가 끝났습니다.\n[' +
+          dagakStore.categoryNameToStudy.value[gakOrder.value + 1] +
+          ']방으로 이동 하시겠습니까?'
+      )
+      if (!continueCount) {
+        CountAfterComplete()
+      } else {
+        // leave.value = "leave";
+        // leaveSession();
+
+        // db에 공부한 시간 저장해야함.
+        // 다음각을 불러와서
+        // 다음각을
+
+        //dagakStore.categoryNameToStudy.value[gakOrder.value+1]
+        store.loginUserInfo.sub = 'Korean'
+        leaveSession().then(() => {
+          change.value = true
+          joinSession()
+        })
+      }
     }
-  }, 1000);
+  }, 1000)
 }
 
 const CountAfterComplete = () => {
   const countUpInterval = setInterval(() => {
     // 공부한 시간 증가
-    sec.value++;
-  }, 1000);
+    sec.value++
+  }, 1000)
 }
 
-
 onBeforeMount(async () => {
-  await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
+  await axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
     .then((res) => {
-      const result = res.data.result;
-      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName
-      // categoryId로 방 이동 바랍니다.
-      categoryId.value = result.categoryId;
-      calendarId.value = result.calendarId;
-      gakId.value = result.gakId;
-      userId.value = result.userId;
+      const result = res.data.result
+      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
+      // 그에 따른 categoryId로 방 이동 바랍니다.
+      categoryId.value = result.categoryId
+      calendarId.value = result.calendarId
+      gakId.value = result.gakId
+      userId.value = result.userId
+      gakOrder.value = result.gakOrder
 
-      alert(result.categoryName + "방에 입장합니다.");
-      categoryName.value = result.categoryName;
-      const achievementRate = result.memoryTime / result.totalTime;
+      alert(result.categoryName + '방에 입장합니다.')
+      categoryName.value = result.categoryName
+      const achievementRate = result.memoryTime / result.totalTime
       if (achievementRate >= 1) {
-        achievementRate.value = 1;
+        achievementRate.value = 1
       } else {
-        // remainTime.value = (result.totalTime - result.memoryTime)*60;
+        // remainTime.value = (result.totalTime - result.memoryTime);
+        remainTime.value = result.requiredStudyTime
       }
-      store.achievementRate = achievementRate * 100;
-      sec.value = result.memoryTime * 60;  // 공부했던 시간.
-
+      store.achievementRate = Math.floor(achievementRate * 100)
+      sec.value = result.memoryTime // 공부했던 시간.
     })
+
+  // TODO : redis에 저장된 질문/ 답변을 불러와서, QnAListView에 뿌려주기
+  // await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dagak/getQuestionList`).then((res) => {{
+
+  // }
 })
 
+// 플래그
 
+// 방 입장
+const enterRoom = async (sessionId) => {
+  let token = null
+  if (change.value == true) {
+    token = await changeSession(sessionId)
+    change.value = false
+  } else {
+    token = await createSession(sessionId)
+  }
+  return token
+}
+
+// 과목 변경
+const changeSession = async () => {
+  const response = await axios.post(
+    APPLICATION_SERVER_URL + 'room',
+    {
+      sign: 'changeSession',
+      userId: store.myUserName,
+      sessionName: store.loginUserInfo.sub,
+      videoCodec: 'VP8'
+    },
+    {
+      headers: { 'Content-Type': 'application/json' }
+    }
+  )
+  mySession.value = response.data.result.session
+  // store.loginUserInfo.sub = response.data.result.session;
+  return response.data.result.token
+}
 
 console.log('구독자들: ', subscribers.value)
 console.log('STORE USER  :  ', store.loginUser)
 // 초기 데이터(계정 세션 아이디, 계정 이름)
 const myUserName = ref(store.myUserName)
 
-// 방 입장
-const enterRoom = async (sessionId) => {
-  let token = await createSession(sessionId)
-  return token
-}
-
 // 방 생성
-const createSession = async (sessionId) => {
+const createSession = async () => {
   const response = await axios.post(
     APPLICATION_SERVER_URL + 'room',
     {
@@ -238,19 +319,25 @@ const joinSession = () => {
     console.log('질문 내용:' + stream.data)
 
     const data = JSON.parse(stream.data)
-    console.log(data.data)
+    console.log('질문 stream : ' + data)
 
-    questionStore.setQuestion(data.data)
+    questionStore.setQuestion(data)
   })
 
   session.value.on('signal:answer', (stream) => {
-    alert('답변이 달렸습니다!')
-    console.log('답변 내용:' + stream.data)
+    // alert('답변이 달렸습니다!')
+    // console.log('답변 내용:' + stream.data)
+
+    const data = JSON.parse(stream.data)
+    // console.log('질문Id : ' + data.questionId)
+    // console.log('답변 내용 : ' + data.data)
+
+    questionStore.setAnswer(data.questionId, data)
   })
 
   session.value.on('streamCreated', ({ stream }) => {
     const subscriber = session.value.subscribe(stream)
-    console.log("subscribers: " + subscriber.value);
+    console.log('subscribers: ' + subscriber.value)
     subscribers.value.push(subscriber)
   })
 
@@ -313,7 +400,7 @@ const leaveStudyRoom = async () => {
 }
 
 const leaveSession = async () => {
-  if (leave.value == "leave") alert("의도적으로 나갑니다");
+  if (leave.value == 'leave') alert('의도적으로 나갑니다')
   alert('나갑니다.')
   if (session.value) session.value.disconnect()
 
@@ -344,7 +431,7 @@ const leaveSession = async () => {
 // }
 
 const updateMainVideoStreamManager = (stream) => {
-  mainStreamManager.value = stream;
+  mainStreamManager.value = stream
 }
 
 const video1 = ref(null)
@@ -385,15 +472,15 @@ const togglePause = () => {
 
 onMounted(() => {
   leaveSession().then(() => {
-    joinSession();
-  });
-  startCount();
+    joinSession()
+  })
+  startCount()
 })
 
 onBeforeUnmount(() => {
-  alert("스터디룸에서 다른 페이지로 라우팅!")
-  leaveSession();
-});
+  alert('스터디룸에서 다른 페이지로 라우팅!')
+  leaveSession()
+})
 console.log('구독자들: ', subscribers.length)
 console.log('구독자들: ', subscribers.value.length)
 </script>
@@ -488,20 +575,21 @@ console.log('구독자들: ', subscribers.value.length)
 .bar {
   flex: 3;
   position: relative;
+  /* background-color: black; */
   width: 100%;
   display: flex;
   flex-direction: row;
   transform-origin: left top;
+  transform: rotate(90deg);
+  /* 90도 회전 */
 }
-
 
 .video-player-2 {
   flex: 4;
   background-color: white;
   display: flex;
   /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
-  flex-wrap: wrap;
-  flex-direction: column; 
+  flex-direction: column;
 }
 
 
@@ -516,7 +604,6 @@ console.log('구독자들: ', subscribers.value.length)
   box-sizing: border-box;
   flex-grow: 1;
 }
-
 .videog3 {
   width: 50%;
   height: 50%;
@@ -524,7 +611,6 @@ console.log('구독자들: ', subscribers.value.length)
   box-sizing: border-box;
   /* flex-direction: column;  */
 }
-
 .videog4 {
   width: 50%;
   height: 50%;
@@ -532,19 +618,16 @@ console.log('구독자들: ', subscribers.value.length)
   box-sizing: border-box;
   flex-direction: row; 
 }
-
 .videog5 {
   width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
 }
-
 .videog6 {
   height: calc(100% / 5);
   border: 5px white solid;
   box-sizing: border-box;
 }
-
 .bigvideo {
   width: 100%;
   display: flex;

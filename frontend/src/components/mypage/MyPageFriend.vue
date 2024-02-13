@@ -1,10 +1,23 @@
 <template>
   <div class="common-mypage-wrapper">
     <div class="common-mypage-title">친구 목록</div>
+
+
     <div class="friend-list-wrapper">
       <div class="friend-list-total">
         <i class="bi bi-people-fill"></i> {{ totalFriend }}명
       </div>
+
+
+
+
+
+
+
+
+
+
+
 
       <div
         v-for="(friend, index) in listFriend"
@@ -16,14 +29,21 @@
           class="dropdown-toggle"
           data-bs-toggle="dropdown"
           aria-expanded="false"
-          @click="friendDetail(friend.userNickname)"
+          @click="friendDetail(friend.userId)"
         >
-          {{ friend.userNickname }}
+          {{ friend.userId }}
         </div>
-        <div class="friend-onoff friend-online">
-          <!-- <div class="friend-onoff friend-offline"> -->
+
+
+        <div v-if="friend.login" class="friend-onoff friend-online">
           <i class="bi bi-circle-fill"></i>접속중
         </div>
+
+        <div v-else class="friend-onoff friend-offline">
+          <i class="bi bi-circle-fill"></i>접속종료
+        </div>
+
+
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
         <ul class="dropdown-menu">
           <li>{{ friendDetailInfo.userNickname }}</li>
@@ -39,6 +59,9 @@
           <li>"{{ friendDetailInfo.userStatusMessage }}"</li>
         </ul>
       </div>
+
+
+
     </div>
   </div>
 </template>
@@ -46,9 +69,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useFriendStore } from '@/stores/friend';
 
 const totalFriend = ref('');
-const listFriend = ref([]);
+const friendStore = useFriendStore();
+const listFriend = ref(friendStore.loginFriends.value);
+
 
 onMounted(() => {
   getFriends();
@@ -58,6 +84,7 @@ const getFriends = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}friend/getFriendList`)
     .then((res) => {
+      console.log(res);
       if (res.data.code === 1000) {
         //성공
         totalFriend.value = res.data.result.countFriend;
@@ -148,7 +175,8 @@ const friendDetail = function (nickname) {
   }
   .friend-onoff {
     @include friend-status;
-
+    font-size: 14px;
+    padding: 1px;
     i {
       font-size: 0.7rem;
       position: relative;

@@ -26,7 +26,8 @@
         union all
         select user_id, user_nickname
         from user u join friend using(user_id)
-        where user_id2 = #{user_id};
+        where user_id2 = #{user_id}
+        and is_friend = 1;
     </select>
 
 </mapper>

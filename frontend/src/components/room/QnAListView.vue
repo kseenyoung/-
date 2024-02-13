@@ -1,7 +1,8 @@
 <template>
-  <div class="QnA">
-    <h4>**질문 게시판**</h4>
+  <div class="QnA overflow-auto">
+    <h4><b>[ 질문 게시판 ]</b></h4>
     <QuestionView />
+    <br />
     <QuestionField />
   </div>
 </template>
@@ -26,9 +27,11 @@ import QuestionField from '@/components/room/QuestionField.vue'
   margin-top: 30px;
   margin-bottom: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
-  right: 0;
-  bottom: 0;
-  z-index: 10;
+
+}
+
+.QnA h4 {
+  text-align: center; /* 텍스트를 가운데 정렬합니다. */
 }
 
 .QuestionField {

@@ -16,10 +16,14 @@
       </span>
       <span v-else>&nbsp;- 위 | </span>
 
-      <span>{{ userStore.loginUserInfo.userPoint }}P</span>
+      <span>
+        {{ userStore.loginUserInfo.userPoint }}
+        <img src="@/assets/img/item/coin.png" class="coin" />
+      </span>
     </div>
     <div>
-      <span>{{ userStatusMessage }}</span>
+      <span v-if="userStatusMessage">{{ userStatusMessage }}</span>
+      <span v-else>상태메시지가 없습니다.</span>
       <i
         class="bi bi-pencil-fill common-pointer"
         data-bs-toggle="collapse"
@@ -130,6 +134,9 @@ const changeStatus = function () {
 img {
   width: 120px;
   border-radius: 50%;
+}
+.coin {
+  width: 25px;
 }
 
 i {

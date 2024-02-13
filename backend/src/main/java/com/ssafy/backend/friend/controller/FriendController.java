@@ -9,11 +9,14 @@ import com.ssafy.backend.friend.model.vo.FriendListVO;
 import com.ssafy.backend.friend.service.FriendFacade;
 import com.ssafy.backend.friend.service.FriendService;
 import com.ssafy.backend.user.model.domain.User;
+import com.ssafy.backend.user.model.domain.redis.LoginRedis;
+import com.ssafy.backend.user.model.vo.LoginRedisVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.Map;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.*;
@@ -60,14 +63,14 @@ public class FriendController {
              * 친구 요청에 대해서 승인
              **/
             case "accessFriend":
-                String accessUserId2 = (String) body.get("userId");
+                String requiringUserId = (String) body.get("userId");
 
                 // 이미 요청 승인을 눌렀는지 확인
 //                alarmService.aVoidDuplicateAlaram(new ReqestAlarmDTO(accessUserId2, userId, 5));
-                if(friendService.isFriend(new UserId(userId, accessUserId2)))
+                if(friendService.isFriend(new UserId(userId, requiringUserId)))
                     throw new BaseException(ALREADY_EXIST_FRIEND);
 
-                friendFacade.accessFriend(userId, accessUserId2);
+                friendFacade.accessFriend(userId, requiringUserId);
 
                 return new BaseResponse<>(SUCCESS);
 
@@ -77,6 +80,9 @@ public class FriendController {
                 friendService.quitFriend(userId, quitUserId2);
 
                 return new BaseResponse<>(SUCCESS);
+            case "getLoginFriends":
+                List<LoginRedisVO> loginFriends =  friendService.getLoginFriends(userId);
+                return new BaseResponse(loginFriends);
 
         }
         throw new BaseException(NOT_MATCH_SIGN);
