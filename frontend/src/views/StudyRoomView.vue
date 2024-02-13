@@ -15,13 +15,13 @@
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
         <!-- <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button> -->
-        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
+        <!-- <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button> -->
       </div>
     </div>
     <div class="bar">
       <!-- <button class="ratetoggle" @click="toggleRate">달성률</button> -->
     </div>
-    <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" />
+    <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" @leave-study-room="leaveStudyRoom" />
     <!-- <QnAListView /> -->
     <div class="containers">
       <div class="video-players">

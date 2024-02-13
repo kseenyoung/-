@@ -22,11 +22,7 @@
       </div>
       
     </div>
-    <div class="QnA">
-      <div v-if="showQuestion">
-        <QnAListView />
-      </div>
-    </div>
+        <QnAListView  class="QnA"/>
   </div>
 </template>
 
@@ -50,13 +46,16 @@ const props = defineProps({
   remainTime : Number,
   categoryName : String
 })
-
+const emit = defineEmits(['leave-study-room', ]);
 
 const  leaveStudyRoom = ()=> {
       // 부모 컴포넌트로 leave-study-room 이벤트를 발생시킵니다.
-      this.$emit('leave-study-room')
+      emit('leave-study-room')
     }
 
+const toggleQuestion = () => {
+  showQuestion.value = !showQuestion.value
+}
 const convertTime = (seconds) => {
 	let hour, min, sec
 
@@ -82,9 +81,7 @@ watch(props, (newTime) => {
   convertedRemainTime.value = convertTime(newTime.remainTime);
 })
 
-const toggleQuestion = () => {
-  showQuestion.value = !showQuestion.value
-}
+
 
 console.log(todayDagak)
 </script>
@@ -92,7 +89,6 @@ console.log(todayDagak)
 <style lang="scss" scoped>
 .dagak {
   text-align: center;
-  /* padding: 20px; */
   position: relative;
   z-index: 1;
 }
@@ -100,13 +96,11 @@ console.log(todayDagak)
 .containers {
   width: 100%;
   display: flex;
-  margin-top: 110px;
-  
 }
 
 .rate {
   padding: 2px;
-  // border: 2px solid black;
+
   background-color: white;
   width: 320px;
   height: fit-content;
