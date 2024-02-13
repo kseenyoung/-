@@ -92,6 +92,7 @@
           :sec="sec"
           :remainTime="remainTime"
           :categoryName="categoryName"
+          :gakOrder="gakOrder"
           @leave-study-room="leaveStudyRoom"
           @toggle-question="toggleQuestion"
         />

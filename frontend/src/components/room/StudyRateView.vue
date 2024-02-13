@@ -3,18 +3,24 @@
     <div class="achievement">
       <div class="rate">
         <p class="titletag">공부시간</p>
-        <div class="studytime">{{ convertedTime }}
-        </div>
+        <div class="studytime">{{ convertedTime }}</div>
         <hr />
         <p class="titletag">달성률 : {{ store.achievementRate }} %</p>
         <div>[{{ categoryName }}] 남은 시간 : {{ convertedRemainTime }}</div>
         <div class="dagak">
-          <Dagak />
+          <!-- <Dagak /> -->
         </div>
+        <br />
         <div class="ratedetail">
-          java 마스터 --- <b>140%</b><br />
+          {{ categoryToStudy }}
+          <ul>
+            <li v-for="(category, index) in categoryToStudy" :key="index">
+              {{ category }}
+            </li>
+          </ul>
+          <!-- 마스터 {{ gakOrder }} <b>140%</b><br />
           Python 마스터 --- <b>75%</b><br />
-          C++ 마스터 ---- <b>0%</b>
+          C++ 마스터 ---- <b>0%</b> -->
         </div>
         <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button>
         <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
@@ -29,20 +35,25 @@ import Dagak from '@/components/dagak/Dagak.vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { useDagakStore } from '@/stores/dagak'
-
+import { useCategoryStore } from '@/stores/category'
 
 const router = useRouter()
 const leave = ref('refresh')
 const store = useUserStore()
 const dagakStore = useDagakStore()
+const categoryStore = useCategoryStore()
 const todayDagak = dagakStore.todayDagak
 const showQuestion = ref(true)
 const props = defineProps({
   sec: Number,
   remainTime: Number,
-  categoryName: String
+  categoryName: String,
+  gakOrder: Number
 })
-const emit = defineEmits(['leave-study-room', 'toggle-question']);
+
+const categoryToStudy = ref(dagakStore.categoryNameToStudy)
+
+const emit = defineEmits(['leave-study-room', 'toggle-question'])
 const leaveStudyRoom = () => {
   emit('leave-study-room')
 }
@@ -50,36 +61,30 @@ const toggleQuestion = () => {
   emit('toggle-question')
 }
 
-
-// const toggleQuestion = () => {
-//   showQuestion.value = !showQuestion.value
-// }
 const convertTime = (seconds) => {
   let hour, min, sec
 
-  hour = parseInt(seconds / 3600);
-  min = parseInt((seconds % 3600) / 60);
-  sec = seconds % 60;
+  hour = parseInt(seconds / 3600)
+  min = parseInt((seconds % 3600) / 60)
+  sec = seconds % 60
 
-  if (hour.toString().length == 1) hour = "0" + hour;
-  if (min.toString().length == 1) min = "0" + min;
-  if (sec.toString().length == 1) sec = "0" + sec;
+  if (hour.toString().length == 1) hour = '0' + hour
+  if (min.toString().length == 1) min = '0' + min
+  if (sec.toString().length == 1) sec = '0' + sec
 
-  return `${hour}:${min}:${sec}`;
+  return `${hour}:${min}:${sec}`
 }
 
 const convertedTime = ref(convertTime(props.sec))
 const convertedRemainTime = ref(convertTime(props.remainTime))
 
 watch(props, (newTime) => {
-  convertedTime.value = convertTime(newTime.sec);
+  convertedTime.value = convertTime(newTime.sec)
 })
 
 watch(props, (newTime) => {
-  convertedRemainTime.value = convertTime(newTime.remainTime);
+  convertedRemainTime.value = convertTime(newTime.remainTime)
 })
-
-
 
 console.log(todayDagak)
 </script>
