@@ -158,7 +158,7 @@ const memoryTime = ref(0)
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
 
-const modifyMemoryTime = async function () {
+const modifyMemoryTimeAndLeave = async function () {
   const body = {
     sign: 'modifyMemoryTime',
     gakId: String(gakId.value),
@@ -175,7 +175,31 @@ const modifyMemoryTime = async function () {
     .then((res) => {
       if (res.data.code === 1000) {
         //성공
-        store.loginUserInfo.sub = 'Math'
+        //나갑니다
+      } else {
+        alert('저런,,,')
+      }
+    })
+}
+
+const modifyMemoryTime = async function (subject) {
+  const body = {
+    sign: 'modifyMemoryTime',
+    gakId: String(gakId.value),
+    memoryTime: sec.value - memoryTime.value,
+    categoryId: String(categoryId.value),
+    calendarId: String(calendarId.value)
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.data.code === 1000) {
+        //성공
+        store.loginUserInfo.sub = subject
         leaveSession().then(() => {
           change.value = true
           joinSession()
@@ -205,23 +229,35 @@ const startCount = () => {
       clearInterval(countDownInterval)
       clearInterval(countUpInterval)
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
-
-      const continueCount = confirm(
-        categoryName.value +
-          '공부가 끝났습니다.\n[' +
-          dagakStore.categoryNameToStudy.value[gakOrder.value] +
-          ']방으로 이동 하시겠습니까?'
-      )
-      if (!continueCount) {
-        CountAfterComplete()
-        remainTime.value = 0
+      if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
+        const continueCount = confirm(
+          categoryName.value + '마지막 공부가 끝났습니다.\n퇴장하시겠습니까?'
+        )
+        if (!continueCount) {
+          // 방 이동 안 함
+          CountAfterComplete()
+          remainTime.value = 0
+        } else {
+          // 퇴장함.
+          leaveStudyRoom()
+        }
       } else {
-        modifyMemoryTime()
-        // store.loginUserInfo.sub = 'Korean'
-        // leaveSession().then(() => {
-        //   change.value = true
-        //   joinSession()
-        // })
+        const continueCount = confirm(
+          categoryName.value +
+            '공부가 끝났습니다.\n[' +
+            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
+            ']방으로 이동 하시겠습니까?'
+        )
+        if (!continueCount) {
+          // 방 이동 안 함
+          CountAfterComplete()
+          remainTime.value = 0
+        } else {
+          // 방 이동 함
+          modifyMemoryTime(
+            mapSubject(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
+          )
+        }
       }
     }
     remainTime.value--
