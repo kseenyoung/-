@@ -199,7 +199,7 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }
     .inven-wearing-list {
       margin-top: 200px;
-      background-color: aliceblue;
+      background-color: $color-light-6;
       .inven-wearing-list-item-wrapper {
         display: flex;
         flex-wrap: wrap;
@@ -215,7 +215,7 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     flex-wrap: wrap;
     align-content: flex-start;
     overflow-y: auto;
-    background-color: aliceblue;
+    background-color: $color-light-6;
     border-radius: $box-radius;
     box-shadow: $box-shadow;
     > img {
@@ -223,7 +223,7 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
       background-color: white;
     }
     .is-wearing {
-      border: 3px solid tomato;
+      border: 3px solid $color-dark-1;
     }
   }
 }

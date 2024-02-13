@@ -181,7 +181,7 @@ const getSearchMokkojiList = function () {
   .my-thead {
     tr {
       > th:nth-child(3) {
-        width: 50%;
+        width: 40%;
       }
     }
   }

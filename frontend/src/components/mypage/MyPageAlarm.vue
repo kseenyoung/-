@@ -208,7 +208,7 @@ const getAlarmMessage = (tagId) => {
     font-size: 1.5rem;
   }
   .alarm-new {
-    background-color: rgba(255, 99, 71, 0.088);
+    background-color: #95b5951e;
   }
   > div:last-child {
     border-bottom: 1px solid black;
@@ -219,6 +219,12 @@ const getAlarmMessage = (tagId) => {
     display: flex;
     .alarm-check {
       flex-basis: 5%;
+      i {
+        color: $color-light-5;
+        position: relative;
+        top: -3px;
+        left: -2px;
+      }
     }
     .alarm-content {
       display: flex;
@@ -230,9 +236,10 @@ const getAlarmMessage = (tagId) => {
         align-items: center;
 
         div:nth-child(1) {
-          color: tomato;
+          color: $color-light-5;
           font-weight: 500;
           margin-right: 6px;
+          font-weight: bold;
         }
         div:nth-child(2) {
           color: #777;

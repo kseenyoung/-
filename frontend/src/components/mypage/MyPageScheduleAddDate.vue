@@ -177,7 +177,7 @@ const goToCalander = function () {
     margin: 0 auto;
     .dagak-detail-wrapper-clicked {
       transform: translateY(-5px);
-      background-color: aliceblue;
+      background-color: $color-light-2;
     }
     .dagak-detail-wrapper {
       text-align: center;

@@ -96,7 +96,7 @@
           </button>
           <button class="btn common-btn" @click="clear">지우기</button>
           <button
-            class="btn btn-primary"
+            class="btn common-btn-light"
             data-bs-dismiss="modal"
             @click="addDagak"
             :disabled="gaks.length == 0 || dagakName == ''"
@@ -232,7 +232,7 @@ const clear = function () {
     }
     .modal-body-result-detail {
       border-radius: 6px;
-      background-color: aliceblue;
+      background-color: $color-light-3;
       padding: 5px 15px;
       box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
       margin: 10px 0px;

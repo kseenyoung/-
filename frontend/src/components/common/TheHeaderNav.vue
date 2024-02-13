@@ -47,12 +47,15 @@
             </RouterLink>
           </li>
           <li>
-            <!-- 모꼬지가 있을때는 길드페이지로, 없으면 친구/모꼬지 신청 페이지로 이동 -->
+            <!-- 모꼬지가 있을때는 모꼬지 페이지로, 없으면 친구/모꼬지 신청 페이지로 이동 -->
             <RouterLink
               :to="`/mokkoji/${userStore.loginUserInfo.mokkojiId}`"
               class="dropdown-item"
-              v-show="userStore.loginUserInfo.mokkojiId != null"
+              v-if="userStore.loginUserInfo.mokkojiId != null"
             >
+              <span class="underline">내 모꼬지</span>
+            </RouterLink>
+            <RouterLink v-else to="/apply" class="dropdown-item">
               <span class="underline">모꼬지</span>
             </RouterLink>
           </li>
@@ -146,17 +149,17 @@ nav {
 
 nav a.router-link-exact-active {
   // color: var(--color-text);
-  color: #ff6347;
+  color: $color-light-5;
 }
 nav a.router-link-exact-active > .underline {
-  color: #ff6347;
+  color: $color-light-5;
   transition: 0.8s;
   padding-bottom: 10px;
-  background: linear-gradient(to top, #ff6347 8%, transparent 8%);
+  background: linear-gradient(to top, $color-light-5 8%, transparent 8%);
 }
 nav a span:hover {
   transition: 0.4s;
-  color: tomato;
+  color: $color-light-5;
 }
 
 nav a.router-link-exact-active:hover {
@@ -169,7 +172,7 @@ nav a {
 }
 
 nav a:hover {
-  color: tomato !important;
+  color: $color-light-5 !important;
 }
 
 .profile {

@@ -92,7 +92,6 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useAlarmStore } from '@/stores/alarm';
 
@@ -207,7 +206,7 @@ const getAlarmMessage = (tagId) => {
   }
   > span {
     display: inline-block;
-    background-color: tomato;
+    background-color: $color-light-5;
     color: white;
     width: 30px;
     border-radius: 50%;
@@ -229,6 +228,12 @@ const getAlarmMessage = (tagId) => {
     display: flex;
     .alarm-check {
       flex-basis: 5%;
+      i {
+        color: $color-light-5;
+        position: relative;
+        top: -3px;
+        left: -3px;
+      }
     }
     .alarm-content {
       display: flex;
@@ -240,8 +245,8 @@ const getAlarmMessage = (tagId) => {
         align-items: center;
 
         div:nth-child(1) {
-          color: tomato;
-          font-weight: 500;
+          color: $color-light-5;
+          font-weight: 600;
           margin-right: 6px;
         }
         div:nth-child(2) {
