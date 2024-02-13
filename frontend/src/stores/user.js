@@ -180,7 +180,7 @@ export const useUserStore = defineStore(
       }
     };
     onMounted(async () => {
-      if (data.loginUserInfo.userId) {
+      if (loginUserInfo.value.userId) {
         await login();
       }
     });
