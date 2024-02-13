@@ -10,32 +10,26 @@
           src="@/assets/img/studyroom/pause.png"
           alt="휴식중"
         />
-        <button class="btn" @click="leaveStudyRoom">나가기</button>
       </div>
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
-        <!-- <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button> -->
-        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
       </div>
     </div>
     <div class="bar">
-      <button class="ratetoggle" @click="toggleRate">달성률</button>
-      <button class="questiontoggle" @click="toggleQuestion">질문하기</button>
+      <!-- <button class="ratetoggle" @click="toggleRate">달성률</button> -->
     </div>
-    <QnAListView />
+    <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" />
+    <!-- <QnAListView /> -->
     <div class="containers">
       <div class="video-players">
-        <div class="video-player-3">
+        <div class="video-player-1">
           <div class="bigvideo" ref="video13">
             <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
             <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
             <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
-            <user-video
-              v-else
-              :stream-manager="subscribers[0]"
-              @click.native="updateMainVideoStreamManager(subscribers[0])"
-            />
+            <user-video v-else :stream-manager="subscribers[0]"
+              @click.native="updateMainVideoStreamManager(subscribers[0])" />
           </div>
         </div>
         <div class="video-player-2" v-if="subscribers.length > 0">
@@ -46,62 +40,37 @@
           <!-- 총 3명 -->
           <template v-if="subscribers.length === 2">
             <user-video class="videog3" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog3"
-              v-for="(sub, index) in subscribers.slice(1, 2)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
+            <user-video class="videog3" v-for="(sub, index) in subscribers.slice(1, 2)" :key="index" :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)" />
           </template>
           <!-- 총 4명 -->
           <template v-else-if="subscribers.length === 3">
             <user-video class="videog4" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog4"
-              v-for="(sub, index) in subscribers.slice(1, 3)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
+            <user-video class="videog4" v-for="(sub, index) in subscribers.slice(1, 3)" :key="index" :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)" />
           </template>
           <!-- 총 5명 -->
           <template v-else-if="subscribers.length === 4">
             <user-video class="videog5" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog5"
-              v-for="(sub, index) in subscribers.slice(1, 4)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
+            <user-video class="videog5" v-for="(sub, index) in subscribers.slice(1, 4)" :key="index" :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)" />
           </template>
           <!-- 총 6명 -->
           <template v-else-if="subscribers.length === 5">
             <user-video class="videog6" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog6"
-              v-for="(sub, index) in subscribers.slice(1, 5)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
+            <user-video class="videog6" v-for="(sub, index) in subscribers.slice(1, 5)" :key="index" :stream-manager="sub"
+              @click.native="updateMainVideoStreamManager(sub)" />
           </template>
         </div>
+
       </div>
-      <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
+      <div>
+        <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName"
+          @leave-study-room="leaveStudyRoom" @toggle-question="toggleQuestion"/>
+        <QnAListView v-if="showQuestion"/>
+      </div>
     </div>
   </div>
-  <!-- <div class="black" v-if="isPause">
-    <p class="resttitle">휴식중</p>
-    <p class="resttime">~00:30</p>
-    <img
-      class="play"
-      @click="togglePause"
-      src="@/assets/img/studyroom/whiteplay.png"
-      alt="다시시작"
-    />
-  </div> -->
 </template>
 
 <script setup>
@@ -143,6 +112,7 @@ const publisher = ref(undefined)
 const subscribers = ref([])
 const question = ref('')
 const leave = ref('refresh')
+const showQuestion = ref(false)
 // const achievementRate = ref(0)
 
 const change = ref(false)
@@ -158,6 +128,14 @@ const gakOrder = ref(0)
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
+
+const togglePause = () => {
+  isPause.value = !isPause.value
+}
+
+const toggleQuestion = () => {
+  showQuestion.value = !showQuestion.value
+}
 
 const startCount = () => {
   const countUpInterval = setInterval(() => {
@@ -175,7 +153,7 @@ const startCount = () => {
       const continueCount = confirm(
         categoryName.value +
           '공부가 끝났습니다.\n[' +
-          dagakStore.categoryNameToStudy.value[gakOrder.value + 1] +
+          dagakStore.categoryNameToStudy.value[gakOrder.value] +
           ']방으로 이동 하시겠습니까?'
       )
       if (!continueCount) {
@@ -412,6 +390,7 @@ const leaveStudyRoom = async () => {
   router.push('/')
 }
 
+
 const leaveSession = async () => {
   if (leave.value == 'leave') alert('의도적으로 나갑니다')
   alert('나갑니다.')
@@ -447,31 +426,18 @@ const updateMainVideoStreamManager = (stream) => {
   mainStreamManager.value = stream
 }
 
-const video1 = ref(null)
-const video2 = ref(null)
-const video3 = ref(null)
-const video4 = ref(null)
-const video5 = ref(null)
-const video6 = ref(null)
-const video7 = ref(null)
-const video8 = ref(null)
-const video9 = ref(null)
-const video10 = ref(null)
-const video11 = ref(null)
-const video12 = ref(null)
 const video13 = ref(null)
 
 const showRate = ref(true)
-const showQuestion = ref(true)
 const isPause = ref(false)
 
 const toggleRate = () => {
   showRate.value = !showRate.value
 }
 
-const toggleQuestion = () => {
-  showQuestion.value = !showQuestion.value
-}
+// const toggleQuestion = () => {
+//   showQuestion.value = !showQuestion.value
+// }
 
 const toggleMute = (video) => {
   if (video && video.value instanceof HTMLVideoElement) {
@@ -479,9 +445,7 @@ const toggleMute = (video) => {
   }
 }
 
-const togglePause = () => {
-  isPause.value = !isPause.value
-}
+
 
 onMounted(() => {
   leaveSession().then(() => {
@@ -494,6 +458,9 @@ onBeforeUnmount(() => {
   alert('스터디룸에서 다른 페이지로 라우팅!')
   leaveSession()
 })
+
+
+
 console.log('구독자들: ', subscribers.length)
 console.log('구독자들: ', subscribers.value.length)
 </script>
@@ -502,6 +469,13 @@ console.log('구독자들: ', subscribers.value.length)
 .room {
   flex-direction: column;
   height: 60%;
+  width: 100%;
+}
+
+.side {
+  position: absolute;
+  right: 0;
+  background-color: blueviolet;
 }
 
 .resttitle {
@@ -571,42 +545,34 @@ console.log('구독자들: ', subscribers.value.length)
 
 .containers {
   width: 100%;
+  height: 100%;
   display: flex;
-  margin-top: 60px;
+  margin-top: 100px;
 }
 
 .video-players {
   display: flex;
-  height: 50%;
+  /* height: 388px; */
+  background-color: aquamarine;
   flex-wrap: wrap;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.bar {
-  flex: 3;
-  position: relative;
-  /* background-color: black; */
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  transform-origin: left top;
-  transform: rotate(90deg);
-  /* 90도 회전 */
+.video-player-1 {
+  flex: 4;
 }
 
 .video-player-2 {
   flex: 4;
   background-color: white;
   display: flex;
-  flex-wrap: wrap;
   /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
   flex-direction: column;
+
 }
 
-.video-player-3 {
-  flex: 4;
-}
+
 
 .videog2 {
   width: 100%;
@@ -614,28 +580,33 @@ console.log('구독자들: ', subscribers.value.length)
   box-sizing: border-box;
   flex-grow: 1;
 }
+
 .videog3 {
   width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
 }
+
 .videog4 {
   width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
   flex-direction: row;
 }
+
 .videog5 {
   width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
 }
+
 .videog6 {
   height: calc(100% / 5);
   border: 5px white solid;
   box-sizing: border-box;
   flex-direction: column;
 }
+
 .bigvideo {
   width: 100%;
   display: flex;
@@ -701,13 +672,19 @@ console.log('구독자들: ', subscribers.value.length)
 
 .questiontoggle {
   background-color: rgb(200, 200, 200);
-  width: 120px;
-  height: 40px;
+
   border: gainsboro;
   border-radius: 15px 15px 0 0;
   transition: background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
+  bottom: -5px;
+}
+.closebtn {
+  border: gainsboro;
+  border-radius: 15px 15px 0 0;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
   position: relative;
   bottom: -5px;

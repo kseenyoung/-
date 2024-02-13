@@ -1,11 +1,12 @@
 <template>
-  <!-- <div class="QnA overflow-auto">
+  <div class="QnA overflow-auto">
     <h4><b>[ 질문 게시판 ]</b></h4>
     <QuestionView />
     <br />
     <QuestionField />
-  </div> -->
+  </div>
 </template>
+
 
 <script setup>
 import AnswerView from './AnswerView.vue'
@@ -23,10 +24,13 @@ import QuestionField from '@/components/room/QuestionField.vue'
   background-color: white;
   height: 500px;
   width: 320px;
-  position: fixed;
   margin-top: 30px;
   margin-bottom: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+  position: fixed;
+  right: 0;
+  bottom:0;
+  justify-content: center;
 }
 
 .QnA h4 {
