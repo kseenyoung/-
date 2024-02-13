@@ -14,7 +14,7 @@
     </div>
   
     <div class="d-flex">
-    <button class="post-create-btn" type="button" @click="goCreatePage">글쓰기</button>
+    <button v-if="userStore.loginUserInfo.userId" class="post-create-btn" type="button" @click="goCreatePage">글쓰기</button>
   </div>
   </div>
 </template>
@@ -25,8 +25,10 @@ import { ref } from 'vue'
 import { useBoardStore } from '@/stores/board'
 import PostItem from '@/components/posts/PostItem.vue'
 import SimpleDagak from '@/components/dagak/SimpleDagak.vue';
+import {useUserStore} from '@/stores/user';
 const router = useRouter()
 const boardStore = useBoardStore()
+const userStore = useUserStore()
 
 const goCreatePage = () => {
   router.push({
