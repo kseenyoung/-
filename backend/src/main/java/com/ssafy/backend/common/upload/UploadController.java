@@ -9,6 +9,7 @@ import com.ssafy.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +32,7 @@ public class UploadController {
     private final S3Uploader s3Uploader;
     private final UserService userService;
     @PostMapping("/profile")
+    @Transactional
     public BaseResponse<?> uploadProfile(@RequestParam("file") MultipartFile file,
                                          HttpServletRequest request) throws IOException {
         HttpSession session = request.getSession(false);
