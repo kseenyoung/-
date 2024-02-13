@@ -67,7 +67,7 @@ async function changeItem(inventoryId) {
     if (e.inventoryId == inventoryId) {
       if (e.isWearing == 1) {
         e.isWearing = 0;
-        const body = { sign: 'unEquip', takeOffItem: e.inventoryId };
+        const body = { sign: 'unEquip', unEquipItem: e.inventoryId };
         axios.post(`${import.meta.env.VITE_API_BASE_URL}inventory/`, body);
       } else {
         inventories.value
@@ -78,7 +78,7 @@ async function changeItem(inventoryId) {
             ) {
               if (item.isWearing == 1) {
                 item.isWearing = 0;
-                const body = { sign: 'unEquip', takeOffItem: e.inventoryId };
+                const body = { sign: 'unEquip', unEquipItem: e.inventoryId };
                 axios.post(
                   `${import.meta.env.VITE_API_BASE_URL}inventory/`,
                   body,
@@ -105,11 +105,12 @@ const saveInventory = async function () {
     `${import.meta.env.VITE_API_BASE_URL}inventory/`,
     body,
   );
-  captureAndSend();
+  captureAndSend()
+  
   alert(response.data.message);
 };
 const getInventory = async function () {
-  return await axios.get(`${import.meta.env.VITE_API_BASE_URL}inventory/get`);
+  return await axios.get(`${import.meta.env.VITE_API_BASE_URL}inventory/get`)
 };
 
 const captureAndSend = async () => {
@@ -137,6 +138,7 @@ const captureAndSend = async () => {
     })
     .then((response) => {
       console.log(response);
+      userStore.getLoginUserInfo();
     })
     .catch((error) => {
       console.error(error);
@@ -144,13 +146,14 @@ const captureAndSend = async () => {
 };
 
 onMounted(async () => {
-  const response = await getInventory();
-  if (response.data.code === 1000) {
+  await getInventory().then((response)=>{
+    if (response.data.code === 1000) {
     console.log(response.data);
     inventories.value = response.data.result.inventories;
   } else {
     alert(response.data.message);
   }
+  })
 });
 </script>
 
@@ -179,19 +182,22 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   .inven-wearing {
     flex-basis: 40%;
     margin: 0px 30px;
+    display: inline-block;
     padding: 50px 0px 20px;
+    padding-left:8%;
     border-radius: $box-radius;
     box-shadow: $box-shadow;
 
     .inven-wearing-now {
-      width: 200px;
+      width: 180px;
       height: 150px;
       text-align: center;
       position: absolute;
       .main-item {
-        width: 120px;
-        height: 120px;
-        left: 3em;
+        width: 160px;
+        height: 150px;
+        left: 0.3em;
+
         border: none;
         box-shadow: none;
         position: absolute;
@@ -199,11 +205,9 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }
     .inven-wearing-list {
       margin-top: 200px;
-      background-color: aliceblue;
+      margin-right: 30px;
       .inven-wearing-list-item-wrapper {
-        display: flex;
-        flex-wrap: wrap;
-        padding-left: 15px;
+        display: inline-flex;
       }
     }
   }
