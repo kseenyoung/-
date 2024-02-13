@@ -7,6 +7,7 @@
   </div>
 </template>
 
+
 <script setup>
 import AnswerView from './AnswerView.vue'
 import QuestionView from './QuestionView.vue'
@@ -23,11 +24,9 @@ import QuestionField from '@/components/room/QuestionField.vue'
   background-color: white;
   height: 500px;
   width: 320px;
-  position: fixed;
   margin-top: 30px;
   margin-bottom: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
-
 }
 
 .QnA h4 {

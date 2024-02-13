@@ -50,11 +50,10 @@ const props = defineProps({
   remainTime : Number,
   categoryName : String
 })
-
+const emit = defineEmits(['leave-study-room']);
 
 const  leaveStudyRoom = ()=> {
-      // 부모 컴포넌트로 leave-study-room 이벤트를 발생시킵니다.
-      this.$emit('leave-study-room')
+      emit('leave-study-room')
     }
 
 const convertTime = (seconds) => {
