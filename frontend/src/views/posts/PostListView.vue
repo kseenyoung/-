@@ -7,9 +7,14 @@
         <PostItem
           :title="post.boardTitle"
           :created-date="formatDate(post.createdDate)"
-          :tag="post.tag.tagName"
           @click="goDetailPage(post.boardId)"
         ></PostItem>
+        <!-- <PostItem
+          :title="post.boardTitle"
+          :created-date="formatDate(post.createdDate)"
+          :tag="post.tag.tagName"
+          @click="goDetailPage(post.boardId)"
+        ></PostItem> -->
       </div>
     </div>
 

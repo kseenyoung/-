@@ -23,7 +23,7 @@
       <!-- <button class="ratetoggle" @click="toggleRate">달성률</button> -->
       
     </div>
-    <QnAListView />
+    <QnAListView v-if="showQuestion==true"/>
     <div class="containers">
       <div class="video-players">
         <div class="video-player-3">
