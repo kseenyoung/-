@@ -14,8 +14,6 @@
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
-        <!-- <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button> -->
-        <!-- <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button> -->
       </div>
     </div>
     <div class="bar">
@@ -88,9 +86,15 @@
           </template>
         </div>
       </div>
-      <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
+      <div>
+        <QnAListView v-if="showQuestion==true"/>
+        <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" @leave-study-room="leaveStudyRoom"/>
     </div>
+    
+    </div>
+    
   </div>
+    
   <!-- <div class="black" v-if="isPause">
     <p class="resttitle">휴식중</p>
     <p class="resttime">~00:30</p>
@@ -159,6 +163,14 @@ const addedTime = ref(0)
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
+
+const togglePause = () => {
+  isPause.value = !isPause.value
+}
+
+const toggleQuestion = () => {
+  showQuestion.value = !showQuestion.value
+}
 
 const startCount = () => {
   const countUpInterval = setInterval(() => {
@@ -473,6 +485,7 @@ const leaveStudyRoom = async () => {
   router.push('/')
 }
 
+
 const leaveSession = async () => {
   if (leave.value == 'leave') alert('의도적으로 나갑니다')
   alert('나갑니다.')
@@ -508,19 +521,10 @@ const updateMainVideoStreamManager = (stream) => {
   mainStreamManager.value = stream
 }
 
-const video13 = ref(null)
-
-const showRate = ref(true)
-const showQuestion = ref(false)
-const isPause = ref(false)
-
 // const toggleRate = () => {
 //   showRate.value = !showRate.value
 // }
 
-// const toggleQuestion = () => {
-//   showQuestion.value = !showQuestion.value
-// }
 
 // const toggleMute = (video) => {
 //   if (video && video.value instanceof HTMLVideoElement) {
@@ -528,9 +532,7 @@ const isPause = ref(false)
 //   }
 // }
 
-const togglePause = () => {
-  isPause.value = !isPause.value
-}
+
 
 onMounted(() => {
   leaveSession().then(() => {
@@ -543,6 +545,9 @@ onBeforeUnmount(() => {
   alert('스터디룸에서 다른 페이지로 라우팅!')
   leaveSession()
 })
+
+
+
 console.log('구독자들: ', subscribers.length)
 console.log('구독자들: ', subscribers.value.length)
 </script>
@@ -551,8 +556,13 @@ console.log('구독자들: ', subscribers.value.length)
 .room {
   flex-direction: column;
   height: 60%;
+  width: 100%;
 }
-
+.side {
+  position: absolute;
+  right: 0;
+  background-color: blueviolet;
+}
 .resttitle {
   font-size: 100px;
 }
@@ -619,7 +629,7 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .containers {
-  width: 100%;
+  width: 100rem;
   height: 100%;
   display: flex;
   margin-top: 100px;
@@ -637,12 +647,10 @@ console.log('구독자들: ', subscribers.value.length)
 .bar {
   flex: 3;
   position: relative;
-  /* background-color: black; */
   width: 100%;
   display: flex;
   flex-direction: row;
   transform-origin: left top;
-  transform: rotate(90deg);
   /* 90도 회전 */
 }
 
@@ -650,6 +658,7 @@ console.log('구독자들: ', subscribers.value.length)
   flex: 4;
   background-color: white;
   display: flex;
+  flex-wrap: wrap;
   /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
   flex-direction: column;
 }
