@@ -3,9 +3,11 @@
     <div class="achievement">
       <div class="rate">
         <p class="titletag">공부시간</p>
-        <div class="studytime">{{ convertedTime }}</div>
+        <div class="studytime">{{ convertedTime }}
+        <!-- {{ todayDagak }} -->
+        </div>
         <hr />
-        <p class="titletag">달성률 {{ store.achievementRate }} %</p>
+        <p class="titletag">달성률 : {{ store.achievementRate }} %</p>
         <div>[{{ categoryName }}] 남은 시간 : {{ convertedRemainTime }}</div>
         <div class="dagak">
           <Dagak />
@@ -32,9 +34,12 @@ import Dagak from '@/components/dagak/Dagak.vue'
 import { useUserStore } from '@/stores/user'
 import StudyRoomView from '@/views/StudyRoomView.vue'
 import { useRouter } from 'vue-router'
+import { useDagakStore } from '@/stores/dagak'
 
 const store = useUserStore()
+const dagakStore = useDagakStore()
 const route = useRouter();
+const todayDagak = dagakStore.todayDagak
 const props = defineProps({
   sec: Number,
   remainTime : Number,
@@ -65,7 +70,7 @@ watch(props, (newTime) => {
 watch(props, (newTime) => {
   convertedRemainTime.value = convertTime(newTime.remainTime);
 })
-
+console.log(todayDagak)
 </script>
 
 <style lang="scss" scoped>
