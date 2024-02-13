@@ -136,7 +136,6 @@ public class UserController {
                     if (session != null) {
                         String isBot = (String) session.getAttribute("recaptcha");
                         if ("ok".equals(isBot)) {
-
                             String loginUserId = (String) body.get("userId");
                             String loginUserPassword = (String) body.get("userPassword");
                             String loginUserIp = request.getRemoteAddr();

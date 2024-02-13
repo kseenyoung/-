@@ -6,9 +6,11 @@ import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.domain.Question;
 import com.ssafy.backend.room.model.domain.redis.AnswerRedis;
 import com.ssafy.backend.room.model.domain.redis.QuestionRedis;
+import com.ssafy.backend.room.model.domain.redis.StudyRoomRedis;
 import com.ssafy.backend.room.model.dto.AnswerDTO;
 import com.ssafy.backend.room.model.repository.AnswerRepository;
 import com.ssafy.backend.room.model.repository.QuestionRepository;
+import com.ssafy.backend.room.model.repository.redis.StudyRoomRedisRepository;
 import com.ssafy.backend.room.model.vo.*;
 import com.ssafy.backend.room.model.dto.QuestionDTO;
 import com.ssafy.backend.room.model.dto.EnterRoomDTO;
@@ -17,6 +19,7 @@ import com.ssafy.backend.room.model.repository.redis.QuestionRedisRepository;
 import com.ssafy.backend.user.model.dto.OpenviduRequestDTO;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -26,10 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import java.net.URI;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.EMPTY_SIGN;
@@ -45,10 +45,20 @@ public class RoomServiceImpl implements RoomService {
     @Value("${openvidu.secret}")
     private String OPENVIDU_SECRET;
 
+    @Autowired
     private final AnswerRedisRepository answerRedisRepository;
+
+    @Autowired
     private final QuestionRedisRepository questionRedisRepository;
+
+    @Autowired
     private final AnswerRepository answerRepository;
+
+    @Autowired
     private final QuestionRepository questionRepository;
+
+    @Autowired
+    private final StudyRoomRedisRepository studyRoomRedisRepository;
 
     private OpenVidu openvidu;
 
@@ -75,6 +85,17 @@ public class RoomServiceImpl implements RoomService {
     public ConnectionVO enterRandomroom(EnterRoomDTO enterRoomDTO) throws Exception {
         String sessionName = enterRoomDTO.getSessionName();
         Session session;
+
+        // Redis 저장하기
+        StudyRoomRedis studyRoomRedis = studyRoomRedisRepository.findByName(enterRoomDTO.getSessionName());
+        if(studyRoomRedis == null){
+            studyRoomRedis = new StudyRoomRedis(enterRoomDTO.getSessionName(),1);
+            studyRoomRedisRepository.save(studyRoomRedis);
+        }else {
+            int prevCount = studyRoomRedis.getCount();
+            studyRoomRedis.setCount(prevCount+1);
+            studyRoomRedisRepository.save(studyRoomRedis);
+        }
 
         if(enterRoomDTO.getPrevSession() == null){
             sessionName = getRandomroom(sessionName);
@@ -169,6 +190,21 @@ public class RoomServiceImpl implements RoomService {
                 .collect(Collectors.toList());
         UserQnAVO userQnAVO = new UserQnAVO(answerVOList, questionVOList);
         return userQnAVO;
+    }
+
+    @Override
+    public List<StudyRoomVO> getSessionRanking() throws Exception {
+        List<StudyRoomVO> studyRoomVOList = new ArrayList<>();
+        studyRoomRedisRepository.findAll().forEach(studyRoomRedis -> {
+                    StudyRoomVO studyRoomVO = new StudyRoomVO(studyRoomRedis.getName(), studyRoomRedis.getCount());
+            studyRoomVOList.add(studyRoomVO);
+                }
+        );
+
+        Collections.sort(studyRoomVOList);
+        System.out.println("studyRoomVOList : "+studyRoomVOList);
+
+        return studyRoomVOList;
     }
 
     @Override
@@ -313,6 +349,19 @@ public class RoomServiceImpl implements RoomService {
     }
 
     public void leaveSession(EnterRoomDTO enterRoomDTO) throws Exception{
+        // Redis에 세션 삭제하기
+        String name = enterRoomDTO.getPrevSession();
+        if(name != null){
+            StudyRoomRedis studyRoomRedis = studyRoomRedisRepository.findByName(name.substring(0, name.length() - 1));
+            int prevCount = studyRoomRedis.getCount();
+            if(prevCount == 1){
+                studyRoomRedisRepository.delete(studyRoomRedis);
+            }else {
+                studyRoomRedis.setCount(prevCount-1);
+                studyRoomRedisRepository.save(studyRoomRedis);
+            }
+        }
+
         openvidu.fetch();
         List<Session> activeSessions = openvidu.getActiveSessions();
         String prevSession = enterRoomDTO.getPrevSession();
