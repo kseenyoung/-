@@ -127,22 +127,6 @@ const login = async function () {
         'Content-Type': 'application/json'
       }
     })
-    .then((res) => {
-      if (res.data.code === 1000) {
-        //성공 시 유저정보 + 안읽은 알림 불러오기
-        userStore.getLoginUserInfo()
-        alarmStore.getUnReadAlarmList()
-        //홈으로 이동
-        router.push({
-          name: 'home'
-        })
-      } else if (res.data.code === 1405) {
-        alert(res.data.result, 'asdasd')
-      }
-    })
-  id.value = ''
-  password.value = ''
-}
   if (res.data.code === 1000) {
     //성공 시 유저정보 + 안읽은 알림 불러오기
 
@@ -160,6 +144,7 @@ const login = async function () {
   id.value = '';
   password.value = '';
 };
+
 
 const recaptchaExpired = async function (response) {
   disableInputId.value = true
