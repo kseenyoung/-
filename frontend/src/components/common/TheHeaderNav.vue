@@ -27,7 +27,11 @@
           v-if="userStore.loginUserInfo.userId"
           id="dropdownProfileButton"
         >
-          <img class="profile" v-if="userStore.loginUserInfo.userPicture" :src="useImage(profileImage)" />
+          <img
+            class="profile"
+            v-if="userStore.loginUserInfo.userPicture"
+            :src="useImage(profileImage)"
+          />
           <img class="profile" v-else src="@/assets/img/default.jpg" />
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownProfileButton">
@@ -91,7 +95,7 @@ import { cookiesStorage } from '@/utils/CookiesUtil';
 const userStore = useUserStore();
 const alarmStore = useAlarmStore();
 const router = useRouter();
-const profileImage = ref("");
+const profileImage = ref('');
 const useImage = (url) => {
   return new URL(`${url}`, import.meta.url).href;
 };
@@ -102,8 +106,10 @@ const logout = async function () {
   const body = {
     sign: 'logout',
   };
-  const res = await axios
-    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body);
+  const res = await axios.post(
+    `${import.meta.env.VITE_API_BASE_URL}user`,
+    body,
+  );
   //성공 시 홈으로
   router.push({
     name: 'login',
