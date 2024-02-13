@@ -7,6 +7,17 @@
         <label for="exampleFormControlInput1" class="form-label">제목</label>
         <input  class="form-control" id="title" v-model="detail.boardTitle" />
       </div>
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          태그
+        </button>
+        <ul class="dropdown-menu">
+          <li v-for=" tag in tagList" :key="tag.boardTagId">
+            <a class="dropdown-item" href="#" @click="selectTag(tag)">{{ tag.boardTagName }}</a>
+          </li>
+        </ul>
+      <div v-if="selectedTagName">
+        선택된 태그 이름: {{ selectedTagName }}
+      </div>
       <div class="mb-3">
         <label for="content" class="form-label">내용</label>
         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="detail.boardContent"></textarea>
@@ -24,17 +35,26 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import { useBoardStore } from '@/stores/board';
-import { ref } from 'vue'
-
+import { ref, onMounted } from 'vue'
+import axios from 'axios';
 const route = useRoute()
 const router = useRouter()
 const boardStore = useBoardStore()
 const id = route.params.id
 const detail = ref([])
+const tagList = ref([])
+const selectedTagId = ref('')
+const selectedTagName = ref('')
 
-const fetchDetail = (id) => {
-  boardStore.getPostDetail(id);
+
+
+const fetchDetail = async (id) => {
+  await boardStore.getPostDetail(id);
   detail.value = boardStore.postDetail;
+  console.log(detail.value,"gdgd");
+
+  selectedTagId.value = boardStore.postDetail.boardTag.boardTagId;
+  selectedTagName.value = boardStore.postDetail.boardTag.boardTagName;
 }
 fetchDetail(id);
 
@@ -43,23 +63,55 @@ const goDetailPage = () =>
     name: 'postDetail',
     params: { id }
   })
-
+// 목록 페이지로 돌아가기
+const goListPage = () => {
+  router.push({
+    name: 'postList'
+  })
+}
   const savePost = async () => {
+  let flag = confirm("정말로 수정하시겠습니까?");
+  if(flag){
+    try {
+      const body = {
+        sign: 'modifyPost',
+        boardTitle: detail.value.boardTitle,
+        boardContent: detail.value.boardContent,
+        tagId: selectedTagId.value,
+        boardId : detail.value.boardId,
+      };
+      console.log(detail.value);
+      const response = await axios
+        .post(`${import.meta.env.VITE_API_BASE_URL}board`, body)
+      if(response.data.code === 1000){
+        goListPage()
+        console.log('새 포스트 : ', response)
+      }else{
+        alert(response.data.message);
+      }
+      } catch (error) {
+        console.log('Error saving post:', error)
+      }
+  }
+
+}
+const getBoardTagList = async () =>{
   try {
-    const body = {
-      sign: 'modifyPost',
-      boardTitle: title.value,
-      boardContent: content.value,
-      tagId: tag.value,
-    };
     const response = await axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}board`, body)
-      goListPage()
-      console.log('새 포스트 : ', response)
+      .get(`${import.meta.env.VITE_API_BASE_URL}board/tag/list`)
+      tagList.value = response.data.result;
     } catch (error) {
       console.log('Error saving post:', error)
     }
 }
+const selectTag = (tag) =>{
+  selectedTagId.value = tag.boardTagId;
+  selectedTagName.value = tag.boardTagName; 
+  console.log(selectedTagName.value,"tete");
+}
+onMounted(async () => {
+  await getBoardTagList();
+});
 
 </script>
 
