@@ -111,7 +111,7 @@ public class DagakServiceImpl implements DagakService {
     public CalendarDagakVO getDagak(String userId, LocalDate today) {
         Calendar todayCalender = calendarRepository.findCalendarByCalendarDateAndUserId(today, userId)
                 .orElseThrow(() ->
-                    new BaseException(NOT_FOUND_TODAY_DAGAK));
+                        new BaseException(NOT_FOUND_TODAY_DAGAK));
         CalendarDagakVO todayCalendarDagakVO = new CalendarDagakVO();
         todayCalendarDagakVO.setCalendarDagakId(todayCalender.getCalendarDagakId());
         todayCalendarDagakVO.setUserId(todayCalender.getUserId());
@@ -216,6 +216,8 @@ public class DagakServiceImpl implements DagakService {
                             .categoryId(updateMemoryTimeDto.getCategoryId())
                             .calendarId(updateMemoryTimeDto.getCalendarId())
                             .userId(updateMemoryTimeDto.getUserId())
+                            .gakId(updateMemoryTimeDto.getGakId())
+                            .updatedDate(today)
                             .build()
             );
         } else {
@@ -243,10 +245,10 @@ public class DagakServiceImpl implements DagakService {
 
         log.info("historyGaks : {}", historyGaks);
         System.out.println("님아 왜그러세요 제발");
-        System.out.println(todayGaks);
-        System.out.println(historyGaks);
+        System.out.println(todayGaks + " " + todayGaks.size());
+        System.out.println(historyGaks + " " + historyGaks.size());
 
-        if (historyGaks == null || historyGaks.isEmpty()) {  // 공부 아예 처음 시작.
+        if (historyGaks.isEmpty()) {  // 공부 아예 처음 시작.
             Gak todayGak = todayGaks.get(0);
             todayGakVO.setUserId(userId);
             todayGakVO.setCalendarId(calendarId);
@@ -255,49 +257,56 @@ public class DagakServiceImpl implements DagakService {
             todayGakVO.setCategoryId(todayGak.getCategoryId());
             todayGakVO.setMemoryTime(0);
             todayGakVO.setGakOrder(0);
-            todayGakVO.setRequiredStudyTime(0);
+            todayGakVO.setRequiredStudyTime(todayGak.getRunningTime());
 
             Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
             todayGakVO.setCategoryName(category.getCategoryName());
 
-        } else if (historyGaks.size() < todayGaks.size()){ // 루틴 수행 도중일 때.
-            Gak todayGak = todayGaks.get(historyGaks.size()-1);
+        } else if (todayGaks.size() >= historyGaks.size()) { // 루틴 수행 도중일 때.
+            Gak todayGak = null;
             int nowStudyingTime = 0;
-            for (int i = 0; i < historyGaks.size() ; i++) {
-                if (todayGaks.get(i).getRunningTime() <= historyGaks.get(i).getMemoryTime()){
-                    nowStudyingTime += todayGaks.get(i).getRunningTime();
-                    if (i == historyGaks.size()-1){
-                        todayGak = todayGaks.get(historyGaks.size());
+            for (int i = 0; i < historyGaks.size(); i++){
+                if (i == historyGaks.size()-1){
+                    if (historyGaks.get(i).getMemoryTime() >= todayGaks.get(i).getRunningTime()) { // 기존 시간보다 많이 한 경우
+                        nowStudyingTime += historyGaks.get(i).getMemoryTime();
+                        if (todayGaks.size() == historyGaks.size()){ // 마지막 루틴일 때
+                            todayGak = todayGaks.get(historyGaks.size() - 1);
+                            todayGakVO.setRequiredStudyTime(0);
+                        } else {  // 다음 루틴으로 넘어가야 할 때
+                            todayGak = todayGaks.get(historyGaks.size());
+                            todayGakVO.setRequiredStudyTime(todayGak.getRunningTime());
+                        }
+                    } else {   // 아직 수행중일 경우
+                        todayGak = todayGaks.get(i);
+                        todayGakVO.setRequiredStudyTime(todayGak.getRunningTime()-historyGaks.get(i).getMemoryTime());
                     }
-                }
-                else
+                } else {
                     nowStudyingTime += historyGaks.get(i).getMemoryTime();
-            }
+                }
 
+            }
             todayGakVO.setUserId(userId);
             todayGakVO.setCalendarId(calendarId);
             todayGakVO.setGakId(todayGak.getGakId());
             todayGakVO.setCategoryId(todayGak.getCategoryId());
             todayGakVO.setTotalTime(todayDagakVO.getTotalTime());
             todayGakVO.setMemoryTime(nowStudyingTime);
-            todayGakVO.setRequiredStudyTime(todayGak.getRunningTime()- historyGaks.get(historyGaks.size()-1).getMemoryTime());
             todayGakVO.setGakOrder(historyGaks.size());
 
             Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
             todayGakVO.setCategoryName(category.getCategoryName());
-        } else {  // 마지막 루틴일 때.
-
         }
         System.out.println(todayGakVO);
         return todayGakVO;
     }
 
+
     @Override
     @Transactional
     public void deleteCalendarDagak(DeleteCalendarDagakDTO deleteCalendarDagakDTO) {
-        try{
+        try {
             calendarRepository.deleteByCalendarDagakIdAndUserId(deleteCalendarDagakDTO.getCalendarDagakId(), deleteCalendarDagakDTO.getUserId());
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new BaseException(NOT_FOUND_CALENDAR_DAGAK);
         }
     }

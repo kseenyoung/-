@@ -157,7 +157,6 @@ const startCount = () => {
   }, 1000)
 
   const countDownInterval = setInterval(() => {
-    remainTime.value--
     if (remainTime.value <= 0) {
       clearInterval(countDownInterval)
       clearInterval(countUpInterval)
@@ -171,11 +170,13 @@ const startCount = () => {
       )
       if (!continueCount) {
         CountAfterComplete()
+        remainTime.value = 0
       } else {
         // TODO : 지금까지 한 공부 시간 업데이트 해야함.
         modifyMemoryTime()
       }
     }
+    remainTime.value -= 1
   }, 1000)
 }
 
@@ -255,12 +256,8 @@ onBeforeMount(async () => {
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
       const achievementRate = result.memoryTime / result.totalTime
-      if (achievementRate >= 1) {
-        achievementRate.value = 1
-      } else {
-        // remainTime.value = (result.totalTime - result.memoryTime);
-        remainTime.value = result.requiredStudyTime
-      }
+      remainTime.value = result.requiredStudyTime
+
       store.achievementRate = Math.floor(achievementRate * 100)
       sec.value = result.memoryTime // 공부했던 시간.
     })

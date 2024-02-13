@@ -115,7 +115,7 @@ public class DagakController {
                 String categoryId = (String) body.get("categoryId");
                 String calendarId = (String) body.get("calendarId");
                 UpdateMemoryTimeDTO updateStartTimeDto = new UpdateMemoryTimeDTO(gakId, categoryId, calendarId, memoryTime, userId);
-
+                System.out.println(updateStartTimeDto);
                 dagakService.modifyMemoryTime(updateStartTimeDto);
 
                 return new BaseResponse<>(SUCCESS);
