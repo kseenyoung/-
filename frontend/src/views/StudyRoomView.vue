@@ -163,7 +163,7 @@ const startCount = () => {
       const continueCount = confirm(
         categoryName.value +
           '공부가 끝났습니다.\n[' +
-          dagakStore.categoryNameToStudy.value[gakOrder.value + 1] +
+          // dagakStore.categoryNameToStudy.value[gakOrder.value + 1] +
           ']방으로 이동 하시겠습니까?'
       )
       if (!continueCount) {
@@ -171,17 +171,15 @@ const startCount = () => {
       } else {
         // leave.value = "leave";
         // leaveSession();
-
         // db에 공부한 시간 저장해야함.
         // 다음각을 불러와서
         // 다음각을
-
         //dagakStore.categoryNameToStudy.value[gakOrder.value+1]
-        store.loginUserInfo.sub = 'Korean'
-        leaveSession().then(() => {
-          change.value = true
-          joinSession()
-        })
+        // store.loginUserInfo.sub = 'Korean'
+        // leaveSession().then(() => {
+        //   change.value = true
+        //   joinSession()
+        // })
       }
     }
   }, 1000)
@@ -194,32 +192,32 @@ const CountAfterComplete = () => {
   }, 1000)
 }
 
-onBeforeMount(async () => {
-  await axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
-    .then((res) => {
-      const result = res.data.result
-      // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
-      // 그에 따른 categoryId로 방 이동 바랍니다.
-      categoryId.value = result.categoryId
-      calendarId.value = result.calendarId
-      gakId.value = result.gakId
-      userId.value = result.userId
-      gakOrder.value = result.gakOrder
+// onBeforeMount(async () => {
+//   await axios
+//     .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
+//     .then((res) => {
+//       const result = res.data.result
+//       // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
+//       // 그에 따른 categoryId로 방 이동 바랍니다.
+//       categoryId.value = result.categoryId
+//       calendarId.value = result.calendarId
+//       gakId.value = result.gakId
+//       userId.value = result.userId
+//       gakOrder.value = result.gakOrder
 
-      alert(result.categoryName + '방에 입장합니다.')
-      categoryName.value = result.categoryName
-      const achievementRate = result.memoryTime / result.totalTime
-      if (achievementRate >= 1) {
-        achievementRate.value = 1
-      } else {
-        // remainTime.value = (result.totalTime - result.memoryTime);
-        remainTime.value = result.requiredStudyTime
-      }
-      store.achievementRate = Math.floor(achievementRate * 100)
-      sec.value = result.memoryTime // 공부했던 시간.
-    })
-})
+//       alert(result.categoryName + '방에 입장합니다.')
+//       categoryName.value = result.categoryName
+//       const achievementRate = result.memoryTime / result.totalTime
+//       if (achievementRate >= 1) {
+//         achievementRate.value = 1
+//       } else {
+//         // remainTime.value = (result.totalTime - result.memoryTime);
+//         remainTime.value = result.requiredStudyTime
+//       }
+//       store.achievementRate = Math.floor(achievementRate * 100)
+//       sec.value = result.memoryTime // 공부했던 시간.
+//     })
+// })
 // 플래그
 
 // 방 입장
@@ -240,7 +238,7 @@ const changeSession = async () => {
     APPLICATION_SERVER_URL + 'room',
     {
       sign: 'changeSession',
-      userId: store.myUserName,
+      userId: store.loginUserInfo.userId,
       sessionName: store.loginUserInfo.sub,
       videoCodec: 'VP8'
     },
@@ -256,7 +254,7 @@ const changeSession = async () => {
 console.log('구독자들: ', subscribers.value)
 console.log('STORE USER  :  ', store.loginUser)
 // 초기 데이터(계정 세션 아이디, 계정 이름)
-const myUserName = ref(store.myUserName)
+const myUserName = ref(store.loginUserInfo.userId)
 
 // 방 생성
 const createSession = async () => {
@@ -264,7 +262,7 @@ const createSession = async () => {
     APPLICATION_SERVER_URL + 'room',
     {
       sign: 'enterRandomroom',
-      userId: store.myUserName,
+      userId: store.loginUserInfo.userId,
       sessionName: store.loginUserInfo.sub,
       videoCodec: 'VP8'
     },
@@ -358,7 +356,7 @@ const joinSession = () => {
     console.log('token' + token)
     store.studyRoomSessionToken = token
     session.value
-      .connect(token, store.myUserName)
+      .connect(token, store.loginUserInfo.userId)
       .then(() => {
         publisher.value = OV.value.initPublisher(undefined, {
           audioSource: undefined,
