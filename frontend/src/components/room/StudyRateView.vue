@@ -22,7 +22,7 @@
       </div>
       
     </div>
-        <QnAListView  class="QnA"/>
+        <QnAListView class="QnA"/>
   </div>
 </template>
 
@@ -46,7 +46,7 @@ const props = defineProps({
   remainTime : Number,
   categoryName : String
 })
-const emit = defineEmits(['leave-study-room', ]);
+const emit = defineEmits(['leave-study-room']);
 
 const  leaveStudyRoom = ()=> {
       // 부모 컴포넌트로 leave-study-room 이벤트를 발생시킵니다.
