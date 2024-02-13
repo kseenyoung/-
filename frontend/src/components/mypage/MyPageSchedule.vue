@@ -49,11 +49,6 @@
                 "
               >
                 <div class="dagak-name">{{ event.dagakName }}</div>
-                <!-- <img
-                  v-if="event.dagakId"
-                  src="@/assets/img/mypage/hexagon_thin.png"
-                  class="dagak-figure"
-                /> -->
                 <DagakImg :gak-length="event.gakLength" />
               </div>
             </div>
