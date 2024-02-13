@@ -1,6 +1,7 @@
 <template>
   <div class="common-mypage-wrapper">
     <div class="common-mypage-title">친구 목록</div>
+
     <div class="friend-list-wrapper">
       <div class="friend-list-total">
         <i class="bi bi-people-fill"></i> {{ totalFriend }}명
@@ -18,16 +19,24 @@
           aria-expanded="false"
           @click="friendDetail(friend.userNickname)"
         >
-          {{ friend.userNickname }}
+          {{ friend.userId }}
         </div>
-        <div class="friend-onoff friend-online">
-          <!-- <div class="friend-onoff friend-offline"> -->
+
+        <div v-if="friend.login" class="friend-onoff friend-online">
           <i class="bi bi-circle-fill"></i>접속중
         </div>
+
+        <div v-else class="friend-onoff friend-offline">
+          <i class="bi bi-circle-fill"></i>접속종료
+        </div>
+
         <button class="btn common-btn"><i class="bi bi-send"></i></button>
         <ul class="dropdown-menu">
           <li>{{ friendDetailInfo.userNickname }}</li>
-          <li>모꼬지: {{ friendDetailInfo.mokkoijiName }}</li>
+          <li v-if="friendDetailInfo.mokkoijiName != null">
+            모꼬지: {{ friendDetailInfo.mokkoijiName }}
+          </li>
+          <li v-else>모꼬지: -</li>
           <li v-if="friendDetailInfo.userRank != null">
             랭크: {{ friendDetailInfo.userRank }} 위
           </li>
@@ -36,7 +45,10 @@
             공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
           </li>
           <li v-else>공부시간: -</li>
-          <li>"{{ friendDetailInfo.userStatusMessage }}"</li>
+          <li v-if="friendDetailInfo.userStatusMessage != null">
+            "{{ friendDetailInfo.userStatusMessage }}"
+          </li>
+          <li v-else>" "</li>
         </ul>
       </div>
     </div>
@@ -46,9 +58,11 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { useFriendStore } from '@/stores/friend';
 
 const totalFriend = ref('');
-const listFriend = ref([]);
+const friendStore = useFriendStore();
+const listFriend = ref(friendStore.loginFriends.value);
 
 onMounted(() => {
   getFriends();
@@ -58,6 +72,7 @@ const getFriends = function () {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}friend/getFriendList`)
     .then((res) => {
+      console.log(res);
       if (res.data.code === 1000) {
         //성공
         totalFriend.value = res.data.result.countFriend;
@@ -78,11 +93,10 @@ const friendDetail = function (nickname) {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) => res.data)
-    .then((json) => {
-      if (json.code === 1000) {
+    .then((res) => {
+      if (res.data.code === 1000) {
         //성공
-        friendDetailInfo.value = json.result;
+        friendDetailInfo.value = res.data.result;
       } else {
         alert('닉네임이 비어있습니다.');
       }
@@ -148,7 +162,8 @@ const friendDetail = function (nickname) {
   }
   .friend-onoff {
     @include friend-status;
-
+    font-size: 14px;
+    padding: 1px;
     i {
       font-size: 0.7rem;
       position: relative;

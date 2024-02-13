@@ -9,12 +9,24 @@ export const useQuestionStore = defineStore('questionStore', () => {
   //   }
   // }
   const question = ref([])
+  const answer = ref(new Map())
 
   const setQuestion = async function (data) {
-    console.log('question : ' + data)
+    // console.log('question : ' + data)
 
     question.value.push(data)
   }
 
-  return { question, setQuestion }
+  const setAnswer = async function (questionId, data) {
+    // console.log('setAnswer : ' + questionId + ' & ' + data)
+
+    if (!answer.value.has(questionId)) {
+      answer.value.set(questionId, [])
+    }
+
+    answer.value.get(questionId).push(data)
+    // console.log('answer[questionId] : ' + answer.value.get(questionId))
+  }
+
+  return { question, setQuestion, answer, setAnswer }
 })

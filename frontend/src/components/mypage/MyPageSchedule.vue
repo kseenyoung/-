@@ -3,15 +3,17 @@
     <div class="calendar-header">
       <button @click="goToToday" class="btn common-btn">오늘</button>
       <button @click="prevMonth" class="cal-btn">
-        <i class="bi bi-caret-left-square-fill"></i>
+        <i class="bi bi-caret-left-square-fill ms-2"></i>
       </button>
       <span class="span-header">{{ currentMonth }}</span>
       <button @click="nextMonth" class="cal-btn">
-        <i class="bi bi-caret-right-square-fill"></i>
+        <i class="bi bi-caret-right-square-fill me-2"></i>
       </button>
-      <button @click="goToMyDagak" class="btn common-btn">내 다각</button>
-      <button @click="goToMyAddDate" class="btn common-btn">
-        스케줄에 추가
+      <button @click="goToMyDagak" class="btn common-btn goto-btn">
+        <i class="bi bi-grid"></i>내 다각
+      </button>
+      <button @click="goToMyAddDate" class="btn common-btn goto-btn">
+        <i class="bi bi-calendar-plus"></i>스케줄에 추가
       </button>
     </div>
     <table>
@@ -29,7 +31,7 @@
             <div v-if="day.date" class="dagak-wrapper">
               <div
                 v-if="!hasEventsForDate(day.date)"
-                @click="goToMyAddDate"
+                @click="goToMyAddDateClick(day.date)"
                 class="dagak-goto-add"
               ></div>
               <div
@@ -47,11 +49,12 @@
                 "
               >
                 <div class="dagak-name">{{ event.dagakName }}</div>
-                <img
+                <!-- <img
                   v-if="event.dagakId"
                   src="@/assets/img/mypage/hexagon_thin.png"
                   class="dagak-figure"
-                />
+                /> -->
+                <DagakImg :gak-length="event.gakLength" />
               </div>
             </div>
           </td>
@@ -122,6 +125,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import DagakImg from '@/components/dagak/DagakImg.vue';
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
@@ -143,12 +147,38 @@ const hasEventsForDate = (date) => {
 };
 
 //모든 캘린더 다각 가져오기
-const getAllCalendarList = function () {
-  axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
-    .then((res) => {
-      calendarList.value = res.data.result;
-    });
+// const getAllCalendarList = function () {
+//   axios
+//     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
+//     .then((res) => {
+//       calendarList.value = res.data.result;
+//     });
+// };
+const getAllCalendarList = async function () {
+  try {
+    //전체 캘린더 다각 목록
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`,
+    );
+    const dagaks = response.data.result;
+
+    //다각의 각 목록
+    const gakLengthPromises = dagaks.map((dagak) =>
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
+        params: { dagakId: dagak.dagakId },
+      }),
+    );
+
+    const gakLengthResponses = await Promise.all(gakLengthPromises);
+
+    //다각 리스트에 각 개수 데이터 저장
+    calendarList.value = dagaks.map((dagak, index) => ({
+      ...dagak,
+      gakLength: gakLengthResponses[index].data.result.length,
+    }));
+  } catch (error) {
+    console.error('Error:', error);
+  }
 };
 
 //다각 날짜 반환
@@ -310,6 +340,20 @@ const goToMyAddDate = function () {
     name: 'myPageScheduleAddDate',
   });
 };
+//날짜 클릭 시 -> 날짜 정보 들고 라우터 이동
+const goToMyAddDateClick = function (date) {
+  const formattedDate = new Date(
+    date.getTime() - date.getTimezoneOffset() * 60000,
+  )
+    .toISOString()
+    .split('T')[0];
+  router.push({
+    name: 'myPageScheduleAddDate',
+    query: {
+      selectedDate: formattedDate,
+    },
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -328,6 +372,14 @@ const goToMyAddDate = function () {
 .calendar-header {
   margin-bottom: 20px;
   text-align: center;
+  .goto-btn {
+    margin-right: 5px;
+    i {
+      position: relative;
+      top: -2px;
+      left: -3px;
+    }
+  }
 }
 
 table {
@@ -371,7 +423,7 @@ td {
   font-size: 24px;
   font-weight: bold;
   color: #555;
-  margin: 0 15px;
+  margin: 0 10px;
 }
 
 .red-text {
@@ -386,15 +438,17 @@ td {
   height: 100%;
   .dagak-name {
     position: relative;
-    top: 30px;
+    top: 77px;
   }
   .dagak-goto-add {
     height: 100%;
   }
   > div {
     font-size: 1rem;
-    height: 20px;
+    height: 58px; //20px
     text-align: center;
+    position: relative; //추가
+    top: -15px; //추가
   }
   .dagak-figure {
     position: absolute;

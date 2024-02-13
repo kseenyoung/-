@@ -6,6 +6,7 @@ import com.ssafy.backend.board.model.vo.BoardDetailVO;
 import com.ssafy.backend.board.model.vo.BoardListVO;
 import com.ssafy.backend.board.model.vo.CommentVO;
 import com.ssafy.backend.board.service.BoardService;
+import com.ssafy.backend.board.service.BoardTagService;
 import com.ssafy.backend.board.service.CommentService;
 import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.common.exception.MyException;
@@ -30,6 +31,13 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
+    private final BoardTagService boardTagService;
+
+    @GetMapping("/tag/list")
+    public BaseResponse<?> getBoardTag(){
+        return new BaseResponse<>(boardTagService.getTagList());
+    }
+
 
     @GetMapping("/detail/{id:[\\d]+}")
     public BaseResponse<?> getBoardDetail(@PathVariable("id") long id) {
@@ -69,7 +77,7 @@ public class BoardController {
                 boardService.addBoard(addRequestDTO, userId);
                 return new BaseResponse<>(SUCCESS);
             case "deletePost":
-                long boardId = (long) body.get("boardId");
+                long boardId = Long.valueOf((int) body.get("boardId"));
                 BoardDeleteRequestDTO dto = BoardDeleteRequestDTO
                         .builder()
                         .boardId(boardId).build();
@@ -79,12 +87,13 @@ public class BoardController {
                 boardTitle = (String) body.get("boardTitle");
                 boardContent = (String) body.get("boardContent");
                 tagId =(int) body.get("tagId");
-                boardId = (long) body.get("boardId");
+                boardId = Long.valueOf((int) body.get("boardId"));
                 //tagId가 숫자일때
                 BoardModifyRequestDTO modifyRequestDTO = BoardModifyRequestDTO.builder()
                         .boardId((boardId))
                         .boardTitle(boardTitle)
                         .boardContent(boardContent)
+                        .tagId(tagId)
                         .build();
                 boardService.modifyBoard(modifyRequestDTO, userId);
                 return new BaseResponse<>(SUCCESS);

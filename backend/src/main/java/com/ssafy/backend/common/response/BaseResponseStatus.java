@@ -71,7 +71,7 @@ public enum BaseResponseStatus {
     NOT_EXIST_ALARM_ID(false, 2032, "일치하는 알람 아이디가 없습니다."),
     NOT_EXIST_PRODUCT(false,2040,"일치하는 상품이 없습니다."),
     NOT_EXIST_INVENTORY(false,2041,"일치하는 인벤토리가 없습니다."),
-    NOT_EXIST_SESSION(false,2042, "존재하지 않는 세션입니다."),
+    NOT_EXIST_SESSION(false,2141, "존재하지 않는 세션입니다."),
     WRONG_TYPE(false,2043,"자료형이 일치하지 않습니다."),
 
     /* 알람 서비스 관련 에러 이넘 클래스 BAD REQUEST*/

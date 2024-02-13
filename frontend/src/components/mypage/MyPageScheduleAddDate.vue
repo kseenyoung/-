@@ -17,7 +17,7 @@
       :enable-time-picker="false"
     />
     <div class="dagak-main-title">다각 목록</div>
-    <div class="dagak-list-wrapper">
+    <div class="dagak-list-wrapper" v-if="dagakList.length != 0">
       <div
         class="dagak-detail-wrapper common-pointer"
         v-for="dagak in dagakList"
@@ -27,10 +27,12 @@
         }"
         @click="addDagakList(dagak.dagakId)"
       >
-        <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" />
+        <!-- <img src="@/assets/img/mypage/hexagon_thin.png" class="dagak-figure" /> -->
+        <DagakImg :gak-length="dagak.gakLength" />
         <div class="dagak-title">{{ dagak.dagakName }}</div>
       </div>
     </div>
+    <div v-else>생성한 다각이 없습니다. 새로 생성해주세요.</div>
   </div>
   <div class="dagak-add-wrapper">
     <button class="btn common-btn add-btn" @click="addDagakDate">
@@ -45,24 +47,49 @@ import { useRouter } from 'vue-router';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import axios from 'axios';
+import DagakImg from '@/components/dagak/DagakImg.vue';
 
 const router = useRouter();
 
 const dagakList = ref([]);
 const selectDagak = ref('');
-const dates = ref();
+const initialDate = new Date();
+const dates = ref([]);
 
 onMounted(() => {
   getAllDagakList();
+  if (router.currentRoute.value.query.selectedDate) {
+    initialDate.value = new Date(router.currentRoute.value.query.selectedDate);
+    dates.value = [initialDate.value];
+  }
 });
 
 //전체 다각 목록 불러오기
-const getAllDagakList = function () {
-  axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`)
-    .then((res) => {
-      dagakList.value = res.data.result;
-    });
+const getAllDagakList = async function () {
+  try {
+    //전체 다각 목록
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`,
+    );
+    const dagaks = response.data.result;
+
+    //다각의 각 목록
+    const gakLengthPromises = dagaks.map((dagak) =>
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
+        params: { dagakId: dagak.dagakId },
+      }),
+    );
+
+    const gakLengthResponses = await Promise.all(gakLengthPromises);
+
+    //다각 리스트에 각 개수 데이터 저장
+    dagakList.value = dagaks.map((dagak, index) => ({
+      ...dagak,
+      gakLength: gakLengthResponses[index].data.result.length,
+    }));
+  } catch (error) {
+    console.error('Error:', error);
+  }
 };
 
 //선택한 다각id 저장

@@ -99,6 +99,8 @@ public class UserController {
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
         String sign = (String) body.get("sign");
         HttpSession session = request.getSession(false);
+        User user;
+        String userId;
 
         if (sign != null) {
             switch (sign) {
@@ -134,7 +136,6 @@ public class UserController {
                     if (session != null) {
                         String isBot = (String) session.getAttribute("recaptcha");
                         if ("ok".equals(isBot)) {
-
                             String loginUserId = (String) body.get("userId");
                             String loginUserPassword = (String) body.get("userPassword");
                             String loginUserIp = request.getRemoteAddr();
@@ -142,7 +143,7 @@ public class UserController {
                             UserLoginDTO userLoginDto = new UserLoginDTO(loginUserId, loginUserPassword);
                             if (userService.login(userLoginDto)) {  // 로그인 성공 시...
 
-                                User user = new User(loginUserId);
+                                user = new User(loginUserId);
                                 session = request.getSession();
                                 session.setAttribute("User", user);
                                 System.out.println("session : " + session);
@@ -163,36 +164,7 @@ public class UserController {
                                     return new BaseResponse<>(SUCCESS);
                                 }
 
-                                // 로그인 성공시 친구들에게 시그널 전송
-//                                List<FriendVO> friendList = friendService.listFriends(loginUserId);
-//
-//                                for (FriendVO friend : friendList) {
-//                                    System.out.println(friend.getUserId() + "에게 로그인 신호");
-//                                    OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "login", loginUserId);
-//                                    URI uri = UriComponentsBuilder
-//                                            .fromUriString(OPENVIDU_URL)
-//                                            .path("/openvidu/api/signal")
-//                                            .encode()
-//                                            .build()
-//                                            .toUri();
-//
-//                                    String secret = "Basic " + OPENVIDU_SECRET;
-//                                    secret = Base64.getEncoder().encodeToString(secret.getBytes());
-//
-//                                    RequestEntity<String> requestEntity = RequestEntity
-//                                            .post(uri)
-//                                            .header("Content-Type", "application/json")
-//                                            .header("Authorization", "Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU")
-//                                            .body(openviduRequestDto.toJson());
-//
-//                                    RestTemplate restTemplate = new RestTemplate();
-//                                    restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//                                    try {
-//                                        ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
-//                                    } catch (Exception e) {
-//                                        System.out.println("error: " + e);
-//                                    }
-//                                }
+
                                 loginHistoryService.successLogin(loginUserId, loginUserIp);
                                 return new BaseResponse<>(SUCCESS);
                             } else {  // 로그인 실패 시
@@ -216,10 +188,16 @@ public class UserController {
 
 
                 case "logout":
+                    System.out.println("call logout");
                     session = request.getSession(false);
+                    user = (User)session.getAttribute("User");
+                    userId = user.getUserId();
+
                     if (session != null) {
+                        userService.logout(userId);
                         session.invalidate();
                     }
+
                     return new BaseResponse<>(SUCCESS);
                 /*
                  * [POST] 아이디 중복 검사
@@ -459,7 +437,7 @@ public class UserController {
                 case "getMyPage":
                     session = request.getSession(false);
                     if (session != null) {
-                        User user = (User) session.getAttribute("User");
+                        user = (User) session.getAttribute("User");
                         String getMyPageUserId = user.getUserId();
                         MyPageVO myPageVO = userService.getMyPage(getMyPageUserId);
                         return new BaseResponse<>(myPageVO);
@@ -501,10 +479,9 @@ public class UserController {
                     }
                 case "loginSignal":
                     // 로그인 성공시 친구들에게 시그널 전송
-                    log.info("login 후 새로고침하면 세션끊기잖아? 다시 연결해서 로그인시그널 주기 ");
                     session = request.getSession(false);
-                    User user = (User) session.getAttribute("User");
-                    String userId = user.getUserId();
+                    user = (User) session.getAttribute("User");
+                    userId = user.getUserId();
                     List<FriendVO> friendList = friendService.listFriends(userId);
 
                     for (FriendVO friend : friendList) {

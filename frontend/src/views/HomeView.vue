@@ -2,7 +2,7 @@
 
     <div class="parent">
         <div class="background">
-      <div class="part one">
+       <div class="part one">
         
         <div class="title" style="color:#000000; font-size:10rem;">
           다각
@@ -11,7 +11,8 @@
         <div
           style="color: white;"
           v-if="userStore.loginUserInfo.userId == null"
-          @click="navigateToLogin">
+          @click="navigateToLogin"
+>
           <div class="is-typed">
             <h3 style="display:inline-block;"> 
               <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
@@ -49,16 +50,19 @@
         
         <div class="friends">
           <div class="bubble medium bottom" style="margin-left : 80%;">
-              친구 <b style="color: red;">{{ userStore.friends.length }}</b> 명이 <br/> 로그인중이에요
+              친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
               <br/>
           </div>
             <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
         </div>
       </div>
+
+      
         <div
           style="color: white;"
           v-else
-          @click="navigateToStudyRoom">
+          @click="navigateToStudyRoom"
+>
           <div class="is-typed">
             <h3 style="display:inline-block;"> 
               <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
@@ -78,22 +82,27 @@
       </div>
       </div>
         <div class="background">
-      <div class="part three">
-        3
+          <div class="part2">
+          <img src="@/assets/computer.png" class="board">
+          <div class="two"> 
+            <StudyRoomRanking style="z-index : 1" />
+          </div>
       </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { onMounted,ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import MyRanking from '@/components/home/MyRanking.vue'
-import MokkojiRanking from '@/components/home/MokkojiRanking.vue'
-import { useUserStore } from '@/stores/user'
-import { useCategoryStore } from '@/stores/category'
-import { useAlarmStore } from '@/stores/alarm'
-import { useDagakStore } from '@/stores/dagak'
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import MyRanking from '@/components/home/MyRanking.vue';
+import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
+import StudyRoomRanking from '@/components/home/StudyRoomRanking.vue';
+import { useUserStore } from '@/stores/user';
+import { useCategoryStore } from '@/stores/category';
+import { useAlarmStore } from '@/stores/alarm';
+import { useDagakStore } from '@/stores/dagak';
+import { useFriendStore } from '@/stores/friend'
 
 const arr = ref([
   " \"정보처리기사\"",
@@ -104,35 +113,40 @@ const arr = ref([
 const myGaks = ref([]);
 const categories = ref([]);
 const isFriendList = ref(false);
-const userStore = useUserStore()
-const categoryStore = useCategoryStore()
-const alarmStore = useAlarmStore()
-const router = useRouter()
-const dagakStore = useDagakStore()
+const userStore = useUserStore();
+const categoryStore = useCategoryStore();
+const alarmStore = useAlarmStore();
+const router = useRouter();
+const dagakStore = useDagakStore();
+const friendStore = useFriendStore();
+const loginFriends = computed(() => {
+  return friendStore.loginFriends.filter(friend => friend.login);
+});
 
 const showFriends = ()=>{
   alert("친구들!");
   isFriendList.value = isFriendList.value == true?false:true;
-}
+};
 
 const navigateToMyPageSchedule= () =>{
   router.push('/mypage');
-}
+};
 
 const navigateToLogin = () => {
-  alert("로그인해주세요!")
-  router.push('/login')
-}
+  alert("로그인해주세요!");
+  router.push('/login');
+};
 
 
 const navigateToStudyRoom = () => {
   if(dagakStore.todayDagak.value == null)
-  router.push('/studyroom')
-}
+    router.push('/studyroom');
+};
 const getGaks = async () =>{ 
   myGaks.value = dagakStore.todayDagak.gaks;
   categories.value = categoryStore.categoryList;
   arr.value = [];
+  if (!(myGaks.value)) return;
   myGaks.value.forEach(gak =>{
     categories.value.forEach(category =>{
       if(gak.categoryId === category.categoryId){
@@ -144,13 +158,13 @@ const getGaks = async () =>{
 };
 onMounted(async () => {
   // store.login();
-  alarmStore.getUnReadAlarmList()
-  await categoryStore.getCategoryList()
-  await dagakStore.getTodayDagak()
-   if(userStore.loginUserInfo.userId != null){
-      await getGaks();
-    }
-})
+  if (userStore.loginUserInfo.userId != null) {
+    alarmStore.getUnReadAlarmList();
+    await categoryStore.getCategoryList();
+    await dagakStore.getTodayDagak();
+    await getGaks();
+  }
+});
 watch(() => userStore.loginUserInfo.userId, (newUserId) => {
   if (newUserId != null) {
     getGaks();
@@ -174,7 +188,7 @@ watch(() => userStore.loginUserInfo.userId, (newUserId) => {
   position: relative;
   z-index: 30;
   color: black;
-  padding-top: 10%;
+  padding-top: 17%;
   padding-bottom: 0;
 }
 

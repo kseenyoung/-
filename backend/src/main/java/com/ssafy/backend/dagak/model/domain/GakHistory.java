@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Builder
+@ToString
 public class GakHistory {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

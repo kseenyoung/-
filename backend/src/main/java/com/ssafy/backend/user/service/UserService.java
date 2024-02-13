@@ -70,4 +70,6 @@ public interface UserService {
     List<UserViewVO> getAllUserList(String userIdForFriendBoard);
 
     void saveProfile(User user,String url);
+
+    void logout(String userId);
 }
