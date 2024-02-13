@@ -21,7 +21,7 @@ export const useBoardStore = defineStore(
     const postDetail = ref([])
     const getPostDetail = async function (id) {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}board/detail/${id-1}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}board/detail/${id}`);
         postDetail.value = response.data.result.board
       } catch (error) {
         console.log(error);
@@ -29,6 +29,5 @@ export const useBoardStore = defineStore(
     };
 
     return { posts, getPosts, postDetail, getPostDetail }
-  },
-  { persist: true }
+  }
 )

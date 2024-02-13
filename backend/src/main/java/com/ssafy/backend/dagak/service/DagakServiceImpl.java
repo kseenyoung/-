@@ -278,6 +278,7 @@ public class DagakServiceImpl implements DagakService {
                         }
                     } else {   // 아직 수행중일 경우
                         todayGak = todayGaks.get(i);
+                        nowStudyingTime += historyGaks.get(i).getMemoryTime();
                         todayGakVO.setRequiredStudyTime(todayGak.getRunningTime()-historyGaks.get(i).getMemoryTime());
                     }
                 } else {
