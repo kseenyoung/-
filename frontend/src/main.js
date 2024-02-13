@@ -23,9 +23,6 @@ axios.interceptors.response.use(
     return response;
   },
   (error) => {
-    // 에러가 발생한 경우, 여기서 처리할 수 있습니다.
-    console.error(error);
-    return Promise.reject(error);
   },
 );
 

@@ -2,7 +2,7 @@ import { ref, onMounted ,watch } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import { userCookiesStorage } from '@/utils/CookiesUtil';
+import { cookiesStorage, userCookiesStorage } from '@/utils/CookiesUtil';
 import { useAlarmStore } from '@/stores/alarm';
 import { useFriendStore } from '@/stores/friend';
 
@@ -162,22 +162,23 @@ export const useUserStore = defineStore(
           console.log(res.data.result);
           loginUserInfo.value = res.data.result;
           loginUserInfo.value.sub = 'SQLD';
-          useUserStore.$patch({loginUserInfo : res.data.result});
+          const userStore = useUserStore();
+          userStore.$patch({"userStore" : loginUserInfo.value});
         })
         .then(() => {
           login();
         });
     };
 
-    const deleteLoginUserInfo = async () => {
-      console.log("tete delete");
+    const deleteLoginUserInfo = () => {
       loginUserInfo.value = {};
-      userCookiesStorage.deleteItem('userStore');
-      console.log('mySession.value : ', mySession.value);
+      cookiesStorage.setItem("userStore","");
+      
       if (mySession.value) {
         mySession.value.disconnect();
         logoutSignal();
       }
+      location.reload();
     };
     onMounted(async () => {
       if (loginUserInfo.value.userId) {
