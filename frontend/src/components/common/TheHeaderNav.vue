@@ -95,14 +95,13 @@ const useImage = (url) => {
 
 //로그아웃
 const logout = async function () {
-  userStore.deleteLoginUserInfo();
+  await userStore.deleteLoginUserInfo();
   const body = {
     sign: 'logout',
   };
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body)
     .then((res) => res.data);
-  localStorage.removeItem('userStore');
   //성공 시 홈으로
   router.push({
     name: 'login',

@@ -15,6 +15,8 @@
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
+        <!-- <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button> -->
+        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
       </div>
     </div>
     <div class="bar">
@@ -87,6 +89,7 @@
           </template>
         </div>
       </div>
+      <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
     </div>
   </div>
   <!-- <div class="black" v-if="isPause">
@@ -114,6 +117,15 @@ import { useDagakStore } from '@/stores/dagak'
 import QnAListView from '@/components/room/QnAListView.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+function mapSubject(subject) {
+  const subjectMap = {
+    국어: 'korean',
+    수학: 'math',
+    영어: 'english'
+  }
+  return subjectMap[subject] || 'Unknown'
+}
 
 const dagakStore = useDagakStore()
 
@@ -206,6 +218,9 @@ onBeforeMount(async () => {
       gakId.value = result.gakId
       userId.value = result.userId
       gakOrder.value = result.gakOrder
+      memoryTime.value = result.memoryTime
+      // store.loginUserInfo.sub = 'Math'
+      store.loginUserInfo.sub = mapSubject(result.categoryName)
 
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
@@ -608,6 +623,7 @@ console.log('구독자들: ', subscribers.value.length)
   width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
+  flex-direction: row;
 }
 .videog5 {
   width: 50%;
@@ -626,22 +642,6 @@ console.log('구독자들: ', subscribers.value.length)
   border: 5px white solid;
   box-sizing: border-box;
   object-fit: cover;
-}
-
-.rate {
-  padding: 2px;
-  border: 2px solid black;
-  background-color: white;
-  width: 320px;
-  height: 100%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* 그림자 효과 추가 */
-}
-
-.QnA {
-  position: fixed;
-  right: 0;
-  bottom: 0%;
 }
 
 .achievement {
@@ -709,7 +709,8 @@ console.log('구독자들: ', subscribers.value.length)
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 10;
-  top: -40px;
+  position: relative;
+  bottom: -5px;
 }
 
 .ratetoggle {
@@ -725,7 +726,8 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .questiontoggle:hover,
-.ratetoggle:hover {
+.ratetoggle:hover,
+.closebtn:hover {
   background-color: white;
   /* border-bottom: 2px solid white;*/
 }

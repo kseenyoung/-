@@ -121,28 +121,30 @@ const login = async function () {
     userId: id.value,
     userPassword: password.value
   }
-  await axios
+  const res = await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
         'Content-Type': 'application/json'
       }
     })
-    .then((res) => {
-      if (res.data.code === 1000) {
-        //성공 시 유저정보 + 안읽은 알림 불러오기
-        userStore.getLoginUserInfo()
-        alarmStore.getUnReadAlarmList()
-        //홈으로 이동
-        router.push({
-          name: 'home'
-        })
-      } else if (res.data.code === 1405) {
-        alert(res.data.result, 'asdasd')
-      }
-    })
-  id.value = ''
-  password.value = ''
-}
+  if (res.data.code === 1000) {
+    //성공 시 유저정보 + 안읽은 알림 불러오기
+
+    await userStore.getLoginUserInfo();
+    console.log("tete loginSuccess",userStore.loginUserInfo);
+    alarmStore.getUnReadAlarmList();
+    console.log("tete");
+    //홈으로 이동
+    router.push({
+      name: 'home',
+    });
+  } else if (res.data.code === 1405) {
+    alert(res.data.result, 'asdasd');
+  }
+  id.value = '';
+  password.value = '';
+};
+
 
 const recaptchaExpired = async function (response) {
   disableInputId.value = true
