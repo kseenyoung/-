@@ -220,10 +220,9 @@ const modifyMemoryTime = async function (subject) {
       calendarId.value = result.calendarId
       gakId.value = result.gakId
       userId.value = result.userId
-      gakOrder.value = result.gakOrder
+      gakOrder.value = result.gakOrder + 1
       memoryTime.value = result.memoryTime
       store.loginUserInfo.sub = mapSubject(result.categoryName)
-
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
       const achievementRate = result.memoryTime / result.totalTime
@@ -258,11 +257,9 @@ const startCount = () => {
       clearInterval(countDownInterval)
       clearInterval(countUpInterval)
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
-      if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length - 1) {
-        const continueCount = confirm(
-          categoryName.value + '공부가 끝났습니다.\n\n마지막 공부입니다.\n퇴장하시겠습니까?'
-        )
-        if (!continueCount) {
+      if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
+        const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
+        if (continueCount) {
           // 방 이동 안 함
           CountAfterComplete()
           remainTime.value = 0
@@ -274,7 +271,7 @@ const startCount = () => {
         const continueCount = confirm(
           categoryName.value +
             '공부가 끝났습니다.\n[' +
-            dagakStore.categoryNameToStudy.value[gakOrder.value + 1].replace(/["']/g, '') +
+            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
             ']방으로 이동 하시겠습니까?'
         )
         if (!continueCount) {
@@ -284,9 +281,7 @@ const startCount = () => {
         } else {
           // 방 이동 함
           modifyMemoryTime(
-            mapSubject(
-              dagakStore.categoryNameToStudy.value[gakOrder.value + 1].replace(/["']/g, '')
-            )
+            mapSubject(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
           )
         }
       }
