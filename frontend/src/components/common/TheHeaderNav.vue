@@ -30,7 +30,7 @@
           <img
             class="profile"
             v-if="userStore.loginUserInfo.userPicture"
-            :src="useImage(profileImage)"
+            :src="userStore.loginUserInfo.userPicture"
           />
           <img class="profile" v-else src="@/assets/img/default.jpg" />
         </div>
@@ -38,10 +38,7 @@
           <li>
             <div class="d-flex profile-info">
               <div v-if="userStore.loginUserInfo.userPicture">
-                <img class="profile" :src="useImage(profileImage)" />
-              </div>
-              <div v-else-if="userStore.loginUserInfo.userPicture">
-                <img class="profile" :src="useImage(profileImage)" />
+                <img class="profile" :src="userStore.loginUserInfo.userPicture" />
               </div>
               <div v-else>
                 <img class="profile" src="@/assets/img/default.jpg" />

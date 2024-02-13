@@ -138,7 +138,7 @@ const captureAndSend = async () => {
     })
     .then((response) => {
       console.log(response);
-      userStore.getLoginUserInfo();
+      location.reload();
     })
     .catch((error) => {
       console.error(error);
@@ -146,6 +146,7 @@ const captureAndSend = async () => {
 };
 
 onMounted(async () => {
+  
   await getInventory().then((response) => {
     if (response.data.code === 1000) {
       console.log(response.data);
@@ -154,6 +155,7 @@ onMounted(async () => {
       alert(response.data.message);
     }
   });
+  // userStore.getLoginUserInfo();
 });
 </script>
 

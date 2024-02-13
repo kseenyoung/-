@@ -1,7 +1,7 @@
 <template>
   <div class="mypage-profile">
     <div>
-      <img v-if="userStore.loginUserInfo.userPicture" :src="useImage(profileImage)"  style="width: 70%;padding-bottom: 10%;"/>
+      <img v-if="userStore.loginUserInfo.userPicture" :src="userStore.loginUserInfo.userPicture"  style="width: 70%;padding-bottom: 10%;"/>
       <img v-else src="@/assets/img/default.jpg" />
       <div>{{ userStore.loginUserInfo.userId }}</div>
       <div>{{ userStore.loginUserInfo.userEmail }}</div>
@@ -60,10 +60,6 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/user';
 const profileImage = ref("");
-const useImage = (url) => {
-  return new URL(`${url}`, import.meta.url).href;
-};
-
 const userStore = useUserStore();
 const userStatusMessage = ref('');
 const userTotalStudyTime = ref('');
