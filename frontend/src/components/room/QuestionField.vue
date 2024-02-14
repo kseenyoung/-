@@ -37,8 +37,7 @@ const sendQuestion = async function () {
   // console.log('question : ' + question.value)
   checkStore()
   // alert('질문이 등록되었습니다.')
-  console.log('userStore : ' + userStore)
-  console.log('loginUserInfo : ' + loginUserInfo)
+  // console.log('loginUserInfo : ' + loginUserInfo)
 
   if (question.value == '') {
     alert('질문을 입력해주세요.')
@@ -52,7 +51,6 @@ const sendQuestion = async function () {
 }
 
 const sendAxios = function (sessionNumbser) {
-  console.log('loginUserInfo.userId : ' + loginUserInfo.userId)
   const body = {
     sign: 'askQuestion',
     session: loginUserInfo.sub + sessionNumbser,
@@ -62,7 +60,7 @@ const sendAxios = function (sessionNumbser) {
   // alert(body.session + body.userId + body.data)
 
   axios.post(`${import.meta.env.VITE_API_BASE_URL}room`, body).then((res) => {
-    // console.log(res.data.result)
+    console.log(res.data.result)
   })
 }
 </script>
