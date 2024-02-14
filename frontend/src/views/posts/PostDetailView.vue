@@ -1,89 +1,221 @@
 <template>
-<div class="boardPage">
+  <div class="boardPage">
     <img src="@/assets/board.png" class="board" />
+    <div class="content">
+      <div class="post">
+        <button class="btn tag" v-if="detail.boardTag">
+          {{ detail.boardTag.boardTagName }}
+        </button>
+        <h2>{{ detail.boardTitle }}</h2>
+        {{ detail.userId }}
+
+        <p class="date" v-if="detail.createdDate">
+          {{ formatDate(detail.createdDate) }}
+        </p>
+        <p class="post-content">{{ detail.boardContent }}</p>
+      </div>
+
+      <div class="comment-section">
+        <!-- 기존 댓글을 보여주는 부분 -->
+        <div class="comment_body" v-for="comment in comments" :key="comment.commentId">
+          <div v-if="!comment.isEditing">
+            <div class="comment-comment">
+              {{ comment.userId }} : {{ comment.comment }}
+              <div class="comment_date" v-if="comment.createdDate">
+                {{ formatDate(detail.createdDate) }}
+              </div>
+            </div>
+            <button
+              v-if="userStore.loginUserInfo.userId == comment.userId"
+              @click="startEditing(comment)"
+            >
+              수정하기
+            </button>
+
+            <button
+              v-if="userStore.loginUserInfo.userId == comment.userId"
+              @click="deleteComment(comment)"
+            >
+              삭제하기
+            </button>
+          </div>
+
+          <!-- 수정 중인 댓글을 보여주는 부분 -->
+          <div v-else>
+            <input class="comment-input" type="text" v-model="comment.editedComment" />
+            <button @click="finishEditing(comment)">완료</button>
+            <button @click="cancelEditing(comment)">취소</button>
+          </div>
+        </div>
+      </div>
+      <input
+        v-if="userStore.loginUserInfo.userId"
+        type="text"
+        class="comment-input"
+        @keydown.enter="addComment"
+        v-model="newComment"
+        placeholder="댓글을 입력해주세요..."
+      />
+    </div>
     <div class="content-header">
       <div class="row g-2">
-        <div class="col-auto me-6"></div>
         <div class="col-auto">
           <button class="btn btn-outline-dark" @click="goListPage">목록</button>
         </div>
         <div class="col-auto">
-          <button v-if="detail.userId === userStore.loginUserInfo.userId"  class="btn btn-outline-primary" @click="goEditPage">수정</button>
+          <button
+            v-if="detail.userId === userStore.loginUserInfo.userId"
+            class="btn btn-outline-primary"
+            @click="goEditPage"
+          >
+            수정
+          </button>
         </div>
         <div class="col-auto">
-          <button v-if="detail.userId === userStore.loginUserInfo.userId"  class="btn btn-outline-danger" @click="deletePost">삭제</button>
+          <button
+            v-if="detail.userId === userStore.loginUserInfo.userId"
+            class="btn btn-outline-danger"
+            @click="deletePost"
+          >
+            삭제
+          </button>
         </div>
       </div>
-  </div>
-    <div class="content">
-      <h2> {{detail.boardTitle}} </h2>
-      <button class="btn tag" v-if="detail.boardTag">{{ detail.boardTag.boardTagName }}</button>
-      <p>{{detail.boardContent}}</p>
-      <p class="text-muted" v-if="detail.createdDate">{{ formatDate(detail.createdDate) }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
-import { useBoardStore } from '@/stores/board'
-import { ref, onMounted } from 'vue'
-import { useUserStore } from '@/stores/user';
-import axios from 'axios';
+import { useRoute, useRouter } from "vue-router";
+import { useBoardStore } from "@/stores/board";
+import { ref, onMounted } from "vue";
+import { useUserStore } from "@/stores/user";
+import axios from "axios";
 
-const boardStore = useBoardStore()
-const route = useRoute()
-const router = useRouter()
-const postId = route.params.id
-const detail = ref([])
+const boardStore = useBoardStore();
+const route = useRoute();
+const router = useRouter();
+const postId = route.params.id;
+const detail = ref([]);
+const comments = ref([]);
+const newComment = ref("");
+
 const userStore = useUserStore();
 
-const deletePost = async () =>{
-  let flag = confirm("정말로 삭제하시겠습니까?")
-  if(flag){
-      try {
-    const body = {
-      sign: 'deletePost',
-      boardId : detail.value.boardId
-    };
-    console.log(detail.value);
-    const response = await axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}board`, body)
-      goListPage()
-      console.log('새 포스트 : ', response)
+const deletePost = async () => {
+  let flag = confirm("정말로 삭제하시겠습니까?");
+  if (flag) {
+    try {
+      const body = {
+        sign: "deletePost",
+        boardId: detail.value.boardId,
+      };
+      console.log(detail.value);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}board`,
+        body
+      );
+      goListPage();
+      console.log("새 포스트 : ", response);
     } catch (error) {
-      console.log('Error saving post:', error)
+      console.log("Error saving post:", error);
     }
   }
-} 
+};
+const startEditing = (comment) => {
+  comment.isEditing = true;
+  comment.editedComment = comment.comment; // 원본 댓글을 복사하여 수정 중인 댓글을 초기화합니다.
+};
+const finishEditing = async (comment) => {
+  if (comment.editedComment) {
+    const body = {
+      sign: "modifyComment",
+      commentId: comment.commentId,
+      comment: comment.editedComment,
+      boardId: detail.value.boardId,
+    };
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}board/comment`,
+      body
+    );
+    if (response.data.code == 1000) {
+      await fetchDetail(detail.value.boardId);
+    }
+  }
+};
 
-console.log(route.params.id, detail)
+const cancelEditing = (comment) => {
+  comment.isEditing = false;
+};
+
+const addComment = async () => {
+  const body = {
+    sign: "addComment",
+    boardId: detail.value.boardId,
+    comment: newComment.value,
+  };
+  console.log(detail.value);
+  const response = await axios.post(
+    `${import.meta.env.VITE_API_BASE_URL}board/comment`,
+    body
+  );
+  if (response.data.code == 1000) {
+    await fetchDetail(detail.value.boardId);
+  }
+  newComment.value = "";
+};
+
+const deleteComment = async (comment) => {
+  let flag = confirm("정말로 삭제하시겠습니까?");
+  if (flag) {
+    const body = {
+      sign: "deleteComment",
+      commentId: comment.commentId,
+      boardId: detail.value.boardId,
+    };
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}board/comment`,
+      body
+    );
+    if (response.data.code == 1000) {
+      await fetchDetail(detail.value.boardId);
+    }
+  }
+};
+
 const goListPage = () => {
   router.push({
-    name: 'postList'
-  })
-}
+    name: "postList",
+  });
+};
+
 const goEditPage = () => {
   router.push({
-    name: 'postEdit',
+    name: "postEdit",
     params: {
-      id: postId
-    }
-  })
-}
+      id: postId,
+    },
+  });
+};
 
 const fetchDetail = async (id) => {
   await boardStore.getPostDetail(id);
   detail.value = boardStore.postDetail;
-}
-fetchDetail(postId);
-
+  comments.value = boardStore.comments;
+  comments.value = comments.value.map((comment) => ({
+    ...comment,
+    isEditing: false,
+    editedComment: "",
+  }));
+};
 const formatDate = (timestampArray) => {
   const date = new Date(...timestampArray);
   return date.toLocaleString();
 };
 
-
+onMounted(async () => {
+  fetchDetail(postId);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -93,16 +225,20 @@ const formatDate = (timestampArray) => {
 .tag {
   background-color: orange;
   color: white;
-  font-size: 12px; 
+  font-size: 12px;
   padding: 2px 5px;
 }
 .container {
   margin: 80px auto;
   font-size: 1rem;
 }
+.post-content {
+  margin-top: 1%;
+  margin-bottom: 30%;
+}
 .boardPage {
   width: 100%;
-  background-image: url('@/assets/background.gif');
+  background-image: url("@/assets/background.gif");
   background-color: rgba(0, 0, 0, 0.5);
   background-size: cover;
   height: 100vh;
@@ -111,7 +247,7 @@ const formatDate = (timestampArray) => {
   flex-direction: column; /* 컬럼 방향으로 요소들을 정렬 */
   align-items: center; /* 수평 방향으로 중앙 정렬 */
   justify-content: center; /* 수직 방향으로 중앙 정렬 */
-  color: white;  
+  color: white;
 }
 .board {
   width: 70%;
@@ -119,29 +255,64 @@ const formatDate = (timestampArray) => {
   position: absolute;
   z-index: 0;
 }
-.postList{
-  width: 80%;
-  display: flex;
-  flex-wrap: wrap;
-  overflow-y: auto; /* 스크롤 기능을 유지합니다. */
-  height: 60%; 
-  margin-left: 20%;
-}
-.post{
-  width: 40%;
+
+.post {
+  width: 70%;
   margin: 1%;
 }
 .postList::-webkit-scrollbar {
   display: none;
 }
-.content{
-  z-index: 1;
-  width: 70%;
-  margin-left: 30%;
+p .date {
+  color: white;
+  font-size: 0.1rem;
 }
-.content-header{
+.content {
   z-index: 1;
-
+  width: 60%;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto; /* 스크롤 기능을 유지합니다. */
+  height: 50vh;
+  align-items: center; /* 수평 방향으로 중앙 정렬 */
+  justify-content: center; /* 수직 방향으로 중앙 정렬 */
 }
 
+.comment-section {
+  margin: 3%;
+  width: 100%;
+}
+.content h2 {
+  margin-bottom: 1%;
+}
+.content .date {
+  margin-bottom: 10%;
+}
+.content-header {
+  z-index: 1;
+}
+.comment_body {
+  margin: 3%;
+  border: 2px solid white;
+  width: 100%;
+}
+.comment_date {
+  font-size: 0.8rem;
+}
+.comment-comment {
+  margin: 3%;
+}
+.comment-input {
+  margin: 3%;
+  border: 2px solid white;
+  background-color: transparent;
+  width: 100%;
+  color: white;
+}
+input:focus {
+  outline: 3px solid gray;
+}
+.content::-webkit-scrollbar {
+  display: none;
+}
 </style>
