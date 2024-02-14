@@ -136,8 +136,10 @@ const dagakStore = useDagakStore()
 const router = useRouter()
 const store = useUserStore()
 const questionStore = useQuestionStore()
-const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/'
+    const APPLICATION_SERVER_URL =
+      process.env.NODE_ENV === 'production'
+        ? `${import.meta.env.VITE_API_BASE_URL}`
+        : `${import.meta.env.VITE_API_BASE_URL}`;
 
 const OV = ref(undefined)
 const session = ref(undefined)
