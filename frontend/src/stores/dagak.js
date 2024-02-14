@@ -5,6 +5,7 @@ import axios from 'axios';
 export const useDagakStore = defineStore('dagakStore', () => {
   const todayDagak = ref([]);
   const categoryNameToStudy = ref([]);
+  const stay = ref(false);
   const getTodayDagak = async function () {
     const response = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/dagak/getTodayDagak`,
@@ -17,7 +18,7 @@ export const useDagakStore = defineStore('dagakStore', () => {
         }
   };
 
-  return { todayDagak, getTodayDagak, categoryNameToStudy };
+  return { todayDagak, getTodayDagak, categoryNameToStudy, stay};
   
 },
 { persist: true },

@@ -16,6 +16,15 @@
             src="@/assets/img/studyroom/pause.png"
             alt="휴식중"
           />
+          <button
+          v-if="dagakStore.stay"
+          type="button"
+          class="div3 questiontoggle position-relative"
+          style="margin-right: 10%; margin-left: auto; font-size: 20px; margin-top: 3%;"
+          @click="changeRoomAfterWait"
+        >
+          {{ !done?"이동하기":"나가기"}} 
+        </button>
         </div>
         <div class="lastlater">
           <div class="lastname">java 마스터 3:40</div>
@@ -163,6 +172,7 @@ const categoryId = ref(0)
 const calendarId = ref(0)
 const gakOrder = ref(0)
 const memoryTime = ref(0)
+let done = ref(false);
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
@@ -254,6 +264,21 @@ const toggleQuestion = () => {
 let countDownInterval
 let countUpInterval
 
+const changeRoomAfterWait = () =>{
+
+  if(!done){
+    dagakStore.stay = false;
+    modifyMemoryTime(
+    dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
+  )
+  }else{
+    leaveStudyRoom();
+  }
+  
+
+
+}
+
 const startCount = () => {
   countUpInterval = setInterval(() => {
     // 공부한 시간 증가
@@ -271,9 +296,12 @@ const startCount = () => {
         if (continueCount) {
           // 방 이동 안 함
           CountAfterComplete()
+          done = true;
+          dagakStore.stay = true;
           remainTime.value = 0
         } else {
           // 퇴장함.
+          dagakStore.stay = false;
           leaveStudyRoom()
         }
       } else {
@@ -286,9 +314,11 @@ const startCount = () => {
         if (!continueCount) {
           // 방 이동 안 함
           CountAfterComplete()
+          dagakStore.stay = true;
           remainTime.value = 0
         } else {
           // 방 이동 함
+          dagakStore.stay = false;
           modifyMemoryTime(
             dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
           )
@@ -603,6 +633,8 @@ const toggleMute = (video) => {
 }
 
 onMounted(() => {
+  done = false;
+  dagakStore.stay = false;
   leaveSession().then(() => {
     joinSession()
   })
@@ -764,7 +796,6 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .div3 {
-  // margin: 0.5em auto;
   box-shadow:   -4px 0 0 0 black,
                  4px 0 0 0 black,
                  0 -4px 0 0 black,
