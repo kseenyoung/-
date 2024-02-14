@@ -26,24 +26,30 @@
         </div>
       </div>
       <div
-          style="color: white;"
+          style="color: white; display: inline-block;"
           v-else
           @click="navigateToStudyRoom"
+          
           >
-          <div class="is-typed">
-            <h3 style="display:inline-block;"> 
-              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
-            </h3>
-        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
-        </div>
+          <div class="withFriend">
+  <div v-if="userStore.loginUserInfo.userId" style="flex: auto;"></div> <!-- 빈 요소, 가운데 정렬을 위해 -->
+  
+  <div class="is-typed">
+    <h3 style="display:inline-block"> 
+      <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+    </h3>
+    <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+  </div>
+  
+  <div v-if="userStore.loginUserInfo.userId" class="friends">
+    <div class="bubble medium bottom" style="margin-left: 30%; width: auto;">
+      친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
+      <br/>
+    </div>
+    <img src="@/assets/friends.png" @click="showFriends" style="width: 40%; margin-left: 30%; margin-bottom: 10%"/>        
+  </div>
+</div>
       </div>
-        <div v-if="userStore.loginUserInfo.userId" class="friends">
-            <div class="bubble medium bottom" style="margin-left : 80%;">
-                친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
-                <br/>
-            </div>
-              <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
-        </div>
       </div>
       </div>
         <div class="background">
@@ -147,14 +153,27 @@ watch(() => userStore.loginUserInfo.userId, (newUserId) => {
 </script>
 
 <style lang="scss" scoped>
+
+.withFriend {
+  display: flex;
+  justify-content: space-between; /* 요소들을 좌우로 최대한 분산 배치합니다. */
+  align-items: center; /* 요소들을 세로 방향 가운데에 배치합니다. */
+}
 .is-typed {
   user-select: none;
-  
-  
+  flex: 1; /* is-typed 요소가 가변적인 공간을 차지하도록 설정합니다. */
+  text-align: center; /* 텍스트를 가운데 정렬합니다. */
+  margin-right: 10px; /* .friends와의 오른쪽 마진을 추가하여 간격을 조정합니다. */
 }
+.friends{
+  flex: 1;
+  text-align: right; /* 텍스트를 오른쪽 정렬합니다. */
+}
+
+
 .is-typed:hover {
   cursor: pointer;
-  color : black;
+  color : white;
 }
 .title {
   font-size: 15rem;
