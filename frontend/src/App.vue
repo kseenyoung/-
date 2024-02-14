@@ -1,14 +1,17 @@
 <template>
-  <TheHeaderNav />
+  <TheHeaderNav v-if="currentPath !== '/studyRoom'"/>
   <div id="wrapper" class="parent">
     <RouterView />
   </div>
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import TheHeaderNav from "./components/common/TheHeaderNav.vue";
+import {computed} from 'vue';
+import { useRoute, useRouter } from "vue-router";
+const route = useRoute();
+const currentPath = computed(() => route.path);
 </script>
 
 <style lang="scss" scoped>
