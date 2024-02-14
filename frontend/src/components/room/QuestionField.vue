@@ -71,6 +71,8 @@ textarea {
   border: 2px solid black;
   margin-left: 5px;
   margin-right: 5px;
+  font-family: 'Galmuri14';
+
 }
 .question {
   border: 1px black dashed;
