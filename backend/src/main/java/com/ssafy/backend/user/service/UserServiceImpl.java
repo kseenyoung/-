@@ -203,6 +203,7 @@ public class UserServiceImpl implements UserService {
         userInformationVO.setUserNickname(user.getUserNickname());
         userInformationVO.setUserPicture(user.getUserPicture());
         userInformationVO.setUserStatusMessage(user.getUserStatusMessage());
+        userInformationVO.setUserTotalStudyTime(user.getUserTotalStudyTime());
         if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
             userInformationVO.setMokkoijiName(user.getMokkojiId().getMokkojiName());
         }
