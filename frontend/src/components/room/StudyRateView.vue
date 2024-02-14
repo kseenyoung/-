@@ -106,6 +106,9 @@ console.log(todayDagak)
   background-color: white;
   width: 320px;
   height: fit-content;
+  position: fixed;
+  right: 0px;
+  bottom:10%;
 }
 
 .achievement {

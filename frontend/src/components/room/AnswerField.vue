@@ -71,17 +71,16 @@ textarea {
   border: 2px solid black;
   margin-left: 5px;
   margin-right: 5px;
+  font-family: 'Galmuri14';
 }
 /* 기존 스타일 유지 */
 .question {
   border: 1px black dashed;
-  font-family: 'NanumSquareNeo';
   font-weight: 800;
-  font-size: 16px; /* 작은 크기로 변경 */
-  padding: 5px 8px; /* 내부 패딩 조정 */
+  font-size: 16px; 
+  padding: 5px 8px; 
   margin-right: 10px;
   display: inline-block;
-  float: right;
 }
 
 /* 추가된 스타일 */
@@ -95,8 +94,7 @@ textarea {
 }
 
 #message {
-  font-family: 'NanumSquareNeo';
-  font-weight: 600;
+  font-weight: 800;
   font-size: 15px;
   text-align: left;
   padding-left: 10px;

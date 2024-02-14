@@ -7,7 +7,6 @@
   </div>
 </template>
 
-
 <script setup>
 import AnswerView from './AnswerView.vue'
 import QuestionView from './QuestionView.vue'
@@ -43,12 +42,11 @@ onMounted(() => {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
   position: fixed;
   right: 350px;
-  bottom: 0;
+  bottom: 10%;
   justify-content: center;
 }
 
 .QnA h4 {
   text-align: center; /* 텍스트를 가운데 정렬합니다. */
 }
-
 </style>
