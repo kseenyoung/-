@@ -261,6 +261,9 @@ const modifyMemoryTime = async function (subject) {
   startCount()
 }
 
+let countDownInterval
+let countUpInterval
+
 const togglePause = () => {
   if (isPause.value) {
     alert('공부를 다시 시작합니다.')
@@ -271,10 +274,18 @@ const togglePause = () => {
   isPause.value = !isPause.value
 
   if (isPause.value) {
-    clearInterval(countDownInterval)
-    clearInterval(countUpInterval)
+    if (!isStudyTimeDone.value) {
+      clearInterval(countDownInterval)
+      clearInterval(countUpInterval)
+    } else {
+      clearInterval(countUpIntervalAfterComplete)
+    }
   } else {
-    startCount()
+    if (!isStudyTimeDone.value) {
+      startCount()
+    } else {
+      CountAfterComplete()
+    }
   }
 }
 
@@ -282,8 +293,6 @@ const toggleQuestion = () => {
   showQuestion.value = !showQuestion.value
 }
 
-let countDownInterval
-let countUpInterval
 const isStudyTimeDone = ref(false)
 const isKeepGoing = ref(false)
 
@@ -304,6 +313,7 @@ const startCount = () => {
 
   countDownInterval = setInterval(() => {
     remainTime.value--
+
     if (remainTime.value <= 0) {
       isStudyTimeDone.value = true
       clearInterval(countDownInterval)
@@ -350,8 +360,10 @@ const startCount = () => {
   }, 1000)
 }
 
+let countUpIntervalAfterComplete
+
 const CountAfterComplete = () => {
-  const countUpInterval = setInterval(() => {
+  countUpIntervalAfterComplete = setInterval(() => {
     // 공부한 시간 증가
     sec.value++
   }, 1000)
