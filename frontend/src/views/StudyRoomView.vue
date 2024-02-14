@@ -15,7 +15,6 @@
       <div class="lastlater">
         <div class="lastname">java 마스터 3:40</div>
         <div class="latername">C++ 마스터 ~10:20</div>
-        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
       </div>
     </div>
     <div class="bar">
