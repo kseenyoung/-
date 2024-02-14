@@ -660,7 +660,7 @@ console.log('구독자들: ', subscribers.value.length)
   flex-wrap: wrap;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: black solid 1px;
+  border: black solid 2px;
 }
 
 .video-player-1 {

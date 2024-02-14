@@ -21,7 +21,7 @@ import QuestionField from '@/components/room/QuestionField.vue'
   padding-bottom: 15px;
   border: solid 2px black;
   border-radius: 5px;
-  background-color: white;
+  background-color: rgb(188, 188, 188);
   height: 500px;
   width: 320px;
   margin-top: 30px;
