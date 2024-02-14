@@ -138,8 +138,9 @@ const captureAndSend = async () => {
     })
     .then((response) => {
       console.log(response);
-      location.reload();
-    })
+      let time = new Date().getTime();
+      userStore.loginUserInfo.userPicture = userStore.loginUserInfo.userPicture+"?"+time;
+          })
     .catch((error) => {
       console.error(error);
     });
@@ -153,6 +154,7 @@ onMounted(async () => {
       inventories.value = response.data.result.inventories;
     } else {
       alert(response.data.message);
+      console.log("userStore.loginUserInfo.userPicture"+userStore.loginUserInfo.userPicture);
     }
   });
   // userStore.getLoginUserInfo();
