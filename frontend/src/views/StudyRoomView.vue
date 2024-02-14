@@ -63,8 +63,8 @@
               @click.native="updateMainVideoStreamManager(sub)"
             />
           </template>
-          <!-- 총 5명 -->
-          <template v-else-if="subscribers.length === 4">
+          <!-- 5명 이상일 때 앞의 4명만 -->
+          <template v-else-if="subscribers.length >= 4">
             <user-video class="videog5" :stream-manager="mainStreamManager" />
             <user-video
               class="videog5"
@@ -74,8 +74,7 @@
               @click.native="updateMainVideoStreamManager(sub)"
             />
           </template>
-          <!-- 총 6명 -->
-          <template v-else-if="subscribers.length >= 5">
+          <!-- <template v-else-if="subscribers.length >= 5">
             <user-video class="videog6" :stream-manager="mainStreamManager" />
             <user-video
               class="videog6"
@@ -84,7 +83,7 @@
               :stream-manager="sub"
               @click.native="updateMainVideoStreamManager(sub)"
             />
-          </template>
+          </template> -->
         </div>
       </div>
       <div>
@@ -715,12 +714,6 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .videog5 {
-  width: 50%;
-  border: 5px white solid;
-  box-sizing: border-box;
-}
-
-.videog6 {
   width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
