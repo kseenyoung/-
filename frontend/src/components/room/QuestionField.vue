@@ -66,28 +66,23 @@ const sendAxios = function (sessionNumbser) {
 
 <style scoped>
 textarea {
-  box-sizing: border-box; /* box-sizing을 border-box로 설정 */
+  box-sizing: border-box;
   width: calc(100% - 10px);
   border: 2px solid black;
   margin-left: 5px;
   margin-right: 5px;
-  font-family: 'Galmuri14';
 
 }
 .question {
   border: 1px black dashed;
-  font-family: 'NanumSquareNeo';
   font-weight: 800;
-  font-size: 16px; /* 작은 크기로 변경 */
-  padding: 5px 8px; /* 내부 패딩 조정 */
-  /* margin-right: 10px; */
+  font-size: 16px; 
+  padding: 5px 8px; 
   display: inline-block;
-  float: right;
 }
 
 #message {
-  font-family: 'NanumSquareNeo';
-  font-weight: 600;
+  font-weight: 800;
   font-size: 15px;
   text-align: left;
   padding-left: 10px;
