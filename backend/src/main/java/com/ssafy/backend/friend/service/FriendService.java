@@ -20,7 +20,7 @@ public interface FriendService {
 
     List<FriendVO> listFriends(String listUserId);
 
-    boolean isFriend(UserId PK);
+    boolean isFriend(UserId PK,int status);
 
     List<LoginRedisVO> getLoginFriends(String userId);
 }
