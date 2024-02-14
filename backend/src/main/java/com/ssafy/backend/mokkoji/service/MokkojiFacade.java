@@ -167,7 +167,7 @@ public class MokkojiFacade {
                 .userId(mokkoji.getLeaderId())
                 .requestedUserId(user.getUserId())
                 .build();
-        alarmService.aVoidDuplicateAlaram(alarmDto);
+        alarmService.aVoidDuplicateAlaram(alarmDto,0);
         alarmService.requestAlarm(alarmDto);
     }
 
