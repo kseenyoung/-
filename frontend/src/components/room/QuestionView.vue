@@ -70,8 +70,7 @@ const showAnswer = function (index) {
 .questionbox {
   border-radius: 20px; /* 물풍선 형태를 만들기 위해 테두리의 반지름 설정 */
   border: none;
-  background-color: white;
-  margin-left: 5px; /* 간격 조정 */
+  background-color: rgb(188, 188, 188);  margin-left: 5px; /* 간격 조정 */
   margin-right: 10px; /* 간격 조정 */
   margin-bottom: none;
   padding: 5px; /* 내용과 상자 경계 사이의 여백을 늘리기 위해 내용 패딩 증가 */

@@ -1,6 +1,6 @@
 <template>
   <div class="QnA overflow-auto">
-    <h4><b>[ 질문 게시판 ]</b></h4>
+    <h4>[ 질문 게시판 ]</h4>
     <QuestionView />
     <br />
     <QuestionField />
@@ -19,17 +19,17 @@ import QuestionField from '@/components/room/QuestionField.vue'
   padding: 2px;
   padding-top: 15px;
   padding-bottom: 15px;
-  border: solid 1px black;
-  /* border-radius: 10px; */
-  background-color: white;
+  border: solid 2px black;
+  border-radius: 5px;
+  background-color: rgb(188, 188, 188);
   height: 500px;
   width: 320px;
   margin-top: 30px;
   margin-bottom: 30px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
   position: fixed;
-  right: 0;
-  bottom:1%;
+  right: 350px;
+  bottom: 0;
   justify-content: center;
 }
 

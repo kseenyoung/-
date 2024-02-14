@@ -101,8 +101,8 @@ console.log(todayDagak)
 }
 
 .rate {
-  padding: 2px;
-  border: black 1px solid;
+  padding: 10px;
+  border: black 2px solid;
   background-color: white;
   width: 320px;
   height: fit-content;

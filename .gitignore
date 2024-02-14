@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,macos,eclipse,gradle,visualstudiocode,visualstudio,maven,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,macos,eclipse,gradle,visualstudiocode,visualstudio,maven,windows
 
+.backend/src/main/resources/application.yml
+
 ### Eclipse ###
 .idea
 .idea/
