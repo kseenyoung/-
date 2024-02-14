@@ -7,19 +7,17 @@
         <hr />
         <p class="titletag">달성률 : {{ store.achievementRate }} %</p>
         <div>[{{ categoryName }}] 남은 시간 : {{ convertedRemainTime }}</div>
-        <div class="dagak">
-          <Dagak />
-        </div>
-       <div class="ratedetail">
-          <!-- {{ categoryToStudy }}
+
+        <div class="ratedetail">
           <ul>
-            <li v-for="(category, index) in categoryToStudy" :key="index">
-              {{ category }}
+            <li v-for="(gak, index) in gaksToStudy" :key="index">
+              {{ categoryNameList[gak.categoryId - 1].categoryName }} :
+              {{ getStatus(index) }}
             </li>
-          </ul>  -->
-          마스터 {{ gakOrder }} <b>140%</b><br />
+          </ul>
+          <!-- 마스터 {{ gakOrder }} <b>140%</b><br />
           Python 마스터 --- <b>75%</b><br />
-          C++ 마스터 ---- <b>0%</b>
+          C++ 마스터 ---- <b>0%</b> -->
         </div>
         <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button>
         <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
@@ -29,12 +27,15 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import Dagak from '@/components/dagak/Dagak.vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { useDagakStore } from '@/stores/dagak'
 import { useCategoryStore } from '@/stores/category'
+import draggable from 'vuedraggable'
+import MyPageScheduleDagakAddModal from '../mypage/MyPageScheduleDagakAddModal.vue'
+import DagakImg from '@/components/dagak/DagakImg.vue'
 
 const router = useRouter()
 const leave = ref('refresh')
@@ -50,7 +51,18 @@ const props = defineProps({
   gakOrder: Number
 })
 
-const categoryToStudy = ref(dagakStore.categoryNameToStudy)
+const gaksToStudy = ref(todayDagak.gaks)
+const categoryNameList = ref(categoryStore.categoryList)
+
+const getStatus = (index) => {
+  if (index < props.gakOrder) {
+    return '완료 ✔'
+  } else if (index === props.gakOrder) {
+    return '진행 중'
+  } else {
+    return '진행 예정'
+  }
+}
 
 const emit = defineEmits(['leave-study-room', 'toggle-question'])
 const leaveStudyRoom = () => {
@@ -84,8 +96,6 @@ watch(props, (newTime) => {
 watch(props, (newTime) => {
   convertedRemainTime.value = convertTime(newTime.remainTime)
 })
-
-console.log(todayDagak)
 </script>
 
 <style lang="scss" scoped>
@@ -108,7 +118,7 @@ console.log(todayDagak)
   height: fit-content;
   position: fixed;
   right: 0px;
-  bottom:10%;
+  bottom: 10%;
 }
 
 .achievement {
@@ -142,4 +152,24 @@ console.log(todayDagak)
   /* border-bottom: 2px solid white;*/
 }
 
+.dagak-list-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 710px;
+  margin: 0 auto;
+  .dagak-detail-wrapper {
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 20px 10px 0px;
+    width: 115px;
+    min-height: 160px;
+    margin: 0px 10px 30px;
+    box-shadow: 5px 5px #ccc;
+    .dagak-figure {
+      width: 78px;
+    }
+  }
+}
 </style>
