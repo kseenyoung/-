@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -21,7 +20,7 @@ const router = createRouter({
     {
       path: '/kakaoLogin',
       name: 'kakaoLogin',
-      component: () => import('@/views/kakaoLoginView.vue'),
+      component: () => import('@/views/KakaoLoginView.vue'),
     },
     {
       path: '/regist',
@@ -145,7 +144,7 @@ const router = createRouter({
     }
   ]
 })
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.path === '/') {
     document.body.style.overflow = 'hidden';
   } else {
