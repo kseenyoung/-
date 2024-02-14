@@ -6,7 +6,12 @@
       <div class="info-detail-wrapper">
         <div class="info-label">프로필</div>
         <div class="info-content">
-          <img src="@/assets/img/기본프로필_갈색.jpg" />
+          <img
+            v-if="userStore.loginUserInfo.userPicture"
+            :src="profileImage + '?v=' + new Date().getTime()"
+            style="width: 70%; padding-bottom: 10%"
+          />
+          <img v-else src="@/assets/img/default.jpg" />
         </div>
       </div>
 
@@ -21,7 +26,7 @@
       </div>
 
       <div class="info-detail-wrapper">
-        <div class="info-label">비밀번호</div>
+        <div class="info-label">비밀번호 변경</div>
         <div class="info-content"></div>
         <i
           class="bi bi-pencil-fill common-pointer"
@@ -170,12 +175,21 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-import { ref, watch, computed } from 'vue';
-import MyPageDeleteUserModal from './MyPageDeleteUserModal.vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+import MyPageDeleteUserModal from './MyPageDeleteUserModal.vue';
 
+const router = useRouter();
 const userStore = useUserStore();
+const profileImage = ref('');
+
+onMounted(() => {
+  if (userStore.loginUserInfo.userId != null) {
+    profileImage.value = userStore.loginUserInfo.userPicture;
+  }
+});
 
 //이메일 마스킹 처리
 const maskedEmail = computed(() => {
@@ -237,14 +251,24 @@ const changePw = function () {
     })
     .then((res) => res.data)
     .then((json) => {
-      if (json.code === 1008) {
+      console.log(json);
+      if (json.code === 1000) {
         //성공
-        alert('비밀번호가 변경되었습니다');
+        alert('비밀번호가 변경되었습니다. 다시 로그인 해주세요.');
+        userStore.deleteLoginUserInfo();
+        const body = {
+          sign: 'logout',
+        };
+        axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body);
+        //성공 시 홈으로
       } else {
         //실패
         alert(json.message);
       }
     });
+  router.push({
+    name: 'login',
+  });
 };
 
 //닉네임 변경
@@ -269,7 +293,7 @@ watch(nickname, (newNickname) => {
 
 //닉네임 유효성 검사(특수문자 불가능 2~8 글자)
 const checkNickname = function (name) {
-  const validateNickname = /^[a-zA-Z가-힣]{2,8}$/;
+  const validateNickname = /^[a-zA-Z가-힣1-9]{2,8}$/;
   isValidNickname.value = validateNickname.test(name);
 };
 

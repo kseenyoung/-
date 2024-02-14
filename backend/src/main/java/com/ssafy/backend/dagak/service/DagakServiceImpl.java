@@ -118,7 +118,7 @@ public class DagakServiceImpl implements DagakService {
         todayCalendarDagakVO.setDagakId(todayCalender.getDagakId());
         todayCalendarDagakVO.setGaks(gakRepository.findAllByDagakId(todayCalender.getDagakId()));
         todayCalendarDagakVO.setTotalTime(dagakRepository.findByDagakId(todayCalender.getDagakId()).getTotalTime());
-
+        todayCalendarDagakVO.setDagakName(dagakRepository.findByDagakId(todayCalender.getDagakId()).getDagakName());
         return todayCalendarDagakVO;
     }
 

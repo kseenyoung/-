@@ -7,7 +7,7 @@ import router from './router';
 import axios from 'axios';
 import { useUserStore } from './stores/user';
 
-axios.defaults.baseURL = 'https://localhost:8080';
+axios.defaults.baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 axios.interceptors.response.use(

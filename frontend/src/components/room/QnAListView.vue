@@ -1,6 +1,6 @@
 <template>
-  <div class="QnA overflow-auto">
-    <h4>[ 질문 게시판 ]</h4>
+  <div class="QnA element">
+    <h4><b>[ 질문 게시판 ]</b></h4>
     <QuestionView />
     <br />
     <QuestionField />
@@ -48,5 +48,18 @@ onMounted(() => {
 
 .QnA h4 {
   text-align: center; /* 텍스트를 가운데 정렬합니다. */
+}
+
+.div2 {
+  box-shadow:
+    -4px 0 0 0 black,
+    4px 0 0 0 black,
+    0 -4px 0 0 black,
+    0 4px 0 0 black;
+}
+
+.element {
+  overflow-x: hidden; /* 가로 스크롤 제거 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
 }
 </style>

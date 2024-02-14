@@ -10,7 +10,8 @@
         placeholder="-- 질문을 입력하세요 --"
         v-model="question"
       ></textarea>
-      <button class="question" @click="sendQuestion()">질문</button>
+      
+      <button class="question" style="margin:3%; width:50%;" @click="sendQuestion()">질문</button>
     </div>
   </div>
 </template>

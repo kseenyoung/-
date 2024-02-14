@@ -1,106 +1,128 @@
 <template>
   <div class="space">
     <div class="room">
-    <div class="studyroomheader">
-      <div class="nowname">
-        <div class="nametag">{{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
-        <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
-        <img
-          class="pause"
-          @click="togglePause"
-          src="@/assets/img/studyroom/pause.png"
-          alt="휴식중"
-        />
+      <div class="studyroomheader div3">
+        <div class="nowname">
+          <div class="nametag">{{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
+          <img
+            class="mute"
+            @click="toggleMute"
+            src="@/assets/img/studyroom/mute.png"
+            alt="음소거"
+          />
+          <img
+            v-if="!isPause"
+            class="pause"
+            @click="togglePause"
+            src="@/assets/img/studyroom/pause.png"
+            alt="휴식중"
+          />
+          <img
+            v-else
+            class="pause"
+            @click="togglePause"
+            src="@/assets/img/studyroom/playButton.png"
+            alt="휴식중"
+          />
+          <button
+            v-if="dagakStore.stay"
+            type="button"
+            class="div3 questiontoggle position-relative"
+            style="margin-right: 10%; margin-left: auto; font-size: 20px; margin-top: 3%"
+            @click="changeRoomAfterWait"
+          >
+            {{ !done ? '이동하기' : '나가기' }}
+          </button>
+        </div>
+        <div class="lastlater">
+          <div class="lastname">java 마스터 3:40</div>
+          <div class="latername">C++ 마스터 ~10:20</div>
+        </div>
       </div>
-      <div class="lastlater">
-        <div class="lastname">java 마스터 3:40</div>
-        <div class="latername">C++ 마스터 ~10:20</div>
+      <div class="bar">
+        <!-- <button class="ratetoggle" @click="toggleRate">달성률</button> -->
       </div>
-    </div>
-    <div class="bar">
-      <!-- <button class="ratetoggle" @click="toggleRate">달성률</button> -->
-    </div>
-    <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
-    <!-- <QnAListView /> -->
-    <div class="containers">
-      <div class="video-players">
-        <div class="video-player-1">
-          <div class="bigvideo" ref="video13">
-            <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
-            <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
-            <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
-            <user-video
-              v-else
-              :stream-manager="subscribers[0]"
-              @click.native="updateMainVideoStreamManager(subscribers[0])"
-            />
+      <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
+      <!-- <QnAListView /> -->
+      <div class="containers">
+        <div class="video-players div2">
+          <div class="video-player-1">
+            <div class="bigvideo" ref="video13">
+              <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
+              <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
+              <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
+              <user-video
+                v-else
+                :stream-manager="subscribers[0]"
+                @click.native="updateMainVideoStreamManager(subscribers[0])"
+              />
+            </div>
+          </div>
+          <div class="video-player-2" v-if="subscribers.length > 0">
+            <!-- 총 2명 -->
+            <template v-if="subscribers.length === 1">
+              <user-video class="videog2" :stream-manager="mainStreamManager" />
+            </template>
+            <!-- 총 3명 -->
+            <template v-if="subscribers.length === 2">
+              <user-video class="videog3" :stream-manager="mainStreamManager" />
+              <user-video
+                class="videog3"
+                v-for="(sub, index) in subscribers.slice(1, 2)"
+                :key="index"
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </template>
+            <!-- 총 4명 -->
+            <template v-else-if="subscribers.length === 3">
+              <user-video class="videog4" :stream-manager="mainStreamManager" />
+              <user-video
+                class="videog4"
+                v-for="(sub, index) in subscribers.slice(1, 3)"
+                :key="index"
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </template>
+            <!-- 총 5명 -->
+            <template v-else-if="subscribers.length === 4">
+              <user-video class="videog5" :stream-manager="mainStreamManager" />
+              <user-video
+                class="videog5"
+                v-for="(sub, index) in subscribers.slice(1, 4)"
+                :key="index"
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </template>
+            <!-- 총 6명 -->
+            <template v-else-if="subscribers.length === 5">
+              <user-video class="videog6" :stream-manager="mainStreamManager" />
+              <user-video
+                class="videog6"
+                v-for="(sub, index) in subscribers.slice(1, 5)"
+                :key="index"
+                :stream-manager="sub"
+                @click.native="updateMainVideoStreamManager(sub)"
+              />
+            </template>
           </div>
         </div>
-        <div class="video-player-2" v-if="subscribers.length > 0">
-          <!-- 총 2명 -->
-          <template v-if="subscribers.length === 1">
-            <user-video class="videog2" :stream-manager="mainStreamManager" />
-          </template>
-          <!-- 총 3명 -->
-          <template v-if="subscribers.length === 2">
-            <user-video class="videog3" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog3"
-              v-for="(sub, index) in subscribers.slice(1, 2)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
-          </template>
-          <!-- 총 4명 -->
-          <template v-else-if="subscribers.length === 3">
-            <user-video class="videog4" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog4"
-              v-for="(sub, index) in subscribers.slice(1, 3)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
-          </template>
-          <!-- 총 5명 -->
-          <template v-else-if="subscribers.length === 4">
-            <user-video class="videog5" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog5"
-              v-for="(sub, index) in subscribers.slice(1, 4)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
-          </template>
-          <!-- 총 6명 -->
-          <template v-else-if="subscribers.length >= 5">
-            <user-video class="videog6" :stream-manager="mainStreamManager" />
-            <user-video
-              class="videog6"
-              v-for="(sub, index) in subscribers.slice(1, 5)"
-              :key="index"
-              :stream-manager="sub"
-              @click.native="updateMainVideoStreamManager(sub)"
-            />
-          </template>
+        <div>
+          <StudyRateView
+            :sec="sec"
+            :remainTime="remainTime"
+            :categoryName="categoryName"
+            :gakOrder="gakOrder"
+            @leave-study-room="leaveStudyRoom"
+            @toggle-question="toggleQuestion"
+          />
+          <QnAListView v-if="showQuestion" />
         </div>
-      </div>
-      <div>
-        <StudyRateView
-          :sec="sec"
-          :remainTime="remainTime"
-          :categoryName="categoryName"
-          :gakOrder="gakOrder"
-          @leave-study-room="leaveStudyRoom"
-          @toggle-question="toggleQuestion"
-        />
-        <QnAListView v-if="showQuestion" />
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script setup>
@@ -132,7 +154,9 @@ const router = useRouter()
 const store = useUserStore()
 const questionStore = useQuestionStore()
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production' ? '' : 'https://localhost:8080/dagak/'
+  process.env.NODE_ENV === 'production'
+    ? `${import.meta.env.VITE_API_BASE_URL}`
+    : `${import.meta.env.VITE_API_BASE_URL}`
 
 const OV = ref(undefined)
 const session = ref(undefined)
@@ -156,6 +180,7 @@ const categoryId = ref(0)
 const calendarId = ref(0)
 const gakOrder = ref(0)
 const memoryTime = ref(0)
+let done = ref(false)
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
@@ -236,16 +261,49 @@ const modifyMemoryTime = async function (subject) {
   startCount()
 }
 
+let countDownInterval
+let countUpInterval
+
 const togglePause = () => {
+  if (isPause.value) {
+    alert('공부를 다시 시작합니다.')
+  } else {
+    alert('공부를 중지합니다.')
+  }
+
   isPause.value = !isPause.value
+
+  if (isPause.value) {
+    if (!isStudyTimeDone.value) {
+      clearInterval(countDownInterval)
+      clearInterval(countUpInterval)
+    } else {
+      clearInterval(countUpIntervalAfterComplete)
+    }
+  } else {
+    if (!isStudyTimeDone.value) {
+      startCount()
+    } else {
+      CountAfterComplete()
+    }
+  }
 }
 
 const toggleQuestion = () => {
   showQuestion.value = !showQuestion.value
 }
 
-let countDownInterval
-let countUpInterval
+const isStudyTimeDone = ref(false)
+const isKeepGoing = ref(false)
+
+const changeRoomAfterWait = () => {
+  if (!done) {
+    dagakStore.stay = false
+    modifyMemoryTime(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
+  } else {
+    leaveStudyRoom()
+  }
+}
 
 const startCount = () => {
   countUpInterval = setInterval(() => {
@@ -255,44 +313,57 @@ const startCount = () => {
 
   countDownInterval = setInterval(() => {
     remainTime.value--
+
     if (remainTime.value <= 0) {
+      isStudyTimeDone.value = true
       clearInterval(countDownInterval)
       clearInterval(countUpInterval)
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
-      if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
-        const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
-        if (continueCount) {
-          // 방 이동 안 함
-          CountAfterComplete()
-          remainTime.value = 0
+      if (!isKeepGoing.value) {
+        if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
+          const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
+          if (continueCount) {
+            // 방 이동 안 함
+            CountAfterComplete()
+            remainTime.value = 0
+            done = true
+            dagakStore.stay = true
+            isKeepGoing.value = true
+          } else {
+            // 퇴장함.
+            dagakStore.stay = false
+            leaveStudyRoom()
+          }
         } else {
-          // 퇴장함.
-          leaveStudyRoom()
-        }
-      } else {
-        const continueCount = confirm(
-          categoryName.value +
-            '공부가 끝났습니다.\n[' +
-            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
-            ']방으로 이동 하시겠습니까?'
-        )
-        if (!continueCount) {
-          // 방 이동 안 함
-          CountAfterComplete()
-          remainTime.value = 0
-        } else {
-          // 방 이동 함
-          modifyMemoryTime(
-            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
+          const continueCount = confirm(
+            categoryName.value +
+              '공부가 끝났습니다.\n[' +
+              dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
+              ']방으로 이동 하시겠습니까?'
           )
+          if (!continueCount) {
+            // 방 이동 안 함
+            CountAfterComplete()
+            dagakStore.stay = true
+            remainTime.value = 0
+            isKeepGoing.value = true
+          } else {
+            // 방 이동 함
+            dagakStore.stay = false
+            modifyMemoryTime(
+              dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
+            )
+          }
         }
       }
     }
   }, 1000)
 }
 
+let countUpIntervalAfterComplete
+
 const CountAfterComplete = () => {
-  const countUpInterval = setInterval(() => {
+  countUpIntervalAfterComplete = setInterval(() => {
     // 공부한 시간 증가
     sec.value++
   }, 1000)
@@ -305,7 +376,7 @@ onBeforeMount(async () => {
       const result = res.data.result
       // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
       // 그에 따른 categoryId로 방 이동 바랍니다.
-      // categoryId.value = result.categoryId
+      categoryId.value = result.categoryId
       calendarId.value = result.calendarId
       gakId.value = result.gakId
       userId.value = result.userId
@@ -437,6 +508,7 @@ const joinSession = () => {
 
   session.value.on('signal:question', (stream) => {
     alert('질문이 들어왔습니다!')
+
     console.log('질문 내용:' + stream.data)
 
     const data = JSON.parse(stream.data)
@@ -595,6 +667,8 @@ const toggleMute = (video) => {
 }
 
 onMounted(() => {
+  done = false
+  dagakStore.stay = false
   leaveSession().then(() => {
     joinSession()
   })
@@ -613,7 +687,6 @@ console.log('구독자들: ', subscribers.value.length)
 </script>
 
 <style lang="scss" scoped>
-
 .room {
   flex-direction: column;
   height: 60%;
@@ -638,7 +711,7 @@ console.log('구독자들: ', subscribers.value.length)
   justify-content: space-around;
   height: 100px;
   position: relative;
-  top: 100px;
+  top: 80px;
 }
 
 .nowname {
@@ -667,7 +740,6 @@ console.log('구독자들: ', subscribers.value.length)
 .lastlater {
   display: flex;
 }
-
 
 .containers {
   width: 100%;
@@ -721,9 +793,10 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .videog6 {
-  width: 50%;
+  height: calc(100% / 5);
   border: 5px white solid;
   box-sizing: border-box;
+  flex-direction: column;
 }
 
 .bigvideo {
@@ -733,7 +806,6 @@ console.log('구독자들: ', subscribers.value.length)
   box-sizing: border-box;
   object-fit: cover;
 }
-
 
 .mute {
   width: 25px;
@@ -750,4 +822,20 @@ console.log('구독자들: ', subscribers.value.length)
   margin-left: 20px;
 }
 
+.div2 {
+  box-shadow:
+    -7px 0 0 0 black,
+    2px 0 0 0 black,
+    0 -7px 0 0 black,
+    0 2px 0 0 black;
+}
+
+.div3 {
+  // margin: 0.5em auto;
+  box-shadow:
+    -4px 0 0 0 black,
+    4px 0 0 0 black,
+    0 -4px 0 0 black,
+    0 4px 0 0 black;
+}
 </style>
