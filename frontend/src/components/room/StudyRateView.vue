@@ -8,19 +8,18 @@
         <p class="titletag">달성률 : {{ store.achievementRate }} %</p>
         <div>[{{ categoryName }}] 남은 시간 : {{ convertedRemainTime }}</div>
         <div class="dagak">
-          <!-- <Dagak /> -->
+          <Dagak />
         </div>
-        <br />
-        <div class="ratedetail">
-          {{ categoryToStudy }}
+       <div class="ratedetail">
+          <!-- {{ categoryToStudy }}
           <ul>
             <li v-for="(category, index) in categoryToStudy" :key="index">
               {{ category }}
             </li>
-          </ul>
-          <!-- 마스터 {{ gakOrder }} <b>140%</b><br />
+          </ul>  -->
+          마스터 {{ gakOrder }} <b>140%</b><br />
           Python 마스터 --- <b>75%</b><br />
-          C++ 마스터 ---- <b>0%</b> -->
+          C++ 마스터 ---- <b>0%</b>
         </div>
         <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button>
         <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
