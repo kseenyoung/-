@@ -1,7 +1,7 @@
 <template>
   <div v-for="(question, index) in questions" :key="index">
     <div class="questionbox">
-      <div class="questionlabel" @click="showAnswer(index)">
+      <div class="questionlabel element" @click="showAnswer(index)">
         <b>{{ question.data }}</b>
       </div>
       <div class="questiondetail">
@@ -41,8 +41,8 @@ const showAnswer = function (index) {
 </script>
 
 <style scoped>
-
 .questionlabel {
+  word-wrap: break-word;
   position: relative;
   display: inline-block;
   padding: 10px;
@@ -62,12 +62,14 @@ const showAnswer = function (index) {
   font-size: 12px; /* 작은 글꼴 크기 적용 */
   width: 20px; /* 작은 너비 적용 */
   height: 10px; /* 작은 높이 적용 */
+  max-width: fit-content;
 }
 
 .questionbox {
   border-radius: 20px; /* 물풍선 형태를 만들기 위해 테두리의 반지름 설정 */
   border: none;
-  background-color: rgb(188, 188, 188);  margin-left: 5px; /* 간격 조정 */
+  background-color: rgb(188, 188, 188);
+  margin-left: 5px; /* 간격 조정 */
   margin-right: 10px; /* 간격 조정 */
   margin-bottom: none;
   padding: 5px; /* 내용과 상자 경계 사이의 여백을 늘리기 위해 내용 패딩 증가 */
@@ -82,11 +84,16 @@ const showAnswer = function (index) {
   outline: none; /* 포커스 효과 제거 */
 }
 
-
 .div2 {
-  box-shadow:   -1px 0 0 0 black,
-                 1px 0 0 0 black,
-                 0 -1px 0 0 black,
-                 0 1px 0 0 black;
+  box-shadow:
+    -1px 0 0 0 black,
+    1px 0 0 0 black,
+    0 -1px 0 0 black,
+    0 1px 0 0 black;
+}
+
+.element {
+  word-wrap: break-word;
+  width: 200px;
 }
 </style>
