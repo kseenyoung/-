@@ -25,14 +25,14 @@
             alt="휴식중"
           />
           <button
-          v-if="dagakStore.stay"
-          type="button"
-          class="div3 questiontoggle position-relative"
-          style="margin-right: 10%; margin-left: auto; font-size: 20px; margin-top: 3%;"
-          @click="changeRoomAfterWait"
-        >
-          {{ !done?"이동하기":"나가기"}}
-        </button>
+            v-if="dagakStore.stay"
+            type="button"
+            class="div3 questiontoggle position-relative"
+            style="margin-right: 10%; margin-left: auto; font-size: 20px; margin-top: 3%"
+            @click="changeRoomAfterWait"
+          >
+            {{ !done ? '이동하기' : '나가기' }}
+          </button>
         </div>
         <div class="lastlater">
           <div class="lastname">java 마스터 3:40</div>
@@ -180,7 +180,7 @@ const categoryId = ref(0)
 const calendarId = ref(0)
 const gakOrder = ref(0)
 const memoryTime = ref(0)
-let done = ref(false);
+let done = ref(false)
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
@@ -261,9 +261,6 @@ const modifyMemoryTime = async function (subject) {
   startCount()
 }
 
-const showRate = ref(true)
-const isPause = ref(false)
-
 const togglePause = () => {
   if (isPause.value) {
     alert('공부를 다시 시작합니다.')
@@ -290,19 +287,13 @@ let countUpInterval
 const isStudyTimeDone = ref(false)
 const isKeepGoing = ref(false)
 
-const changeRoomAfterWait = () =>{
-
-  if(!done){
-    dagakStore.stay = false;
-    modifyMemoryTime(
-    dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
-  )
-  }else{
-    leaveStudyRoom();
+const changeRoomAfterWait = () => {
+  if (!done) {
+    dagakStore.stay = false
+    modifyMemoryTime(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
+  } else {
+    leaveStudyRoom()
   }
-
-
-
 }
 
 const startCount = () => {
@@ -319,43 +310,43 @@ const startCount = () => {
       clearInterval(countUpInterval)
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
       if (!isKeepGoing.value) {
-      if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
-        const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
-        if (continueCount) {
-          // 방 이동 안 함
-          CountAfterComplete()
-          remainTime.value = 0
-          done = true;
-          dagakStore.stay = true;
-          isKeepGoing.value = true
+        if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
+          const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
+          if (continueCount) {
+            // 방 이동 안 함
+            CountAfterComplete()
+            remainTime.value = 0
+            done = true
+            dagakStore.stay = true
+            isKeepGoing.value = true
+          } else {
+            // 퇴장함.
+            dagakStore.stay = false
+            leaveStudyRoom()
+          }
         } else {
-          // 퇴장함.
-          dagakStore.stay = false;
-          leaveStudyRoom()
-        }
-      } else {
-        const continueCount = confirm(
-          categoryName.value +
-            '공부가 끝났습니다.\n[' +
-            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
-            ']방으로 이동 하시겠습니까?'
-        )
-        if (!continueCount) {
-          // 방 이동 안 함
-          CountAfterComplete()
-          dagakStore.stay = true;
-          remainTime.value = 0
-          isKeepGoing.value = true
-        } else {
-          // 방 이동 함
-          dagakStore.stay = false;
-          modifyMemoryTime(
-            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
+          const continueCount = confirm(
+            categoryName.value +
+              '공부가 끝났습니다.\n[' +
+              dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
+              ']방으로 이동 하시겠습니까?'
           )
+          if (!continueCount) {
+            // 방 이동 안 함
+            CountAfterComplete()
+            dagakStore.stay = true
+            remainTime.value = 0
+            isKeepGoing.value = true
+          } else {
+            // 방 이동 함
+            dagakStore.stay = false
+            modifyMemoryTime(
+              dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
+            )
+          }
         }
       }
     }
-      }
   }, 1000)
 }
 
@@ -649,7 +640,6 @@ const video13 = ref(null)
 const showRate = ref(true)
 const isPause = ref(false)
 
-
 const toggleRate = () => {
   showRate.value = !showRate.value
 }
@@ -665,8 +655,8 @@ const toggleMute = (video) => {
 }
 
 onMounted(() => {
-  done = false;
-  dagakStore.stay = false;
+  done = false
+  dagakStore.stay = false
   leaveSession().then(() => {
     joinSession()
   })
@@ -830,10 +820,10 @@ console.log('구독자들: ', subscribers.value.length)
 
 .div3 {
   // margin: 0.5em auto;
-  box-shadow:   -4px 0 0 0 black,
-                 4px 0 0 0 black,
-                 0 -4px 0 0 black,
-                 0 4px 0 0 black;
+  box-shadow:
+    -4px 0 0 0 black,
+    4px 0 0 0 black,
+    0 -4px 0 0 black,
+    0 4px 0 0 black;
 }
-
 </style>
