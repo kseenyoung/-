@@ -1,5 +1,5 @@
 <template>
-  <div class="common-mypage-wrapper">
+  <div class="common-mypage-wrapper" v-if="paginatedQuestionList != ''">
     <div class="common-mypage-title">내 질문</div>
 
     <div class="qna-content-wrapper">
@@ -67,6 +67,10 @@
       />
       <button @click="searchQuestions" class="btn common-btn">검색</button>
     </div>
+  </div>
+  <div v-else class="common-mypage-wrapper">
+    <div class="common-mypage-title">내 질문</div>
+    등록된 질문이 없습니다.
   </div>
 </template>
 

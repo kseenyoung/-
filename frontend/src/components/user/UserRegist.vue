@@ -3,10 +3,10 @@
     <div class="regist-title">회원가입</div>
     <div class="form-con">
       <div class="input-con row mb-4">
-        <label for="id" class="col-sm-2 col-form-label">
+        <label for="id" class="col-sm-3 col-form-label">
           아이디<span>*</span>
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-9">
           <input
             class="form-control"
             type="text"
@@ -38,10 +38,10 @@
       </div>
 
       <div class="input-con row mb-4">
-        <label for="password" class="col-sm-2 form-label">
+        <label for="password" class="col-sm-3 form-label">
           비밀번호<span>*</span>
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-9">
           <input
             class="form-control"
             type="password"
@@ -73,8 +73,8 @@
       </div>
 
       <div class="input-con row mb-4">
-        <label for="name" class="col-sm-2 form-label">이름<span>*</span></label>
-        <div class="col-sm-10">
+        <label for="name" class="col-sm-3 form-label">이름<span>*</span></label>
+        <div class="col-sm-9">
           <input
             class="form-control"
             type="text"
@@ -88,10 +88,10 @@
       </div>
 
       <div class="input-con row mb-4">
-        <label for="nickname" class="col-sm-2 form-label">
+        <label for="nickname" class="col-sm-3 form-label">
           닉네임<span>*</span>
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-9">
           <input
             class="form-control"
             type="text"
@@ -129,10 +129,10 @@
       </div>
 
       <div class="input-con row mb-4">
-        <label for="email" class="col-sm-2 form-label">
+        <label for="email" class="col-sm-3 form-label">
           이메일<span>*</span>
         </label>
-        <div class="col-sm-10">
+        <div class="col-sm-9">
           <input
             class="form-control"
             type="email"
@@ -146,8 +146,8 @@
       </div>
 
       <div class="input-con row mb-4">
-        <label for="birth" class="col-sm-2 form-label">생년월일</label>
-        <div class="col-sm-10">
+        <label for="birth" class="col-sm-3 form-label">생년월일</label>
+        <div class="col-sm-9">
           <div>
             <Datepicker
               v-model="date"
@@ -163,8 +163,8 @@
       </div>
 
       <div class="input-con row mb-4">
-        <label for="tel" class="col-sm-2 form-label">전화번호</label>
-        <div class="col-sm-10">
+        <label for="tel" class="col-sm-3 form-label">전화번호</label>
+        <div class="col-sm-9">
           <input
             class="form-control"
             type="text"
@@ -351,7 +351,6 @@ const duplicateNicknameCheck = async function (checkNickname) {
     )
     .then((res) => res.data)
     .then((json) => {
-      console.log(json.code);
       if (json.code == 1000) {
         // 중복 아님
         isDuplicateNickname.value = true;

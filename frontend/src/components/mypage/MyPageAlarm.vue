@@ -9,64 +9,73 @@
         게시글(1), 모꼬지 신청(2), 모꼬지 승인(3),  친구 신청(4), 친구 승인(5),  답변(6), DM(7)
         모꼬지, 친구 승인은 수락, 거절 버튼 2개. 나머지 확인버튼 1개
       -->
-
-      <div
-        v-for="alarm in alarmList"
-        :key="alarm.alarmId"
-        class="alarm-wrapper"
-        :class="{ 'alarm-new': alarm.isChecked === 0 }"
-      >
-        <div class="alarm-check">
-          <i
-            :class="
-              alarm.isChecked === 0 ? 'bi bi-envelope' : 'bi bi-envelope-paper'
-            "
-          ></i>
-        </div>
-        <div class="alarm-content">
-          <div class="alarm-content-header">
-            <div>{{ getAlarmTag(alarm.tagId) }}</div>
-            <div>{{ alarm.createdDate }}</div>
+      <template v-if="alarmList != ''">
+        <div
+          v-for="alarm in alarmList"
+          :key="alarm.alarmId"
+          class="alarm-wrapper"
+          :class="{ 'alarm-new': alarm.isChecked === 0 }"
+        >
+          <div class="alarm-check">
+            <i
+              :class="
+                alarm.isChecked === 0
+                  ? 'bi bi-envelope'
+                  : 'bi bi-envelope-paper'
+              "
+            ></i>
           </div>
-          <div class="alarm-content-body">
-            <div
-              v-if="alarm.tagId === 2 || alarm.tagId === 4 || alarm.tagId === 5"
+          <div class="alarm-content">
+            <div class="alarm-content-header">
+              <div>{{ getAlarmTag(alarm.tagId) }}</div>
+              <div>{{ alarm.createdDate }}</div>
+            </div>
+            <div class="alarm-content-body">
+              <div v-if="alarm.tagId === 2 || alarm.tagId === 4">
+                {{ alarm.requestedUserId }}님의
+                {{ getAlarmMessage(alarm.tagId) }}
+              </div>
+              <div v-else-if="alarm.tagId === 5">
+                {{ alarm.requestedUserId }}님과
+                {{ getAlarmMessage(alarm.tagId) }}
+              </div>
+              <div v-else>
+                {{ getAlarmMessage(alarm.tagId) }}
+              </div>
+              <!-- <div>ssafy님의 길드가입 신청</div> -->
+            </div>
+          </div>
+          <div class="alarm-btn">
+            <button
+              v-if="alarm.tagId === 2 || alarm.tagId === 4"
+              class="btn common-btn"
+              :disabled="alarm.isChecked != 0"
+              @click="accessAlarm(alarm.tagId, alarm.requestedUserId)"
             >
-              {{ alarm.requestedUserId }}님의 {{ getAlarmMessage(alarm.tagId) }}
-            </div>
-            <div v-else>
-              {{ getAlarmMessage(alarm.tagId) }}
-            </div>
-            <!-- <div>ssafy님의 길드가입 신청</div> -->
+              수락
+            </button>
+            <button
+              v-if="alarm.tagId === 2 || alarm.tagId === 4"
+              class="btn common-btn"
+              :disabled="alarm.isChecked != 0"
+              @click="checkAlarm(alarm.alarmId)"
+            >
+              거절
+            </button>
+            <button
+              v-else
+              class="btn common-btn"
+              @click="checkAlarm(alarm.alarmId)"
+              :disabled="alarm.isChecked != 0"
+            >
+              <i class="bi bi-check2"></i>
+            </button>
           </div>
         </div>
-        <div class="alarm-btn">
-          <button
-            v-if="alarm.tagId === 2 || alarm.tagId === 4"
-            class="btn common-btn"
-            :disabled="alarm.isChecked != 0"
-            @click="accessAlarm(alarm.tagId, alarm.requestedUserId)"
-          >
-            수락
-          </button>
-          <button
-            v-if="alarm.tagId === 2 || alarm.tagId === 4"
-            class="btn common-btn"
-            :disabled="alarm.isChecked != 0"
-            @click="checkAlarm(alarm.alarmId)"
-          >
-            거절
-          </button>
-          <button
-            v-else
-            class="btn common-btn"
-            @click="checkAlarm(alarm.alarmId)"
-            :disabled="alarm.isChecked != 0"
-          >
-            <i class="bi bi-check2"></i>
-          </button>
-        </div>
-      </div>
+      </template>
+      <template v-else>
+        <div style="margin-top: 10px">알림이 없습니다.</div>
+      </template>
     </div>
   </div>
 </template>
@@ -189,7 +198,7 @@ const getAlarmMessage = (tagId) => {
     case 4:
       return '친구 신청';
     case 5:
-      return '친구 신청이 승인되었습니다';
+      return '친구가 되었습니다';
     case 6:
       return '질문에 답변이 달렸습니다';
     case 7:

@@ -214,4 +214,7 @@ const goToCalander = function () {
     display: block;
   }
 }
+.bi-plus-square-fill {
+  color: $color-dark-6;
+}
 </style>

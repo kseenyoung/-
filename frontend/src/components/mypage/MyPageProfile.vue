@@ -1,11 +1,13 @@
 <template>
   <div class="mypage-profile">
     <div>
-      <img v-if="userStore.loginUserInfo.userPicture" 
-    :src="profileImage + '?v=' + new Date().getTime()"
-    style="width: 70%;padding-bottom: 10%;"/>
-        <img v-else src="@/assets/img/default.jpg" />
-      <div>{{ userStore.loginUserInfo.userId }}</div>
+      <img
+        v-if="userStore.loginUserInfo.userPicture"
+        :src="profileImage + '?v=' + new Date().getTime()"
+        style="width: 70%; padding-bottom: 10%"
+      />
+      <img v-else src="@/assets/img/default.jpg" />
+      <div>{{ userStore.loginUserInfo.userNickname }}</div>
       <div>{{ userStore.loginUserInfo.userEmail }}</div>
     </div>
     <div>
@@ -58,16 +60,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed} from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useUserStore } from '@/stores/user';
-const profileImage = ref("");
+const profileImage = ref('');
 const userStore = useUserStore();
 const userStatusMessage = ref('');
 const userTotalStudyTime = ref('');
 const formatTime = (seconds) => {
   if (isNaN(seconds) || seconds < 0) {
-    return "Invalid input";
+    return 'Invalid input';
   }
 
   const hours = Math.floor(seconds / 3600);
@@ -85,7 +87,6 @@ onMounted(() => {
   }
 });
 
-
 const getUserProfileInfo = function () {
   const body = {
     sign: 'getUserInformation',
@@ -97,8 +98,8 @@ const getUserProfileInfo = function () {
         'Content-Type': 'application/json',
       },
     })
-    .then((res) =>{
-      console.log("getUserProfileInfo: "+res.data.result);
+    .then((res) => {
+      console.log('getUserProfileInfo: ' + res.data.result);
       userStatusMessage.value = res.data.result.userStatusMessage;
       userTotalStudyTime.value = res.data.result.userTotalStudyTime;
     });
