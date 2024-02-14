@@ -84,6 +84,8 @@ public class UserController {
 
     @Autowired
     SecurityMapper securityMapper;
+    @Autowired
+    UserRankService userRankService;
 
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("test")
@@ -613,7 +615,10 @@ public class UserController {
             session.setAttribute("recaptcha", "ok");
             System.out.println(isNotBot);
         }
-
+    }
+    @GetMapping("/rank10")
+    public BaseResponse<?> getUserRank(){
+        return new BaseResponse<>(userRankService.getUserRanks());
     }
 
 
