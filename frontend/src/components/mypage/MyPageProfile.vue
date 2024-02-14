@@ -1,7 +1,9 @@
 <template>
   <div class="mypage-profile">
     <div>
-      <img v-if="userStore.loginUserInfo.userPicture" :src="useImage(profileImage)"  style="width: 70%;padding-bottom: 10%;"/>
+    <img v-if="userStore.loginUserInfo.userPicture" 
+        :src="profileImage + '?v=' + new Date().getTime()"
+        style="width: 70%;padding-bottom: 10%;"/>
       <img v-else src="@/assets/img/default.jpg" />
       <div>{{ userStore.loginUserInfo.userId }}</div>
       <div>{{ userStore.loginUserInfo.userEmail }}</div>
