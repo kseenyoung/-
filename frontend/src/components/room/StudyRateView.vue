@@ -1,16 +1,17 @@
 <template>
   <div class="containers">
     <div class="achievement">
-      <div class="rate">
-        <p class="titletag">공부시간</p>
-        <div class="studytime">{{ convertedTime }}</div>
+      <div class="rate div2">
+        <p class="titletag" style="font-weight: bold;font-size: 30px;">공부시간</p>
+        <div class="div4 studytime">{{ convertedTime }}</div>
         <hr />
-        <p class="titletag">달성률 : {{ store.achievementRate }} %</p>
-        <div>[{{ categoryName }}] 남은 시간 : {{ convertedRemainTime }}</div>
+        <p class="titletag"><b>달성률 :</b> {{ store.achievementRate }} %</p>
+        <div> <b>과목명:</b> {{ categoryName }}</div>
+        <div> <b>남은시간 : </b> {{ convertedRemainTime }}</div>
         <div class="dagak">
           <Dagak />
         </div>
-       <div class="ratedetail">
+       <div class="ratedetail" style="padding-bottom: 20px;">
           <!-- {{ categoryToStudy }}
           <ul>
             <li v-for="(category, index) in categoryToStudy" :key="index">
@@ -21,20 +22,27 @@
           Python 마스터 --- <b>75%</b><br />
           C++ 마스터 ---- <b>0%</b>
         </div>
-        <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button>
-        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
+        <button type="button" class="div3 questiontoggle position-relative" style="margin-left:10%;margin-right:10%;" @click="toggleQuestion">
+          질문하기 ✋
+          <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+            {{ questionBadge }}
+            <span class="visually-hidden">unread messages</span>
+          </span>
+        </button>
+        <button class="div3 closebtn" @click="leaveStudyRoom" style="background-color: red;color: white;">나가기 🚪</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch,computed } from 'vue'
 import Dagak from '@/components/dagak/Dagak.vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { useDagakStore } from '@/stores/dagak'
 import { useCategoryStore } from '@/stores/category'
+import { useQuestionStore } from '@/stores/qustion'
 
 const router = useRouter()
 const leave = ref('refresh')
@@ -43,6 +51,14 @@ const dagakStore = useDagakStore()
 const categoryStore = useCategoryStore()
 const todayDagak = dagakStore.todayDagak
 const showQuestion = ref(true)
+const questionStore = useQuestionStore()
+const questionBadge = computed(()=>{
+return questionStore.question.length;
+})
+
+
+
+
 const props = defineProps({
   sec: Number,
   remainTime: Number,
@@ -107,8 +123,8 @@ console.log(todayDagak)
   width: 320px;
   height: fit-content;
   position: fixed;
-  right: 0px;
-  bottom:10%;
+  right: 15px;
+  bottom:3%;
 }
 
 .achievement {
@@ -141,5 +157,30 @@ console.log(todayDagak)
   background-color: white;
   /* border-bottom: 2px solid white;*/
 }
+
+.div2 {
+  margin: 0.5em auto;
+  box-shadow:   -7px 0 0 0 black,
+                 2px 0 0 0 black,
+                 0 -7px 0 0 black,
+                 0 2px 0 0 black;
+}
+
+.div3 {
+  margin: 0.5em auto;
+  box-shadow:   -2px 0 0 0 black,
+                 2px 0 0 0 black,
+                 0 -2px 0 0 black,
+                 0 2px 0 0 black;
+}
+
+.div4 {
+  margin: 0.5em auto;
+  box-shadow:   -4px 0 0 0 black,
+                 4px 0 0 0 black,
+                 0 -4px 0 0 black,
+                 0 4px 0 0 black;
+}
+
 
 </style>

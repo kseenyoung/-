@@ -1,9 +1,9 @@
 <template>
   <div class="space">
-    <div class="room">
-    <div class="studyroomheader">
+    <div class="room" style="margin-left:2%;">
+    <div class="studyroomheader div3">
       <div class="nowname">
-        <div class="nametag">{{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
+        <div class="nametag">{{ store.loginUserInfo.sub }} </div>
         <img class="mute" @click="toggleMute" src="@/assets/img/studyroom/mute.png" alt="음소거" />
         <img
           class="pause"
@@ -13,8 +13,7 @@
         />
       </div>
       <div class="lastlater">
-        <div class="lastname">java 마스터 3:40</div>
-        <div class="latername">C++ 마스터 ~10:20</div>
+        <div class="lastname">참여자 {{ subscribers.length + 1 }} 명</div>
       </div>
     </div>
     <div class="bar">
@@ -23,7 +22,7 @@
     <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
     <!-- <QnAListView /> -->
     <div class="containers">
-      <div class="video-players">
+      <div class="video-players div2">
         <div class="video-player-1">
           <div class="bigvideo" ref="video13">
             <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
@@ -437,6 +436,7 @@ const joinSession = () => {
 
   session.value.on('signal:question', (stream) => {
     alert('질문이 들어왔습니다!')
+
     console.log('질문 내용:' + stream.data)
 
     const data = JSON.parse(stream.data)
@@ -638,7 +638,7 @@ console.log('구독자들: ', subscribers.value.length)
   justify-content: space-around;
   height: 100px;
   position: relative;
-  top: 100px;
+  top: 80px;
 }
 
 .nowname {
@@ -748,6 +748,21 @@ console.log('구독자들: ', subscribers.value.length)
   cursor: pointer;
   margin-top: 20px;
   margin-left: 20px;
+}
+
+.div2 {
+  box-shadow:   -7px 0 0 0 black,
+                 2px 0 0 0 black,
+                 0 -7px 0 0 black,
+                 0 2px 0 0 black;
+}
+
+.div3 {
+  // margin: 0.5em auto;
+  box-shadow:   -4px 0 0 0 black,
+                 4px 0 0 0 black,
+                 0 -4px 0 0 black,
+                 0 4px 0 0 black;
 }
 
 </style>
