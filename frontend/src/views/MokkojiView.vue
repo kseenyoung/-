@@ -233,7 +233,8 @@ const leaveMokkoji = function () {
       if (res.data.code === 1000) {
         //성공
         alert('탈퇴되었습니다.');
-
+        //유저 정보 업데이트
+        userStore.getLoginUserInfo();
         //친구/모꼬지 신청 페이지로 이동
         router.push({
           name: 'apply',
@@ -252,16 +253,18 @@ const deleteMokkoji = function () {
   axios
     .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body)
     .then((res) => {
+      console.log(res);
       if (res.data.code === 1000) {
         //성공
         alert('모꼬지가 삭제되었습니다.');
-
+        //유저 정보 업데이트
+        userStore.getLoginUserInfo();
         //친구/모꼬지 신청 페이지로 이동
         router.push({
           name: 'apply',
         });
       } else {
-        alert('실패');
+        alert(res.data.message);
       }
     });
 };

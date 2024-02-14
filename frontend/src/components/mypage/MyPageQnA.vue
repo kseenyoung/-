@@ -187,7 +187,7 @@ const nextPage = function () {
       }
       .highlighted {
         background-color: gold;
-        ::v-deep & {
+        :deep(&) & {
           background-color: gold;
         }
       }
