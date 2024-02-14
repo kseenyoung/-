@@ -1,8 +1,8 @@
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted ,watch } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import { userCookiesStorage } from '@/utils/CookiesUtil';
+import { cookiesStorage, userCookiesStorage } from '@/utils/CookiesUtil';
 import { useAlarmStore } from '@/stores/alarm';
 import { useFriendStore } from '@/stores/friend';
 
@@ -19,9 +19,9 @@ export const useUserStore = defineStore(
     const friendStore = useFriendStore();
 
     //로그인 세션 test
-    const login = function () {
-      friendStore.getLoginFriends(); // 로그인했을때 로그인한 친구들 목록 확인하기
-      loginSession();
+    const login = async function () {
+      await friendStore.getLoginFriends(); // 로그인했을때 로그인한 친구들 목록 확인하기
+      await loginSession();
       alert('방입장 성공');
     };
 
@@ -162,33 +162,27 @@ export const useUserStore = defineStore(
           console.log(res.data.result);
           loginUserInfo.value = res.data.result;
           loginUserInfo.value.sub = 'SQLD';
+          const userStore = useUserStore();
+          userStore.$patch({"userStore" : loginUserInfo.value});
         })
         .then(() => {
           login();
         });
     };
 
-    const deleteLoginUserInfo = async () => {
+    const deleteLoginUserInfo = () => {
       loginUserInfo.value = {};
-      userCookiesStorage.deleteItem('userStore');
-      console.log('mySession.value : ', mySession.value);
+      cookiesStorage.setItem("userStore","");
+      
       if (mySession.value) {
         mySession.value.disconnect();
         logoutSignal();
       }
+      location.reload();
     };
-
-    onBeforeUnmount(() => {
-      alert('user.js 새로고침 이벤트 발생');
-    });
     onMounted(async () => {
-      let data = userCookiesStorage.getItem('userStore');
-      if (data) {
-        data = JSON.parse(data);
-        console.log(data);
-        if (data.loginUserInfo.userId) {
-          login();
-        }
+      if (loginUserInfo.value.userId) {
+        await login();
       }
     });
     return {
@@ -213,6 +207,7 @@ export const useUserStore = defineStore(
 
   //store를 localStorage에 저장하기 위해서(새로고침 시 데이터 날라감 방지)
   {
+    enabled: true,
     persist: {
       storage: userCookiesStorage,
     },

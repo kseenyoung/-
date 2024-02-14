@@ -32,7 +32,10 @@
         <div class="dagak-title">{{ dagak.dagakName }}</div>
       </div>
     </div>
-    <div v-else>생성한 다각이 없습니다. 새로 생성해주세요.</div>
+    <div v-else class="common-pointer" @click="goToMyDagak">
+      생성한 다각이 없습니다. 새로 생성해주세요
+      <i class="bi bi-plus-square-fill"></i>
+    </div>
   </div>
   <div class="dagak-add-wrapper">
     <button class="btn common-btn add-btn" @click="addDagakDate">
@@ -53,10 +56,15 @@ const router = useRouter();
 
 const dagakList = ref([]);
 const selectDagak = ref('');
-const dates = ref();
+const initialDate = new Date();
+const dates = ref([]);
 
 onMounted(() => {
   getAllDagakList();
+  if (router.currentRoute.value.query.selectedDate) {
+    initialDate.value = new Date(router.currentRoute.value.query.selectedDate);
+    dates.value = [initialDate.value];
+  }
 });
 
 //전체 다각 목록 불러오기
@@ -132,8 +140,14 @@ const addDagakDate = function () {
 };
 
 //선택된 다각에 css 적용하기 위한 메서드
-const isSelectedDagak = (dagakId) => {
+const isSelectedDagak = function (dagakId) {
   return selectDagak.value === dagakId;
+};
+
+const goToMyDagak = function () {
+  router.push({
+    name: 'myPageScheduleDagak',
+  });
 };
 
 //뒤로가기(캘린더로)
@@ -163,7 +177,7 @@ const goToCalander = function () {
     margin: 0 auto;
     .dagak-detail-wrapper-clicked {
       transform: translateY(-5px);
-      background-color: aliceblue;
+      background-color: $color-light-2;
     }
     .dagak-detail-wrapper {
       text-align: center;

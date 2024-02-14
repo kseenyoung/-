@@ -6,7 +6,7 @@
       <p class="card-text">
         {{ content }}
       </p>
-      <p class="text-muted">{{ createdDate }}</p>
+      <p class="date-text">{{ createdDate }}</p>
     </div>
   </div>
 </template>
@@ -36,6 +36,13 @@ defineProps({
   font-size: 12px; 
   padding: 2px 5px;
 }
-
-
+.card {
+ width: 70%;
+ background-color:transparent;
+ color: white;
+ border: 2px solid white;
+}
+.date-text {
+  color: white;
+}
 </style>

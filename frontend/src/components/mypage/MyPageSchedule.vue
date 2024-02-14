@@ -31,7 +31,7 @@
             <div v-if="day.date" class="dagak-wrapper">
               <div
                 v-if="!hasEventsForDate(day.date)"
-                @click="goToMyAddDate"
+                @click="goToMyAddDateClick(day.date)"
                 class="dagak-goto-add"
               ></div>
               <div
@@ -49,11 +49,6 @@
                 "
               >
                 <div class="dagak-name">{{ event.dagakName }}</div>
-                <!-- <img
-                  v-if="event.dagakId"
-                  src="@/assets/img/mypage/hexagon_thin.png"
-                  class="dagak-figure"
-                /> -->
                 <DagakImg :gak-length="event.gakLength" />
               </div>
             </div>
@@ -340,6 +335,20 @@ const goToMyAddDate = function () {
     name: 'myPageScheduleAddDate',
   });
 };
+//날짜 클릭 시 -> 날짜 정보 들고 라우터 이동
+const goToMyAddDateClick = function (date) {
+  const formattedDate = new Date(
+    date.getTime() - date.getTimezoneOffset() * 60000,
+  )
+    .toISOString()
+    .split('T')[0];
+  router.push({
+    name: 'myPageScheduleAddDate',
+    query: {
+      selectedDate: formattedDate,
+    },
+  });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -351,7 +360,7 @@ const goToMyAddDate = function () {
 
   i {
     font-size: 1.5rem;
-    color: #ff6347;
+    color: $color-light-3;
   }
 }
 
@@ -414,10 +423,11 @@ td {
 
 .red-text {
   color: white;
-  background: linear-gradient(to top, #ff6347 8%, transparent 8%);
-  background-color: #ff6347;
+  background: linear-gradient(to top, $color-light-3 8%, transparent 8%);
+  background-color: $color-light-3;
   border-radius: 3px;
   padding-bottom: 2px;
+  font-weight: bold;
 }
 
 .dagak-wrapper {

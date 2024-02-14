@@ -8,24 +8,6 @@
         <div class="info-content">
           <img src="@/assets/img/기본프로필_갈색.jpg" />
         </div>
-        <i
-          class="bi bi-pencil-fill common-pointer"
-          data-bs-toggle="collapse"
-          data-bs-target="#update-profile"
-          aria-expanded="true"
-          aria-controls="collapseOne"
-        ></i>
-      </div>
-      <!-- 프로필 수정아코디언 -->
-      <div
-        id="update-profile"
-        class="accordion-collapse collapse"
-        aria-labelledby="headingOne"
-      >
-        <div class="accordion-body input-group">
-          <input class="form-control" type="file" id="formFile" />
-          <button class="btn common-btn">수정</button>
-        </div>
       </div>
 
       <div class="info-detail-wrapper">

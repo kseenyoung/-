@@ -82,8 +82,11 @@
       </div>
       </div>
         <div class="background">
-      <div class="part three">
-        3
+          <div class="part2">
+          <img src="@/assets/computer.png" class="board">
+          <div class="two"> 
+            <StudyRoomRanking style="z-index : 1" />
+          </div>
       </div>
         </div>
     </div>
@@ -94,6 +97,7 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import MyRanking from '@/components/home/MyRanking.vue';
 import MokkojiRanking from '@/components/home/MokkojiRanking.vue';
+import StudyRoomRanking from '@/components/home/StudyRoomRanking.vue';
 import { useUserStore } from '@/stores/user';
 import { useCategoryStore } from '@/stores/category';
 import { useAlarmStore } from '@/stores/alarm';
