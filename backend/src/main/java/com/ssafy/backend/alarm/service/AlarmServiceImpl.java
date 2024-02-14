@@ -32,7 +32,7 @@ public class AlarmServiceImpl implements  AlarmService {
 
     @Override
     public Integer findAlarmId(String userId, String requestedUserId, int tagId) {
-        return alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(userId, requestedUserId, tagId).orElseThrow(
+        return alarmRepository.findOptionalAlarmByUserIdAndRequestedUserIdAndTagIdAndIsChecked(userId, requestedUserId, tagId,0).orElseThrow(
                 () -> {throw new BaseException(NOT_EXIST_ALARM_ID);}
         ).getAlarmId();
     }

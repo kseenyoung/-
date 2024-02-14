@@ -7,8 +7,9 @@ import com.ssafy.backend.common.exception.BaseException;
 import com.ssafy.backend.friend.model.domain.UserId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 
 import static com.ssafy.backend.common.response.BaseResponseStatus.ALREADY_EXIST_ALARM;
 import static com.ssafy.backend.common.response.BaseResponseStatus.ALREADY_EXIST_FRIEND;
@@ -22,10 +23,10 @@ public class FriendFacade {
     @Autowired
     AlarmService alarmService;
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void requestFriend(String userId, String userId2){
         // 이미 친구인지 확인
-        if(friendService.isFriend(new UserId(userId, userId2))){
+        if(friendService.isFriend(new UserId(userId, userId2),1)){
             throw new BaseException(ALREADY_EXIST_FRIEND);
         }
         // 이미 친구 요청을 했는지 확인(알람 : userId=ssafy, requestedUserId=ssafy123, type=4, isChecked=0)
@@ -42,9 +43,12 @@ public class FriendFacade {
         friendService.accessFriend(userId, requiringUserId);
         // 친구 요청 승인 알람 보내기
         alarmService.requestAlarm(new ReqestAlarmDTO(requiringUserId, userId, 5));
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void accessFriendAlarm(String userId, String requiringUserId){
         // 체크 표시 할 친구 요청 '알람 아이디' 찾기
         int alarmId = alarmService.findAlarmId(userId, requiringUserId, 4);
-        // 해당 '알람 아이디' 삭제?? 체크표시??
         alarmService.checkAlarm(new CheckAlarmDTO(userId, alarmId));
     }
 }

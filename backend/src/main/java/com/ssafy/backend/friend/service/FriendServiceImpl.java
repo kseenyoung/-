@@ -36,23 +36,30 @@ public class FriendServiceImpl implements FriendService {
         // 존재하는 userId인지 각각 확인 필요
         
         UserId PK = new UserId(userId, userId2);
-
-        // 친구 등록 요청
-        friendRepository.save(
-                Friend.builder().
-                        userId(PK).
-                        isFriend(0).
-                        build());
-        // 알림 보내기
-
+        Optional<Friend> friend = friendRepository.findByUserIdAndIsFriend(PK, 0);
+        if(!friend.isPresent()){
+            // 친구 등록 요청
+            friendRepository.save(
+                    Friend.builder().
+                            userId(PK).
+                            isFriend(0).
+                            build());
         }
+
+    }
 
     @Override
     public void accessFriend(String userId, String requiringUserId) {
         UserId PK = new UserId(requiringUserId, userId);
 
-        // 이미 친구인지 확인 필요
+        //a -> b, b -> a 상태일 때 하나는 지우기
+        Optional<Friend> friend = friendRepository.findByUserIdAndIsFriend(new UserId(userId, requiringUserId), 0);
+        if(friend.isPresent()){
+            Friend pendingFriend = friend.get();
+            friendRepository.delete(pendingFriend);
+        }
 
+        // 이미 친구인지 확인 필요
         friendRepository.save(
                 Friend.builder()
                         .userId(PK)
@@ -66,7 +73,7 @@ public class FriendServiceImpl implements FriendService {
         UserId PK = new UserId(quitUserId, quitUserId2);
 
         // 이미 친구인지 확인
-        if(!isFriend(PK))
+        if(!isFriend(PK,0))
             throw new BaseException(ALREADY_EXIST_FRIEND);
 
         friendRepository.save(
@@ -94,8 +101,8 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public boolean isFriend(UserId PK) {
-        Optional<Friend> friend = friendRepository.findById(PK);
+    public boolean isFriend(UserId PK,int status) {
+        Optional<Friend> friend = friendRepository.findByUserIdAndIsFriend(PK,status);
 //        log.info("친구 존재 여부 {}", friend);
 
         if(friend.isPresent()){
