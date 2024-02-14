@@ -1,40 +1,56 @@
 <template>
   <div class="containers">
     <div class="achievement">
-      <div class="rate">
-        <p class="titletag">공부시간</p>
-        <div class="studytime">{{ convertedTime }}</div>
+      <div class="rate div2">
+        <p class="titletag" style="font-weight: bold;font-size: 30px;">공부시간</p>
+        <div class="div4 studytime">{{ convertedTime }}</div>
         <hr />
-        <p class="titletag">달성률 : {{ store.achievementRate }} %</p>
-        <div>[{{ categoryName }}] 남은 시간 : {{ convertedRemainTime }}</div>
+        <p class="titletag"><b>달성률 :</b> {{ store.achievementRate }} %</p>
+        <div> <b>과목명:</b> {{ categoryName }}</div>
+        <div> <b>남은시간 : </b> {{ convertedRemainTime }}</div>
         <div class="dagak">
           <Dagak />
         </div>
-       <div class="ratedetail">
+       <div class="ratedetail" style="padding-bottom: 20px;">
           <!-- {{ categoryToStudy }}
+        <p class="titletag">달성률 : {{ store.achievementRate }} %</p>
+        <div>[{{ categoryName }}] 남은 시간 : {{ convertedRemainTime }}</div>
+
+        <div class="ratedetail">
           <ul>
-            <li v-for="(category, index) in categoryToStudy" :key="index">
-              {{ category }}
+            <li v-for="(gak, index) in gaksToStudy" :key="index">
+              {{ categoryNameList[gak.categoryId - 1].categoryName }} :
+              {{ getStatus(index) }}
             </li>
-          </ul>  -->
+          </ul>
           마스터 {{ gakOrder }} <b>140%</b><br />
           Python 마스터 --- <b>75%</b><br />
-          C++ 마스터 ---- <b>0%</b>
+          C++ 마스터 ---- <b>0%</b> -->
         </div>
-        <button class="questiontoggle" @click="toggleQuestion">질문하기✋</button>
-        <button class="closebtn" @click="leaveStudyRoom">나가기🚪</button>
+        <button type="button" class="div3 questiontoggle position-relative" style="margin-left:10%;margin-right:10%;" @click="toggleQuestion">
+          질문하기 ✋
+          <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+            {{ questionBadge }}
+            <span class="visually-hidden">unread messages</span>
+          </span>
+        </button>
+        <button class="div3 closebtn" @click="leaveStudyRoom" style="background-color: red;color: white;">나가기 🚪</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch,computed, onMounted } from 'vue'
 import Dagak from '@/components/dagak/Dagak.vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { useDagakStore } from '@/stores/dagak'
 import { useCategoryStore } from '@/stores/category'
+import { useQuestionStore } from '@/stores/qustion'
+import draggable from 'vuedraggable'
+import MyPageScheduleDagakAddModal from '../mypage/MyPageScheduleDagakAddModal.vue'
+import DagakImg from '@/components/dagak/DagakImg.vue'
 
 const router = useRouter()
 const leave = ref('refresh')
@@ -43,6 +59,14 @@ const dagakStore = useDagakStore()
 const categoryStore = useCategoryStore()
 const todayDagak = dagakStore.todayDagak
 const showQuestion = ref(true)
+const questionStore = useQuestionStore()
+const questionBadge = computed(()=>{
+return questionStore.question.length;
+})
+
+
+
+
 const props = defineProps({
   sec: Number,
   remainTime: Number,
@@ -50,7 +74,18 @@ const props = defineProps({
   gakOrder: Number
 })
 
-const categoryToStudy = ref(dagakStore.categoryNameToStudy)
+const gaksToStudy = ref(todayDagak.gaks)
+const categoryNameList = ref(categoryStore.categoryList)
+
+const getStatus = (index) => {
+  if (index < props.gakOrder) {
+    return '완료 ✔'
+  } else if (index === props.gakOrder) {
+    return '진행 중'
+  } else {
+    return '진행 예정'
+  }
+}
 
 const emit = defineEmits(['leave-study-room', 'toggle-question'])
 const leaveStudyRoom = () => {
@@ -84,8 +119,6 @@ watch(props, (newTime) => {
 watch(props, (newTime) => {
   convertedRemainTime.value = convertTime(newTime.remainTime)
 })
-
-console.log(todayDagak)
 </script>
 
 <style lang="scss" scoped>
@@ -106,6 +139,9 @@ console.log(todayDagak)
   background-color: white;
   width: 320px;
   height: fit-content;
+  position: fixed;
+  right: 15px;
+  bottom:3%;
 }
 
 .achievement {
@@ -139,4 +175,49 @@ console.log(todayDagak)
   /* border-bottom: 2px solid white;*/
 }
 
+.div2 {
+  margin: 0.5em auto;
+  box-shadow:   -7px 0 0 0 black,
+                 2px 0 0 0 black,
+                 0 -7px 0 0 black,
+                 0 2px 0 0 black;
+}
+
+.div3 {
+  margin: 0.5em auto;
+  box-shadow:   -2px 0 0 0 black,
+                 2px 0 0 0 black,
+                 0 -2px 0 0 black,
+                 0 2px 0 0 black;
+}
+
+.div4 {
+  margin: 0.5em auto;
+  box-shadow:   -4px 0 0 0 black,
+                 4px 0 0 0 black,
+                 0 -4px 0 0 black,
+                 0 4px 0 0 black;
+}
+
+
+.dagak-list-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 710px;
+  margin: 0 auto;
+  .dagak-detail-wrapper {
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 20px 10px 0px;
+    width: 115px;
+    min-height: 160px;
+    margin: 0px 10px 30px;
+    box-shadow: 5px 5px #ccc;
+    .dagak-figure {
+      width: 78px;
+    }
+  }
+}
 </style>

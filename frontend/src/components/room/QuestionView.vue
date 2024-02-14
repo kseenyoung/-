@@ -81,4 +81,12 @@ const showAnswer = function (index) {
 .questionbox:focus {
   outline: none; /* 포커스 효과 제거 */
 }
+
+
+.div2 {
+  box-shadow:   -1px 0 0 0 black,
+                 1px 0 0 0 black,
+                 0 -1px 0 0 black,
+                 0 1px 0 0 black;
+}
 </style>
