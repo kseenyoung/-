@@ -98,12 +98,10 @@ console.log(todayDagak)
 
 .rate {
   padding: 2px;
-
+  border: black 1px solid;
   background-color: white;
   width: 320px;
   height: fit-content;
-  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* 그림자 효과 추가 */
 }
 
 .achievement {
@@ -130,9 +128,11 @@ console.log(todayDagak)
   text-align: center;
 }
 
-.QnA {
-  position: fixed;
-  right: 0;
-  bottom: 0%;
+.questiontoggle:hover,
+.ratetoggle:hover,
+.closebtn:hover {
+  background-color: white;
+  /* border-bottom: 2px solid white;*/
 }
+
 </style>

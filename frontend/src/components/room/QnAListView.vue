@@ -19,8 +19,8 @@ import QuestionField from '@/components/room/QuestionField.vue'
   padding: 2px;
   padding-top: 15px;
   padding-bottom: 15px;
-  border: solid 2px black;
-  border-radius: 10px;
+  border: solid 1px black;
+  /* border-radius: 10px; */
   background-color: white;
   height: 500px;
   width: 320px;
@@ -29,7 +29,7 @@ import QuestionField from '@/components/room/QuestionField.vue'
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
   position: fixed;
   right: 0;
-  bottom:0;
+  bottom:1%;
   justify-content: center;
 }
 
@@ -37,8 +37,4 @@ import QuestionField from '@/components/room/QuestionField.vue'
   text-align: center; /* 텍스트를 가운데 정렬합니다. */
 }
 
-.QuestionField {
-  position: absolute;
-  bottom: 0;
-}
 </style>

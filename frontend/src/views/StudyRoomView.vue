@@ -1,5 +1,6 @@
 <template>
-  <div class="room">
+  <div class="space">
+    <div class="room">
     <div class="studyroomheader">
       <div class="nowname">
         <div class="nametag">{{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
@@ -19,7 +20,7 @@
     <div class="bar">
       <!-- <button class="ratetoggle" @click="toggleRate">달성률</button> -->
     </div>
-    <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" />
+    <!-- <StudyRateView :sec="sec" :remainTime="remainTime" :categoryName="categoryName" /> -->
     <!-- <QnAListView /> -->
     <div class="containers">
       <div class="video-players">
@@ -71,6 +72,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script setup>
@@ -465,25 +467,13 @@ console.log('구독자들: ', subscribers.length)
 console.log('구독자들: ', subscribers.value.length)
 </script>
 
-<style>
+<style lang="scss" scoped>
+
 .room {
   flex-direction: column;
   height: 60%;
-  width: 100%;
-}
-
-.side {
-  position: absolute;
-  right: 0;
-  background-color: blueviolet;
-}
-
-.resttitle {
-  font-size: 100px;
-}
-
-.resttime {
-  font-size: 50px;
+  width: 70%;
+  height: 100%;
 }
 
 .black {
@@ -499,12 +489,9 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .studyroomheader {
-  background-color: gainsboro;
   color: black;
   justify-content: space-around;
   height: 100px;
-  /* border: 2px black dashed; */
-  /* width: 62.5%; */
   position: relative;
   top: 100px;
 }
@@ -512,7 +499,6 @@ console.log('구독자들: ', subscribers.value.length)
 .nowname {
   font-size: 40px;
   text-align: left;
-  /* background-color: white; */
   display: flex;
 }
 
@@ -537,11 +523,6 @@ console.log('구독자들: ', subscribers.value.length)
   display: flex;
 }
 
-.play {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-}
 
 .containers {
   width: 100%;
@@ -552,11 +533,10 @@ console.log('구독자들: ', subscribers.value.length)
 
 .video-players {
   display: flex;
-  /* height: 388px; */
-  background-color: aquamarine;
   flex-wrap: wrap;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: black solid 1px;
 }
 
 .video-player-1 {
@@ -567,13 +547,8 @@ console.log('구독자들: ', subscribers.value.length)
   flex: 4;
   background-color: white;
   display: flex;
-  /* 요소들이 한 줄을 넘어갈 경우 다음 줄로 넘어갈 수 있도록 설정 */
-  flex-direction: column;
-
+  flex-wrap: wrap;
 }
-
-
-
 .videog2 {
   width: 100%;
   border: 5px white solid;
@@ -615,45 +590,6 @@ console.log('구독자들: ', subscribers.value.length)
   object-fit: cover;
 }
 
-.achievement {
-  position: fixed;
-  right: 0;
-  bottom: 5%;
-  height: 60%;
-  justify-content: center;
-  display: flex;
-}
-
-.titletag {
-  margin: 0;
-}
-
-.dagak {
-  text-align: center;
-  /* padding: 20px; */
-  position: relative;
-  z-index: 1;
-}
-
-.dagak img {
-  width: 60%;
-  height: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-}
-
-.studytime {
-  font-size: 30px;
-  text-align: center;
-  font-weight: 700;
-}
-
-.ratedetail {
-  font-size: 15px;
-  text-align: center;
-}
 
 .mute {
   width: 25px;
@@ -670,48 +606,4 @@ console.log('구독자들: ', subscribers.value.length)
   margin-left: 20px;
 }
 
-.questiontoggle {
-  background-color: rgb(200, 200, 200);
-
-  border: gainsboro;
-  border-radius: 15px 15px 0 0;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-  bottom: -5px;
-}
-.closebtn {
-  border: gainsboro;
-  border-radius: 15px 15px 0 0;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  position: relative;
-  bottom: -5px;
-}
-
-.ratetoggle {
-  background-color: gainsboro;
-  width: 120px;
-  height: 40px;
-  border: gainsboro;
-  border-radius: 15px 15px 0 0;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  top: -40px;
-  position: relative;
-}
-
-.questiontoggle:hover,
-.ratetoggle:hover,
-.closebtn:hover {
-  background-color: white;
-  /* border-bottom: 2px solid white;*/
-}
-
-.btn {
-  border: black solid 1px;
-  border-radius: 5px;
-  padding: 2px;
-}
 </style>
