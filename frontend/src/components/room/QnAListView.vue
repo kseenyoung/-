@@ -7,7 +7,6 @@
   </div>
 </template>
 
-
 <script setup>
 import AnswerView from './AnswerView.vue'
 import QuestionView from './QuestionView.vue'
@@ -36,5 +35,4 @@ import QuestionField from '@/components/room/QuestionField.vue'
 .QnA h4 {
   text-align: center; /* 텍스트를 가운데 정렬합니다. */
 }
-
 </style>

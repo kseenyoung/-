@@ -305,7 +305,7 @@ onBeforeMount(async () => {
       const result = res.data.result
       // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
       // 그에 따른 categoryId로 방 이동 바랍니다.
-      categoryId.value = result.categoryId
+      // categoryId.value = result.categoryId
       calendarId.value = result.calendarId
       gakId.value = result.gakId
       userId.value = result.userId
@@ -323,9 +323,30 @@ onBeforeMount(async () => {
     })
 
   // TODO : redis에 저장된 질문/ 답변을 불러와서, QnAListView에 뿌려주기
-  // await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dagak/getQuestionList`).then((res) => {{
-
-  // }
+  console.log('studyRoom onBeforeMount!!!!!!!!!!!!!!!!!!')
+  const body = {
+    sign: 'getSessionQnA'
+  }
+  await axios
+    .post(`${import.meta.env.VITE_API_BASE_URL}room`, body)
+    .then((res) => {
+      {
+        alert('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
+        // console.log('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
+        const subQuestions = res.data.result.questionVOList
+        if (subQuestions) {
+          subQuestions.forEach(async (element) => {
+            alert('data : ' + element)
+            await questionStore.setQuestion(element)
+          })
+          console.log('question 제발 : ' + question.value)
+        }
+      }
+    })
+    .catch((e) => {
+      alert(e)
+      console.log('session 질문(redis) 가져오기 실패!!!!!!!!!!! ')
+    })
 })
 
 // 플래그
