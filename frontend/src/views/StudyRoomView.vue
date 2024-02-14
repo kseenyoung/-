@@ -117,14 +117,14 @@ import QnAListView from '@/components/room/QnAListView.vue'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 
-function mapSubject(subject) {
-  const subjectMap = {
-    국어: 'korean',
-    수학: 'math',
-    영어: 'english'
-  }
-  return subjectMap[subject] || 'Unknown'
-}
+// function mapSubject(subject) {
+//   const subjectMap = {
+//     국어: 'korean',
+//     수학: 'math',
+//     영어: 'english'
+//   }
+//   return subjectMap[subject] || 'Unknown'
+// }
 
 const dagakStore = useDagakStore()
 
@@ -224,7 +224,7 @@ const modifyMemoryTime = async function (subject) {
       userId.value = result.userId
       gakOrder.value = result.gakOrder + 1
       memoryTime.value = result.memoryTime
-      store.loginUserInfo.sub = mapSubject(result.categoryName)
+      store.loginUserInfo.sub = result.categoryName
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
       const achievementRate = result.memoryTime / result.totalTime
@@ -283,7 +283,7 @@ const startCount = () => {
         } else {
           // 방 이동 함
           modifyMemoryTime(
-            mapSubject(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
+            dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
           )
         }
       }
@@ -311,7 +311,7 @@ onBeforeMount(async () => {
       userId.value = result.userId
       gakOrder.value = result.gakOrder
       memoryTime.value = result.memoryTime
-      store.loginUserInfo.sub = mapSubject(result.categoryName)
+      store.loginUserInfo.sub = result.categoryName
 
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
