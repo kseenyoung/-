@@ -15,14 +15,18 @@ axios.interceptors.response.use(
     if (response.data.code === 2045 || response.data.code === 2042) {
       alert('로그인이 필요합니다.');
       const userStore = useUserStore();
-      userStore.deleteLoginUserInfo();
-
       router.push('/login'); // '/login'은 로그인 페이지의 경로입니다.
+      if(userStore.loginUserInfo.userId){
+        userStore.deleteLoginUserInfo();
+      }
       return;
     }
     return response;
   },
   (error) => {
+    // 에러가 발생한 경우, 여기서 처리할 수 있습니다.
+    console.error(error);
+    return Promise.reject(error);
   },
 );
 
