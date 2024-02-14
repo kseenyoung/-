@@ -138,22 +138,26 @@ const captureAndSend = async () => {
     })
     .then((response) => {
       console.log(response);
-      userStore.getLoginUserInfo();
-    })
+      let time = new Date().getTime();
+      userStore.loginUserInfo.userPicture = userStore.loginUserInfo.userPicture+"?"+time;
+          })
     .catch((error) => {
       console.error(error);
     });
 };
 
 onMounted(async () => {
+  
   await getInventory().then((response) => {
     if (response.data.code === 1000) {
       console.log(response.data);
       inventories.value = response.data.result.inventories;
     } else {
       alert(response.data.message);
+      console.log("userStore.loginUserInfo.userPicture"+userStore.loginUserInfo.userPicture);
     }
   });
+  // userStore.getLoginUserInfo();
 });
 </script>
 
