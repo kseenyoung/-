@@ -28,7 +28,7 @@ import QuestionField from '@/components/room/QuestionField.vue'
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* 그림자 효과 추가 */
   position: fixed;
   right: 350px;
-  bottom: 0;
+  bottom: 10%;
   justify-content: center;
 }
 
