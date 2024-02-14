@@ -1,6 +1,6 @@
 <template>
   <div class="answerbox" v-for="(answer, index) in answers" key="index">
-    <div class="answerlabel">
+    <div class="answerlabel element">
       <b>{{ answer.data }}</b>
     </div>
     <div class="answerdetail">{{ answer.userId }}</div>
@@ -50,5 +50,11 @@ const answers = questionStore.answer.get(qId.value)
   height: 10px; /* 작은 높이 적용 */
   align-self: flex-end;
   margin-right: 40px; /* 왼쪽으로 조금만 나오도록 마진 설정 */
+}
+
+.element {
+  word-wrap: break-word;
+  width: 200px;
+  font-size: 12px;
 }
 </style>

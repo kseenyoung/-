@@ -2,46 +2,53 @@
   <div class="containers">
     <div class="achievement">
       <div class="rate div2">
-        <p class="titletag" style="font-weight: bold;font-size: 30px;">공부시간</p>
+        <p class="titletag" style="font-weight: bold; font-size: 30px">공부시간</p>
         <div class="div4 studytime">{{ convertedTime }}</div>
         <hr />
         <p class="titletag"><b>달성률 :</b> {{ store.achievementRate }} %</p>
-        <div> <b>과목명:</b> {{ categoryName }}</div>
-        <div> <b>남은시간 : </b> {{ convertedRemainTime }}</div>
+        <div><b>과목명:</b> {{ categoryName }}</div>
+        <div><b>남은시간 : </b> {{ convertedRemainTime }}</div>
         <div class="dagak">
           <Dagak />
         </div>
-       <div class="ratedetail" style="padding-bottom: 20px;">
-          <!-- {{ categoryToStudy }}
-        <p class="titletag">달성률 : {{ store.achievementRate }} %</p>
-        <div>[{{ categoryName }}] 남은 시간 : {{ convertedRemainTime }}</div>
-
-        <div class="ratedetail">
-          <ul>
-            <li v-for="(gak, index) in gaksToStudy" :key="index">
-              {{ categoryNameList[gak.categoryId - 1].categoryName }} :
-              {{ getStatus(index) }}
-            </li>
-          </ul>
-          마스터 {{ gakOrder }} <b>140%</b><br />
-          Python 마스터 --- <b>75%</b><br />
-          C++ 마스터 ---- <b>0%</b> -->
+        <div class="ratedetail" style="padding-bottom: 20px">
+          {{ categoryToStudy }}
+          <div class="ratedetail">
+            <ul class="list">
+              <li v-for="(gak, index) in gaksToStudy" :key="index">
+                {{ categoryNameList[gak.categoryId - 1].categoryName }} : {{ getStatus(index) }}
+              </li>
+            </ul>
+          </div>
         </div>
-        <button type="button" class="div3 questiontoggle position-relative" style="margin-left:10%;margin-right:10%;" @click="toggleQuestion">
+        <button
+          type="button"
+          class="div3 questiontoggle position-relative"
+          style="margin-left: 10%; margin-right: 10%"
+          @click="toggleQuestion"
+        >
           질문하기 ✋
-          <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+          <span
+            class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger"
+          >
             {{ questionBadge }}
             <span class="visually-hidden">unread messages</span>
           </span>
         </button>
-        <button class="div3 closebtn" @click="leaveStudyRoom" style="background-color: red;color: white;">나가기 🚪</button>
+        <button
+          class="div3 closebtn"
+          @click="leaveStudyRoom"
+          style="background-color: red; color: white"
+        >
+          나가기 🚪
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch,computed, onMounted } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 import Dagak from '@/components/dagak/Dagak.vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
@@ -60,12 +67,9 @@ const categoryStore = useCategoryStore()
 const todayDagak = dagakStore.todayDagak
 const showQuestion = ref(true)
 const questionStore = useQuestionStore()
-const questionBadge = computed(()=>{
-return questionStore.question.length;
+const questionBadge = computed(() => {
+  return questionStore.question.length
 })
-
-
-
 
 const props = defineProps({
   sec: Number,
@@ -141,7 +145,7 @@ watch(props, (newTime) => {
   height: fit-content;
   position: fixed;
   right: 15px;
-  bottom:3%;
+  bottom: 3%;
 }
 
 .achievement {
@@ -177,28 +181,30 @@ watch(props, (newTime) => {
 
 .div2 {
   margin: 0.5em auto;
-  box-shadow:   -7px 0 0 0 black,
-                 2px 0 0 0 black,
-                 0 -7px 0 0 black,
-                 0 2px 0 0 black;
+  box-shadow:
+    -7px 0 0 0 black,
+    2px 0 0 0 black,
+    0 -7px 0 0 black,
+    0 2px 0 0 black;
 }
 
 .div3 {
   margin: 0.5em auto;
-  box-shadow:   -2px 0 0 0 black,
-                 2px 0 0 0 black,
-                 0 -2px 0 0 black,
-                 0 2px 0 0 black;
+  box-shadow:
+    -2px 0 0 0 black,
+    2px 0 0 0 black,
+    0 -2px 0 0 black,
+    0 2px 0 0 black;
 }
 
 .div4 {
   margin: 0.5em auto;
-  box-shadow:   -4px 0 0 0 black,
-                 4px 0 0 0 black,
-                 0 -4px 0 0 black,
-                 0 4px 0 0 black;
+  box-shadow:
+    -4px 0 0 0 black,
+    4px 0 0 0 black,
+    0 -4px 0 0 black,
+    0 4px 0 0 black;
 }
-
 
 .dagak-list-wrapper {
   display: flex;
@@ -219,5 +225,10 @@ watch(props, (newTime) => {
       width: 78px;
     }
   }
+}
+
+.list {
+  list-style: none; /* 동글이 제거 */
+  padding: 20px 10px 0px;
 }
 </style>

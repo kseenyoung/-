@@ -1,5 +1,5 @@
 <template>
-  <div class="QnA overflow-auto">
+  <div class="QnA element">
     <h4><b>[ 질문 게시판 ]</b></h4>
     <QuestionView />
     <br />
@@ -37,10 +37,15 @@ import QuestionField from '@/components/room/QuestionField.vue'
 }
 
 .div2 {
-  box-shadow:   -4px 0 0 0 black,
-                 4px 0 0 0 black,
-                 0 -4px 0 0 black,
-                 0 4px 0 0 black;
+  box-shadow:
+    -4px 0 0 0 black,
+    4px 0 0 0 black,
+    0 -4px 0 0 black,
+    0 4px 0 0 black;
 }
 
+.element {
+  overflow-x: hidden; /* 가로 스크롤 제거 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+}
 </style>
