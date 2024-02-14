@@ -75,7 +75,7 @@
             />
           </template>
           <!-- 총 6명 -->
-          <template v-else-if="subscribers.length === 5">
+          <template v-else-if="subscribers.length >= 5">
             <user-video class="videog6" :stream-manager="mainStreamManager" />
             <user-video
               class="videog6"
@@ -721,10 +721,9 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .videog6 {
-  height: calc(100% / 5);
+  width: 50%;
   border: 5px white solid;
   box-sizing: border-box;
-  flex-direction: column;
 }
 
 .bigvideo {

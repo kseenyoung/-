@@ -71,6 +71,7 @@ textarea {
   border: 2px solid black;
   margin-left: 5px;
   margin-right: 5px;
+  font-family: 'Galmuri14';
 }
 /* 기존 스타일 유지 */
 .question {
@@ -81,7 +82,7 @@ textarea {
   padding: 5px 8px; /* 내부 패딩 조정 */
   margin-right: 10px;
   display: inline-block;
-  float: right;
+  /* float: right; */
 }
 
 /* 추가된 스타일 */

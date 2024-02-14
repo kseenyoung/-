@@ -41,12 +41,7 @@ const showAnswer = function (index) {
 </script>
 
 <style scoped>
-/* .questiontitle{
-    font-weight: 800;
-    text-align: left;
-    padding-left: 10px;
-    padding-right: 10px;
-} */
+
 .questionlabel {
   position: relative;
   display: inline-block;
@@ -55,6 +50,8 @@ const showAnswer = function (index) {
   border-radius: 20px;
   border: 2px dotted black; /* 점선 스타일 설정 */
   background-color: rgba(255, 255, 0, 0.8);
+  font-size: 12px;
+  font-family: 'Galmuri14';
 }
 
 .questiondetail {
