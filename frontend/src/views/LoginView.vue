@@ -84,18 +84,18 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import axios from "axios";
-import vueRecaptcha from "vue3-recaptcha2";
-import { useRouter } from "vue-router";
-import { useUserStore } from "@/stores/user";
-import { useAlarmStore } from "@/stores/alarm";
+import { ref } from 'vue';
+import axios from 'axios';
+import vueRecaptcha from 'vue3-recaptcha2';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+import { useAlarmStore } from '@/stores/alarm';
 
 const userStore = useUserStore();
 const alarmStore = useAlarmStore();
 const router = useRouter();
-const id = ref("");
-const password = ref("");
+const id = ref('');
+const password = ref('');
 // const rememberId = ref(false);
 
 // reCAPTCHA
@@ -107,45 +107,49 @@ const disableLoginButton = ref(true);
 // 구글 로그인 페이지로 이동
 const googleLogin = async function () {
   window.location.replace(
-    "https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:5173/googleLogin&response_type=code&scope=email"
+    'https://accounts.google.com/o/oauth2/v2/auth?client_id=273219571369-d3f2u10s1447t28d54ut6v359m5kfmp6.apps.googleusercontent.com&redirect_uri=https://localhost:5173/googleLogin&response_type=code&scope=email',
   );
 };
 
 // 카카오 로그인 페이지로 이동
 const kakaoLogin = async function () {
   window.location.replace(
-    "https://kauth.kakao.com/oauth/authorize?client_id=891949d64302e510fe79f05131e7d972&redirect_uri=https://localhost:5173/kakaoLogin&response_type=code"
+    'https://kauth.kakao.com/oauth/authorize?client_id=891949d64302e510fe79f05131e7d972&redirect_uri=https://localhost:5173/kakaoLogin&response_type=code',
   );
 };
 
 // 로그인
 const login = async function () {
   const body = {
-    sign: "login",
+    sign: 'login',
     userId: id.value,
     userPassword: password.value,
   };
-  const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
-    headers: {
-      "Content-Type": "application/json",
+  const res = await axios.post(
+    `${import.meta.env.VITE_API_BASE_URL}user`,
+    body,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     },
-  });
+  );
   if (res.data.code === 1000) {
     //성공 시 유저정보 + 안읽은 알림 불러오기
 
     await userStore.getLoginUserInfo();
-    console.log("tete loginSuccess", userStore.loginUserInfo);
+    console.log('tete loginSuccess', userStore.loginUserInfo);
     alarmStore.getUnReadAlarmList();
-    console.log("tete");
+    console.log('tete');
     //홈으로 이동
     router.push({
-      name: "home",
+      name: 'home',
     });
   } else if (res.data.code === 1405) {
-    alert(res.data.result, "asdasd");
+    alert(res.data.result, 'asdasd');
   }
-  id.value = "";
-  password.value = "";
+  id.value = '';
+  password.value = '';
 };
 
 const recaptchaExpired = async function (response) {
@@ -155,11 +159,11 @@ const recaptchaExpired = async function (response) {
   ``;
   disableLoginButton.value = true;
   const body = {
-    recaptchaResponse: "만료",
+    recaptchaResponse: '만료',
   };
   await axios.post(`${import.meta.env.VITE_API_BASE_URL}user/recaptcha`, body, {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 };
@@ -175,7 +179,7 @@ const recaptchaVerified = async function (response) {
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user/recaptcha`, body, {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     })
     .then((res) => res.data);
@@ -189,7 +193,7 @@ const recaptchaVerified = async function (response) {
   letter-spacing: -0.4px;
 }
 .login-view-wrapper {
-  background-image: url("@/assets/background.gif");
+  background-image: url('@/assets/background.gif');
   background-size: cover;
   min-height: 100vh;
   padding: 80px 500px;

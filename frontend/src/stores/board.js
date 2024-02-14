@@ -2,10 +2,6 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-// export function getPosts() {
-//   return posts
-// }
-
 export const useBoardStore = defineStore('boardStore', () => {
   const posts = ref([]);
   const totalPages = ref([]);
