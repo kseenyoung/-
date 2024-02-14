@@ -19,6 +19,7 @@ public class MokkojiCreateRequestDTO {
         return Mokkoji.builder()
                 .leaderId(leaderId)
                 .mokkojiName(mokkojiName)
+                .mokkojiStatus(mokkojiStatus)
                 .build();
     }
 
