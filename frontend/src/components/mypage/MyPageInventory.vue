@@ -26,19 +26,24 @@
         <div class="inven-wearing-list text-center">
           <div>착용중</div>
           <div class="inven-wearing-list-item-wrapper">
-            <template v-for="item in inventories" :key="item.inventoryId">
-              <img
-                v-if="item.isWearing"
-                class="inven-wearing-list-item item-img"
-                :src="`/src/assets/img/store/${item.productImage}.png`"
-                @dblclick="changeItem(item.inventoryId)"
-              />
+            <template v-if="inventories.some((item) => item.isWearing)">
+              <template v-for="item in inventories" :key="item.inventoryId">
+                <img
+                  v-if="item.isWearing"
+                  class="inven-wearing-list-item item-img"
+                  :src="`/src/assets/img/store/${item.productImage}.png`"
+                  @dblclick="changeItem(item.inventoryId)"
+                />
+              </template>
+            </template>
+            <template v-else>
+              <div class="not-exist-comment">착용중인 아이템이 없습니다.</div>
             </template>
           </div>
         </div>
       </div>
 
-      <div class="inven-list text-center">
+      <div class="inven-list text-center" v-if="inventories != ''">
         <div v-for="item in inventories" :key="item.inventoryId">
           <img
             :src="`/src/assets/img/store/${item.productImage}.png`"
@@ -47,6 +52,9 @@
             @dblclick="changeItem(item.inventoryId)"
           />
         </div>
+      </div>
+      <div v-else class="inven-list text-center not-exist-comment">
+        보유 중인 아이템이 없습니다.
       </div>
     </div>
   </div>
@@ -139,22 +147,25 @@ const captureAndSend = async () => {
     .then((response) => {
       console.log(response);
       let time = new Date().getTime();
-      userStore.loginUserInfo.userPicture = userStore.loginUserInfo.userPicture+"?"+time;
-          })
+      userStore.loginUserInfo.userPicture =
+        userStore.loginUserInfo.userPicture + '?' + time;
+    })
     .catch((error) => {
       console.error(error);
     });
 };
 
 onMounted(async () => {
-  
   await getInventory().then((response) => {
     if (response.data.code === 1000) {
       console.log(response.data);
       inventories.value = response.data.result.inventories;
     } else {
       alert(response.data.message);
-      console.log("userStore.loginUserInfo.userPicture"+userStore.loginUserInfo.userPicture);
+      console.log(
+        'userStore.loginUserInfo.userPicture' +
+          userStore.loginUserInfo.userPicture,
+      );
     }
   });
   // userStore.getLoginUserInfo();
@@ -188,7 +199,6 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     margin: 0px 30px;
     display: inline-block;
     padding: 50px 0px 20px;
-    padding-left: 8%;
     border-radius: $box-radius;
     box-shadow: $box-shadow;
 
@@ -200,7 +210,7 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
       .main-item {
         width: 160px;
         height: 150px;
-        left: 0.3em;
+        left: 1.5em;
 
         border: none;
         box-shadow: none;
@@ -246,5 +256,9 @@ img {
 }
 .item-img {
   background-color: white;
+}
+.not-exist-comment {
+  color: #8d8d8d;
+  font-size: 1rem;
 }
 </style>

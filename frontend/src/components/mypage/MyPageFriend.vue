@@ -7,50 +7,55 @@
         <i class="bi bi-people-fill"></i> {{ totalFriend }}명
       </div>
 
-      <div
-        v-for="(friend, index) in listFriend"
-        :key="index"
-        class="friend-list-detail"
-      >
-        <img src="@/assets/img/기본프로필_갈색.jpg" />
+      <template v-if="listFriend != ''">
         <div
-          class="dropdown-toggle"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          @click="friendDetail(friend.userNickname)"
+          v-for="(friend, index) in listFriend"
+          :key="index"
+          class="friend-list-detail"
         >
-          {{ friend.userId }}
-        </div>
+          <img src="@/assets/img/기본프로필_갈색.jpg" />
+          <div
+            class="dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            @click="friendDetail(friend.userNickname)"
+          >
+            {{ friend.userId }}
+          </div>
 
-        <div v-if="friend.login" class="friend-onoff friend-online">
-          <i class="bi bi-circle-fill"></i>접속중
-        </div>
+          <div v-if="friend.login" class="friend-onoff friend-online">
+            <i class="bi bi-circle-fill"></i>접속중
+          </div>
 
-        <div v-else class="friend-onoff friend-offline">
-          <i class="bi bi-circle-fill"></i>접속종료
-        </div>
+          <div v-else class="friend-onoff friend-offline">
+            <i class="bi bi-circle-fill"></i>접속종료
+          </div>
 
-        <button class="btn common-btn"><i class="bi bi-send"></i></button>
-        <ul class="dropdown-menu">
-          <li>{{ friendDetailInfo.userNickname }}</li>
-          <li v-if="friendDetailInfo.mokkoijiName != null">
-            모꼬지: {{ friendDetailInfo.mokkoijiName }}
-          </li>
-          <li v-else>모꼬지: -</li>
-          <li v-if="friendDetailInfo.userRank != null">
-            랭크: {{ friendDetailInfo.userRank }} 위
-          </li>
-          <li v-else>랭크: -</li>
-          <li v-if="friendDetailInfo.userTotalStudyTime != null">
-            공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
-          </li>
-          <li v-else>공부시간: -</li>
-          <li v-if="friendDetailInfo.userStatusMessage != null">
-            "{{ friendDetailInfo.userStatusMessage }}"
-          </li>
-          <li v-else>" "</li>
-        </ul>
-      </div>
+          <button class="btn common-btn"><i class="bi bi-send"></i></button>
+          <ul class="dropdown-menu">
+            <li>닉네임: {{ friendDetailInfo.userNickname }}</li>
+            <li v-if="friendDetailInfo.mokkoijiName != null">
+              모꼬지: {{ friendDetailInfo.mokkoijiName }}
+            </li>
+            <li v-else>모꼬지: -</li>
+            <li v-if="friendDetailInfo.userRank != null">
+              랭크: {{ friendDetailInfo.userRank }} 위
+            </li>
+            <li v-else>랭크: -</li>
+            <li v-if="friendDetailInfo.userTotalStudyTime != null">
+              공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
+            </li>
+            <li v-else>공부시간: -</li>
+            <li v-if="friendDetailInfo.userStatusMessage != null">
+              "{{ friendDetailInfo.userStatusMessage }}"
+            </li>
+            <li v-else>" "</li>
+          </ul>
+        </div>
+      </template>
+      <template v-else>
+        <div style="margin-top: 10px">친구가 아직 없습니다.</div>
+      </template>
     </div>
   </div>
 </template>
