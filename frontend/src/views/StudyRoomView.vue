@@ -261,6 +261,9 @@ const modifyMemoryTime = async function (subject) {
   startCount()
 }
 
+let countDownInterval
+let countUpInterval
+
 const togglePause = () => {
   if (isPause.value) {
     alert('공부를 다시 시작합니다.')
@@ -282,8 +285,6 @@ const toggleQuestion = () => {
   showQuestion.value = !showQuestion.value
 }
 
-let countDownInterval
-let countUpInterval
 const isStudyTimeDone = ref(false)
 const isKeepGoing = ref(false)
 
