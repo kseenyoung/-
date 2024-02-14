@@ -11,9 +11,17 @@
             alt="음소거"
           />
           <img
+            v-if="!isPause"
             class="pause"
             @click="togglePause"
             src="@/assets/img/studyroom/pause.png"
+            alt="휴식중"
+          />
+          <img
+            v-else
+            class="pause"
+            @click="togglePause"
+            src="@/assets/img/studyroom/playButton.png"
             alt="휴식중"
           />
           <button
@@ -23,7 +31,7 @@
           style="margin-right: 10%; margin-left: auto; font-size: 20px; margin-top: 3%;"
           @click="changeRoomAfterWait"
         >
-          {{ !done?"이동하기":"나가기"}} 
+          {{ !done?"이동하기":"나가기"}}
         </button>
         </div>
         <div class="lastlater">
@@ -145,10 +153,10 @@ const dagakStore = useDagakStore()
 const router = useRouter()
 const store = useUserStore()
 const questionStore = useQuestionStore()
-    const APPLICATION_SERVER_URL =
-      process.env.NODE_ENV === 'production'
-        ? `${import.meta.env.VITE_API_BASE_URL}`
-        : `${import.meta.env.VITE_API_BASE_URL}`;
+const APPLICATION_SERVER_URL =
+  process.env.NODE_ENV === 'production'
+    ? `${import.meta.env.VITE_API_BASE_URL}`
+    : `${import.meta.env.VITE_API_BASE_URL}`
 
 const OV = ref(undefined)
 const session = ref(undefined)
@@ -253,8 +261,24 @@ const modifyMemoryTime = async function (subject) {
   startCount()
 }
 
+const showRate = ref(true)
+const isPause = ref(false)
+
 const togglePause = () => {
+  if (isPause.value) {
+    alert('공부를 다시 시작합니다.')
+  } else {
+    alert('공부를 중지합니다.')
+  }
+
   isPause.value = !isPause.value
+
+  if (isPause.value) {
+    clearInterval(countDownInterval)
+    clearInterval(countUpInterval)
+  } else {
+    startCount()
+  }
 }
 
 const toggleQuestion = () => {
@@ -263,6 +287,8 @@ const toggleQuestion = () => {
 
 let countDownInterval
 let countUpInterval
+const isStudyTimeDone = ref(false)
+const isKeepGoing = ref(false)
 
 const changeRoomAfterWait = () =>{
 
@@ -274,7 +300,7 @@ const changeRoomAfterWait = () =>{
   }else{
     leaveStudyRoom();
   }
-  
+
 
 
 }
@@ -288,17 +314,20 @@ const startCount = () => {
   countDownInterval = setInterval(() => {
     remainTime.value--
     if (remainTime.value <= 0) {
+      isStudyTimeDone.value = true
       clearInterval(countDownInterval)
       clearInterval(countUpInterval)
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
+      if (!isKeepGoing.value) {
       if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
         const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
         if (continueCount) {
           // 방 이동 안 함
           CountAfterComplete()
+          remainTime.value = 0
           done = true;
           dagakStore.stay = true;
-          remainTime.value = 0
+          isKeepGoing.value = true
         } else {
           // 퇴장함.
           dagakStore.stay = false;
@@ -316,6 +345,7 @@ const startCount = () => {
           CountAfterComplete()
           dagakStore.stay = true;
           remainTime.value = 0
+          isKeepGoing.value = true
         } else {
           // 방 이동 함
           dagakStore.stay = false;
@@ -325,6 +355,7 @@ const startCount = () => {
         }
       }
     }
+      }
   }, 1000)
 }
 
@@ -618,6 +649,7 @@ const video13 = ref(null)
 const showRate = ref(true)
 const isPause = ref(false)
 
+
 const toggleRate = () => {
   showRate.value = !showRate.value
 }
@@ -789,13 +821,15 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .div2 {
-  box-shadow:   -7px 0 0 0 black,
-                 2px 0 0 0 black,
-                 0 -7px 0 0 black,
-                 0 2px 0 0 black;
+  box-shadow:
+    -7px 0 0 0 black,
+    2px 0 0 0 black,
+    0 -7px 0 0 black,
+    0 2px 0 0 black;
 }
 
 .div3 {
+  // margin: 0.5em auto;
   box-shadow:   -4px 0 0 0 black,
                  4px 0 0 0 black,
                  0 -4px 0 0 black,

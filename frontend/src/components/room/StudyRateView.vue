@@ -8,9 +8,14 @@
         <p class="titletag"><b>달성률 :</b> {{ store.achievementRate }} %</p>
         <div><b>과목명:</b> {{ categoryName }}</div>
         <div><b>남은시간 : </b> {{ convertedRemainTime }}</div>
+
         <div class="dagak">
-          <Dagak />
+          <DagakImg :gak-length="gaksToStudy.length" />
+          다각 이름 : {{ dagakName }}
         </div>
+        <br />
+        <br />
+
         <div class="ratedetail" style="padding-bottom: 20px">
           {{ categoryToStudy }}
           <div class="ratedetail">
@@ -55,8 +60,6 @@ import { useRouter } from 'vue-router'
 import { useDagakStore } from '@/stores/dagak'
 import { useCategoryStore } from '@/stores/category'
 import { useQuestionStore } from '@/stores/qustion'
-import draggable from 'vuedraggable'
-import MyPageScheduleDagakAddModal from '../mypage/MyPageScheduleDagakAddModal.vue'
 import DagakImg from '@/components/dagak/DagakImg.vue'
 
 const router = useRouter()
@@ -80,6 +83,7 @@ const props = defineProps({
 
 const gaksToStudy = ref(todayDagak.gaks)
 const categoryNameList = ref(categoryStore.categoryList)
+const dagakName = ref(todayDagak.dagakName)
 
 const getStatus = (index) => {
   if (index < props.gakOrder) {
@@ -130,6 +134,7 @@ watch(props, (newTime) => {
   text-align: center;
   position: relative;
   z-index: 1;
+  height: 120px;
 }
 
 .containers {
