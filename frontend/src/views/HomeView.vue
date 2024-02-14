@@ -12,31 +12,8 @@
           style="color: white;"
           v-if="userStore.loginUserInfo.userId == null"
           @click="navigateToLogin"
->
-          <div class="is-typed">
-            <h3 style="display:inline-block;"> 
-              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
-            </h3>
-        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
-        </div>
+        >
       </div>
-
-
-      <!-- <div
-        style="color: white;"
-        v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
-        @click="navigateToMyPageSchedule">
-
-        <div class="is-typed">
-          <h3 style="display:inline-block;"> </h3>
-          <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
-        </div>
-
-        <div style="display: inline-block;">
-          <div class="pixel"><p>하이</p></div>
-        </div>
-      </div> -->
-
 
 
       <div
