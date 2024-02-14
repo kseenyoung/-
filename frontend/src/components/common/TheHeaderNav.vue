@@ -38,13 +38,16 @@
           <li>
             <div class="d-flex profile-info">
               <div v-if="userStore.loginUserInfo.userPicture">
-                <img class="profile" :src="userStore.loginUserInfo.userPicture" />
+                <img
+                  class="profile"
+                  :src="userStore.loginUserInfo.userPicture"
+                />
               </div>
               <div v-else>
                 <img class="profile" src="@/assets/img/default.jpg" />
               </div>
               <div>
-                <div>{{ userStore.loginUserInfo.userId }}</div>
+                <div>{{ userStore.loginUserInfo.userNickname }}</div>
                 <div>{{ userStore.loginUserInfo.userEmail }}</div>
               </div>
             </div>
