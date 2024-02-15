@@ -146,8 +146,6 @@ import { subjectMapping } from '@/utils/subjectMapping';
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
-const categoryStore = useCategoryStore();
-const router = useRouter();
 
 const dagakList = ref([]);
 const gakList = ref([]);
@@ -155,8 +153,6 @@ const selectedDagakId = ref(null);
 const selectedDagakName = ref('');
 
 onMounted(() => {
-  getAllDagakList();
-});
   getAllDagakList();
 });
 
@@ -197,13 +193,10 @@ const getAllDagakList = async function () {
     );
 
     const gakLengthResponses = await Promise.all(gakLengthPromises);
-    const gakLengthResponses = await Promise.all(gakLengthPromises);
 
     //다각 리스트에 각 개수 데이터 저장
     dagakList.value = dagaks.map((dagak, index) => ({
       ...dagak,
-      gakLength: gakLengthResponses[index].data.result.length,
-    }));
       gakLength: gakLengthResponses[index].data.result.length,
     }));
   } catch (error) {
@@ -234,7 +227,6 @@ const openModal = function (id, name) {
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
       params: { dagakId: id },
-      params: { dagakId: id },
     })
     .then((res) => {
       //각 목록을 gakOrder 기준으로 오름차순 정렬
@@ -247,7 +239,7 @@ const openModal = function (id, name) {
 
 //다각 삭제
 const deleteDagak = function () {
-  if (window.confirm("삭제하시겠습니까?")) {
+  if (window.confirm('삭제하시겠습니까?')) {
     const body = {
       sign: 'deleteDagak',
       deleteDagakId: selectedDagakId.value,
@@ -265,7 +257,6 @@ const deleteDagak = function () {
       });
   }
 };
-};
 
 //각 삭제
 const deleteGak = function (gakId) {
@@ -275,10 +266,8 @@ const deleteGak = function (gakId) {
       gakId: gak.gakId,
       gakOrder: index + 1,
     }));
-      gakOrder: index + 1,
-    }));
     const body = {
-      sign: "deleteGak",
+      sign: 'deleteGak',
       gakId: gakId,
       remainGakInformation: remainGakInformation,
     };
@@ -294,14 +283,13 @@ const deleteGak = function (gakId) {
       });
   }
 };
-};
 
 //각 수정
 const updateGak = function (gakId, categoryId, runningTime) {
-  if (window.confirm("수정하시겠습니까?")) {
+  if (window.confirm('수정하시겠습니까?')) {
     //삭제 후 각 리스트 다시 호출
     const body = {
-      sign: "modifyGak",
+      sign: 'modifyGak',
       dagakId: selectedDagakId.value,
       gakId: gakId,
       categoryId: categoryId,
@@ -320,7 +308,6 @@ const updateGak = function (gakId, categoryId, runningTime) {
       });
   }
 };
-};
 
 //각 순서 수정
 const updateGakOrder = function () {
@@ -334,8 +321,6 @@ const updateGakOrder = function () {
     gakId: gak.gakId,
     gakOrder: gak.gakOrder,
   }));
-    gakOrder: gak.gakOrder,
-  }));
 
   const body = {
     sign: 'modifyGakOrder',
@@ -345,7 +330,6 @@ const updateGakOrder = function () {
     if (res.data.code === 1000) {
       //순서 수정 성공
       getAllCalendarList();
-      getAllCalendarList();
     } else {
       alert('실패했습니다.');
     }
@@ -353,10 +337,6 @@ const updateGakOrder = function () {
 };
 
 const getAllCalendarList = function () {
-  axios
-    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
-    .then(() => {});
-};
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
     .then(() => {});
