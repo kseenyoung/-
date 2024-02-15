@@ -3,7 +3,9 @@
     <div class="room">
       <div class="studyroomheader div3">
         <div class="nowname">
-          <div class="nametag">{{ subjectMapping(store.loginUserInfo.sub) }}</div>
+          <div class="nametag">
+            {{ subjectMapping(store.loginUserInfo.sub) }}
+          </div>
           <img
             class="mute"
             @click="toggleMute"
@@ -28,7 +30,12 @@
             v-if="dagakStore.stay"
             type="button"
             class="div3 questiontoggle position-relative"
-            style="margin-right: 10%; margin-left: auto; font-size: 20px; margin-top: 3%"
+            style="
+              margin-right: 10%;
+              margin-left: auto;
+              font-size: 20px;
+              margin-top: 3%;
+            "
             @click="changeRoomAfterWait"
           >
             {{ !done ? '이동하기' : '나가기' }}
@@ -48,7 +55,10 @@
           <div class="video-player-1">
             <div class="bigvideo" ref="video13">
               <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
-              <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
+              <user-video
+                v-if="subscribers.length === 0"
+                :stream-manager="mainStreamManager"
+              />
               <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
               <user-video
                 v-else
@@ -147,42 +157,42 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount, onBeforeMount, onMounted, watch } from 'vue'
-import axios from 'axios'
-import { OpenVidu, Stream } from 'openvidu-browser'
-import { useUserStore } from '@/stores/user'
-import UserVideo from '@/components/room/UserVideo.vue'
-import StudyRateView from '@/components/room/StudyRateView.vue'
-import { useRouter } from 'vue-router'
-import { useQuestionStore } from '@/stores/qustion'
-import { useDagakStore } from '@/stores/dagak'
-import QnAListView from '@/components/room/QnAListView.vue'
-import { subjectMapping } from '@/utils/subjectMapping'
+import { ref, onBeforeUnmount, onBeforeMount, onMounted } from 'vue';
+import axios from 'axios';
+import { OpenVidu, Stream } from 'openvidu-browser';
+import { useUserStore } from '@/stores/user';
+import UserVideo from '@/components/room/UserVideo.vue';
+import StudyRateView from '@/components/room/StudyRateView.vue';
+import { useRouter } from 'vue-router';
+import { useQuestionStore } from '@/stores/qustion';
+import { useDagakStore } from '@/stores/dagak';
+import QnAListView from '@/components/room/QnAListView.vue';
+import { subjectMapping } from '@/utils/subjectMapping';
 
-axios.defaults.headers.post['Content-Type'] = 'application/json'
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-const dagakStore = useDagakStore()
+const dagakStore = useDagakStore();
 
-const router = useRouter()
-const store = useUserStore()
-const questionStore = useQuestionStore()
+const router = useRouter();
+const store = useUserStore();
+const questionStore = useQuestionStore();
 const APPLICATION_SERVER_URL =
   process.env.NODE_ENV === 'production'
     ? `${import.meta.env.VITE_API_BASE_URL}`
-    : `${import.meta.env.VITE_API_BASE_URL}`
+    : `${import.meta.env.VITE_API_BASE_URL}`;
 
-const OV = ref(undefined)
-const session = ref(undefined)
-const mySession = ref(store.loginUserInfo.sub)
-const mainStreamManager = ref(undefined)
-const publisher = ref(undefined)
-const subscribers = ref([])
-const question = ref('')
-const leave = ref('refresh')
-const showQuestion = ref(false)
+const OV = ref(undefined);
+const session = ref(undefined);
+const mySession = ref(store.loginUserInfo.sub);
+const mainStreamManager = ref(undefined);
+const publisher = ref(undefined);
+const subscribers = ref([]);
+const question = ref('');
+const leave = ref('refresh');
+const showQuestion = ref(false);
 // const achievementRate = ref(0)
 
-const change = ref(false)
+const change = ref(false);
 
 const isLastSubject = ref(false)
 
@@ -284,23 +294,23 @@ const modifyMemoryTimeAndLeave = async function () {
     gakId: String(gakId.value),
     memoryTime: sec.value - memoryTime.value,
     categoryId: String(categoryId.value),
-    calendarId: String(calendarId.value)
-  }
+    calendarId: String(calendarId.value),
+  };
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     })
     .then((res) => {
       if (res.data.code === 1000) {
         //성공
         //나갑니다
       } else {
-        alert('저런,,,')
+        // alert('저런,,,')
       }
-    })
-}
+    });
+};
 
 const modifyMemoryTime = async function (subject) {
   const body = {
@@ -308,87 +318,87 @@ const modifyMemoryTime = async function (subject) {
     gakId: String(gakId.value),
     memoryTime: sec.value - memoryTime.value,
     categoryId: String(categoryId.value),
-    calendarId: String(calendarId.value)
-  }
+    calendarId: String(calendarId.value),
+  };
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     })
     .then((res) => {
       if (res.data.code === 1000) {
         //성공
 
-        store.loginUserInfo.sub = subject
+        store.loginUserInfo.sub = subject;
         leaveSession().then(() => {
-          change.value = true
-          joinSession()
-        })
+          change.value = true;
+          joinSession();
+        });
       } else {
-        alert('저런,,,')
+        // alert('저런,,,');
       }
-    })
+    });
   // 순공 시간 업데이트
 
   await axios
     .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
     .then((res) => {
-      const result = res.data.result
+      const result = res.data.result;
       // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
       // 그에 따른 categoryId로 방 이동 바랍니다.
-      categoryId.value = result.categoryId
-      calendarId.value = result.calendarId
-      gakId.value = result.gakId
-      userId.value = result.userId
-      gakOrder.value = result.gakOrder + 1
-      memoryTime.value = result.memoryTime
-      store.loginUserInfo.sub = result.categoryName
-      alert(result.categoryName + '방에 입장합니다.')
-      categoryName.value = result.categoryName
-      const achievementRate = result.memoryTime / result.totalTime
-      remainTime.value = result.requiredStudyTime
+      categoryId.value = result.categoryId;
+      calendarId.value = result.calendarId;
+      gakId.value = result.gakId;
+      userId.value = result.userId;
+      gakOrder.value = result.gakOrder + 1;
+      memoryTime.value = result.memoryTime;
+      store.loginUserInfo.sub = result.categoryName;
+      alert(result.categoryName + '방에 입장합니다.');
+      categoryName.value = result.categoryName;
+      const achievementRate = result.memoryTime / result.totalTime;
+      remainTime.value = result.requiredStudyTime;
 
-      store.achievementRate = Math.floor(achievementRate * 100)
-      sec.value = result.memoryTime // 공부했던 시간.
-    })
-  startCount()
-}
+      store.achievementRate = Math.floor(achievementRate * 100);
+      sec.value = result.memoryTime; // 공부했던 시간.
+    });
+  startCount();
+};
 
-let countDownInterval
-let countUpInterval
+let countDownInterval;
+let countUpInterval;
 
 const togglePause = () => {
   if (isPause.value) {
-    alert('공부를 다시 시작합니다.')
+    alert('공부를 다시 시작합니다.');
   } else {
-    alert('공부를 중지합니다.')
+    alert('공부를 중지합니다.');
   }
 
-  isPause.value = !isPause.value
+  isPause.value = !isPause.value;
 
   if (isPause.value) {
     if (!isStudyTimeDone.value) {
-      clearInterval(countDownInterval)
-      clearInterval(countUpInterval)
+      clearInterval(countDownInterval);
+      clearInterval(countUpInterval);
     } else {
-      clearInterval(countUpIntervalAfterComplete)
+      clearInterval(countUpIntervalAfterComplete);
     }
   } else {
     if (!isStudyTimeDone.value) {
-      startCount()
+      startCount();
     } else {
-      CountAfterComplete()
+      CountAfterComplete();
     }
   }
-}
+};
 
 const toggleQuestion = () => {
-  showQuestion.value = !showQuestion.value
-}
+  showQuestion.value = !showQuestion.value;
+};
 
-const isStudyTimeDone = ref(false)
-const isKeepGoing = ref(false)
+const isStudyTimeDone = ref(false);
+const isKeepGoing = ref(false);
 
 const changeRoomAfterWait = () => {
   if (!done.value) {
@@ -397,23 +407,23 @@ const changeRoomAfterWait = () => {
     clearInterval(countUpIntervalAfterComplete)
     modifyMemoryTime(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
   } else {
-    leaveStudyRoom()
+    leaveStudyRoom();
   }
-}
+};
 
 const startCount = () => {
   countUpInterval = setInterval(() => {
     // 공부한 시간 증가
-    sec.value++
-  }, 1000)
+    sec.value++;
+  }, 1000);
 
   countDownInterval = setInterval(() => {
-    remainTime.value--
+    remainTime.value--;
 
     if (remainTime.value <= 0) {
-      isStudyTimeDone.value = true
-      clearInterval(countDownInterval)
-      clearInterval(countUpInterval)
+      isStudyTimeDone.value = true;
+      clearInterval(countDownInterval);
+      clearInterval(countUpInterval);
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
       if (!isKeepGoing.value) {
         if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
@@ -422,15 +432,15 @@ const startCount = () => {
           // const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
           if (continueCount) {
             // 방 이동 안 함
-            CountAfterComplete()
-            remainTime.value = 0
-            done.value = true
-            dagakStore.stay = true
-            isKeepGoing.value = true
+            CountAfterComplete();
+            remainTime.value = 0;
+            done.value = true;
+            dagakStore.stay = true;
+            isKeepGoing.value = true;
           } else {
             // 퇴장함.
-            dagakStore.stay = false
-            leaveStudyRoom()
+            dagakStore.stay = false;
+            leaveStudyRoom();
           }
         } else {
           showModal.value = true
@@ -449,7 +459,7 @@ const startCount = () => {
             wantContinue.value = ''
           } else if (wantContinue.value == 'no') {
             // 방 이동 함
-            alert('이동하겠습니다.')
+            // alert('이동하겠습니다.')
             dagakStore.stay = false
             wantContinue.value = ''
             modifyMemoryTime(
