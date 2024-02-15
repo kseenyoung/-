@@ -80,56 +80,56 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import axios from "axios";
-import Alarm from "./Alarm.vue";
-import AlarmModal from "./AlarmModal.vue";
-import { useRouter } from "vue-router";
-import { useUserStore } from "@/stores/user";
-import { useAlarmStore } from "@/stores/alarm";
-import { cookiesStorage } from "@/utils/CookiesUtil";
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import axios from 'axios'
+import Alarm from './Alarm.vue'
+import AlarmModal from './AlarmModal.vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { useAlarmStore } from '@/stores/alarm'
+import { cookiesStorage } from '@/utils/CookiesUtil'
 
-const userStore = useUserStore();
-const alarmStore = useAlarmStore();
-const router = useRouter();
-const profileImage = ref("");
+const userStore = useUserStore()
+const alarmStore = useAlarmStore()
+const router = useRouter()
+const profileImage = ref('')
 const useImage = (url) => {
-  return new URL(`${url}`, import.meta.url).href;
-};
+  return new URL(`${url}`, import.meta.url).href
+}
 
 //로그아웃
 const logout = async function () {
-  userStore.deleteLoginUserInfo();
+  userStore.deleteLoginUserInfo()
   const body = {
-    sign: "logout",
-  };
-  const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body);
+    sign: 'logout'
+  }
+  const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body)
   //성공 시 홈으로
   router.push({
-    name: "login",
-  });
-};
+    name: 'login'
+  })
+}
 
 // 헤더 스크롤
-const headerHidden = ref(false);
-let lastScrollTop = 0;
+const headerHidden = ref(false)
+let lastScrollTop = 0
 
 const handleScroll = () => {
-  const scrollTop = window.scrollY || document.documentElement.scrollTop;
-  headerHidden.value = scrollTop > lastScrollTop && scrollTop > 70;
-  lastScrollTop = scrollTop;
-};
+  const scrollTop = window.scrollY || document.documentElement.scrollTop
+  headerHidden.value = scrollTop > lastScrollTop && scrollTop > 70
+  lastScrollTop = scrollTop
+}
 
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
+  window.addEventListener('scroll', handleScroll)
   if (userStore.loginUserInfo.userId != null) {
-    alarmStore.getUnReadAlarmList();
-    profileImage.value = userStore.loginUserInfo.userPicture;
+    alarmStore.getUnReadAlarmList()
+    profileImage.value = userStore.loginUserInfo.userPicture
   }
-});
+})
 onBeforeUnmount(() => {
-  window.removeEventListener("scroll", handleScroll);
-});
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style lang="scss" scoped>

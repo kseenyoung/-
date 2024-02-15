@@ -7,6 +7,7 @@
     <resultMap id="friendVO" type="com.ssafy.backend.friend.model.vo.FriendVO">
         <result property="userId" column="user_id" />
         <result property="userNickname" column="user_nickname" />
+        <result property="userPicture" column="user_picture"/>
     </resultMap>
 
     <select id="countFriend" parameterType="String" resultType="Integer">
@@ -18,13 +19,13 @@
 
     <!-- #{user_id}의 친구 닉네임 찾기 -->
     <select id="getFriendList" parameterType="String" resultMap="friendVO">
-        select user_id, user_nickname
+        select user_id, user_nickname, user_picture
         from user u join(select user_id2, is_friend
                          from friend
                          where user_id = #{user_id}) f on u.user_id = f.user_id2
         where is_friend = 1
         union all
-        select user_id, user_nickname
+        select user_id, user_nickname,user_picture
         from user u join friend using(user_id)
         where user_id2 = #{user_id}
         and is_friend = 1;

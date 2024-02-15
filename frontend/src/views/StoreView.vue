@@ -70,13 +70,14 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-
+import {useUserStore} from '@/stores/user';
 const router = useRouter();
 
 const products = ref({});
 const totalPage = ref(1);
 const userPoint = ref(null);
 const selectedCategory = ref(null);
+const userStore = useUserStore();
 
 onMounted(() => {
   getProductList();
@@ -137,6 +138,7 @@ const getLoginUserPoint = async function () {
 
   axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => {
     userPoint.value = res.data.result.userPoint;
+    userStore.updatePoint(userPoint.value);
   });
 };
 

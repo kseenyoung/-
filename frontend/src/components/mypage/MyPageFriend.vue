@@ -13,7 +13,7 @@
           :key="index"
           class="friend-list-detail"
         >
-          <img src="@/assets/img/기본프로필_갈색.jpg" />
+
           <div
             class="dropdown-toggle"
             data-bs-toggle="dropdown"
@@ -21,6 +21,15 @@
             @click="friendDetail(friend.userNickname)"
           >
             {{ friend.userId }}
+
+            <div>
+                <img
+                  class="profile"
+                   v-if="friend.userPicture"
+                  :src="`${friend.userPicture}?timestamp=${new Date().getTime()}`"
+                />
+                <img class="profile" v-else src="@/assets/img/default.jpg" />
+            </div>
           </div>
 
           <div v-if="friend.login" class="friend-onoff friend-online">
