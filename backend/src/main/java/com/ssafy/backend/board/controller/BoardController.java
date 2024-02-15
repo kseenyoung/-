@@ -68,7 +68,7 @@ public class BoardController {
             case "addBoard":
                 String boardTitle = (String) body.get("boardTitle");
                 String boardContent = (String) body.get("boardContent");
-                int tagId = (int) body.get("tagId");
+                String tagId = String.valueOf(body.get("tagId"));
                 BoardAddRequestDTO addRequestDTO = BoardAddRequestDTO.builder()
                         .boardContent(boardContent)
                         .boardTitle(boardTitle)
@@ -86,7 +86,7 @@ public class BoardController {
             case "modifyPost":
                 boardTitle = (String) body.get("boardTitle");
                 boardContent = (String) body.get("boardContent");
-                tagId =(int) body.get("tagId");
+                tagId =(String) body.get("tagId");
                 boardId = Long.valueOf((int) body.get("boardId"));
                 //tagId가 숫자일때
                 BoardModifyRequestDTO modifyRequestDTO = BoardModifyRequestDTO.builder()

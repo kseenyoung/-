@@ -128,6 +128,9 @@ public enum BaseResponseStatus {
     NOT_FOUND_TAG(false, 2110, "태그가 존재하지 않습니다."),
     NOT_FOUND_BOARD(false, 2111, "글이 존재하지 않습니다."),
     NOT_FOUND_COMMENT(false, 2112, "댓글이 존재하지 않습니다."),
+    INVALIDATE_TITLE(false, 2113, "제목을 입력해주세요."),
+    INVALIDATE_CONTENT(false, 2114, "내용을 입력해주세요."),
+    INVALIDATE_TAG(false, 2115, "태그를 입력해주세요."),
 
     /* 이벤토리 BAD REQUEST  */
     TWO_UP_PUT_ON_CLOTH(false, 2120, "같은 카테고리의 옷을 두 개 이상 입을 수 없습니다"),
