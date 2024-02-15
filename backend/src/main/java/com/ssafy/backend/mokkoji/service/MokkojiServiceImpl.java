@@ -25,7 +25,6 @@ public class MokkojiServiceImpl implements MokkojiService {
     private final MokkojiRepository mokkojiRepository;
     @Override
     public Mokkoji addMokkoji(Mokkoji mokkoji) {
-        log.info("모꼬지 이름을 체크합니다. {}",mokkoji.getMokkojiName());
         mokkojiRepository.findByMokkojiName(mokkoji.getMokkojiName())
                 .ifPresent(a -> {
                     throw new BaseException(IS_EXIST_MOKKOJI_NAME);

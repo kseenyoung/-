@@ -93,8 +93,6 @@ public class FriendServiceImpl implements FriendService {
 
         List<FriendVO> friendListVOS = friendMapper.getFriendList(listUserId);
 
-        log.info("---friendListVOS : {}", friendListVOS);
-
         return friendListVOS;
 
 
@@ -103,7 +101,6 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public boolean isFriend(UserId PK,int status) {
         Optional<Friend> friend = friendRepository.findByUserIdAndIsFriend(PK,status);
-//        log.info("친구 존재 여부 {}", friend);
 
         if(friend.isPresent()){
             return true;

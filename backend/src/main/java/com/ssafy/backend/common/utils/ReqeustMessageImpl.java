@@ -23,7 +23,7 @@ public class ReqeustMessageImpl implements RequestMessage{
     @Override
     public void RequestOpenviduMessage(OpenviduRequestDTO dto) {
         // 로그인 성공시 친구들에게 시그널 전송
-        log.info("RequestOpenviduMessage dto로 메세지 보내기 -> {}", dto);
+//        log.info("RequestOpenviduMessage dto로 메세지 보내기 -> {}", dto);
         URI uri = UriComponentsBuilder
                 .fromUriString(OPENVIDU_URL)
                 .path("/openvidu/api/signal")
@@ -42,7 +42,7 @@ public class ReqeustMessageImpl implements RequestMessage{
         try {
            restTemplate.postForEntity(uri, requestEntity, Object.class);
         } catch (Exception e) {
-            System.out.println("error: " + e);
+
         }
 
     }

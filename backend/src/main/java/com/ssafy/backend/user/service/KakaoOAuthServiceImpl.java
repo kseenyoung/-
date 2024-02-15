@@ -69,7 +69,7 @@ public class KakaoOAuthServiceImpl implements OAuthService{
             br.close();
             bw.close();
         }catch (IOException e) {
-            e.printStackTrace();
+
         }
 
         return access_Token;
@@ -116,7 +116,7 @@ public class KakaoOAuthServiceImpl implements OAuthService{
             return email;
 
         } catch (IOException e) {
-            e.printStackTrace();
+
             return null;
         }
     }

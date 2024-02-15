@@ -39,7 +39,7 @@ public class UploadController {
         if(session == null) throw new BaseException(INVALID_AUTH_TOKEN);
         User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
-        log.info("file Size : {}",file.getSize());
+//        log.info("file Size : {}",file.getSize());
         User existUser = userService.isExistUser(userId);
         String url = null;
         url = s3Uploader.uploadFile(file, userId);

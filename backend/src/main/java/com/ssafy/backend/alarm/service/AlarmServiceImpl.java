@@ -60,7 +60,6 @@ public class AlarmServiceImpl implements  AlarmService {
         Alarm alarm = alarmRepository.findById(checkAlarmDto.getAlarmId()).orElseThrow(() -> new BaseException(NOT_EXIST_ALARM_ID));
         alarm.setIsChecked(1);
 
-//        log.info("Alarm id : {}", alarm.getAlarmId());
         alarmRepository.save(alarm);
 
     }
@@ -94,7 +93,6 @@ public class AlarmServiceImpl implements  AlarmService {
 
     @Override
     public void deleteAlarm(ReqestAlarmDTO alarmDto) {
-        System.out.println(alarmDto);
         Alarm alarm = alarmRepository.findOptionalAlarmByUserIdAndRequestedUserIdAndTagIdAndIsChecked(
                 alarmDto.getUserId(),
                 alarmDto.getRequestedUserId(),

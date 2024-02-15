@@ -9,6 +9,6 @@ export function subjectMapping(subject) {
     Japanese: '일본어',
     Chinese: '중국어',
     IT: 'IT'
-  }
-  return subjectMap[subject] || '자유공부방'
+  };
+  return subjectMap[subject] || '자유공부방';
 }

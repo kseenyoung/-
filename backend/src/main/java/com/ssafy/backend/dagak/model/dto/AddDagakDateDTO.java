@@ -38,7 +38,6 @@ public class AddDagakDateDTO {
         try{
             this.dagakId = Integer.parseInt(dagakId);
         } catch (RuntimeException e){
-            e.printStackTrace();
             throw new BaseException(WRONG_TYPE);
         }
     }
