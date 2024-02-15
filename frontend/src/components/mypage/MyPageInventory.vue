@@ -204,12 +204,13 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
       text-align: left;
       position: absolute;
       .main-item {
-        width: 100%;
+        width: 200px;
         height: 150px;
         border: none;
         box-shadow: none;
         position: absolute;
         margin: auto;
+        left: 0.2rem;
       }
     }
     .inven-wearing-list {
