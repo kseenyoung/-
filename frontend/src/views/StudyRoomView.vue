@@ -3,7 +3,7 @@
     <div class="room">
       <div class="studyroomheader div3">
         <div class="nowname">
-          <div class="nametag">{{ store.loginUserInfo.sub }} ({{ subscribers.length + 1 }})</div>
+          <div class="nametag">{{ store.loginUserInfo.sub }}</div>
           <img
             class="mute"
             @click="toggleMute"
@@ -34,9 +34,8 @@
             {{ !done ? '이동하기' : '나가기' }}
           </button>
         </div>
-        <div class="lastlater">
-          <div class="lastname">java 마스터 3:40</div>
-          <div class="latername">C++ 마스터 ~10:20</div>
+        <div class="lastlater" style="padding-left: 20px;">
+          {{ subscribers.length + 1 }} 명 공부중 ... 
         </div>
       </div>
       <div class="bar">
@@ -692,6 +691,7 @@ console.log('구독자들: ', subscribers.value.length)
   height: 60%;
   width: 70%;
   height: 100%;
+  margin-left: 12px
 }
 
 .black {

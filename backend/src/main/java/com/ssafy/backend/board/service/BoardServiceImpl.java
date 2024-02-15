@@ -69,7 +69,7 @@ public class BoardServiceImpl implements BoardService{
     public BoardListVO getBoardList(int page, String keyword) {
         ArrayList<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdDate"));
-        Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, 9,Sort.by(sorts));
         Page<Board> boards = boardRepository.findByBoardTitleContaining(keyword, pageable);
 
         List<BoardDTO> boardDtoList = new ArrayList<>();

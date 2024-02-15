@@ -1,8 +1,8 @@
 <template>
   <div class="boardPage">
     <img src="@/assets/board.png" class="board" />
-    <h2>게시글 수정</h2>
     <form @submit.prevent="savePost" class="postList">
+      <div class="title">게시글 수정</div>
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">제목</label>
         <input class="form-control" id="title" v-model="detail.boardTitle" />
@@ -35,33 +35,37 @@
         ></textarea>
       </div>
       <div class="pt-4">
-        <button type="button" class="btn btn-outline-danger me-2" @click="goDetailPage">
+        <button
+          type="button"
+          class="btn common-btn-light me-2"
+          @click="goDetailPage"
+        >
           취소
         </button>
-        <button class="btn btn-primary">수정</button>
+        <button class="btn common-btn-light">수정하기</button>
       </div>
     </form>
   </div>
 </template>
 
 <script setup>
-import { useRoute, useRouter } from "vue-router";
-import { useBoardStore } from "@/stores/board";
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { useRoute, useRouter } from 'vue-router';
+import { useBoardStore } from '@/stores/board';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 const route = useRoute();
 const router = useRouter();
 const boardStore = useBoardStore();
 const id = route.params.id;
 const detail = ref([]);
 const tagList = ref([]);
-const selectedTagId = ref("");
-const selectedTagName = ref("");
+const selectedTagId = ref('');
+const selectedTagName = ref('');
 
 const fetchDetail = async (id) => {
   await boardStore.getPostDetail(id);
   detail.value = boardStore.postDetail;
-  console.log(detail.value, "gdgd");
+  console.log(detail.value, 'gdgd');
 
   selectedTagId.value = boardStore.postDetail.boardTag.boardTagId;
   selectedTagName.value = boardStore.postDetail.boardTag.boardTagName;
@@ -70,21 +74,21 @@ fetchDetail(id);
 
 const goDetailPage = () =>
   router.push({
-    name: "postDetail",
+    name: 'postDetail',
     params: { id },
   });
 // 목록 페이지로 돌아가기
 const goListPage = () => {
   router.push({
-    name: "postList",
+    name: 'postList',
   });
 };
 const savePost = async () => {
-  let flag = confirm("정말로 수정하시겠습니까?");
+  let flag = confirm('정말로 수정하시겠습니까?');
   if (flag) {
     try {
       const body = {
-        sign: "modifyPost",
+        sign: 'modifyPost',
         boardTitle: detail.value.boardTitle,
         boardContent: detail.value.boardContent,
         tagId: selectedTagId.value,
@@ -93,33 +97,33 @@ const savePost = async () => {
       console.log(detail.value);
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}board`,
-        body
+        body,
       );
       if (response.data.code === 1000) {
         goListPage();
-        console.log("새 포스트 : ", response);
+        console.log('새 포스트 : ', response);
       } else {
         alert(response.data.message);
       }
     } catch (error) {
-      console.log("Error saving post:", error);
+      console.log('Error saving post:', error);
     }
   }
 };
 const getBoardTagList = async () => {
   try {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}board/tag/list`
+      `${import.meta.env.VITE_API_BASE_URL}board/tag/list`,
     );
     tagList.value = response.data.result;
   } catch (error) {
-    console.log("Error saving post:", error);
+    console.log('Error saving post:', error);
   }
 };
 const selectTag = (tag) => {
   selectedTagId.value = tag.boardTagId;
   selectedTagName.value = tag.boardTagName;
-  console.log(selectedTagName.value, "tete");
+  console.log(selectedTagName.value, 'tete');
 };
 onMounted(async () => {
   await getBoardTagList();
@@ -128,7 +132,7 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .boardPage {
-  background-image: url("@/assets/background.gif");
+  background-image: url('@/assets/background.gif');
   background-size: cover;
   height: 100vh;
   padding-top: 40px;
@@ -144,8 +148,14 @@ onMounted(async () => {
 }
 .postList {
   z-index: 1;
+  min-width: 400px;
 }
 .form-label {
   color: white;
+}
+.title {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 </style>
