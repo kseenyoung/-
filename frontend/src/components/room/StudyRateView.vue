@@ -11,10 +11,12 @@
 
         <div class="dagak">
           <DagakImg2 :gak-length="gaksToStudy.length" />
-          <div class="dagakname"><b>{{ dagakName }}</b></div>
+          <div class="dagakname">
+            <b>{{ dagakName }}</b>
+          </div>
         </div>
-        
-        <br>
+
+        <br />
 
         <div class="ratedetail" style="padding-bottom: 20px">
           {{ categoryToStudy }}
@@ -26,15 +28,25 @@
             </ul>
           </div>
         </div>
-        <button type="button" class="div3 questiontoggle position-relative" style="margin-left: 10%; margin-right: 10%"
-          @click="toggleQuestion">
+        <button
+          type="button"
+          class="div3 questiontoggle position-relative"
+          style="margin-left: 10%; margin-right: 10%"
+          @click="toggleQuestion"
+        >
           질문하기 ✋
-          <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
+          <span
+            class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger"
+          >
             {{ questionBadge }}
             <span class="visually-hidden">unread messages</span>
           </span>
         </button>
-        <button class="div3 closebtn" @click="leaveStudyRoom" style="background-color: red; color: white">
+        <button
+          class="div3 closebtn"
+          @click="leaveStudyRoom"
+          style="background-color: red; color: white"
+        >
           나가기 🚪
         </button>
       </div>
@@ -206,7 +218,6 @@ watch(props, (newTime) => {
     0 -4px 0 0 black,
     0 4px 0 0 black;
 }
-
 
 .list {
   list-style: none;

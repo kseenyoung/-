@@ -34,8 +34,8 @@
             {{ !done ? '이동하기' : '나가기' }}
           </button>
         </div>
-        <div class="lastlater" style="padding-left: 20px;">
-          {{ subscribers.length + 1 }} 명 공부중 ... 
+        <div class="lastlater" style="padding-left: 20px">
+          {{ subscribers.length + 1 }} 명 공부중 ...
         </div>
       </div>
       <div class="bar">
@@ -147,6 +147,15 @@ axios.defaults.headers.post['Content-Type'] = 'application/json'
 //   return subjectMap[subject] || 'Unknown'
 // }
 
+function subjectToKor(subject) {
+  const subjectMap = {
+    korean: '국어',
+    math: '수학',
+    english: '영어'
+  }
+  return subjectMap[subject] || '자유'
+}
+
 const dagakStore = useDagakStore()
 
 const router = useRouter()
@@ -236,6 +245,7 @@ const modifyMemoryTime = async function (subject) {
       }
     })
   // 순공 시간 업데이트
+
   await axios
     .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
     .then((res) => {
@@ -298,6 +308,8 @@ const isKeepGoing = ref(false)
 const changeRoomAfterWait = () => {
   if (!done) {
     dagakStore.stay = false
+    isKeepGoing.value = false
+    clearInterval(countUpIntervalAfterComplete)
     modifyMemoryTime(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
   } else {
     leaveStudyRoom()
@@ -401,12 +413,12 @@ onBeforeMount(async () => {
     .post(`${import.meta.env.VITE_API_BASE_URL}room`, body)
     .then((res) => {
       {
-        alert('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
+        // alert('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
         // console.log('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
         const subQuestions = res.data.result.questionVOList
         if (subQuestions) {
           subQuestions.forEach(async (element) => {
-            alert('data : ' + element)
+            // alert('data : ' + element)
             await questionStore.setQuestion(element)
           })
           console.log('question 제발 : ' + question.value)
@@ -691,7 +703,7 @@ console.log('구독자들: ', subscribers.value.length)
   height: 60%;
   width: 70%;
   height: 100%;
-  margin-left: 12px
+  margin-left: 12px;
 }
 
 .black {
