@@ -55,17 +55,18 @@
                 {{ friend.userNickname }}
               </div>
               <ul class="dropdown-menu">
-                <li>{{ friendDetailInfo.userNickname }}</li>
-                <li>모꼬지: {{ friendDetailInfo.mokkoijiName }}</li>
+                <!-- <li><b>{{ friendDetailInfo.userNickname }}</b></li> -->
+                <li><b>"{{ friendDetailInfo.userStatusMessage }}"</b></li>
+                <li>* 모꼬지: {{ friendDetailInfo.mokkoijiName }}</li>
                 <li v-if="friendDetailInfo.userRank != null">
-                  랭크: {{ friendDetailInfo.userRank }} 위
+                  * 랭크: {{ friendDetailInfo.userRank }} 위
                 </li>
-                <li v-else>랭크: -</li>
+                <li v-else>* 랭크: -</li>
                 <li v-if="friendDetailInfo.userTotalStudyTime != null">
-                  공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
+                  * 공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
                 </li>
-                <li v-else>공부시간: -</li>
-                <li>"{{ friendDetailInfo.userStatusMessage }}"</li>
+                <li v-else>* 공부시간: -</li>
+                
               </ul>
             </td>
             <td>
@@ -243,5 +244,8 @@ const requestFriend = function (userId) {
   .my-btn {
     padding: 5px 15px;
   }
+}
+.dropdown-menu {
+  padding: 3px;
 }
 </style>
