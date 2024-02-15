@@ -337,17 +337,33 @@ const goToMyAddDate = function () {
 };
 //날짜 클릭 시 -> 날짜 정보 들고 라우터 이동
 const goToMyAddDateClick = function (date) {
-  const formattedDate = new Date(
-    date.getTime() - date.getTimezoneOffset() * 60000,
-  )
-    .toISOString()
-    .split('T')[0];
-  router.push({
-    name: 'myPageScheduleAddDate',
-    query: {
-      selectedDate: formattedDate,
-    },
-  });
+  //이전 날짜인지 확인
+  if (!isPreviousDate(date)) {
+    const formattedDate = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000,
+    )
+      .toISOString()
+      .split('T')[0];
+    router.push({
+      name: 'myPageScheduleAddDate',
+      query: {
+        selectedDate: formattedDate,
+      },
+    });
+  } else {
+    console.log('이전 날짜');
+  }
+};
+
+// 이전 날짜 여부 확인 함수
+const isPreviousDate = function (date) {
+  const today = new Date();
+  const startClickableDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  ); // 현재 날짜부터 클릭 가능
+  return date < startClickableDate;
 };
 </script>
 

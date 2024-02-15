@@ -15,6 +15,7 @@
       placeholder="YYYY-MM-DD"
       year-first
       :enable-time-picker="false"
+      :disabled-dates="disabledDates"
     />
     <div class="dagak-main-title">다각 목록</div>
     <div class="dagak-list-wrapper" v-if="dagakList.length != 0">
@@ -45,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
@@ -105,6 +106,28 @@ const addDagakList = function (id) {
     selectDagak.value = id;
   }
 };
+
+//오늘 이전 날짜 선택 안되게
+const disabledDates = computed(() => {
+  //1년 전으로 설정 -> 기간을 길게 잡으면 로딩이 엄청 오래걸림
+  const startDate = new Date();
+  startDate.setFullYear(startDate.getFullYear() - 1);
+  startDate.setMonth(0);
+  startDate.setDate(1);
+
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() - 1);
+
+  const disabledDatesArray = [];
+  let currentDate = new Date(endDate);
+
+  while (currentDate >= startDate) {
+    disabledDatesArray.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() - 1);
+  }
+
+  return disabledDatesArray;
+});
 
 //캘린더에 다각 추가
 const addDagakDate = function () {
