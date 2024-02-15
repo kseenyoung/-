@@ -40,7 +40,13 @@
                 class="dagak-item"
                 data-bs-toggle="modal"
                 data-bs-target="#dagakScheduleDetail"
-                @click="openModal(event.dagakId, event.calendarDagakId, event.dagakName)"
+                @click="
+                  openModal(
+                    event.dagakId,
+                    event.calendarDagakId,
+                    event.dagakName,
+                  )
+                "
               >
                 <div class="dagak-name">{{ event.dagakName }}</div>
                 <DagakImg :gak-length="event.gakLength" />
@@ -61,7 +67,9 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="dagakScheduleDetail">다각 상세정보</h1>
+          <h1 class="modal-title fs-5" id="dagakScheduleDetail">
+            다각 상세정보
+          </h1>
           <button
             type="button"
             class="btn-close"
@@ -72,17 +80,25 @@
         <div class="modal-body">
           <div class="modal-body-title">[ {{ selectedDagakName }} ]</div>
           <div class="gak-wrapper">
-            <div class="gak-detail-wrapper" v-for="gak in gakList" :key="gak.gakId">
+            <div
+              class="gak-detail-wrapper"
+              v-for="gak in gakList"
+              :key="gak.gakId"
+            >
               <div class="gak-detail-order">{{ gak.gakOrder }}.</div>
               <div class="gak-detail-tag">
                 {{ subjectMapping(getCategoryName(gak.categoryId)) }}
               </div>
-              <div class="gak-detail-time">{{ gak.runningTime }}분</div>
+              <div class="gak-detail-time">{{ gak.runningTime / 60 }}분</div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
             닫기
           </button>
           <button
@@ -100,13 +116,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useCategoryStore } from "@/stores/category";
-import { useRouter } from "vue-router";
-import axios from "axios";
-import DagakImg from "@/components/dagak/DagakImg.vue";
-import { subjectMapping } from "@/utils/subjectMapping";
+import { ref, onMounted, computed } from 'vue';
+import { useCategoryStore } from '@/stores/category';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+import DagakImg from '@/components/dagak/DagakImg.vue';
+import { subjectMapping } from '@/utils/subjectMapping';
 
+const categoryStore = useCategoryStore();
+const router = useRouter();
 const categoryStore = useCategoryStore();
 const router = useRouter();
 
@@ -114,14 +132,19 @@ const calendarList = ref([]);
 const gakList = ref([]);
 const selectedDagakId = ref(null);
 const selectedScheduleId = ref(null);
-const selectedDagakName = ref("");
+const selectedDagakName = ref('');
 
 onMounted(() => {
+  getAllCalendarList();
+});
   getAllCalendarList();
 });
 
 //해당 날짜에 이벤트가 있는지 여부를 확인하는 메서드
 const hasEventsForDate = (date) => {
+  const eventsForDate = getEventsForDate(date);
+  return eventsForDate.length > 0;
+};
   const eventsForDate = getEventsForDate(date);
   return eventsForDate.length > 0;
 };
@@ -146,9 +169,10 @@ const getAllCalendarList = async function () {
     const gakLengthPromises = dagaks.map((dagak) =>
       axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
         params: { dagakId: dagak.dagakId },
-      })
+      }),
     );
 
+    const gakLengthResponses = await Promise.all(gakLengthPromises);
     const gakLengthResponses = await Promise.all(gakLengthPromises);
 
     //다각 리스트에 각 개수 데이터 저장
@@ -156,8 +180,10 @@ const getAllCalendarList = async function () {
       ...dagak,
       gakLength: gakLengthResponses[index].data.result.length,
     }));
+      gakLength: gakLengthResponses[index].data.result.length,
+    }));
   } catch (error) {
-    console.error("Error:", error);
+    console.error('Error:', error);
   }
 };
 
@@ -173,58 +199,74 @@ const getEventsForDate = function (date) {
   });
   return eventsForDate;
 };
+    const [year, month, day] = event.calendarDate;
+    return (
+      year === date.getFullYear() &&
+      month === date.getMonth() + 1 &&
+      day === date.getDate()
+    );
+  });
+  return eventsForDate;
+};
 
 // 현재 날짜 정보
+const currentDate = ref(new Date());
 const currentDate = ref(new Date());
 
 // 현재 월 표시
 const currentMonth = computed(() => {
-  return currentDate.value.toLocaleString("default", {
-    month: "long",
-    year: "numeric",
+  return currentDate.value.toLocaleString('default', {
+    month: 'long',
+    year: 'numeric',
   });
 });
 
 // 요일 배열
-const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
 
 // 달력 데이터 생성
 const weeks = computed(() => {
   const firstDayOfMonth = new Date(
     currentDate.value.getFullYear(),
     currentDate.value.getMonth(),
-    1
+    1,
   );
   const lastDayOfMonth = new Date(
     currentDate.value.getFullYear(),
     currentDate.value.getMonth() + 1,
-    0
+    0,
   );
   const startDay = firstDayOfMonth.getDay();
   const endDay = lastDayOfMonth.getDate();
 
   let date = 1;
   const calendar = [];
+  let date = 1;
+  const calendar = [];
 
   for (let i = 0; i < 6; i++) {
     const week = [];
+    const week = [];
     for (let j = 0; j < 7; j++) {
       if (i === 0 && j < startDay) {
-        week.push({ day: "", date: null });
+        week.push({ day: '', date: null });
       } else if (date <= endDay) {
         const newDate = new Date(
           currentDate.value.getFullYear(),
           currentDate.value.getMonth(),
-          date
+          date,
         );
         week.push({ day: date, date: newDate });
         date++;
       } else {
-        week.push({ day: "", date: null });
+        week.push({ day: '', date: null });
       }
     }
     calendar.push(week);
+    calendar.push(week);
   }
+  return calendar;
+});
   return calendar;
 });
 
@@ -233,7 +275,7 @@ const prevMonth = () => {
   currentDate.value = new Date(
     currentDate.value.getFullYear(),
     currentDate.value.getMonth() - 1,
-    1
+    1,
   );
 };
 
@@ -242,12 +284,13 @@ const nextMonth = () => {
   currentDate.value = new Date(
     currentDate.value.getFullYear(),
     currentDate.value.getMonth() + 1,
-    1
+    1,
   );
 };
 
 // 오늘인지 여부를 확인하는 함수
 const isToday = (date) => {
+  const today = new Date();
   const today = new Date();
   return (
     date &&
@@ -256,9 +299,13 @@ const isToday = (date) => {
     date.getFullYear() === today.getFullYear()
   );
 };
+  );
+};
 
 // 오늘로 이동
 const goToToday = () => {
+  currentDate.value = new Date(); // 현재 날짜로 설정
+};
   currentDate.value = new Date(); // 현재 날짜로 설정
 };
 
@@ -267,14 +314,20 @@ const openModal = function (id, calId, name) {
   selectedDagakId.value = id;
   selectedScheduleId.value = calId;
   selectedDagakName.value = name;
+  selectedDagakId.value = id;
+  selectedScheduleId.value = calId;
+  selectedDagakName.value = name;
 
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
       params: { dagakId: id },
+      params: { dagakId: id },
     })
     .then((res) => {
       //각 목록을 gakOrder 기준으로 오름차순 정렬
-      const sortedGakList = res.data.result.sort((a, b) => a.gakOrder - b.gakOrder);
+      const sortedGakList = res.data.result.sort(
+        (a, b) => a.gakOrder - b.gakOrder,
+      );
       gakList.value = sortedGakList;
     });
 };
@@ -283,56 +336,64 @@ const openModal = function (id, calId, name) {
 const deleteCalendarDagak = function (calId) {
   if (window.confirm("스케줄에서 삭제하시겠습니까?")) {
     const body = {
-      sign: "deleteCalendarDagak",
+      sign: 'deleteCalendarDagak',
       calendarDagakId: String(calId),
     };
-    axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
-      if (res.data.code === 1000) {
-        //삭제 성공
-        localStorage.removeItem("dagakStore");
-        getAllCalendarList();
-      } else {
-        alert("실패했습니다.");
-      }
-    });
+    axios
+      .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
+      .then((res) => {
+        if (res.data.code === 1000) {
+          //삭제 성공
+          getAllCalendarList();
+        } else {
+          alert('실패했습니다.');
+        }
+      });
   }
+};
 };
 
 //카테고리Id를 카테고리Name으로 반환
 const getCategoryName = function (categoryId) {
   const category = categoryStore.categoryList.find(
-    (cat) => cat.categoryId === categoryId
+    (cat) => cat.categoryId === categoryId,
   );
-  return category ? category.categoryName : "Unknown Category";
+  return category ? category.categoryName : 'Unknown Category';
 };
 
 //라우터 이동 메서드
 const goToMyDagak = function () {
   router.push({
-    name: "myPageScheduleDagak",
+    name: 'myPageScheduleDagak',
   });
 };
 const goToMyAddDate = function () {
   router.push({
-    name: "myPageScheduleAddDate",
+    name: 'myPageScheduleAddDate',
   });
 };
 //날짜 클릭 시 -> 날짜 정보 들고 라우터 이동
 const goToMyAddDateClick = function (date) {
   //이전 날짜인지 확인
   if (!isPreviousDate(date)) {
-    const formattedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    const formattedDate = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000,
+    )
       .toISOString()
-      .split("T")[0];
+      .split('T')[0];
     router.push({
       name: "myPageScheduleAddDate",
       query: {
         selectedDate: formattedDate,
       },
     });
+        selectedDate: formattedDate,
+      },
+    });
   } else {
-    console.log("이전 날짜");
+    console.log('이전 날짜');
   }
+};
 };
 
 // 이전 날짜 여부 확인 함수
@@ -341,7 +402,7 @@ const isPreviousDate = function (date) {
   const startClickableDate = new Date(
     today.getFullYear(),
     today.getMonth(),
-    today.getDate()
+    today.getDate(),
   );
   return date < startClickableDate;
 };

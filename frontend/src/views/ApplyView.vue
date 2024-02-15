@@ -1,6 +1,6 @@
 <template>
   <div class="apply-view-wrapper">
-    <div class="apply-wrapper">
+    <div class="apply-wrapper ms-5">
       <ApplyFriend />
       <ApplyMokkoji />
     </div>

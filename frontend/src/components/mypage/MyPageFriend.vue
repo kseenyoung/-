@@ -19,24 +19,21 @@
             aria-expanded="false"
             @click="friendDetail(friend.userNickname)"
           >
+            <img
+              class="profile"
+              v-if="friend.userPicture"
+              :src="`${friend.userPicture}?timestamp=${new Date().getTime()}`"
+            />
+            <img class="profile" v-else src="@/assets/img/default.jpg" />
             {{ friend.userId }}
-
-            <div>
-              <img
-                class="profile"
-                v-if="friend.userPicture"
-                :src="`${friend.userPicture}?timestamp=${new Date().getTime()}`"
-              />
-              <img class="profile" v-else src="@/assets/img/default.jpg" />
-            </div>
           </div>
 
           <div v-if="friend.login" class="friend-onoff friend-online">
-            <i class="bi bi-circle-fill"></i>접속중
+            <i class="bi bi-circle-fill ps-5"></i>접속중
           </div>
 
           <div v-else class="friend-onoff friend-offline">
-            <i class="bi bi-circle-fill"></i>접속종료
+            <i class="bi bi-circle-fill ps-5"></i>접속종료
           </div>
 
           <button class="btn common-btn"><i class="bi bi-send"></i></button>
@@ -140,6 +137,9 @@ const friendDetail = function (nickname) {
     font-size: 1.5rem;
   }
 }
+.friend-list-wrapper::-webkit-scrollbar {
+  display: none;
+}
 .friend-list-detail {
   display: flex;
   align-items: center;
@@ -149,22 +149,19 @@ const friendDetail = function (nickname) {
 
   img {
     width: 40px;
+    height: 40px;
     border-radius: 50%;
-    margin-right: 10px;
   }
 
   div {
-    margin-right: 10px; /* Adjust the margin as needed */
+    margin-right: 10px;
   }
 
   :nth-child(1) {
-    flex-basis: 10%;
+    flex-basis: 35%;
   }
   :nth-child(2) {
     flex-basis: 40%;
-  }
-  :nth-child(3) {
-    flex-basis: 23%;
   }
   :nth-child(4) {
     flex-basis: auto;
@@ -182,7 +179,6 @@ const friendDetail = function (nickname) {
     border: 1px solid #ccc;
     background-color: #f4f4f4;
     border-radius: 30px;
-    text-align: center;
   }
   .friend-onoff {
     @include friend-status;

@@ -1,7 +1,7 @@
 <template>
   <div class="marketpage">
     <img src="@/assets/board.png" class="board" />
-    <div class="market-wrapper">
+    <div class="market-wrapper ms-5">
       <div v-if="userPoint != null">
         보유 포인트: {{ userPoint }}
         <img src="@/assets/img/item/coin.png" class="coin" />
@@ -70,7 +70,7 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import {useUserStore} from '@/stores/user';
+import { useUserStore } from '@/stores/user';
 const router = useRouter();
 
 const products = ref({});
@@ -253,6 +253,9 @@ const filteredProducts = computed(() => {
         }
       }
     }
+  }
+  .market-content::-webkit-scrollbar {
+    display: none;
   }
 }
 </style>
