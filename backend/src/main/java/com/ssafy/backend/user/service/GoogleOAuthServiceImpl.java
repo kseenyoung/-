@@ -20,8 +20,8 @@ public class GoogleOAuthServiceImpl implements OAuthService {
     @Value("${google.secret}")
     private String clientSecret;
 
-    @Value("${google.redirect.uri}")
-    private String redirectUri;
+    @Value("${google.redirect.url}")
+    private String redirectUrl;
 
     public String getToken(String authCode){
         RestTemplate restTemplate = new RestTemplate();
@@ -31,7 +31,7 @@ public class GoogleOAuthServiceImpl implements OAuthService {
                 .clientId(clientId)
                 .clientSecret(clientSecret)
                 .code(authCode)
-                .redirectUri(redirectUri)
+                .redirectUri(redirectUrl)
                 .grantType("authorization_code")
                 .build();
 
