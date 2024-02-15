@@ -149,7 +149,6 @@ const captureAndSend = async () => {
       // userStore.loginUserInfo.userPicture =
       //   response.data.result + "?v=" + new Date().getTime();
       userStore.updateProfile(response.data.result + "?v=" + new Date().getTime());
-      userStore.$patch({ "loginUserInfo": userStore.loginUserInfo });
       console.log(userStore.loginUserInfo.userPicture);
     })
     .catch((error) => {
@@ -200,18 +199,17 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     box-shadow: $box-shadow;
 
     .inven-wearing-now {
-      width: 180px;
+      width: 200px;
       height: 150px;
-      text-align: center;
+      text-align: left;
       position: absolute;
       .main-item {
-        width: 160px;
+        width: 100%;
         height: 150px;
-        left: 1.5em;
-
         border: none;
         box-shadow: none;
         position: absolute;
+        margin: auto;
       }
     }
     .inven-wearing-list {

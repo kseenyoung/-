@@ -6,6 +6,7 @@ import { cookiesStorage, userCookiesStorage } from '@/utils/CookiesUtil';
 import { useAlarmStore } from '@/stores/alarm';
 import { useFriendStore } from '@/stores/friend';
 
+
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export const useUserStore = defineStore(
@@ -191,6 +192,12 @@ export const useUserStore = defineStore(
       userStore.loginUserInfo = loginUserInfo.value;
       userCookiesStorage.setItem("userStore", JSON.stringify(userStore));
     }
+    const updatePoint = (point) =>{
+      loginUserInfo.value.userPoint = point;
+      let userStore = JSON.parse(userCookiesStorage.getItem("userStore"));
+      userStore.loginUserInfo = loginUserInfo.value;
+      userCookiesStorage.setItem("userStore", JSON.stringify(userStore)); 
+    }
     return {
       APPLICATION_SERVER_URL,
       login,
@@ -209,6 +216,7 @@ export const useUserStore = defineStore(
       isInSession,
       achievementRate,
       updateProfile,
+      updatePoint,
     };
   },
 
