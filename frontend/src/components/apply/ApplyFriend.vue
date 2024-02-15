@@ -38,7 +38,14 @@
             class="my-hover"
           >
             <!-- <td><img src="@/assets/img/${friend.userPicture}.png" /></td> -->
-            <td><img src="@/assets/img/기본프로필_갈색.jpg" /></td>
+            <td>
+              <img
+                class="profile"
+                v-if="friend.userPicture"
+                :src="`${friend.userPicture}`"
+              />
+              <img class="profile" v-else src="@/assets/img/default.jpg" />
+            </td>
             <td class="dropdown">
               <div
                 class="dropdown-toggle"
