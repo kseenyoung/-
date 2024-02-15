@@ -10,12 +10,23 @@
 <script setup>
 import { RouterView } from 'vue-router';
 import TheHeaderNav from './components/common/TheHeaderNav.vue';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { useUserStore } from '@/stores/user'
+
 const route = useRoute();
 const currentPath = computed(() => {
   return route.path;
 });
+const userStore = useUserStore();
+
+onMounted(() =>{
+  if(userStore.loginUserInfo.userId == undefined || userStore.loginUserInfo.userId == null){
+      localStorage.removeItem("dagakStore");
+  }
+
+});
+
 </script>
 
 <style lang="scss" scoped>

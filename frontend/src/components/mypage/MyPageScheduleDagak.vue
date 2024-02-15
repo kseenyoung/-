@@ -214,6 +214,7 @@ const deleteDagak = function () {
       if (res.data.code === 1000) {
         //삭제 성공
         getAllDagakList()
+        localStorage.removeItem("dagakStore");
       } else {
         alert('실패했습니다.')
       }
