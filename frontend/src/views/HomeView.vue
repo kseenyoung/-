@@ -20,10 +20,20 @@
         style="color: white;"
         v-if="userStore.loginUserInfo.userId != null && arr.length ===0"
         >
+        <div class="withFriend">
+        <div v-if="userStore.loginUserInfo.userId" style="flex: auto;"></div> <!-- 빈 요소, 가운데 정렬을 위해 -->
         <div class="is-typed" style="" @click="navigateToMyPageSchedule">
           <h3 style=""> </h3>
-          <p style="" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
+          <p style="" class="font-weight-bold"><h3 > 다각 만들러가기</h3></p>
         </div>
+        <div v-if="userStore.loginUserInfo.userId" class="friends">
+          <div class="bubble medium bottom" style="margin-left: 30%; width: auto;">
+          친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
+          <br/>
+          </div>
+          <img src="@/assets/friends.png" @click="showFriends" style="width: 40%; margin-left: 30%; margin-bottom: 10%"/>
+        </div>
+    </div>
       </div>
       <div
           style="color: white; display: inline-block;"
@@ -32,14 +42,14 @@
           
           >
           <div class="withFriend">
-  <div v-if="userStore.loginUserInfo.userId" style="flex: auto;"></div> <!-- 빈 요소, 가운데 정렬을 위해 -->
+          <div v-if="userStore.loginUserInfo.userId" style="flex: auto;"></div> <!-- 빈 요소, 가운데 정렬을 위해 -->
   
-  <div class="is-typed">
-    <h3 style="display:inline-block"> 
-      <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
-    </h3>
-    <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
-  </div>
+          <div class="is-typed">
+          <h3 style="display:inline-block"> 
+          <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+          </h3>
+            <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+          </div>
   
   <div v-if="userStore.loginUserInfo.userId" class="friends">
     <div class="bubble medium bottom" style="margin-left: 30%; width: auto;">
