@@ -6,12 +6,12 @@
         <div class="div4 studytime">{{ convertedTime }}</div>
         <hr />
         <p class="titletag"><b>달성률 :</b> {{ store.achievementRate }} %</p>
-        <div><b>과목명:</b> {{ subjectMapping(categoryName) }}</div>
+        <div><b>과목명 :</b> {{ subjectMapping(categoryName) }}</div>
         <div><b>남은시간 : </b> {{ convertedRemainTime }}</div>
-        <div><b>다각이름:</b>{{ dagakName }}</div>
+        <div><b>다각이름 : </b>{{ dagakName }}</div>
 
         <div class="dagak">
-          <DagakImg2 :gak-length="gaksToStudy.length" />
+          <DagakImg2 v-if="gaksToStudy" :gak-length="gaksToStudy.length" />
         </div>
         <br />
 
@@ -53,81 +53,81 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from 'vue'
-import Dagak from '@/components/dagak/Dagak.vue'
-import { useUserStore } from '@/stores/user'
-import { useRouter } from 'vue-router'
-import { useDagakStore } from '@/stores/dagak'
-import { useCategoryStore } from '@/stores/category'
-import { useQuestionStore } from '@/stores/qustion'
-import DagakImg2 from '@/components/dagak/DagakImg2.vue'
-import { subjectMapping } from '@/utils/subjectMapping'
+import { ref, watch, computed, onMounted } from "vue";
+import Dagak from "@/components/dagak/Dagak.vue";
+import { useUserStore } from "@/stores/user";
+import { useRouter } from "vue-router";
+import { useDagakStore } from "@/stores/dagak";
+import { useCategoryStore } from "@/stores/category";
+import { useQuestionStore } from "@/stores/qustion";
+import DagakImg2 from "@/components/dagak/DagakImg2.vue";
+import { subjectMapping } from "@/utils/subjectMapping";
 
-const router = useRouter()
-const leave = ref('refresh')
-const store = useUserStore()
-const dagakStore = useDagakStore()
-const categoryStore = useCategoryStore()
-const todayDagak = dagakStore.todayDagak
-const showQuestion = ref(true)
-const questionStore = useQuestionStore()
+const router = useRouter();
+const leave = ref("refresh");
+const store = useUserStore();
+const dagakStore = useDagakStore();
+const categoryStore = useCategoryStore();
+const todayDagak = dagakStore.todayDagak;
+const showQuestion = ref(true);
+const questionStore = useQuestionStore();
 const questionBadge = computed(() => {
-  return questionStore.question.length
-})
+  return questionStore.question.length;
+});
 
 const props = defineProps({
   sec: Number,
   remainTime: Number,
   categoryName: String,
-  gakOrder: Number
-})
+  gakOrder: Number,
+});
 
-const gaksToStudy = ref(todayDagak.gaks)
-const categoryNameList = ref(categoryStore.categoryList)
-const dagakName = ref(todayDagak.dagakName)
+const gaksToStudy = ref(todayDagak.gaks);
+const categoryNameList = ref(categoryStore.categoryList);
+const dagakName = ref(todayDagak.dagakName);
 
 const getStatus = (index) => {
   if (index < props.gakOrder) {
-    return '완료 ✔'
+    return "완료 ✔";
   } else if (index === props.gakOrder) {
-    return '진행 중'
+    return "진행 중";
   } else {
-    return '진행 예정'
+    return "진행 예정";
   }
-}
+};
 
-const emit = defineEmits(['leave-study-room', 'toggle-question'])
+const emit = defineEmits(["leave-study-room", "toggle-question"]);
 const leaveStudyRoom = () => {
-  emit('leave-study-room')
-}
+  emit("leave-study-room");
+};
 const toggleQuestion = () => {
-  emit('toggle-question')
-}
+  emit("toggle-question");
+};
 
 const convertTime = (seconds) => {
-  let hour, min, sec
+  let hour, min, sec;
 
-  hour = parseInt(seconds / 3600)
-  min = parseInt((seconds % 3600) / 60)
-  sec = seconds % 60
+  hour = parseInt(seconds / 3600);
+  min = parseInt((seconds % 3600) / 60);
+  sec = seconds % 60;
 
-  if (hour.toString().length == 1) hour = '0' + hour
-  if (min.toString().length == 1) min = '0' + min
-  if (sec.toString().length == 1) sec = '0' + sec
+  if (hour.toString().length == 1) hour = "0" + hour;
+  if (min.toString().length == 1) min = "0" + min;
+  if (sec.toString().length == 1) sec = "0" + sec;
 
-  return `${hour}:${min}:${sec}`
-}
+  return `${hour}:${min}:${sec}`;
+};
 
-const convertedTime = ref(convertTime(props.sec))
-const convertedRemainTime = ref(convertTime(props.remainTime))
-
-watch(props, (newTime) => {
-  convertedTime.value = convertTime(newTime.sec)
-})
+const convertedTime = ref(convertTime(props.sec));
+const convertedRemainTime = ref(convertTime(props.remainTime));
 
 watch(props, (newTime) => {
-  convertedRemainTime.value = convertTime(newTime.remainTime)
-})
+  convertedTime.value = convertTime(newTime.sec);
+});
+
+watch(props, (newTime) => {
+  convertedRemainTime.value = convertTime(newTime.remainTime);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -194,29 +194,17 @@ watch(props, (newTime) => {
 
 .div2 {
   margin: 0.5em auto;
-  box-shadow:
-    -7px 0 0 0 black,
-    2px 0 0 0 black,
-    0 -7px 0 0 black,
-    0 2px 0 0 black;
+  box-shadow: -7px 0 0 0 black, 2px 0 0 0 black, 0 -7px 0 0 black, 0 2px 0 0 black;
 }
 
 .div3 {
   margin: 0.5em auto;
-  box-shadow:
-    -2px 0 0 0 black,
-    2px 0 0 0 black,
-    0 -2px 0 0 black,
-    0 2px 0 0 black;
+  box-shadow: -2px 0 0 0 black, 2px 0 0 0 black, 0 -2px 0 0 black, 0 2px 0 0 black;
 }
 
 .div4 {
   margin: 0.5em auto;
-  box-shadow:
-    -4px 0 0 0 black,
-    4px 0 0 0 black,
-    0 -4px 0 0 black,
-    0 4px 0 0 black;
+  box-shadow: -4px 0 0 0 black, 4px 0 0 0 black, 0 -4px 0 0 black, 0 4px 0 0 black;
 }
 
 .list {
