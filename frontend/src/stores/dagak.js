@@ -14,7 +14,8 @@ export const useDagakStore = defineStore('dagakStore', () => {
             todayDagak.value = response.data.result;
         }
         else{
-            alert(response.data.message);
+          alert(response.data.message);
+          todayDagak.value = "";
         }
   };
 

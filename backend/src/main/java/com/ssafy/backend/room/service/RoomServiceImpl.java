@@ -2,6 +2,7 @@ package com.ssafy.backend.room.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.utils.MappingUtils;
 import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.domain.Question;
 import com.ssafy.backend.room.model.domain.redis.AnswerRedis;
@@ -38,6 +39,7 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_SES
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
+    private MappingUtils mappingUtils = MappingUtils.getInstance();
     @Value("${openvidu.url}")
     private String OPENVIDU_URL;
 
@@ -84,7 +86,10 @@ public class RoomServiceImpl implements RoomService {
     public ConnectionVO enterRandomroom(EnterRoomDTO enterRoomDTO) throws Exception {
         String sessionName = enterRoomDTO.getSessionName();
         Session session;
-
+        String translate = mappingUtils.translate(sessionName);
+        if(translate != null){
+            sessionName = translate;
+        }
         // Redis 저장하기
         StudyRoomRedis studyRoomRedis = studyRoomRedisRepository.findByName(enterRoomDTO.getSessionName());
         if(studyRoomRedis == null){
@@ -135,7 +140,10 @@ public class RoomServiceImpl implements RoomService {
     public ConnectionVO changeSubject(EnterRoomDTO changeSubjectDTO) throws Exception {
         String sessionName = changeSubjectDTO.getSessionName();
         Session session;
-
+        String translate = mappingUtils.translate(sessionName);
+        if(translate != null){
+            sessionName = translate;
+        }
         sessionName = getRandomroom(sessionName);
         changeSubjectDTO.setSessionName(sessionName);
 

@@ -290,6 +290,7 @@ const deleteCalendarDagak = function (calId) {
       if (res.data.code === 1000) {
         //삭제 성공
         getAllCalendarList();
+        localStorage.removeItem("dagakStore");
       } else {
         alert("실패했습니다.");
       }
