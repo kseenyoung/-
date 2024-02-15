@@ -8,6 +8,7 @@
         <result property="userId" column="user_id" />
         <result property="userNickname" column="user_nickname" />
         <result property="isFriend" column="is_friend" />
+        <result property="userPicture" column="user_picture" />
     </resultMap>
 
     <insert id="signUp"
