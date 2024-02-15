@@ -3,7 +3,7 @@
     <div class="room">
       <div class="studyroomheader div3">
         <div class="nowname">
-          <div class="nametag">{{ store.loginUserInfo.sub }}</div>
+          <div class="nametag">{{ subjectMapping(store.loginUserInfo.sub) }}</div>
           <img
             class="mute"
             @click="toggleMute"
@@ -135,26 +135,9 @@ import { useRouter } from 'vue-router'
 import { useQuestionStore } from '@/stores/qustion'
 import { useDagakStore } from '@/stores/dagak'
 import QnAListView from '@/components/room/QnAListView.vue'
+import { subjectMapping } from '@/utils/subjectMapping'
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
-
-// function mapSubject(subject) {
-//   const subjectMap = {
-//     국어: 'korean',
-//     수학: 'math',
-//     영어: 'english'
-//   }
-//   return subjectMap[subject] || 'Unknown'
-// }
-
-function subjectToKor(subject) {
-  const subjectMap = {
-    korean: '국어',
-    math: '수학',
-    english: '영어'
-  }
-  return subjectMap[subject] || '자유'
-}
 
 const dagakStore = useDagakStore()
 

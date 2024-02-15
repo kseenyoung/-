@@ -6,7 +6,7 @@
         <div class="div4 studytime">{{ convertedTime }}</div>
         <hr />
         <p class="titletag"><b>달성률 :</b> {{ store.achievementRate }} %</p>
-        <div><b>과목명:</b> {{ categoryName }}</div>
+        <div><b>과목명:</b> {{ subjectMapping(categoryName) }}</div>
         <div><b>남은시간 : </b> {{ convertedRemainTime }}</div>
         <div><b>다각이름:</b>{{ dagakName }}</div>
 
@@ -20,7 +20,8 @@
           <div class="ratedetail">
             <ul class="list">
               <li v-for="(gak, index) in gaksToStudy" :key="index">
-                {{ categoryNameList[gak.categoryId - 1].categoryName }} : {{ getStatus(index) }}
+                {{ subjectMapping(categoryNameList[gak.categoryId - 1].categoryName) }} :
+                {{ getStatus(index) }}
               </li>
             </ul>
           </div>
@@ -60,6 +61,7 @@ import { useDagakStore } from '@/stores/dagak'
 import { useCategoryStore } from '@/stores/category'
 import { useQuestionStore } from '@/stores/qustion'
 import DagakImg2 from '@/components/dagak/DagakImg2.vue'
+import { subjectMapping } from '@/utils/subjectMapping'
 
 const router = useRouter()
 const leave = ref('refresh')

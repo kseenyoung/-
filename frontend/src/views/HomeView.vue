@@ -93,6 +93,7 @@ import { useCategoryStore } from '@/stores/category';
 import { useAlarmStore } from '@/stores/alarm';
 import { useDagakStore } from '@/stores/dagak';
 import { useFriendStore } from '@/stores/friend'
+import { subjectMapping } from '@/utils/subjectMapping'
 
 const arr = ref([
   " \"정보처리기사\"",
@@ -140,7 +141,7 @@ const getGaks = async () =>{
   myGaks.value.forEach(gak =>{
     categories.value.forEach(category =>{
       if(gak.categoryId === category.categoryId){
-        arr.value.push(`\"${category.categoryName}\"`);
+        arr.value.push(`\"${subjectMapping(category.categoryName)}\"`);
         dagakStore.categoryNameToStudy.value = arr;
       }
     });
