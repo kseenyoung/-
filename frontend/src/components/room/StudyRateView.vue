@@ -6,9 +6,9 @@
         <div class="div4 studytime">{{ convertedTime }}</div>
         <hr />
         <p class="titletag"><b>달성률 :</b> {{ store.achievementRate }} %</p>
-        <div><b>과목명:</b> {{ subjectMapping(categoryName) }}</div>
+        <div><b>과목명 :</b> {{ subjectMapping(categoryName) }}</div>
         <div><b>남은시간 : </b> {{ convertedRemainTime }}</div>
-        <div><b>다각이름:</b>{{ dagakName }}</div>
+        <div><b>다각이름 : </b>{{ dagakName }}</div>
 
         <div class="dagak">
           <DagakImg2 v-if="gaksToStudy" :gak-length="gaksToStudy.length" />
