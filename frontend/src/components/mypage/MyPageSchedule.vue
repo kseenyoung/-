@@ -362,7 +362,7 @@ const isPreviousDate = function (date) {
     today.getFullYear(),
     today.getMonth(),
     today.getDate(),
-  ); // 현재 날짜부터 클릭 가능
+  );
   return date < startClickableDate;
 };
 </script>

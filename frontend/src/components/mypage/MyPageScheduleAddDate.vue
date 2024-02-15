@@ -200,7 +200,7 @@ const goToCalander = function () {
     margin: 0 auto;
     .dagak-detail-wrapper-clicked {
       transform: translateY(-5px);
-      background-color: $color-light-2;
+      background-color: $color-light-6;
     }
     .dagak-detail-wrapper {
       text-align: center;
