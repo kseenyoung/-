@@ -7,7 +7,7 @@ import lombok.ToString;
 @ToString
 public class FriendVO {
 
-    private String userId, userNickname;
+    private String userId, userNickname,userPicture;
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -15,5 +15,9 @@ public class FriendVO {
 
     public void setUserNickname(String userNickname) {
         this.userNickname = userNickname;
+    }
+
+    public void setUserPicture(String userPicture) {
+        this.userPicture = userPicture;
     }
 }
