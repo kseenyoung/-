@@ -122,10 +122,32 @@
       </div>
     </div>
   </div>
+
+  <!-- <button @click="showModal = true">모달 열기</button> -->
+
+  <!-- 모달 창 -->
+  <div>
+    <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>우와!</h2>
+          <span class="close" @click="handleModalResponse(false)">&times;</span>
+        </div>
+        <p>공부가 끝났습니다. 계속하시겠습니까?</p>
+        <div class="modal-buttons">
+          <button @click="handleModalResponse(true)">계속하기</button>
+          <button @click="handleModalResponse(false)">이동하기</button>
+        </div>
+        <br />
+        <p>이제 다른 과목으로 넘어가실 수 있습니다.</p>
+        <p>남은 시간: {{ countdown }}초</p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount, onBeforeMount, onMounted } from 'vue'
+import { ref, onBeforeUnmount, onBeforeMount, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { OpenVidu, Stream } from 'openvidu-browser'
 import { useUserStore } from '@/stores/user'
@@ -162,6 +184,8 @@ const showQuestion = ref(false)
 
 const change = ref(false)
 
+const isLastSubject = ref(false)
+
 const userId = ref('')
 const sec = ref(0)
 const remainTime = ref(10)
@@ -171,7 +195,60 @@ const categoryId = ref(0)
 const calendarId = ref(0)
 const gakOrder = ref(0)
 const memoryTime = ref(0)
-let done = ref(false)
+const done = ref(false)
+
+/* 모달 */
+const showModal = ref(false)
+const showCountdown = ref(true)
+let modalCount = ref(5)
+
+const wantContinue = ref('')
+
+// 모달을 5초 후에 자동으로 닫음
+const countdownModalInterval = setInterval(() => {
+  modalCount.value--
+  if (modalCount.value === 0) {
+    showModal.value = false
+    clearInterval(countdownModalInterval)
+  }
+}, 1000)
+
+const handleModalResponse = (response) => {
+  showModal.value = false
+  clearInterval(countdownModalInterval)
+  if (response) {
+    if (isLastSubject) {
+      // 마지막 과목일 때
+      CountAfterComplete()
+      remainTime.value = 0
+      done.value = true
+      dagakStore.stay = true
+      isKeepGoing.value = true
+    } else {
+      // 뒤에 과목이 남아있을 때
+      done.value = false
+      remainRoom()
+    }
+  } else {
+    done.value = false
+    if (!isLastSubject) changeRoom()
+    else {
+      dagakStore.stay = false
+      leaveStudyRoom()
+    }
+  }
+}
+
+const closeModal = () => {
+  showModal.value = false
+  clearInterval(countdownModalInterval)
+}
+
+watch(showModal, (newValue) => {
+  if (newValue && modalCount.value <= 0) {
+    showCountdown.value = false
+  }
+})
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
@@ -289,7 +366,7 @@ const isStudyTimeDone = ref(false)
 const isKeepGoing = ref(false)
 
 const changeRoomAfterWait = () => {
-  if (!done) {
+  if (!done.value) {
     dagakStore.stay = false
     isKeepGoing.value = false
     clearInterval(countUpIntervalAfterComplete)
@@ -315,12 +392,14 @@ const startCount = () => {
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
       if (!isKeepGoing.value) {
         if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
-          const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
+          showModal.value = true
+          isLastSubject = true
+          // const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
           if (continueCount) {
             // 방 이동 안 함
             CountAfterComplete()
             remainTime.value = 0
-            done = true
+            done.value = true
             dagakStore.stay = true
             isKeepGoing.value = true
           } else {
@@ -329,21 +408,25 @@ const startCount = () => {
             leaveStudyRoom()
           }
         } else {
-          const continueCount = confirm(
-            categoryName.value +
-              '공부가 끝났습니다.\n[' +
-              dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
-              ']방으로 이동 하시겠습니까?'
-          )
-          if (!continueCount) {
+          showModal.value = true
+          // const continueCount = confirm(
+          //   categoryName.value +
+          //     '공부가 끝났습니다.\n[' +
+          //     dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
+          //     ']방으로 이동 하시겠습니까?'
+          // )
+          if (wantContinue.value == 'yes') {
             // 방 이동 안 함
             CountAfterComplete()
             dagakStore.stay = true
             remainTime.value = 0
             isKeepGoing.value = true
-          } else {
+            wantContinue.value = ''
+          } else if (wantContinue.value == 'no') {
             // 방 이동 함
+            alert('이동하겠습니다.')
             dagakStore.stay = false
+            wantContinue.value = ''
             modifyMemoryTime(
               dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
             )
@@ -352,6 +435,21 @@ const startCount = () => {
       }
     }
   }, 1000)
+}
+
+const remainRoom = () => {
+  CountAfterComplete()
+  dagakStore.stay = true
+  remainTime.value = 0
+  isKeepGoing.value = true
+  wantContinue.value = ''
+  done.value = false
+}
+
+const changeRoom = () => {
+  dagakStore.stay = false
+  wantContinue.value = ''
+  modifyMemoryTime(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
 }
 
 let countUpIntervalAfterComplete
@@ -377,6 +475,7 @@ onBeforeMount(async () => {
       gakOrder.value = result.gakOrder
       memoryTime.value = result.memoryTime
       store.loginUserInfo.sub = result.categoryName
+      done.value = false
 
       alert(result.categoryName + '방에 입장합니다.')
       categoryName.value = result.categoryName
@@ -661,7 +760,7 @@ const toggleMute = (video) => {
 }
 
 onMounted(() => {
-  done = false
+  done.value = false
   dagakStore.stay = false
   leaveSession().then(() => {
     joinSession()
@@ -832,5 +931,52 @@ console.log('구독자들: ', subscribers.value.length)
     4px 0 0 0 black,
     0 -4px 0 0 black,
     0 4px 0 0 black;
+}
+
+/* 모달 스타일 */
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-buttons {
+  margin-top: 10px;
+}
+
+.modal-buttons button {
+  margin-right: 10px;
 }
 </style>
