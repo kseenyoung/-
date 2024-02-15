@@ -211,11 +211,11 @@ const weeks = computed(() => {
     currentDate.value.getMonth(),
     1,
   );
-  // const lastDayOfMonth = new Date(
-  //   currentDate.value.getFullYear(),
-  //   currentDate.value.getMonth() + 1,
-  //   0,
-  // );
+  const lastDayOfMonth = new Date(
+    currentDate.value.getFullYear(),
+    currentDate.value.getMonth() + 1,
+    0,
+  );
   const startDay = firstDayOfMonth.getDay();
   const endDay = lastDayOfMonth.getDate();
 
