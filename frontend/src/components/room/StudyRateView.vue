@@ -10,11 +10,11 @@
         <div><b>남은시간 : </b> {{ convertedRemainTime }}</div>
 
         <div class="dagak">
-          <DagakImg :gak-length="gaksToStudy.length" />
-          다각 이름 : {{ dagakName }}
+          <DagakImg2 :gak-length="gaksToStudy.length" />
+          <div class="dagakname"><b>{{ dagakName }}</b></div>
         </div>
-        <br />
-        <br />
+        
+        <br>
 
         <div class="ratedetail" style="padding-bottom: 20px">
           {{ categoryToStudy }}
@@ -26,25 +26,15 @@
             </ul>
           </div>
         </div>
-        <button
-          type="button"
-          class="div3 questiontoggle position-relative"
-          style="margin-left: 10%; margin-right: 10%"
-          @click="toggleQuestion"
-        >
+        <button type="button" class="div3 questiontoggle position-relative" style="margin-left: 10%; margin-right: 10%"
+          @click="toggleQuestion">
           질문하기 ✋
-          <span
-            class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger"
-          >
+          <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-danger">
             {{ questionBadge }}
             <span class="visually-hidden">unread messages</span>
           </span>
         </button>
-        <button
-          class="div3 closebtn"
-          @click="leaveStudyRoom"
-          style="background-color: red; color: white"
-        >
+        <button class="div3 closebtn" @click="leaveStudyRoom" style="background-color: red; color: white">
           나가기 🚪
         </button>
       </div>
@@ -60,7 +50,7 @@ import { useRouter } from 'vue-router'
 import { useDagakStore } from '@/stores/dagak'
 import { useCategoryStore } from '@/stores/category'
 import { useQuestionStore } from '@/stores/qustion'
-import DagakImg from '@/components/dagak/DagakImg.vue'
+import DagakImg2 from '@/components/dagak/DagakImg2.vue'
 
 const router = useRouter()
 const leave = ref('refresh')
@@ -133,8 +123,14 @@ watch(props, (newTime) => {
 .dagak {
   text-align: center;
   position: relative;
-  z-index: 1;
-  height: 120px;
+  // z-index: 1;
+  height: 150px;
+  width: 100%;
+  padding: 20px 0px 10px 20px;
+}
+.dagakname {
+  padding-right: 25px;
+  text-decoration: underline;
 }
 
 .containers {
@@ -211,29 +207,9 @@ watch(props, (newTime) => {
     0 4px 0 0 black;
 }
 
-.dagak-list-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  max-width: 710px;
-  margin: 0 auto;
-  .dagak-detail-wrapper {
-    text-align: center;
-    border: 1px solid black;
-    border-radius: 4px;
-    padding: 20px 10px 0px;
-    width: 115px;
-    min-height: 160px;
-    margin: 0px 10px 30px;
-    box-shadow: 5px 5px #ccc;
-    .dagak-figure {
-      width: 78px;
-    }
-  }
-}
 
 .list {
-  list-style: none; /* 동글이 제거 */
-  padding: 20px 10px 0px;
+  list-style: none;
+  padding: 0px 0px 0px 0px;
 }
 </style>
