@@ -32,10 +32,17 @@
           <div class="mok-list-wrapper">
             <div v-for="item in user" :key="item.userId">
               <div class="mok-list-detail">
+
+
                 <img
-                  v-if="item.userPicture == '' || item.userPicture == null"
-                  src="@/assets/img/기본프로필_갈색.jpg"
+                  class="profile"
+                  v-if="item.userPicture"
+                  :src="`${item.userPicture}`"
                 />
+                <img class="profile" v-else src="@/assets/img/default.jpg" />
+
+
+
                 <div>
                   {{ item.userNickname
                   }}<i
