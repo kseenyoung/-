@@ -155,9 +155,12 @@ onMounted(async () => {
     await getGaks();
   }
 });
-watch(() => userStore.loginUserInfo.userId, (newUserId) => {
+watch(() => userStore.loginUserInfo.userId, async (newUserId) => {
   if (newUserId != null) {
-    getGaks();
+    alarmStore.getUnReadAlarmList();
+    await categoryStore.getCategoryList();
+    await dagakStore.getTodayDagak();
+    await getGaks();
   }
 });
 </script>
