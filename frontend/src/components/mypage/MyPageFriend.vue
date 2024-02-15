@@ -13,7 +13,6 @@
           :key="index"
           class="friend-list-detail"
         >
-
           <div
             class="dropdown-toggle"
             data-bs-toggle="dropdown"
@@ -23,12 +22,12 @@
             {{ friend.userId }}
 
             <div>
-                <img
-                  class="profile"
-                   v-if="friend.userPicture"
-                  :src="`${friend.userPicture}?timestamp=${new Date().getTime()}`"
-                />
-                <img class="profile" v-else src="@/assets/img/default.jpg" />
+              <img
+                class="profile"
+                v-if="friend.userPicture"
+                :src="`${friend.userPicture}?timestamp=${new Date().getTime()}`"
+              />
+              <img class="profile" v-else src="@/assets/img/default.jpg" />
             </div>
           </div>
 

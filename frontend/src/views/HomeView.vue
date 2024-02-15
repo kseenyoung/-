@@ -39,8 +39,7 @@
           style="color: white; display: inline-block;"
           v-else
           @click="navigateToStudyRoom"
-          
-          >
+>
           <div class="withFriend">
           <div v-if="userStore.loginUserInfo.userId" style="flex: auto;"></div> <!-- 빈 요소, 가운데 정렬을 위해 -->
   
@@ -92,8 +91,8 @@ import { useUserStore } from '@/stores/user';
 import { useCategoryStore } from '@/stores/category';
 import { useAlarmStore } from '@/stores/alarm';
 import { useDagakStore } from '@/stores/dagak';
-import { useFriendStore } from '@/stores/friend'
-import { subjectMapping } from '@/utils/subjectMapping'
+import { useFriendStore } from '@/stores/friend';
+import { subjectMapping } from '@/utils/subjectMapping';
 
 const arr = ref([
   " \"정보처리기사\"",
@@ -115,7 +114,7 @@ const loginFriends = computed(() => {
 });
 
 const showFriends = ()=>{
-  alert("친구들!");
+  // alert("친구들!");
   isFriendList.value = isFriendList.value == true?false:true;
 };
 

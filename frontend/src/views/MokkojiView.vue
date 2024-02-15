@@ -191,7 +191,7 @@ const getMokkojiDetail = async function () {
         myMokkoji.value = res.data.result.myMokkojiId;
         userId.value = res.data.result.userId;
       } else {
-        alert(res.data.message);
+        // alert(res.data.message);
       }
     });
 };

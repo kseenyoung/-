@@ -9,7 +9,9 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="MyPageScheduleDagakAddModal">새 다각 만들기</h1>
+          <h1 class="modal-title fs-5" id="MyPageScheduleDagakAddModal">
+            새 다각 만들기
+          </h1>
           <button
             type="button"
             class="btn-close"
@@ -68,7 +70,9 @@
             </div>
           </div>
           <div class="modal-body-result">
-            <div class="modal-body-result-title" v-if="dagakName != ''">[ {{ dagakName }} ]</div>
+            <div class="modal-body-result-title" v-if="dagakName != ''">
+              [ {{ dagakName }} ]
+            </div>
             <div class="modal-body-result-title" v-else>[ 다각 이름 ]</div>
             <div
               class="modal-body-result-detail common-pointer"
@@ -87,7 +91,9 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            닫기
+          </button>
           <button class="btn common-btn" @click="clear">지우기</button>
           <button
             class="btn common-btn-light"
@@ -104,63 +110,73 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useCategoryStore } from '@/stores/category'
-import axios from 'axios'
-import { subjectMapping } from '@/utils/subjectMapping'
+import { ref, computed } from 'vue';
+import { useCategoryStore } from '@/stores/category';
+import axios from 'axios';
+import { subjectMapping } from '@/utils/subjectMapping';
 
-const categoryStore = useCategoryStore()
-const emit = defineEmits(['updateDagakList'])
+const categoryStore = useCategoryStore();
+const emit = defineEmits(['updateDagakList']);
 
-const categorySearch = ref('')
-const gakCategory = ref('')
-const gakRunningTime = ref(1)
-const totalTime = ref(0)
-const dagakName = ref('')
-const gaks = ref([])
+const categorySearch = ref('');
+const gakCategory = ref('');
+const gakRunningTime = ref(1);
+const totalTime = ref(0);
+const dagakName = ref('');
+const gaks = ref([]);
 
 //한글 입력 이슈
 const onInputGakName = function (event) {
-  dagakName.value = event.currentTarget.value
-}
+  dagakName.value = event.currentTarget.value;
+};
 
 //태그 검색 메서드
 const filteredCategoryList = computed(() => {
   return categoryStore.categoryList.filter((category) =>
-    category.categoryName.toLowerCase().includes(categorySearch.value.toLowerCase())
-  )
-})
+    category.categoryName
+      .toLowerCase()
+      .includes(categorySearch.value.toLowerCase()),
+  );
+});
 
 //카테고리Id를 카테고리Name으로 반환
 const getCategoryName = (categoryId) => {
-  const category = categoryStore.categoryList.find((cat) => cat.categoryId === categoryId)
-  return category ? category.categoryName : 'Unknown Category'
-}
+  const category = categoryStore.categoryList.find(
+    (cat) => cat.categoryId === categoryId,
+  );
+  return category ? category.categoryName : 'Unknown Category';
+};
 
 //각 생성
 const addGak = function (category, runningTime) {
   if (category) {
     gaks.value.push({
       category: category,
-      runningTime: runningTime
-    })
-    totalTime.value = gaks.value.reduce((total, gak) => total + gak.runningTime, 0)
-    gakCategory.value = ''
-    gakRunningTime.value = 1
+      runningTime: runningTime,
+    });
+    totalTime.value = gaks.value.reduce(
+      (total, gak) => total + gak.runningTime,
+      0,
+    );
+    gakCategory.value = '';
+    gakRunningTime.value = 1;
   } else {
-    alert('카테고리를 입력해주세요')
+    alert('카테고리를 입력해주세요');
   }
-}
+};
 
 //각 삭제
 const deleteGak = function (index) {
-  gaks.value.splice(index, 1)
-  updateTime()
-}
+  gaks.value.splice(index, 1);
+  updateTime();
+};
 //totalTime 수정
 const updateTime = function () {
-  totalTime.value = gaks.value.reduce((total, gak) => total + gak.runningTime, 0)
-}
+  totalTime.value = gaks.value.reduce(
+    (total, gak) => total + gak.runningTime,
+    0,
+  );
+};
 
 //다각 만들기
 const addDagak = function () {
@@ -169,28 +185,28 @@ const addDagak = function () {
     dagakName: dagakName.value,
     gaks: gaks.value.map(({ category, runningTime }) => ({
       category: String(category),
-      runningTime: String(runningTime)
-    }))
-  }
+      runningTime: String(runningTime * 60),
+    })),
+  };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
     if (res.data.code === 1000) {
       //생성 성공
-      emit('updateDagakList')
-      clear()
+      emit('updateDagakList');
+      clear();
     } else {
-      alert('실패했습니다.')
+      alert('실패했습니다.');
     }
-  })
-}
+  });
+};
 
 //초기화
 const clear = function () {
-  gakCategory.value = ''
-  gakRunningTime.value = 1
-  totalTime.value = 0
-  gaks.value = []
-  dagakName.value = ''
-}
+  gakCategory.value = '';
+  gakRunningTime.value = 1;
+  totalTime.value = 0;
+  gaks.value = [];
+  dagakName.value = '';
+};
 </script>
 
 <style lang="scss" scoped>

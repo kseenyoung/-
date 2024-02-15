@@ -154,7 +154,7 @@ const accessAlarm = async function (tagId, requestedUserId) {
         }
       });
   } else {
-    alert(tagId + ': tagId가 잘못되었습니다.');
+    // alert(tagId + ': tagId가 잘못되었습니다.');
   }
   alarmStore.getUnReadAlarmList();
 };
