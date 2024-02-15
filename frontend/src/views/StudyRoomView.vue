@@ -140,7 +140,7 @@
         </div>
         <br />
         <p>이제 다른 과목으로 넘어가실 수 있습니다.</p>
-        <p>남은 시간: {{ countdown }}초</p>
+        <p>{{ modalCount }}초 후 창이 닫힙니다.</p>
       </div>
     </div>
   </div>
@@ -200,24 +200,41 @@ const done = ref(false)
 /* 모달 */
 const showModal = ref(false)
 const showCountdown = ref(true)
-let modalCount = ref(5)
+const modalCount = ref(5)
 
 const wantContinue = ref('')
 
+let modalDownCountInterval
+
 // 모달을 5초 후에 자동으로 닫음
-const countdownModalInterval = setInterval(() => {
-  modalCount.value--
-  if (modalCount.value === 0) {
-    showModal.value = false
-    clearInterval(countdownModalInterval)
-  }
-}, 1000)
+const countdownModalInterval = () => {
+  modalDownCountInterval = setInterval(() => {
+    modalCount.value--
+    if (modalCount.value === 0) {
+      showModal.value = false
+      closeModal()
+      modalCount.value = 5
+      if (isLastSubject.value) {
+        CountAfterComplete()
+        remainTime.value = 0
+        done.value = true
+        dagakStore.stay = true
+        isKeepGoing.value = true
+      } else {
+        CountAfterComplete()
+        dagakStore.stay = true
+        remainTime.value = 0
+        isKeepGoing.value = true
+        wantContinue.value = ''
+      }
+    }
+  }, 1000)
+}
 
 const handleModalResponse = (response) => {
   showModal.value = false
-  clearInterval(countdownModalInterval)
   if (response) {
-    if (isLastSubject) {
+    if (isLastSubject.value) {
       // 마지막 과목일 때
       CountAfterComplete()
       remainTime.value = 0
@@ -231,7 +248,7 @@ const handleModalResponse = (response) => {
     }
   } else {
     done.value = false
-    if (!isLastSubject) changeRoom()
+    if (!isLastSubject.value) changeRoom()
     else {
       dagakStore.stay = false
       leaveStudyRoom()
@@ -241,14 +258,22 @@ const handleModalResponse = (response) => {
 
 const closeModal = () => {
   showModal.value = false
-  clearInterval(countdownModalInterval)
+  clearInterval(modalDownCountInterval)
 }
 
-watch(showModal, (newValue) => {
-  if (newValue && modalCount.value <= 0) {
-    showCountdown.value = false
+watch(
+  showModal,
+  (newValue) => {
+    if (newValue) {
+      countdownModalInterval()
+    } else {
+      clearInterval(modalDownCountInterval)
+    }
   }
-})
+  // if (newValue && modalCount.value <= 0) {
+  //   showCountdown.value = false
+  // }
+)
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
@@ -393,7 +418,7 @@ const startCount = () => {
       if (!isKeepGoing.value) {
         if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
           showModal.value = true
-          isLastSubject = true
+          isLastSubject.value = true
           // const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
           if (continueCount) {
             // 방 이동 안 함
