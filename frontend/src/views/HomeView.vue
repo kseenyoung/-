@@ -26,6 +26,10 @@
           <h3 style=""> </h3>
           <p style="" class="font-weight-bold"><h3 > 다각 만들러가기</h3></p>
         </div>
+        <div class="is-typed" style="" @click="navigateToStudyRoom">
+          <h3 style=""> </h3>
+          <p style="" class="font-weight-bold"><h3 >자율공부하러가기</h3></p>
+        </div>
         <div v-if="userStore.loginUserInfo.userId" class="friends">
           <div class="bubble medium bottom" style="margin-left: 30%; width: auto;">
           친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요

@@ -87,7 +87,13 @@
                     <div class="gak-detail-wrapper-right common-pointer">
                       <i
                         class="bi bi-pencil-square"
-                        @click="updateGak(element.gakId, element.categoryId, element.runningTime)"
+                        @click="
+                          updateGak(
+                            element.gakId,
+                            element.categoryId,
+                            element.runningTime
+                          )
+                        "
                       ></i>
                       <i class="bi bi-trash" @click="deleteGak(element.gakId)"></i>
                     </div>
@@ -115,26 +121,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useCategoryStore } from '@/stores/category'
-import { useRouter } from 'vue-router'
-import axios from 'axios'
-import draggable from 'vuedraggable'
-import MyPageScheduleDagakAddModal from './MyPageScheduleDagakAddModal.vue'
-import DagakImg from '@/components/dagak/DagakImg.vue'
-import { subjectMapping } from '@/utils/subjectMapping'
+import { ref, onMounted } from "vue";
+import { useCategoryStore } from "@/stores/category";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import draggable from "vuedraggable";
+import MyPageScheduleDagakAddModal from "./MyPageScheduleDagakAddModal.vue";
+import DagakImg from "@/components/dagak/DagakImg.vue";
+import { subjectMapping } from "@/utils/subjectMapping";
 
-const categoryStore = useCategoryStore()
-const router = useRouter()
+const categoryStore = useCategoryStore();
+const router = useRouter();
 
-const dagakList = ref([])
-const gakList = ref([])
-const selectedDagakId = ref(null)
-const selectedDagakName = ref('')
+const dagakList = ref([]);
+const gakList = ref([]);
+const selectedDagakId = ref(null);
+const selectedDagakName = ref("");
 
 onMounted(() => {
-  getAllDagakList()
-})
+  getAllDagakList();
+});
 
 //전체 다각 목록 불러오기
 // const getAllDagakList = function () {
@@ -160,145 +166,148 @@ onMounted(() => {
 const getAllDagakList = async function () {
   try {
     //전체 다각 목록
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`)
-    const dagaks = response.data.result
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`
+    );
+    const dagaks = response.data.result;
 
     //다각의 각 목록
     const gakLengthPromises = dagaks.map((dagak) =>
       axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
-        params: { dagakId: dagak.dagakId }
+        params: { dagakId: dagak.dagakId },
       })
-    )
+    );
 
-    const gakLengthResponses = await Promise.all(gakLengthPromises)
+    const gakLengthResponses = await Promise.all(gakLengthPromises);
 
     //다각 리스트에 각 개수 데이터 저장
     dagakList.value = dagaks.map((dagak, index) => ({
       ...dagak,
-      gakLength: gakLengthResponses[index].data.result.length
-    }))
+      gakLength: gakLengthResponses[index].data.result.length,
+    }));
   } catch (error) {
-    console.error('Error:', error)
+    console.error("Error:", error);
   }
-}
+};
 
 //뒤로가기(캘린더로)
 const goToCalander = function () {
-  router.go(-1)
-}
+  router.go(-1);
+};
 
 //다각 클릭 시 각 목록+상세정보 불러와서 저장
 const openModal = function (id, name) {
-  selectedDagakId.value = id
-  selectedDagakName.value = name
+  selectedDagakId.value = id;
+  selectedDagakName.value = name;
 
   axios
     .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
-      params: { dagakId: id }
+      params: { dagakId: id },
     })
     .then((res) => {
       //각 목록을 gakOrder 기준으로 오름차순 정렬
-      const sortedGakList = res.data.result.sort((a, b) => a.gakOrder - b.gakOrder)
-      gakList.value = sortedGakList
-    })
-}
+      const sortedGakList = res.data.result.sort((a, b) => a.gakOrder - b.gakOrder);
+      gakList.value = sortedGakList;
+    });
+};
 
 //다각 삭제
 const deleteDagak = function () {
-  if (window.confirm('삭제하시겠습니까?')) {
+  if (window.confirm("삭제하시겠습니까?")) {
     const body = {
-      sign: 'deleteDagak',
-      deleteDagakId: selectedDagakId.value
-    }
+      sign: "deleteDagak",
+      deleteDagakId: selectedDagakId.value,
+    };
     axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
       if (res.data.code === 1000) {
         //삭제 성공
-        getAllDagakList()
-        localStorage.removeItem("dagakStore");
+        getAllDagakList();
       } else {
-        alert('실패했습니다.')
+        alert("실패했습니다.");
       }
-    })
+    });
   }
-}
+};
 
 //각 삭제
 const deleteGak = function (gakId) {
-  if (window.confirm('정말로 삭제하시겠습니까?')) {
-    const updatedGakList = gakList.value.filter((gak) => gak.gakId !== gakId)
+  if (window.confirm("정말로 삭제하시겠습니까?")) {
+    const updatedGakList = gakList.value.filter((gak) => gak.gakId !== gakId);
     const remainGakInformation = updatedGakList.map((gak, index) => ({
       gakId: gak.gakId,
-      gakOrder: index + 1
-    }))
+      gakOrder: index + 1,
+    }));
     const body = {
-      sign: 'deleteGak',
+      sign: "deleteGak",
       gakId: gakId,
-      remainGakInformation: remainGakInformation
-    }
+      remainGakInformation: remainGakInformation,
+    };
     axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
       if (res.data.code === 1000) {
         //삭제 성공
-        openModal(selectedDagakId.value, selectedDagakName.value)
+        openModal(selectedDagakId.value, selectedDagakName.value);
       } else {
-        alert('실패했습니다.')
+        alert("실패했습니다.");
       }
-    })
+    });
   }
-}
+};
 
 //각 수정
 const updateGak = function (gakId, categoryId, runningTime) {
-  if (window.confirm('수정하시겠습니까?')) {
+  if (window.confirm("수정하시겠습니까?")) {
     //삭제 후 각 리스트 다시 호출
     const body = {
-      sign: 'modifyGak',
+      sign: "modifyGak",
       dagakId: selectedDagakId.value,
       gakId: gakId,
       categoryId: categoryId,
-      runningTime: runningTime
-    }
+      runningTime: runningTime,
+    };
     axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
       if (res.data.code === 1000) {
         //수정 성공
-        openModal(selectedDagakId.value, selectedDagakName.value)
-        alert('수정되었습니다.')
+        openModal(selectedDagakId.value, selectedDagakName.value);
+        alert("수정되었습니다.");
       } else {
-        alert('실패했습니다.')
+        alert("실패했습니다.");
       }
-    })
+    });
   }
-}
+};
 
 //각 순서 수정
 const updateGakOrder = function () {
   //드래그 한 정보를 gakOrder에 저장
   gakList.value.forEach((gak, index) => {
-    gak.gakOrder = index + 1
-  })
+    gak.gakOrder = index + 1;
+  });
 
   //Map형식으로 저장
   const gakInformation = gakList.value.map((gak) => ({
     gakId: gak.gakId,
-    gakOrder: gak.gakOrder
-  }))
+    gakOrder: gak.gakOrder,
+  }));
 
   const body = {
-    sign: 'modifyGakOrder',
-    GakInformation: gakInformation
-  }
+    sign: "modifyGakOrder",
+    GakInformation: gakInformation,
+  };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
     if (res.data.code === 1000) {
       //순서 수정 성공
-      getAllCalendarList()
+      getAllCalendarList();
     } else {
-      alert('실패했습니다.')
+      alert("실패했습니다.");
     }
-  })
-}
+  });
+};
 
 const getAllCalendarList = function () {
-  axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`).then(() => {})
-}
+  axios
+    .get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllCalendarList`)
+    .then(() => {});
+};
 </script>
 
 <style lang="scss" scoped>
