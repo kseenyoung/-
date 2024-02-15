@@ -97,7 +97,7 @@ const categoryNameList = ref(categoryStore.categoryList)
 const dagakName = ref(todayDagak.dagakName)
 
 const getStatus = (index) => {
-  if (index < props.gakOrder) {
+  if (index < props.gakOrder || (props.isLastSubject == true && props.done == true)) {
     return '완료 ✔'
   } else if (index === props.gakOrder) {
     return '진행 중'
