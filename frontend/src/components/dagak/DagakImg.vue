@@ -3,7 +3,7 @@
     width="100%"
     height="100%"
     xmlns="http://www.w3.org/2000/svg"
-    :viewBox="`0 0 250 250`"
+    :viewBox="`0 0 200 200`"
     style="max-width: 100%; max-height: 100%"
   >
     <!-- Circle for gakLength 1 -->
@@ -38,11 +38,6 @@
 
 <script setup>
 import { ref, computed, defineProps } from 'vue'
-import { useCategoryStore } from '@/stores/category'
-
-const categoryStore = useCategoryStore()
-const categoryNameList = ref(categoryStore.categoryList)
-
 
 const props = defineProps({
   gakLength: Number
@@ -104,8 +99,7 @@ const calculatePizzaSlices = (slices, radius, cx, cy) => {
 
     slicePolygons.push({
       points: slicePoints,
-      // label: `과목 ${i + 1}`,
-      label: categoryNameList.value[i].categoryName ,
+      label: `과목 ${i + 1}`,
       labelX,
       labelY,
       color: colors[i % colors.length]
