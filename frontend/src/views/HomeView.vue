@@ -24,7 +24,7 @@
         <div v-if="userStore.loginUserInfo.userId" style="flex: auto;"></div> <!-- 빈 요소, 가운데 정렬을 위해 -->
         <div class="is-typed" style="" @click="navigateToMyPageSchedule">
           <h3 style=""> </h3>
-          <p style="" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
+          <p style="" class="font-weight-bold"><h3 > 다각 만들러가기</h3></p>
         </div>
         <div v-if="userStore.loginUserInfo.userId" class="friends">
           <div class="bubble medium bottom" style="margin-left: 30%; width: auto;">
