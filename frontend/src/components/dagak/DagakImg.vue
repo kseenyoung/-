@@ -3,7 +3,7 @@
     width="100%"
     height="100%"
     xmlns="http://www.w3.org/2000/svg"
-    :viewBox="`0 0 200 200`"
+    :viewBox="`0 0 250 250`"
     style="max-width: 100%; max-height: 100%"
   >
     <!-- Circle for gakLength 1 -->
@@ -31,12 +31,18 @@
     <!-- Dynamic Pizza Slices with Labels -->
     <g v-else v-for="(slice, index) in pizzaSlices" :key="index">
       <polygon :points="slice.points" :fill="slice.color" stroke="black" stroke-width="2" />
+      <!-- <text :x="slice.labelX" :y="slice.labelY" text-anchor="middle" dominant-baseline="left" fill="black">{{ slice.label }}</text> -->
     </g>
   </svg>
 </template>
 
 <script setup>
 import { ref, computed, defineProps } from 'vue'
+import { useCategoryStore } from '@/stores/category'
+
+const categoryStore = useCategoryStore()
+const categoryNameList = ref(categoryStore.categoryList)
+
 
 const props = defineProps({
   gakLength: Number
@@ -98,7 +104,8 @@ const calculatePizzaSlices = (slices, radius, cx, cy) => {
 
     slicePolygons.push({
       points: slicePoints,
-      label: `과목 ${i + 1}`,
+      // label: `과목 ${i + 1}`,
+      label: categoryNameList.value[i].categoryName ,
       labelX,
       labelY,
       color: colors[i % colors.length]
