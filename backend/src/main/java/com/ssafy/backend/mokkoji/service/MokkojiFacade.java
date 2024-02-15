@@ -59,7 +59,6 @@ public class MokkojiFacade {
 
     public MokkojiRankingsVO getByMokkojiNameRanking(String mokkojiName) {
         List<MokkojiRankings> byMokkojiName = mokkojiRankingService.getByMokkojiName(mokkojiName);
-        log.info("모꼬지 이름 랭킹 검색입니다.{}",byMokkojiName);
         MokkojiRankings mokkojiRankings = byMokkojiName.get(0);
 
         MokkojiRankDTO mokkojiDTO = new MokkojiRankDTO(mokkojiRankings);
@@ -74,7 +73,6 @@ public class MokkojiFacade {
     public List<MokkojiRankingsVO> geTmokkojiTopTen() {
         List<MokkojiRankingsVO> list = new ArrayList<>();
         List<MokkojiRankings> topTen = mokkojiRankingService.getRankingTopTen();
-        log.info("모꼬지 이름 탑텐입니다.{}",topTen);
         for (MokkojiRankings mokkojiRankings: topTen) {
             MokkojiRankDTO mokkojiDto = new MokkojiRankDTO(mokkojiRankings);
             List<Category> categoriesEntities = categoryService.getCategoryList(mokkojiRankings.getCategories());
@@ -92,14 +90,10 @@ public class MokkojiFacade {
         Page<Mokkoji> mokkojiList;
         if(categories == null || categories.size() == 0){
             mokkojiList = mokkojiService.getMokkojiList(page, keyword);
-            log.info("모꼬지 목록조회 카테고리가 없을 때 입니다. {}", mokkojiList);
         }
         else{
             mokkojiList = categoryService.getMokkojiList(categories, page, keyword);
-            log.info("모꼬지 목록조회 카테고리가 있을 때 입니다. {}", mokkojiList);
         }
-        log.info("전체 아이템 수: {}", mokkojiList.getTotalElements());
-        log.info("전체 페이지 수: {}", mokkojiList.getTotalPages());
         Map<Mokkoji, List<Category>> map = mokkojiCategoryService.getMokkojis(mokkojiList);
 
         List<MokkojiCategoryDTO> list = map.entrySet().stream().map(e -> {

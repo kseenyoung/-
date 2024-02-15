@@ -45,7 +45,6 @@ public class ReqestAlarmDTO {
         try{
             this.tagId = Integer.parseInt(tagId);
         } catch (RuntimeException e){
-            e.printStackTrace();
             throw new BaseException(NOT_EXIST_TAG_ID);
         }
     }

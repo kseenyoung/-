@@ -31,7 +31,6 @@ public class UpdateMemoryTimeDTO {
         try{
             this.calendarId = Integer.parseInt(calendarId);
         } catch (RuntimeException e){
-            e.printStackTrace();
             throw new BaseException(JSON_PARSING_ERROR);
         }
     }
@@ -42,7 +41,6 @@ public class UpdateMemoryTimeDTO {
         try{
             this.categoryId = Integer.parseInt(categoryId);
         } catch (RuntimeException e){
-            e.printStackTrace();
             throw new BaseException(JSON_PARSING_ERROR);
         }
     }
@@ -59,7 +57,6 @@ public class UpdateMemoryTimeDTO {
         try{
             this.gakId = Integer.parseInt(gakId);
         } catch (RuntimeException e){
-            e.printStackTrace();
             throw new BaseException(JSON_PARSING_ERROR);
         }
     }

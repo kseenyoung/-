@@ -58,7 +58,6 @@ public class DagakServiceImpl implements DagakService {
 
     @Override
     public void createGak(List<GakDTO> gaks) {
-        //log.info("gak : {}", gaks);
         List<Gak> gakEntities = new ArrayList<>();
         for (GakDTO gak : gaks) {
             Gak build = Gak.builder()
@@ -156,7 +155,6 @@ public class DagakServiceImpl implements DagakService {
             throw new BaseException(NOT_EXIST_DAGAK);
 
         Calendar calendarByCalendarDate = calendarRepository.findCalendarByCalendarDate(addDagakDateDto.getCalendarDate());
-        log.info("=========== byCalendarDateStartsWith : {}", calendarByCalendarDate);
         if (calendarByCalendarDate == null) {
             // 해당 날에 등록된 다각이 없음
             calendarRepository.save(
@@ -243,11 +241,6 @@ public class DagakServiceImpl implements DagakService {
         List<Gak> todayGaks = todayDagakVO.getGaks();
         List<GakHistory> historyGaks = getGaksOfHistory(userId, today);
 
-        log.info("historyGaks : {}", historyGaks);
-        System.out.println("님아 왜그러세요 제발");
-        System.out.println(todayGaks + " " + todayGaks.size());
-        System.out.println(historyGaks + " " + historyGaks.size());
-
         if (historyGaks.isEmpty()) {  // 공부 아예 처음 시작.
             Gak todayGak = todayGaks.get(0);
             todayGakVO.setUserId(userId);
@@ -297,7 +290,6 @@ public class DagakServiceImpl implements DagakService {
             Category category = categoryRepository.findById(todayGak.getCategoryId()).orElseThrow(() -> new BaseException(FAIL_TO_CONNECT));
             todayGakVO.setCategoryName(category.getCategoryName());
         }
-        System.out.println(todayGakVO);
         return todayGakVO;
     }
 
