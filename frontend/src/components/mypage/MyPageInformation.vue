@@ -9,9 +9,9 @@
           <img
             v-if="userStore.loginUserInfo.userPicture"
             :src="profileImage + '?v=' + new Date().getTime()"
-            style="width: 70%; padding-bottom: 10%"
+            class="profile-img"
           />
-          <img v-else src="@/assets/img/default.jpg" />
+          <img v-else src="@/assets/img/default.jpg" class="profile-img" />
         </div>
       </div>
 
@@ -368,6 +368,10 @@ const changeNickname = function () {
     align-items: flex-start;
     padding: 10px 5px 30px;
     border-top: 1px solid rgb(190, 190, 190);
+    .info-content > .profile-img {
+      width: 100px;
+      height: 100px;
+    }
   }
   .info-detail-wrapper:last-child {
     border-bottom: 1px solid rgb(190, 190, 190);

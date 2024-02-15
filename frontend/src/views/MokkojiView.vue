@@ -32,16 +32,12 @@
           <div class="mok-list-wrapper">
             <div v-for="item in user" :key="item.userId">
               <div class="mok-list-detail">
-
-
                 <img
                   class="profile"
                   v-if="item.userPicture"
                   :src="`${item.userPicture}`"
                 />
                 <img class="profile" v-else src="@/assets/img/default.jpg" />
-
-
 
                 <div>
                   {{ item.userNickname
@@ -369,6 +365,7 @@ $my-shadow:
             padding: 10px;
             img {
               width: 30px;
+              height: 30px;
               border-radius: 50%;
               margin-right: 10px;
               margin-left: 60px;

@@ -37,7 +37,6 @@
             :key="friend.userId"
             class="my-hover"
           >
-            <!-- <td><img src="@/assets/img/${friend.userPicture}.png" /></td> -->
             <td>
               <img
                 class="profile"
