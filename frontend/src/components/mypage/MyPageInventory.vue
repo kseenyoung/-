@@ -146,9 +146,10 @@ const captureAndSend = async () => {
       },
     })
     .then((response) => {
-      userStore.loginUserInfo.userPicture =
-        response.data.result + "?v=" + new Date().getTime();
-
+      // userStore.loginUserInfo.userPicture =
+      //   response.data.result + "?v=" + new Date().getTime();
+      userStore.updateProfile(response.data.result + "?v=" + new Date().getTime());
+      userStore.$patch({ "loginUserInfo": userStore.loginUserInfo });
       console.log(userStore.loginUserInfo.userPicture);
     })
     .catch((error) => {
