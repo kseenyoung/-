@@ -127,7 +127,6 @@ const navigateToMyPageSchedule= () =>{
 };
 
 const navigateToLogin = () => {
-  alert("로그인해주세요!");
   router.push('/login');
 };
 

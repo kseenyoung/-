@@ -31,9 +31,7 @@ onMounted(() => {
 watch(
   () => dagakStore.todayDagak,
   async (newVal, oldVal) => {
-    console.log(newVal, "tete", oldVal, "tete2");
     if (newVal.value != null || newVal.value != undefined) {
-      console.log(newVal, "tete4", oldVal, "tete3");
       await dagakStore.getTodayDagak();
     }
   }

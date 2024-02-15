@@ -60,21 +60,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { useUserStore } from '@/stores/user';
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { useUserStore } from "@/stores/user";
 const userStore = useUserStore();
-const userStatusMessage = ref('');
-const userTotalStudyTime = ref('');
+const userStatusMessage = ref("");
+const userTotalStudyTime = ref("");
 const formatTime = (seconds) => {
   if (isNaN(seconds) || seconds < 0) {
-    return 'Invalid input';
+    return "Invalid input";
   }
 
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  const formattedHours = String(hours).padStart(2, '0');
-  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedHours = String(hours).padStart(2, "0");
+  const formattedMinutes = String(minutes).padStart(2, "0");
 
   return `${formattedHours}시간 ${formattedMinutes}분`;
 };
@@ -85,17 +85,16 @@ onMounted(() => {
 
 const getUserProfileInfo = function () {
   const body = {
-    sign: 'getUserInformation',
+    sign: "getUserInformation",
     userNickname: userStore.loginUserInfo.userNickname,
   };
   axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     })
     .then((res) => {
-      console.log('getUserProfileInfo: ' + res.data.result);
       userStatusMessage.value = res.data.result.userStatusMessage;
       userTotalStudyTime.value = res.data.result.userTotalStudyTime;
     });
@@ -107,23 +106,23 @@ const onInputStatus = function (event) {
 
 const changeStatus = function () {
   const body = {
-    sign: 'ModifyUserStatusMessage',
+    sign: "ModifyUserStatusMessage",
     newStatusMessage: userStatusMessage.value,
   };
   axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     })
     .then((res) => res.data)
     .then((json) => {
       if (json.code === 1000) {
         //성공
-        alert('수정되었습니다.');
+        alert("수정되었습니다.");
       } else {
         //실패
-        alert('실패');
+        alert("실패");
       }
     });
 };
@@ -137,9 +136,7 @@ const changeStatus = function () {
   margin: 20px 0px;
   border-radius: 10px;
   // box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  box-shadow:
-    rgba(0, 0, 0, 0.4) 0px 2px 4px,
-    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
     rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
   padding: 120px 0px;
 

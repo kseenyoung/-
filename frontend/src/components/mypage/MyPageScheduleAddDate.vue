@@ -39,24 +39,22 @@
     </div>
   </div>
   <div class="dagak-add-wrapper">
-    <button class="btn common-btn add-btn" @click="addDagakDate">
-      추가하기
-    </button>
+    <button class="btn common-btn add-btn" @click="addDagakDate">추가하기</button>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
-import axios from 'axios';
-import DagakImg from '@/components/dagak/DagakImg.vue';
+import { ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import axios from "axios";
+import DagakImg from "@/components/dagak/DagakImg.vue";
 
 const router = useRouter();
 
 const dagakList = ref([]);
-const selectDagak = ref('');
+const selectDagak = ref("");
 const initialDate = new Date();
 const dates = ref([]);
 
@@ -73,7 +71,7 @@ const getAllDagakList = async function () {
   try {
     //전체 다각 목록
     const response = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`,
+      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`
     );
     const dagaks = response.data.result;
 
@@ -81,7 +79,7 @@ const getAllDagakList = async function () {
     const gakLengthPromises = dagaks.map((dagak) =>
       axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
         params: { dagakId: dagak.dagakId },
-      }),
+      })
     );
 
     const gakLengthResponses = await Promise.all(gakLengthPromises);
@@ -92,7 +90,7 @@ const getAllDagakList = async function () {
       gakLength: gakLengthResponses[index].data.result.length,
     }));
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
   }
 };
 
@@ -100,7 +98,7 @@ const getAllDagakList = async function () {
 const addDagakList = function (id) {
   if (isSelectedDagak(id)) {
     // 이미 선택된 다각을 누르면 선택 취소
-    selectDagak.value = '';
+    selectDagak.value = "";
   } else {
     // 선택되지 않은 다각을 누르면 선택
     selectDagak.value = id;
@@ -131,10 +129,10 @@ const disabledDates = computed(() => {
 
 //캘린더에 다각 추가
 const addDagakDate = function () {
-  if (selectDagak.value === '') {
-    alert('다각을 선택해주세요.');
+  if (selectDagak.value === "") {
+    alert("다각을 선택해주세요.");
   } else if (dates.value == null) {
-    alert('날짜를 선택해주세요.');
+    alert("날짜를 선택해주세요.");
   } else {
     //날짜 배열 형태로 변환
     const formattedDates = dates.value.map((date) => [
@@ -143,22 +141,20 @@ const addDagakDate = function () {
       date.getDate(),
     ]);
     const body = {
-      sign: 'addDagakDate',
+      sign: "addDagakDate",
       dagakId: String(selectDagak.value),
       calendarDate: formattedDates,
     };
-    axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
-      .then((res) => {
-        if (res.data.code === 1000) {
-          //캘린더 추가 성공
-          router.push({
-            name: 'myPageSchedule',
-          });
-        } else {
-          alert('실패했습니다.');
-        }
-      });
+    axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
+      if (res.data.code === 1000) {
+        //캘린더 추가 성공
+        router.push({
+          name: "myPageSchedule",
+        });
+      } else {
+        alert("실패했습니다.");
+      }
+    });
   }
 };
 
@@ -169,7 +165,7 @@ const isSelectedDagak = function (dagakId) {
 
 const goToMyDagak = function () {
   router.push({
-    name: 'myPageScheduleDagak',
+    name: "myPageScheduleDagak",
   });
 };
 

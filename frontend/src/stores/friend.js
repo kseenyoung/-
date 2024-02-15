@@ -28,7 +28,6 @@ export const useFriendStore = defineStore(
           console.log(res);
           if (res.data.code === 1000) {
             loginFriends.value = res.data.result;
-            console.log("로그인한 친구들 정보: ",loginFriends.value);
           }
         });
     };

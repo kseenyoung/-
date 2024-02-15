@@ -33,7 +33,7 @@
             style="margin-right: 10%; margin-left: auto; font-size: 20px; margin-top: 3%"
             @click="changeRoomAfterWait"
           >
-            {{ !done ? '이동하기' : '나가기' }}
+            {{ !done ? "이동하기" : "나가기" }}
           </button>
         </div>
         <div class="lastlater" style="padding-left: 20px">
@@ -50,7 +50,10 @@
           <div class="video-player-1">
             <div class="bigvideo" ref="video13">
               <!-- 첫 번째 subscriber가 없는 경우에만 mainStreamManager를 표시 -->
-              <user-video v-if="subscribers.length === 0" :stream-manager="mainStreamManager" />
+              <user-video
+                v-if="subscribers.length === 0"
+                :stream-manager="mainStreamManager"
+              />
               <!-- 첫 번째 subscriber가 있는 경우에는 해당 subscriber를 표시 -->
               <user-video
                 v-else
@@ -151,150 +154,150 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount, onBeforeMount, onMounted, watch } from 'vue'
-import axios from 'axios'
-import { OpenVidu, Stream } from 'openvidu-browser'
-import { useUserStore } from '@/stores/user'
-import UserVideo from '@/components/room/UserVideo.vue'
-import StudyRateView from '@/components/room/StudyRateView.vue'
-import { useRouter } from 'vue-router'
-import { useQuestionStore } from '@/stores/qustion'
-import { useDagakStore } from '@/stores/dagak'
-import QnAListView from '@/components/room/QnAListView.vue'
-import { subjectMapping } from '@/utils/subjectMapping'
+import { ref, onBeforeUnmount, onBeforeMount, onMounted, watch } from "vue";
+import axios from "axios";
+import { OpenVidu, Stream } from "openvidu-browser";
+import { useUserStore } from "@/stores/user";
+import UserVideo from "@/components/room/UserVideo.vue";
+import StudyRateView from "@/components/room/StudyRateView.vue";
+import { useRouter } from "vue-router";
+import { useQuestionStore } from "@/stores/qustion";
+import { useDagakStore } from "@/stores/dagak";
+import QnAListView from "@/components/room/QnAListView.vue";
+import { subjectMapping } from "@/utils/subjectMapping";
 
-axios.defaults.headers.post['Content-Type'] = 'application/json'
+axios.defaults.headers.post["Content-Type"] = "application/json";
 
-const dagakStore = useDagakStore()
+const dagakStore = useDagakStore();
 
-const router = useRouter()
-const store = useUserStore()
-const questionStore = useQuestionStore()
+const router = useRouter();
+const store = useUserStore();
+const questionStore = useQuestionStore();
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === "production"
     ? `${import.meta.env.VITE_API_BASE_URL}`
-    : `${import.meta.env.VITE_API_BASE_URL}`
+    : `${import.meta.env.VITE_API_BASE_URL}`;
 
-const OV = ref(undefined)
-const session = ref(undefined)
-const mySession = ref(store.loginUserInfo.sub)
-const mainStreamManager = ref(undefined)
-const publisher = ref(undefined)
-const subscribers = ref([])
-const question = ref('')
-const leave = ref('refresh')
-const showQuestion = ref(false)
+const OV = ref(undefined);
+const session = ref(undefined);
+const mySession = ref(store.loginUserInfo.sub);
+const mainStreamManager = ref(undefined);
+const publisher = ref(undefined);
+const subscribers = ref([]);
+const question = ref("");
+const leave = ref("refresh");
+const showQuestion = ref(false);
 // const achievementRate = ref(0)
 
-const change = ref(false)
+const change = ref(false);
 
-const isLastSubject = ref(false)
+const isLastSubject = ref(false);
 
-const userId = ref('')
-const sec = ref(0)
-const remainTime = ref(10)
-const categoryName = ref('')
-const gakId = ref(0)
-const categoryId = ref(0)
-const calendarId = ref(0)
-const gakOrder = ref(0)
-const memoryTime = ref(0)
-const done = ref(false)
+const userId = ref("");
+const sec = ref(0);
+const remainTime = ref(10);
+const categoryName = ref("");
+const gakId = ref(0);
+const categoryId = ref(0);
+const calendarId = ref(0);
+const gakOrder = ref(0);
+const memoryTime = ref(0);
+const done = ref(false);
 
 /* 모달 */
-const showModal = ref(false)
-const showCountdown = ref(true)
-const modalCount = ref(5)
+const showModal = ref(false);
+const showCountdown = ref(true);
+const modalCount = ref(5);
 
-const wantContinue = ref('')
+const wantContinue = ref("");
 
-let modalDownCountInterval
+let modalDownCountInterval;
 
 // 모달을 5초 후에 자동으로 닫음
 const countdownModalInterval = () => {
   modalDownCountInterval = setInterval(() => {
-    modalCount.value--
+    modalCount.value--;
     if (modalCount.value === 0) {
-      showModal.value = false
-      closeModal()
-      modalCount.value = 5
+      showModal.value = false;
+      closeModal();
+      modalCount.value = 5;
       if (isLastSubject.value) {
-        CountAfterComplete()
-        remainTime.value = 0
-        done.value = true
-        dagakStore.stay = true
-        isKeepGoing.value = true
+        CountAfterComplete();
+        remainTime.value = 0;
+        done.value = true;
+        dagakStore.stay = true;
+        isKeepGoing.value = true;
       } else {
-        CountAfterComplete()
-        dagakStore.stay = true
-        remainTime.value = 0
-        isKeepGoing.value = true
-        wantContinue.value = ''
+        CountAfterComplete();
+        dagakStore.stay = true;
+        remainTime.value = 0;
+        isKeepGoing.value = true;
+        wantContinue.value = "";
       }
     }
-  }, 1000)
-}
+  }, 1000);
+};
 
 const handleModalResponse = (response) => {
-  showModal.value = false
+  showModal.value = false;
   if (response) {
     if (isLastSubject.value) {
       // 마지막 과목일 때
-      CountAfterComplete()
-      remainTime.value = 0
-      done.value = true
-      dagakStore.stay = true
-      isKeepGoing.value = true
+      CountAfterComplete();
+      remainTime.value = 0;
+      done.value = true;
+      dagakStore.stay = true;
+      isKeepGoing.value = true;
     } else {
       // 뒤에 과목이 남아있을 때
-      done.value = false
-      remainRoom()
+      done.value = false;
+      remainRoom();
     }
   } else {
-    done.value = false
-    if (!isLastSubject.value) changeRoom()
+    done.value = false;
+    if (!isLastSubject.value) changeRoom();
     else {
-      dagakStore.stay = false
-      leaveStudyRoom()
+      dagakStore.stay = false;
+      leaveStudyRoom();
     }
   }
-}
+};
 
 const closeModal = () => {
-  showModal.value = false
-  clearInterval(modalDownCountInterval)
-}
+  showModal.value = false;
+  clearInterval(modalDownCountInterval);
+};
 
 watch(
   showModal,
   (newValue) => {
     if (newValue) {
-      countdownModalInterval()
+      countdownModalInterval();
     } else {
-      clearInterval(modalDownCountInterval)
+      clearInterval(modalDownCountInterval);
     }
   }
   // if (newValue && modalCount.value <= 0) {
   //   showCountdown.value = false
   // }
-)
+);
 
 // setInterval(() => sec.value +=1, 1000)
 // setInterval(() => remainTime.value -=1, 1000)
 
 const modifyMemoryTimeAndLeave = async function () {
   const body = {
-    sign: 'modifyMemoryTime',
+    sign: "modifyMemoryTime",
     gakId: String(gakId.value),
     memoryTime: sec.value - memoryTime.value,
     categoryId: String(categoryId.value),
-    calendarId: String(calendarId.value)
-  }
+    calendarId: String(calendarId.value),
+  };
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     })
     .then((res) => {
       if (res.data.code === 1000) {
@@ -303,383 +306,386 @@ const modifyMemoryTimeAndLeave = async function () {
       } else {
         // alert('저런,,,')
       }
-    })
-}
+    });
+};
 
 const modifyMemoryTime = async function (subject) {
   const body = {
-    sign: 'modifyMemoryTime',
+    sign: "modifyMemoryTime",
     gakId: String(gakId.value),
     memoryTime: sec.value - memoryTime.value,
     categoryId: String(categoryId.value),
-    calendarId: String(calendarId.value)
-  }
+    calendarId: String(calendarId.value),
+  };
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     })
     .then((res) => {
       if (res.data.code === 1000) {
         //성공
 
-        store.loginUserInfo.sub = subject
+        store.loginUserInfo.sub = subject;
         leaveSession().then(() => {
-          change.value = true
-          joinSession()
-        })
+          change.value = true;
+          joinSession();
+        });
       } else {
         // alert('저런,,,');
       }
-    })
+    });
   // 순공 시간 업데이트
 
   await axios
     .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
     .then((res) => {
-      const result = res.data.result
+      const result = res.data.result;
       // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
       // 그에 따른 categoryId로 방 이동 바랍니다.
-      categoryId.value = result.categoryId
-      calendarId.value = result.calendarId
-      gakId.value = result.gakId
-      userId.value = result.userId
-      gakOrder.value = result.gakOrder + 1
-      memoryTime.value = result.memoryTime
-      store.loginUserInfo.sub = result.categoryName
-      alert(result.categoryName + '방에 입장합니다.')
-      categoryName.value = result.categoryName
-      const achievementRate = result.memoryTime / result.totalTime
-      remainTime.value = result.requiredStudyTime
+      categoryId.value = result.categoryId;
+      calendarId.value = result.calendarId;
+      gakId.value = result.gakId;
+      userId.value = result.userId;
+      gakOrder.value = result.gakOrder + 1;
+      memoryTime.value = result.memoryTime;
+      store.loginUserInfo.sub = result.categoryName;
+      alert(result.categoryName + "방에 입장합니다.");
+      categoryName.value = result.categoryName;
+      const achievementRate = result.memoryTime / result.totalTime;
+      remainTime.value = result.requiredStudyTime;
 
-      store.achievementRate = Math.floor(achievementRate * 100)
-      sec.value = result.memoryTime // 공부했던 시간.
-    })
-  startCount()
-}
+      store.achievementRate = Math.floor(achievementRate * 100);
+      sec.value = result.memoryTime; // 공부했던 시간.
+    });
+  startCount();
+};
 
-let countDownInterval
-let countUpInterval
+let countDownInterval;
+let countUpInterval;
 
 const togglePause = () => {
   if (isPause.value) {
-    alert('공부를 다시 시작합니다.')
+    alert("공부를 다시 시작합니다.");
   } else {
-    alert('공부를 중지합니다.')
+    alert("공부를 중지합니다.");
   }
 
-  isPause.value = !isPause.value
+  isPause.value = !isPause.value;
 
   if (isPause.value) {
     if (!isStudyTimeDone.value) {
-      clearInterval(countDownInterval)
-      clearInterval(countUpInterval)
+      clearInterval(countDownInterval);
+      clearInterval(countUpInterval);
     } else {
-      clearInterval(countUpIntervalAfterComplete)
+      clearInterval(countUpIntervalAfterComplete);
     }
   } else {
     if (!isStudyTimeDone.value) {
-      startCount()
+      startCount();
     } else {
-      CountAfterComplete()
+      CountAfterComplete();
     }
   }
-}
+};
 
 const toggleQuestion = () => {
-  showQuestion.value = !showQuestion.value
-}
+  showQuestion.value = !showQuestion.value;
+};
 
-const isStudyTimeDone = ref(false)
-const isKeepGoing = ref(false)
+const isStudyTimeDone = ref(false);
+const isKeepGoing = ref(false);
 
 const changeRoomAfterWait = () => {
   if (!done.value) {
-    dagakStore.stay = false
-    isKeepGoing.value = false
-    clearInterval(countUpIntervalAfterComplete)
-    modifyMemoryTime(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
+    dagakStore.stay = false;
+    isKeepGoing.value = false;
+    clearInterval(countUpIntervalAfterComplete);
+    modifyMemoryTime(
+      dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, "")
+    );
   } else {
-    leaveStudyRoom()
+    leaveStudyRoom();
   }
-}
+};
 
 const startCount = () => {
   countUpInterval = setInterval(() => {
     // 공부한 시간 증가
-    sec.value++
-  }, 1000)
+    sec.value++;
+  }, 1000);
 
   countDownInterval = setInterval(() => {
-    remainTime.value--
+    remainTime.value--;
 
     if (remainTime.value <= 0) {
-      isStudyTimeDone.value = true
-      clearInterval(countDownInterval)
-      clearInterval(countUpInterval)
+      isStudyTimeDone.value = true;
+      clearInterval(countDownInterval);
+      clearInterval(countUpInterval);
       // 다음 과목이 있는지 없는지에 따라, 나가거나, 방에 남아있거나, 방 이동 바랍니다.
       if (!isKeepGoing.value) {
         if (gakOrder.value == Object.keys(dagakStore.categoryNameToStudy.value).length) {
-          showModal.value = true
-          isLastSubject.value = true
+          showModal.value = true;
+          isLastSubject.value = true;
           // const continueCount = confirm('\n마지막 공부가 끝났습니다.\n 계속 공부하시겠습니까?')
           if (continueCount) {
             // 방 이동 안 함
-            CountAfterComplete()
-            remainTime.value = 0
-            done.value = true
-            dagakStore.stay = true
-            isKeepGoing.value = true
+            CountAfterComplete();
+            remainTime.value = 0;
+            done.value = true;
+            dagakStore.stay = true;
+            isKeepGoing.value = true;
           } else {
             // 퇴장함.
-            dagakStore.stay = false
-            leaveStudyRoom()
+            dagakStore.stay = false;
+            leaveStudyRoom();
           }
         } else {
-          showModal.value = true
+          showModal.value = true;
           // const continueCount = confirm(
           //   categoryName.value +
           //     '공부가 끝났습니다.\n[' +
           //     dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '') +
           //     ']방으로 이동 하시겠습니까?'
           // )
-          if (wantContinue.value == 'yes') {
+          if (wantContinue.value == "yes") {
             // 방 이동 안 함
-            CountAfterComplete()
-            dagakStore.stay = true
-            remainTime.value = 0
-            isKeepGoing.value = true
-            wantContinue.value = ''
-          } else if (wantContinue.value == 'no') {
+            CountAfterComplete();
+            dagakStore.stay = true;
+            remainTime.value = 0;
+            isKeepGoing.value = true;
+            wantContinue.value = "";
+          } else if (wantContinue.value == "no") {
             // 방 이동 함
             // alert('이동하겠습니다.')
-            dagakStore.stay = false
-            wantContinue.value = ''
+            dagakStore.stay = false;
+            wantContinue.value = "";
             modifyMemoryTime(
-              dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, '')
-            )
+              dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, "")
+            );
           }
         }
       }
     }
-  }, 1000)
-}
+  }, 1000);
+};
 
 const remainRoom = () => {
-  CountAfterComplete()
-  dagakStore.stay = true
-  remainTime.value = 0
-  isKeepGoing.value = true
-  wantContinue.value = ''
-  done.value = false
-}
+  CountAfterComplete();
+  dagakStore.stay = true;
+  remainTime.value = 0;
+  isKeepGoing.value = true;
+  wantContinue.value = "";
+  done.value = false;
+};
 
 const changeRoom = () => {
-  dagakStore.stay = false
-  wantContinue.value = ''
-  modifyMemoryTime(dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, ''))
-}
+  dagakStore.stay = false;
+  wantContinue.value = "";
+  modifyMemoryTime(
+    dagakStore.categoryNameToStudy.value[gakOrder.value].replace(/["']/g, "")
+  );
+};
 
-let countUpIntervalAfterComplete
+let countUpIntervalAfterComplete;
 
 const CountAfterComplete = () => {
   countUpIntervalAfterComplete = setInterval(() => {
     // 공부한 시간 증가
-    sec.value++
-  }, 1000)
-}
+    sec.value++;
+  }, 1000);
+};
 
 onBeforeMount(async () => {
   await axios
     .get(`${import.meta.env.VITE_API_BASE_URL}/dagak/enterRoomGetGakToStudy`)
     .then((res) => {
-      const result = res.data.result
+      const result = res.data.result;
       // result : gakId, totalTime, calendarId, memoryTime, categoryId, userId, categoryName, gakOrder
       // 그에 따른 categoryId로 방 이동 바랍니다.
-      categoryId.value = result.categoryId
-      calendarId.value = result.calendarId
-      gakId.value = result.gakId
-      userId.value = result.userId
-      gakOrder.value = result.gakOrder
-      memoryTime.value = result.memoryTime
-      store.loginUserInfo.sub = result.categoryName
-      done.value = false
+      categoryId.value = result.categoryId;
+      calendarId.value = result.calendarId;
+      gakId.value = result.gakId;
+      userId.value = result.userId;
+      gakOrder.value = result.gakOrder;
+      memoryTime.value = result.memoryTime;
+      store.loginUserInfo.sub = result.categoryName;
+      done.value = false;
 
-      alert(result.categoryName + '방에 입장합니다.')
-      categoryName.value = result.categoryName
-      const achievementRate = result.memoryTime / result.totalTime
-      remainTime.value = result.requiredStudyTime
+      alert(result.categoryName + "방에 입장합니다.");
+      categoryName.value = result.categoryName;
+      const achievementRate = result.memoryTime / result.totalTime;
+      remainTime.value = result.requiredStudyTime;
 
-      store.achievementRate = Math.floor(achievementRate * 100)
-      sec.value = result.memoryTime // 공부했던 시간.
-    })
+      store.achievementRate = Math.floor(achievementRate * 100);
+      sec.value = result.memoryTime; // 공부했던 시간.
+    });
 
   // TODO : redis에 저장된 질문/ 답변을 불러와서, QnAListView에 뿌려주기
-  console.log('studyRoom onBeforeMount!!!!!!!!!!!!!!!!!!')
   const body = {
-    sign: 'getSessionQnA'
-  }
+    sign: "getSessionQnA",
+  };
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}room`, body)
     .then((res) => {
       {
         // alert('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
         // console.log('session 질문(redis) 가져오기 : ', res.data.result.questionVOList)
-        const subQuestions = res.data.result.questionVOList
+        const subQuestions = res.data.result.questionVOList;
         if (subQuestions) {
           subQuestions.forEach(async (element) => {
             // alert('data : ' + element)
-            await questionStore.setQuestion(element)
-          })
-          console.log('question 제발 : ' + question.value)
+            await questionStore.setQuestion(element);
+          });
+          // console.log('question 제발 : ' + question.value)
         }
       }
     })
     .catch((e) => {
-      alert(e)
-      console.log('session 질문(redis) 가져오기 실패!!!!!!!!!!! ')
-    })
-})
+      // alert(e);
+      // console.log('session 질문(redis) 가져오기 실패!!!!!!!!!!! ')
+    });
+});
 
 // 플래그
 
 // 방 입장
 const enterRoom = async (sessionId) => {
-  let token = null
+  let token = null;
   if (change.value == true) {
-    token = await changeSession(sessionId)
-    change.value = false
+    token = await changeSession(sessionId);
+    change.value = false;
   } else {
-    token = await createSession(sessionId)
+    token = await createSession(sessionId);
   }
-  return token
-}
+  return token;
+};
 
 // 과목 변경
 const changeSession = async () => {
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'room',
+    APPLICATION_SERVER_URL + "room",
     {
-      sign: 'changeSession',
+      sign: "changeSession",
       userId: store.myUserName,
       sessionName: store.loginUserInfo.sub,
-      videoCodec: 'VP8'
+      videoCodec: "VP8",
     },
     {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     }
-  )
-  mySession.value = response.data.result.session
+  );
+  mySession.value = response.data.result.session;
   // store.loginUserInfo.sub = response.data.result.session;
-  return response.data.result.token
-}
+  return response.data.result.token;
+};
 
-console.log('구독자들: ', subscribers.value)
-console.log('STORE USER  :  ', store.loginUser)
+// console.log('구독자들: ', subscribers.value)
+// console.log('STORE USER  :  ', store.loginUser)
 // 초기 데이터(계정 세션 아이디, 계정 이름)
-const myUserName = ref(store.myUserName)
+const myUserName = ref(store.myUserName);
 
 // 방 생성
 const createSession = async () => {
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'room',
+    APPLICATION_SERVER_URL + "room",
     {
-      sign: 'enterRandomroom',
+      sign: "enterRandomroom",
       userId: store.myUserName,
       sessionName: store.loginUserInfo.sub,
-      videoCodec: 'VP8'
+      videoCodec: "VP8",
     },
     {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     }
-  )
-  console.log(response.data.result.session)
-  mySession.value = response.data.result.session
+  );
+  // console.log(response.data.result.session)
+  mySession.value = response.data.result.session;
   // store.loginUserInfo.sub = response.data.result.session;
-  return response.data.result.token
-}
+  return response.data.result.token;
+};
 
 const askQuestion = async () => {
-  console.log(mySession.value + '에서 질문합니다! ')
+  // console.log(mySession.value + '에서 질문합니다! ')
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'room',
-    { sign: 'askQuestion', session: mySession.value, data: question.value },
+    APPLICATION_SERVER_URL + "room",
+    { sign: "askQuestion", session: mySession.value, data: question.value },
     {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     }
-  )
-  return response.data.result
-}
+  );
+  return response.data.result;
+};
 
 const answerQuestion = async () => {
-  console.log(mySession.value + '에서 답변합니다! ')
+  // console.log(mySession.value + '에서 답변합니다! ')
   const response = await axios.post(
-    APPLICATION_SERVER_URL + 'room',
-    { sign: 'answerQuestion', session: mySession.value, data: question.value },
+    APPLICATION_SERVER_URL + "room",
+    { sign: "answerQuestion", session: mySession.value, data: question.value },
     {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     }
-  )
-  return response.data.result
-}
+  );
+  return response.data.result;
+};
 
 const joinSession = () => {
-  OV.value = new OpenVidu()
-  session.value = OV.value.initSession()
+  OV.value = new OpenVidu();
+  session.value = OV.value.initSession();
 
-  session.value.on('signal:question', (stream) => {
-    alert('질문이 들어왔습니다!')
+  session.value.on("signal:question", (stream) => {
+    // alert("질문이 들어왔습니다!");
 
-    console.log('질문 내용:' + stream.data)
+    // console.log('질문 내용:' + stream.data)
 
-    const data = JSON.parse(stream.data)
-    console.log('질문 stream : ' + data)
+    const data = JSON.parse(stream.data);
+    // console.log('질문 stream : ' + data)
 
-    questionStore.setQuestion(data)
-  })
+    questionStore.setQuestion(data);
+  });
 
-  session.value.on('signal:answer', (stream) => {
+  session.value.on("signal:answer", (stream) => {
     // alert('답변이 달렸습니다!')
     // console.log('답변 내용:' + stream.data)
 
-    const data = JSON.parse(stream.data)
+    const data = JSON.parse(stream.data);
     // console.log('질문Id : ' + data.questionId)
     // console.log('답변 내용 : ' + data.data)
 
-    questionStore.setAnswer(data.questionId, data)
-  })
+    questionStore.setAnswer(data.questionId, data);
+  });
 
-  session.value.on('streamCreated', ({ stream }) => {
-    const subscriber = session.value.subscribe(stream)
-    console.log('subscribers: ' + subscriber.value)
-    subscribers.value.push(subscriber)
-  })
+  session.value.on("streamCreated", ({ stream }) => {
+    const subscriber = session.value.subscribe(stream);
+    // console.log('subscribers: ' + subscriber.value)
+    subscribers.value.push(subscriber);
+  });
 
-  session.value.on('streamDestroyed', ({ stream }) => {
+  session.value.on("streamDestroyed", ({ stream }) => {
     // const updatedSubscribers = subscribers.value.filter(sub => sub !== stream.streamManager);
     // subscribers.value = updatedSubscribers;
-    const index = subscribers.value.indexOf(stream.streamManager, 0)
+    const index = subscribers.value.indexOf(stream.streamManager, 0);
     if (index >= 0) {
-      subscribers.value.splice(index, 1)
+      subscribers.value.splice(index, 1);
     }
-  })
+  });
 
-  session.value.on('exception', (exception) => {
-    console.warn(exception)
-    if (exception.name == 'NO_STREAM_PLAYING_EVENT') {
+  session.value.on("exception", (exception) => {
+    // console.warn(exception)
+    if (exception.name == "NO_STREAM_PLAYING_EVENT") {
       subscribers.value.forEach((element) => {
-        console.log('tetete: ', element.stream)
+        // console.log('tetete: ', element.stream)
         if (element.stream.streamId == exception.origin.stream.streamId) {
-          subscribers.value.pop(element)
+          subscribers.value.pop(element);
         }
-      })
+      });
     }
-  })
+  });
 
   enterRoom(store.loginUserInfo.sub).then((token) => {
-    console.log('token' + token)
-    store.studyRoomSessionToken = token
+    // console.log('token' + token)
+    store.studyRoomSessionToken = token;
     session.value
       .connect(token, store.myUserName)
       .then(() => {
@@ -688,77 +694,78 @@ const joinSession = () => {
           videoSource: undefined,
           publishAudio: true,
           publishVideo: true,
-          resolution: '640x480',
+          resolution: "640x480",
           frameRate: 30,
-          insertMode: 'APPEND',
-          mirror: false
-        })
+          insertMode: "APPEND",
+          mirror: false,
+        });
 
-        mainStreamManager.value = publisher.value
+        mainStreamManager.value = publisher.value;
 
-        session.value.publish(publisher.value)
-        store.isInSession = true
+        session.value.publish(publisher.value);
+        store.isInSession = true;
       })
       .catch((error) => {
-        console.log('There was an error connecting to the session:', error.code, error.message)
-      })
-  })
+        // console.log('There was an error connecting to the session:', error.code, error.message)
+      });
+  });
 
   // window.addEventListener("beforeunload", leaveSession(false));
-}
+};
 
 const leaveStudyRoom = async () => {
-  alert('나가기 버튼을 눌렀습니다.')
-  leave.value = 'leave'
-  await leaveSession()
+  alert("나가기 버튼을 눌렀습니다.");
+  leave.value = "leave";
+  await leaveSession();
   const body = {
-    sign: 'modifyMemoryTime',
+    sign: "modifyMemoryTime",
     gakId: String(gakId.value),
     memoryTime: sec.value - memoryTime.value,
     categoryId: String(categoryId.value),
-    calendarId: String(calendarId.value)
-  }
+    calendarId: String(calendarId.value),
+  };
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     })
     .then((res) => {
       if (res.data.code === 1000) {
-        alert('순공 시간 저장 성공!!')
+        alert("순공 시간 저장 완료");
       } else {
-        alert('저런,,,')
+        // alert("저런,,,");
       }
-    })
-  router.push('/')
-}
+    });
+  router.push("/");
+};
 
 const leaveSession = async () => {
-  if (leave.value == 'leave') alert('의도적으로 나갑니다')
-  alert('나갑니다.')
-  if (session.value) session.value.disconnect()
+  if (leave.value == "leave")
+    if (session.value)
+      // alert("나갑니다.");
+      session.value.disconnect();
 
-  session.value = undefined
-  mainStreamManager.value = undefined
-  publisher.value = undefined
-  subscribers.value = []
-  OV.value = undefined
+  session.value = undefined;
+  mainStreamManager.value = undefined;
+  publisher.value = undefined;
+  subscribers.value = [];
+  OV.value = undefined;
 
   const response = await axios
     .post(
-      APPLICATION_SERVER_URL + 'room',
-      { sign: 'leaveSession', leave: leave.value },
+      APPLICATION_SERVER_URL + "room",
+      { sign: "leaveSession", leave: leave.value },
       {
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
       }
     )
     .then(() => {
-      alert('퇴실완료.')
-    })
+      alert("퇴실완료.");
+    });
 
   // window.removeEventListener("beforeunload", leaveSession(true));
-}
+};
 
 // const updateMainVideoStreamManager = (stream) => {
 //   if (mainStreamManager.value === stream) return
@@ -766,17 +773,17 @@ const leaveSession = async () => {
 // }
 
 const updateMainVideoStreamManager = (stream) => {
-  mainStreamManager.value = stream
-}
+  mainStreamManager.value = stream;
+};
 
-const video13 = ref(null)
+const video13 = ref(null);
 
-const showRate = ref(true)
-const isPause = ref(false)
+const showRate = ref(true);
+const isPause = ref(false);
 
 const toggleRate = () => {
-  showRate.value = !showRate.value
-}
+  showRate.value = !showRate.value;
+};
 
 // const toggleQuestion = () => {
 //   showQuestion.value = !showQuestion.value
@@ -784,28 +791,28 @@ const toggleRate = () => {
 
 const toggleMute = (video) => {
   if (video && video.value instanceof HTMLVideoElement) {
-    video.value.muted = !video.value.muted
+    video.value.muted = !video.value.muted;
   }
-}
+};
 
 onMounted(() => {
-  done.value = false
-  dagakStore.stay = false
+  done.value = false;
+  dagakStore.stay = false;
   leaveSession().then(() => {
-    joinSession()
-  })
-  startCount()
-})
+    joinSession();
+  });
+  startCount();
+});
 
 onBeforeUnmount(() => {
-  alert('스터디룸에서 다른 페이지로 라우팅!')
-  clearInterval(countUpInterval)
-  clearInterval(countDownInterval)
-  leaveSession()
-})
+  // alert("스터디룸에서 다른 페이지로 라우팅!");
+  clearInterval(countUpInterval);
+  clearInterval(countDownInterval);
+  leaveSession();
+});
 
-console.log('구독자들: ', subscribers.length)
-console.log('구독자들: ', subscribers.value.length)
+// console.log('구독자들: ', subscribers.length)
+// console.log('구독자들: ', subscribers.value.length)
 </script>
 
 <style lang="scss" scoped>
@@ -946,20 +953,12 @@ console.log('구독자들: ', subscribers.value.length)
 }
 
 .div2 {
-  box-shadow:
-    -7px 0 0 0 black,
-    2px 0 0 0 black,
-    0 -7px 0 0 black,
-    0 2px 0 0 black;
+  box-shadow: -7px 0 0 0 black, 2px 0 0 0 black, 0 -7px 0 0 black, 0 2px 0 0 black;
 }
 
 .div3 {
   // margin: 0.5em auto;
-  box-shadow:
-    -4px 0 0 0 black,
-    4px 0 0 0 black,
-    0 -4px 0 0 black,
-    0 4px 0 0 black;
+  box-shadow: -4px 0 0 0 black, 4px 0 0 0 black, 0 -4px 0 0 black, 0 4px 0 0 black;
 }
 
 /* 모달 스타일 */

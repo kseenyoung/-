@@ -39,9 +39,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="MyPageScheduleDagakModal">
-              다각 상세정보
-            </h5>
+            <h5 class="modal-title" id="MyPageScheduleDagakModal">다각 상세정보</h5>
             <button
               type="button"
               class="btn-close"
@@ -64,14 +62,9 @@
                 <template #item="{ element }">
                   <div :key="element.gakId" class="gak-detail-wrapper">
                     <div class="gak-detail-wrapper-left">
-                      <div class="gak-detail-order">
-                        {{ element.gakOrder }}.
-                      </div>
+                      <div class="gak-detail-order">{{ element.gakOrder }}.</div>
                       <div class="gak-detail-tag">
-                        <select
-                          class="form-select"
-                          v-model="element.categoryId"
-                        >
+                        <select class="form-select" v-model="element.categoryId">
                           <option
                             v-for="category in categoryStore.categoryList"
                             :key="category.categoryId"
@@ -98,14 +91,11 @@
                           updateGak(
                             element.gakId,
                             element.categoryId,
-                            element.runningTimeInMinutes,
+                            element.runningTimeInMinutes
                           )
                         "
                       ></i>
-                      <i
-                        class="bi bi-trash"
-                        @click="deleteGak(element.gakId)"
-                      ></i>
+                      <i class="bi bi-trash" @click="deleteGak(element.gakId)"></i>
                     </div>
                   </div>
                 </template>
@@ -113,9 +103,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" data-bs-dismiss="modal">
-              닫기
-            </button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
             <button
               type="button"
               class="btn btn-danger"
@@ -129,20 +117,18 @@
       </div>
     </div>
   </div>
-  <div v-else class="dagak-list-wrapper">
-    생성한 다각이 없습니다. 새로 생성해주세요.
-  </div>
+  <div v-else class="dagak-list-wrapper">생성한 다각이 없습니다. 새로 생성해주세요.</div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useCategoryStore } from '@/stores/category';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-import draggable from 'vuedraggable';
-import MyPageScheduleDagakAddModal from './MyPageScheduleDagakAddModal.vue';
-import DagakImg from '@/components/dagak/DagakImg.vue';
-import { subjectMapping } from '@/utils/subjectMapping';
+import { ref, onMounted, computed } from "vue";
+import { useCategoryStore } from "@/stores/category";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import draggable from "vuedraggable";
+import MyPageScheduleDagakAddModal from "./MyPageScheduleDagakAddModal.vue";
+import DagakImg from "@/components/dagak/DagakImg.vue";
+import { subjectMapping } from "@/utils/subjectMapping";
 
 const categoryStore = useCategoryStore();
 const router = useRouter();
@@ -150,7 +136,7 @@ const router = useRouter();
 const dagakList = ref([]);
 const gakList = ref([]);
 const selectedDagakId = ref(null);
-const selectedDagakName = ref('');
+const selectedDagakName = ref("");
 
 onMounted(() => {
   getAllDagakList();
@@ -181,7 +167,7 @@ const getAllDagakList = async function () {
   try {
     //전체 다각 목록
     const response = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`,
+      `${import.meta.env.VITE_API_BASE_URL}dagak/getAllDagakList`
     );
     const dagaks = response.data.result;
 
@@ -189,7 +175,7 @@ const getAllDagakList = async function () {
     const gakLengthPromises = dagaks.map((dagak) =>
       axios.get(`${import.meta.env.VITE_API_BASE_URL}dagak/getAllGakList`, {
         params: { dagakId: dagak.dagakId },
-      }),
+      })
     );
 
     const gakLengthResponses = await Promise.all(gakLengthPromises);
@@ -200,7 +186,7 @@ const getAllDagakList = async function () {
       gakLength: gakLengthResponses[index].data.result.length,
     }));
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
   }
 };
 
@@ -230,82 +216,74 @@ const openModal = function (id, name) {
     })
     .then((res) => {
       //각 목록을 gakOrder 기준으로 오름차순 정렬
-      const sortedGakList = res.data.result.sort(
-        (a, b) => a.gakOrder - b.gakOrder,
-      );
+      const sortedGakList = res.data.result.sort((a, b) => a.gakOrder - b.gakOrder);
       gakList.value = sortedGakList;
     });
 };
 
 //다각 삭제
 const deleteDagak = function () {
-  if (window.confirm('삭제하시겠습니까?')) {
+  if (window.confirm("삭제하시겠습니까?")) {
     const body = {
-      sign: 'deleteDagak',
+      sign: "deleteDagak",
       deleteDagakId: selectedDagakId.value,
     };
-    axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
-      .then((res) => {
-        if (res.data.code === 1000) {
-          //삭제 성공
-          getAllDagakList();
-          // localStorage.removeItem('dagakStore');
-        } else {
-          alert('실패했습니다.');
-        }
-      });
+    axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
+      if (res.data.code === 1000) {
+        //삭제 성공
+        getAllDagakList();
+        // localStorage.removeItem('dagakStore');
+      } else {
+        alert("실패했습니다.");
+      }
+    });
   }
 };
 
 //각 삭제
 const deleteGak = function (gakId) {
-  if (window.confirm('정말로 삭제하시겠습니까?')) {
+  if (window.confirm("정말로 삭제하시겠습니까?")) {
     const updatedGakList = gakList.value.filter((gak) => gak.gakId !== gakId);
     const remainGakInformation = updatedGakList.map((gak, index) => ({
       gakId: gak.gakId,
       gakOrder: index + 1,
     }));
     const body = {
-      sign: 'deleteGak',
+      sign: "deleteGak",
       gakId: gakId,
       remainGakInformation: remainGakInformation,
     };
-    axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
-      .then((res) => {
-        if (res.data.code === 1000) {
-          //삭제 성공
-          openModal(selectedDagakId.value, selectedDagakName.value);
-        } else {
-          alert('실패했습니다.');
-        }
-      });
+    axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
+      if (res.data.code === 1000) {
+        //삭제 성공
+        openModal(selectedDagakId.value, selectedDagakName.value);
+      } else {
+        alert("실패했습니다.");
+      }
+    });
   }
 };
 
 //각 수정
 const updateGak = function (gakId, categoryId, runningTime) {
-  if (window.confirm('수정하시겠습니까?')) {
+  if (window.confirm("수정하시겠습니까?")) {
     //삭제 후 각 리스트 다시 호출
     const body = {
-      sign: 'modifyGak',
+      sign: "modifyGak",
       dagakId: selectedDagakId.value,
       gakId: gakId,
       categoryId: categoryId,
       runningTime: runningTime * 60,
     };
-    axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body)
-      .then((res) => {
-        if (res.data.code === 1000) {
-          //수정 성공
-          openModal(selectedDagakId.value, selectedDagakName.value);
-          alert('수정되었습니다.');
-        } else {
-          alert('실패했습니다.');
-        }
-      });
+    axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
+      if (res.data.code === 1000) {
+        //수정 성공
+        openModal(selectedDagakId.value, selectedDagakName.value);
+        alert("수정되었습니다.");
+      } else {
+        alert("실패했습니다.");
+      }
+    });
   }
 };
 
@@ -323,7 +301,7 @@ const updateGakOrder = function () {
   }));
 
   const body = {
-    sign: 'modifyGakOrder',
+    sign: "modifyGakOrder",
     GakInformation: gakInformation,
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
@@ -331,7 +309,7 @@ const updateGakOrder = function () {
       //순서 수정 성공
       getAllCalendarList();
     } else {
-      alert('실패했습니다.');
+      alert("실패했습니다.");
     }
   });
 };

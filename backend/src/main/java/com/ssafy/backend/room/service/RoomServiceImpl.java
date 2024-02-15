@@ -38,7 +38,6 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_SES
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
-
     @Value("${openvidu.url}")
     private String OPENVIDU_URL;
 

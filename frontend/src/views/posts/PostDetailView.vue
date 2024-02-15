@@ -25,11 +25,7 @@
           placeholder="댓글을 입력해주세요..."
         />
         <!-- 기존 댓글을 보여주는 부분 -->
-        <div
-          class="comment_body"
-          v-for="comment in comments"
-          :key="comment.commentId"
-        >
+        <div class="comment_body" v-for="comment in comments" :key="comment.commentId">
           <div v-if="!comment.isEditing">
             <div class="comment-comment">
               {{ comment.userId }} : {{ comment.comment }}
@@ -62,16 +58,10 @@
               type="text"
               v-model="comment.editedComment"
             />
-            <button
-              @click="finishEditing(comment)"
-              class="btn common-btn-light"
-            >
+            <button @click="finishEditing(comment)" class="btn common-btn-light">
               완료
             </button>
-            <button
-              @click="cancelEditing(comment)"
-              class="btn common-btn-light"
-            >
+            <button @click="cancelEditing(comment)" class="btn common-btn-light">
               취소
             </button>
           </div>
@@ -109,11 +99,11 @@
 </template>
 
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
-import { useBoardStore } from '@/stores/board';
-import { ref, onMounted } from 'vue';
-import { useUserStore } from '@/stores/user';
-import axios from 'axios';
+import { useRoute, useRouter } from "vue-router";
+import { useBoardStore } from "@/stores/board";
+import { ref, onMounted } from "vue";
+import { useUserStore } from "@/stores/user";
+import axios from "axios";
 
 const boardStore = useBoardStore();
 const route = useRoute();
@@ -121,27 +111,25 @@ const router = useRouter();
 const postId = route.params.id;
 const detail = ref([]);
 const comments = ref([]);
-const newComment = ref('');
+const newComment = ref("");
 
 const userStore = useUserStore();
 
 const deletePost = async () => {
-  let flag = confirm('정말로 삭제하시겠습니까?');
+  let flag = confirm("정말로 삭제하시겠습니까?");
   if (flag) {
     try {
       const body = {
-        sign: 'deletePost',
+        sign: "deletePost",
         boardId: detail.value.boardId,
       };
-      console.log(detail.value);
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}board`,
-        body,
+        body
       );
       goListPage();
-      console.log('새 포스트 : ', response);
     } catch (error) {
-      console.log('Error saving post:', error);
+      console.log("Error saving post:", error);
     }
   }
 };
@@ -152,14 +140,14 @@ const startEditing = (comment) => {
 const finishEditing = async (comment) => {
   if (comment.editedComment) {
     const body = {
-      sign: 'modifyComment',
+      sign: "modifyComment",
       commentId: comment.commentId,
       comment: comment.editedComment,
       boardId: detail.value.boardId,
     };
     const response = await axios.post(
       `${import.meta.env.VITE_API_BASE_URL}board/comment`,
-      body,
+      body
     );
     if (response.data.code == 1000) {
       await fetchDetail(detail.value.boardId);
@@ -173,32 +161,31 @@ const cancelEditing = (comment) => {
 
 const addComment = async () => {
   const body = {
-    sign: 'addComment',
+    sign: "addComment",
     boardId: detail.value.boardId,
     comment: newComment.value,
   };
-  console.log(detail.value);
   const response = await axios.post(
     `${import.meta.env.VITE_API_BASE_URL}board/comment`,
-    body,
+    body
   );
   if (response.data.code == 1000) {
     await fetchDetail(detail.value.boardId);
   }
-  newComment.value = '';
+  newComment.value = "";
 };
 
 const deleteComment = async (comment) => {
-  let flag = confirm('정말로 삭제하시겠습니까?');
+  let flag = confirm("정말로 삭제하시겠습니까?");
   if (flag) {
     const body = {
-      sign: 'deleteComment',
+      sign: "deleteComment",
       commentId: comment.commentId,
       boardId: detail.value.boardId,
     };
     const response = await axios.post(
       `${import.meta.env.VITE_API_BASE_URL}board/comment`,
-      body,
+      body
     );
     if (response.data.code == 1000) {
       await fetchDetail(detail.value.boardId);
@@ -208,13 +195,13 @@ const deleteComment = async (comment) => {
 
 const goListPage = () => {
   router.push({
-    name: 'postList',
+    name: "postList",
   });
 };
 
 const goEditPage = () => {
   router.push({
-    name: 'postEdit',
+    name: "postEdit",
     params: {
       id: postId,
     },
@@ -228,7 +215,7 @@ const fetchDetail = async (id) => {
   comments.value = comments.value.map((comment) => ({
     ...comment,
     isEditing: false,
-    editedComment: '',
+    editedComment: "",
   }));
 };
 const formatDate = (timestampArray) => {
@@ -260,7 +247,7 @@ onMounted(async () => {
 }
 .boardPage {
   width: 100%;
-  background-image: url('@/assets/background.gif');
+  background-image: url("@/assets/background.gif");
   background-color: rgba(0, 0, 0, 0.5);
   background-size: cover;
   height: 100vh;

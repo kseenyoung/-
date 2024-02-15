@@ -42,10 +42,7 @@
               {{ page }}
             </a>
           </li>
-          <li
-            class="page-item"
-            :class="{ disabled: currentPage === totalPages }"
-          >
+          <li class="page-item" :class="{ disabled: currentPage === totalPages }">
             <a class="page-link" @click="nextPage">
               <i class="bi bi-chevron-right"></i>
             </a>
@@ -75,12 +72,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue';
-import axios from 'axios';
+import { ref, onMounted, watch, computed } from "vue";
+import axios from "axios";
 
 const questionList = ref([]);
 const answerList = ref([]);
-const searchText = ref('');
+const searchText = ref("");
 const filteredQuestionList = ref([]);
 const itemsPerPage = ref(7);
 let currentPage = ref(1);
@@ -90,7 +87,7 @@ onMounted(() => {
 });
 
 watch(searchText, () => {
-  if (searchText.value === '') {
+  if (searchText.value === "") {
     getUserQnA();
   }
 });
@@ -98,10 +95,9 @@ watch(searchText, () => {
 //QnA 목록 가져오기
 const getUserQnA = function () {
   const body = {
-    sign: 'getUserQnA',
+    sign: "getUserQnA",
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}room`, body).then((res) => {
-    console.log(res);
     if (res.data.code === 1000) {
       //성공
       questionList.value = res.data.result.questionVOList;
@@ -121,7 +117,7 @@ const onInputSearch = function (event) {
 //질문 검색
 const searchQuestions = function () {
   filteredQuestionList.value = questionList.value.filter((question) =>
-    question.data.toLowerCase().includes(searchText.value.toLowerCase()),
+    question.data.toLowerCase().includes(searchText.value.toLowerCase())
   );
 };
 
@@ -130,13 +126,13 @@ const highlightSearchText = function (text) {
   if (!searchText.value) {
     return text;
   }
-  const regex = new RegExp(`(${searchText.value})`, 'gi');
+  const regex = new RegExp(`(${searchText.value})`, "gi");
   return text.replace(regex, '<span class="highlighted">$1</span>');
 };
 
 //페이지네이션
 const totalPages = computed(() =>
-  Math.ceil(questionList.value.length / itemsPerPage.value),
+  Math.ceil(questionList.value.length / itemsPerPage.value)
 );
 
 //페이지별 목록

@@ -10,59 +10,55 @@
         placeholder="-- 질문을 입력하세요 --"
         v-model="question"
       ></textarea>
-      
-      <button class="question" style="margin:3%; width:50%;" @click="sendQuestion()">질문</button>
+
+      <button class="question" style="margin: 3%; width: 50%" @click="sendQuestion()">
+        질문
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import axios from 'axios'
-import { ref } from 'vue'
-import { useUserStore } from '@/stores/user'
+import axios from "axios";
+import { ref } from "vue";
+import { useUserStore } from "@/stores/user";
 
-const question = ref('')
-let userStore = useUserStore()
-let loginUserInfo = userStore.loginUserInfo
+const question = ref("");
+let userStore = useUserStore();
+let loginUserInfo = userStore.loginUserInfo;
 
 const checkStore = function () {
-  console.log('userStore : ' + userStore)
   if (userStore == null || userStore == undefined) {
-    userStore = useUserStore()
-    loginUserInfo = userStore.loginUserInfo
+    userStore = useUserStore();
+    loginUserInfo = userStore.loginUserInfo;
   }
-}
+};
 
 const sendQuestion = async function () {
-  // console.log('question : ' + question.value)
-  checkStore()
-  // alert('질문이 등록되었습니다.')
-  // console.log('loginUserInfo : ' + loginUserInfo)
+  checkStore();
 
-  if (question.value == '') {
-    alert('질문을 입력해주세요.')
-    return
+  if (question.value == "") {
+    alert("질문을 입력해주세요.");
+    return;
   }
 
-  sendAxios(1)
-  sendAxios(2)
-  sendAxios(3)
-  question.value = ''
-}
+  sendAxios(1);
+  sendAxios(2);
+  sendAxios(3);
+  question.value = "";
+};
 
 const sendAxios = function (sessionNumbser) {
   const body = {
-    sign: 'askQuestion',
+    sign: "askQuestion",
     session: loginUserInfo.sub + sessionNumbser,
     userId: loginUserInfo.userId,
-    data: question.value
-  }
+    data: question.value,
+  };
   // alert(body.session + body.userId + body.data)
 
-  axios.post(`${import.meta.env.VITE_API_BASE_URL}room`, body).then((res) => {
-    console.log(res.data.result)
-  })
-}
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}room`, body).then((res) => {});
+};
 </script>
 
 <style scoped>
@@ -72,13 +68,12 @@ textarea {
   border: 2px solid black;
   margin-left: 5px;
   margin-right: 5px;
-
 }
 .question {
   border: 1px black dashed;
   font-weight: 800;
-  font-size: 16px; 
-  padding: 5px 8px; 
+  font-size: 16px;
+  padding: 5px 8px;
   display: inline-block;
 }
 

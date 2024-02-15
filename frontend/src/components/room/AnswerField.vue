@@ -16,47 +16,42 @@
 </template>
 
 <script setup>
-import axios from 'axios'
-import { useQuestionStore } from '@/stores/qustion'
-import { useUserStore } from '@/stores/user'
-import { ref, defineProps } from 'vue'
+import axios from "axios";
+import { useQuestionStore } from "@/stores/qustion";
+import { useUserStore } from "@/stores/user";
+import { ref, defineProps } from "vue";
 
-const props = defineProps({ questionId: String })
-const qId = ref(props.questionId)
-const userStore = useUserStore()
-const loginUserInfo = userStore.loginUserInfo
-const answer = ref('')
+const props = defineProps({ questionId: String });
+const qId = ref(props.questionId);
+const userStore = useUserStore();
+const loginUserInfo = userStore.loginUserInfo;
+const answer = ref("");
 
 const sendAnswer = async function () {
-  // console.log('questionId : ' + qId.value)
-  // checkStore()
-
-  if (answer.value == '') {
-    alert('답변을 입력해주세요.')
-    return
+  if (answer.value == "") {
+    alert("답변을 입력해주세요.");
+    return;
   }
 
-  sendAxios(1)
-  sendAxios(2)
-  sendAxios(3)
+  sendAxios(1);
+  sendAxios(2);
+  sendAxios(3);
 
-  answer.value = ''
-}
+  answer.value = "";
+};
 
 const sendAxios = function (sessionNumbser) {
   const body = {
     session: loginUserInfo.sub + sessionNumbser,
-    sign: 'answerQuestion',
+    sign: "answerQuestion",
     data: answer.value,
     userId: loginUserInfo.userId,
-    questionId: qId.value
-  }
+    questionId: qId.value,
+  };
   // alert(body.session + ' ' + body.data + ' ' + body.questionId + ' ' + body.userId)
 
-  axios.post(`${import.meta.env.VITE_API_BASE_URL}room`, body).then((res) => {
-    console.log('답변 결과' + res.data)
-  })
-}
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}room`, body).then((res) => {});
+};
 </script>
 
 <style scoped>
@@ -71,14 +66,14 @@ textarea {
   border: 2px solid black;
   margin-left: 5px;
   margin-right: 5px;
-  font-family: 'Galmuri14';
+  font-family: "Galmuri14";
 }
 /* 기존 스타일 유지 */
 .question {
   border: 1px black dashed;
   font-weight: 800;
-  font-size: 16px; 
-  padding: 5px 8px; 
+  font-size: 16px;
+  padding: 5px 8px;
   margin-right: 10px;
   display: inline-block;
 }

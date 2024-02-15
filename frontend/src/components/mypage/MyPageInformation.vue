@@ -82,11 +82,7 @@
           <div v-if="isSamePw" class="form-text">비밀번호가 일치합니다.</div>
           <div v-else class="form-text">비밀번호가 일치하지 않습니다</div>
         </div>
-        <button
-          class="btn common-btn"
-          @click="changePw"
-          :disabled="changePWFlag"
-        >
+        <button class="btn common-btn" @click="changePw" :disabled="changePWFlag">
           수정
         </button>
       </div>
@@ -120,14 +116,8 @@
           />
           <label for="floatingInput">닉네임 변경</label>
         </div>
-        <button class="btn common-btn" @click="existNickname(nickname)">
-          중복확인
-        </button>
-        <button
-          class="btn common-btn"
-          @click="changeNickname"
-          :disabled="!nicknameFlag"
-        >
+        <button class="btn common-btn" @click="existNickname(nickname)">중복확인</button>
+        <button class="btn common-btn" @click="changeNickname" :disabled="!nicknameFlag">
           수정
         </button>
       </div>
@@ -175,15 +165,15 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from 'vue';
-import { useUserStore } from '@/stores/user';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
-import MyPageDeleteUserModal from './MyPageDeleteUserModal.vue';
+import { ref, watch, computed, onMounted } from "vue";
+import { useUserStore } from "@/stores/user";
+import { useRouter } from "vue-router";
+import axios from "axios";
+import MyPageDeleteUserModal from "./MyPageDeleteUserModal.vue";
 
 const router = useRouter();
 const userStore = useUserStore();
-const profileImage = ref('');
+const profileImage = ref("");
 
 onMounted(() => {
   if (userStore.loginUserInfo.userId != null) {
@@ -195,16 +185,15 @@ onMounted(() => {
 const maskedEmail = computed(() => {
   const email = userStore.loginUserInfo.userEmail;
   // const email = userInfo.value.email;
-  const [username, domain] = email.split('@');
-  const maskedUsername =
-    username.substring(0, 3) + '*'.repeat(username.length - 3);
-  return maskedUsername + '@' + domain;
+  const [username, domain] = email.split("@");
+  const maskedUsername = username.substring(0, 3) + "*".repeat(username.length - 3);
+  return maskedUsername + "@" + domain;
 });
 
 //비밀번호 변경
-const curPassword = ref('');
-const newPassword = ref('');
-const passwordCheck = ref('');
+const curPassword = ref("");
+const newPassword = ref("");
+const passwordCheck = ref("");
 const isValidPw = ref(false);
 const isSamePw = ref(false);
 
@@ -229,8 +218,8 @@ const samePw = function () {
 
 const changePWFlag = computed(() => {
   return (
-    newPassword.value === '' ||
-    passwordCheck.value === '' ||
+    newPassword.value === "" ||
+    passwordCheck.value === "" ||
     isValidPw.value === false ||
     isSamePw.value === false
   );
@@ -239,25 +228,24 @@ const changePWFlag = computed(() => {
 //비빌번호 변경 axios
 const changePw = function () {
   const userBody = {
-    sign: 'modifyPassword',
+    sign: "modifyPassword",
     userPassword: curPassword.value,
     newPassword: newPassword.value,
   };
   axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, userBody, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     })
     .then((res) => res.data)
     .then((json) => {
-      console.log(json);
       if (json.code === 1000) {
         //성공
-        alert('비밀번호가 변경되었습니다. 다시 로그인 해주세요.');
+        alert("비밀번호가 변경되었습니다. 다시 로그인 해주세요.");
         userStore.deleteLoginUserInfo();
         const body = {
-          sign: 'logout',
+          sign: "logout",
         };
         axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body);
         //성공 시 홈으로
@@ -267,18 +255,16 @@ const changePw = function () {
       }
     });
   router.push({
-    name: 'login',
+    name: "login",
   });
 };
 
 //닉네임 변경
-const nickname = ref('');
+const nickname = ref("");
 const isValidNickname = ref(false);
 const isDuplicateNickname = ref(false);
 const dupNicknameClicked = ref(false);
-const nicknameFlag = computed(
-  () => isValidNickname.value && isDuplicateNickname.value,
-);
+const nicknameFlag = computed(() => isValidNickname.value && isDuplicateNickname.value);
 
 //닉네임 한글이슈
 const onInputNick = function (event) {
@@ -301,14 +287,14 @@ const checkNickname = function (name) {
 const existNickname = async function (checkNickname) {
   dupNicknameClicked.value = true;
   const body = {
-    sign: 'isExistNickname',
+    sign: "isExistNickname",
     userNickname: checkNickname,
   };
 
   await axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     })
     .then((res) => res.data)
@@ -316,33 +302,33 @@ const existNickname = async function (checkNickname) {
       if (json.code == 1000) {
         // 중복 아님
         isDuplicateNickname.value = true;
-        alert('사용 가능한 닉네임입니다.');
+        alert("사용 가능한 닉네임입니다.");
       } else {
         // 중복임
         isDuplicateNickname.value = false;
-        alert('이미 존재하는 닉네임입니다.');
-        nickname.value = ''; //닉네임 텍스트 초기화
+        alert("이미 존재하는 닉네임입니다.");
+        nickname.value = ""; //닉네임 텍스트 초기화
       }
     });
 };
 
 const changeNickname = function () {
   const body = {
-    sign: 'modifyNickname',
+    sign: "modifyNickname",
     newNickname: nickname.value,
   };
 
   axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     })
     .then((res) => res.data)
     .then((json) => {
       if (json.code == 1000) {
         // 성공
-        alert('닉네임이 변경되었습니다.');
+        alert("닉네임이 변경되었습니다.");
         userStore.getLoginUserInfo();
       } else {
         // 실패

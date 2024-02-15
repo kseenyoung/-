@@ -47,7 +47,6 @@ export const useUserStore = defineStore(
           headers: { 'Content-Type': 'application/json' },
         },
       );
-      console.log(response.data.result);
       return response.data.result;
     };
     // 로그인 시그널 친구들한테 보내기
@@ -63,7 +62,6 @@ export const useUserStore = defineStore(
     };
     // 계정 방 생성
     const createMyRoom = async () => {
-      console.log('loginUser : ', loginUserInfo.value.userId);
       const response = await axios.post(
         APPLICATION_SERVER_URL + 'room',
         { sign: 'enterMyroom', userId: loginUserInfo.value.userId },
@@ -85,11 +83,6 @@ export const useUserStore = defineStore(
           loginSignal();
         })
         .catch((error) => {
-          console.log(
-            '다음 세션에 로그인하는데 오류가 발생했습니다!:',
-            error.code,
-            error.message,
-          );
         });
       // 시그널 처리 문
       mySession.value.on('streamCreated', ({ stream }) => {
@@ -98,7 +91,6 @@ export const useUserStore = defineStore(
 
       mySession.value.on('signal:login', async (stream) => {
         // 로그인 시그널 수신
-        console.log(stream.data, '님이 로그인했습니다.');
         friendStore.getLoginFriends(); // 친구가 로그인했다면 다시한번 레디스에서 읽어오기
         alert('친구가 로그인했어요!');
 
