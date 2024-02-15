@@ -1,12 +1,16 @@
-
 <template>
   <div class="ranking">
     <div>
-      <p class="title">나의 순위</p>
+      <p class="title">개인 순위</p>
+      <br /><br />
     </div>
 
     <table>
       <tbody>
+        <td class="table-head"><b>순위</b></td>
+        <td class="table-head"><b>이름</b></td>
+        <td class="table-head"><b>순공 시간</b></td>
+
         <tr v-for="item in userRank" :key="item.userId">
           <td>{{ item.userRank }}위</td>
           <td>{{ item.userName }}</td>
@@ -18,18 +22,16 @@
 </template>
 
 <script setup>
-import { useRankStore } from '@/stores/rank';
-import { ref, onMounted } from 'vue';
+import { useRankStore } from '@/stores/rank'
+import { ref, onMounted } from 'vue'
 
-const rankStore = useRankStore();
-const userRank = ref([]);
+const rankStore = useRankStore()
+const userRank = ref([])
 
-
-onMounted(async () => { 
-  await rankStore.getUserRank();
-  userRank.value = rankStore.userRank;
-});
-
+onMounted(async () => {
+  await rankStore.getUserRank()
+  userRank.value = rankStore.userRank
+})
 </script>
 
 <style lang="scss" scoped>
@@ -56,8 +58,12 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+td {
   padding: 10px;
   text-align: center;
+}
+
+.table-head {
+  border-bottom: 2px dashed white;
 }
 </style>

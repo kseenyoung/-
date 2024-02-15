@@ -61,10 +61,10 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { ref, onMounted } from "vue";
-import html2canvas from "html2canvas";
-import { useUserStore } from "@/stores/user";
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import html2canvas from 'html2canvas';
+import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore();
 const captureArea = ref(null);
@@ -75,10 +75,10 @@ async function changeItem(inventoryId) {
     if (e.inventoryId == inventoryId) {
       if (e.isWearing == 1) {
         e.isWearing = 0;
-        const body = { sign: "unEquip", unEquipItem: e.inventoryId };
+        const body = { sign: 'unEquip', unEquipItem: e.inventoryId };
         const response = await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}inventory/`,
-          body
+          body,
         );
         if (response.data.code == 1000) {
           await captureAndSend();
@@ -87,11 +87,16 @@ async function changeItem(inventoryId) {
         inventories.value
           .filter((filterItem) => filterItem.inventoryId != inventoryId)
           .forEach((item) => {
-            if (e.category.productCategoryId == item.category.productCategoryId) {
+            if (
+              e.category.productCategoryId == item.category.productCategoryId
+            ) {
               if (item.isWearing == 1) {
                 item.isWearing = 0;
-                const body = { sign: "unEquip", unEquipItem: e.inventoryId };
-                axios.post(`${import.meta.env.VITE_API_BASE_URL}inventory/`, body);
+                const body = { sign: 'unEquip', unEquipItem: e.inventoryId };
+                axios.post(
+                  `${import.meta.env.VITE_API_BASE_URL}inventory/`,
+                  body,
+                );
               }
             }
           });
@@ -109,10 +114,10 @@ const saveInventory = async function () {
     }
   });
   console.log(itemList);
-  const body = { sign: "equip", itemList };
+  const body = { sign: 'equip', itemList };
   const response = await axios.post(
     `${import.meta.env.VITE_API_BASE_URL}inventory/`,
-    body
+    body,
   );
   if (response.data.code == 1000) {
     await captureAndSend();
@@ -125,30 +130,32 @@ const getInventory = async function () {
 
 const captureAndSend = async () => {
   if (!captureArea.value) return;
-  const element = document.querySelector(".inven-wearing-now");
+  const element = document.querySelector('.inven-wearing-now');
   console.log(element);
 
   const canvas = await html2canvas(element);
   console.log(canvas);
 
-  const dataUrl = canvas.toDataURL("image/png");
+  const dataUrl = canvas.toDataURL('image/png');
   const response = await fetch(dataUrl);
   const blob = await response.blob();
-  const file = new File([blob], "screenshot.png", { type: "image/png" });
+  const file = new File([blob], 'screenshot.png', { type: 'image/png' });
 
   const formData = new FormData();
-  formData.append("file", file); // `images`라는 이름으로 파일 데이터를 추가합니다.
+  formData.append('file', file); // `images`라는 이름으로 파일 데이터를 추가합니다.
 
   axios
     .post(`${import.meta.env.VITE_API_BASE_URL}upload/profile`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     })
     .then((response) => {
       // userStore.loginUserInfo.userPicture =
       //   response.data.result + "?v=" + new Date().getTime();
-      userStore.updateProfile(response.data.result + "?v=" + new Date().getTime());
+      userStore.updateProfile(
+        response.data.result + '?v=' + new Date().getTime(),
+      );
       console.log(userStore.loginUserInfo.userPicture);
     })
     .catch((error) => {
@@ -203,13 +210,16 @@ $box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
       height: 150px;
       text-align: left;
       position: absolute;
+      margin-left: 15px;
       .main-item {
-        width: 100%;
+        width: 200px;
         height: 150px;
         border: none;
         box-shadow: none;
         position: absolute;
         margin: auto;
+        left: 0.2rem;
+        object-fit: contain;
       }
     }
     .inven-wearing-list {
