@@ -20,15 +20,14 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("AuthInterceptor Auth Check");
+//        log.info("AuthInterceptor Auth Check");
         if (CorsUtils.isPreFlightRequest(request)) {
             return true;
         }
 
         HttpSession session = request.getSession(false);
-        System.out.println("AuthInterCeptor session Check  = " + session);
         if (session != null) {
-            log.info("session Id : {}", session);
+//            log.info("session Id : {}", session);
             User user = (User) session.getAttribute("User");
             if (user == null) throw new BaseException(NEED_AGAIN_LOGIN);
             String userId = user.getUserId();
