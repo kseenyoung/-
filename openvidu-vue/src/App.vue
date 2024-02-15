@@ -131,7 +131,7 @@ export default {
 
       this.mySession.on("signal:login-callBack", ({ stream }) => {
         console.log("[콜백] 친구 ", stream, "님이 로그인했습니다.");
-        alert("콜백이 왔어요");
+        // alert("콜백이 왔어요");
       });
 
       this.mySession.on("exception", ({ exception }) => {

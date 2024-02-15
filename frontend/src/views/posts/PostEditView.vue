@@ -94,19 +94,17 @@ const savePost = async () => {
         tagId: selectedTagId.value,
         boardId: detail.value.boardId,
       };
-      console.log(detail.value);
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}board`,
         body,
       );
       if (response.data.code === 1000) {
         goListPage();
-        console.log('새 포스트 : ', response);
       } else {
         alert(response.data.message);
       }
     } catch (error) {
-      console.log('Error saving post:', error);
+      // console.log('Error saving post:', error);
     }
   }
 };

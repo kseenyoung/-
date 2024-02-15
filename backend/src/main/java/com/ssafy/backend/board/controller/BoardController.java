@@ -86,7 +86,7 @@ public class BoardController {
             case "modifyPost":
                 boardTitle = (String) body.get("boardTitle");
                 boardContent = (String) body.get("boardContent");
-                tagId =(String) body.get("tagId");
+                tagId = String.valueOf(body.get("tagId"));
                 boardId = Long.valueOf((int) body.get("boardId"));
                 //tagId가 숫자일때
                 BoardModifyRequestDTO modifyRequestDTO = BoardModifyRequestDTO.builder()

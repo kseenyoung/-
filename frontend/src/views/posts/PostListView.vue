@@ -90,7 +90,6 @@ const searchTitle = ref('');
 
 const fetchPosts = async (page) => {
   await boardStore.getPosts(page, searchTitle.value);
-  console.log('총 포스트:', boardStore.posts);
   posts.value = boardStore.posts;
   totalPages.value = boardStore.totalPages;
 };
@@ -120,7 +119,13 @@ const pageCount = computed(() => {
 
 const formatDate = (timestampArray) => {
   const date = new Date(...timestampArray);
-  return date.toLocaleString();
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 };
 </script>
 
