@@ -12,12 +12,14 @@ export const useAlarmStore = defineStore(
       axios
         .get(`${import.meta.env.VITE_API_BASE_URL}alarms/getUncheckAlarmList`)
         .then((res) => {
-          alarmUnReadTotal.value = res.data.result.length;
-          alarmUnReadList.value = res.data.result;
+          const sortedAlarmList = res.data.result.sort(
+            (a, b) => new Date(b.createdDate) - new Date(a.createdDate),
+          );
+          alarmUnReadTotal.value = sortedAlarmList.length;
+          alarmUnReadList.value = sortedAlarmList;
         });
     };
     const updateAlarm = async (newValue) => {
-      console.log(newValue);
       alarmUnReadTotal.value = alarmUnReadList.value.unshift(newValue);
     };
     return {

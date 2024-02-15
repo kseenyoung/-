@@ -31,14 +31,14 @@
               @input="onInputGakName"
             />
             <label for="dagakCategory" class="form-label">카테고리</label>
-            <input
+            <!-- <input
               type="text"
               id="dagakCategory"
               class="form-control"
               v-model="categorySearch"
               placeholder="카테고리 검색"
               style="margin-bottom: 5px"
-            />
+            /> -->
             <div class="input-group mb-3">
               <select class="form-select" v-model="gakCategory">
                 <option disabled value="" selected>- 카테고리 선택 -</option>

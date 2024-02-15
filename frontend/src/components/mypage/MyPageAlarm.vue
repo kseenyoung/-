@@ -268,4 +268,7 @@ const getAlarmMessage = (tagId) => {
     }
   }
 }
+.alarm-content-wrapper::-webkit-scrollbar {
+  display: none;
+}
 </style>

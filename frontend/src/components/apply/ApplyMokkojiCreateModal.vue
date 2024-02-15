@@ -34,12 +34,12 @@
           </div>
           <div class="form-group">
             <label for="mokkojiCategories">모꼬지 카테고리</label>
-            <input
+            <!-- <input
               type="text"
               class="form-control"
               v-model="categorySearch"
               placeholder="카테고리 검색"
-            />
+            /> -->
             <select
               class="form-select"
               v-model="selectedCategory"
@@ -51,7 +51,7 @@
                 :key="category.categoryId"
                 :value="category.categoryId"
               >
-                {{ category.categoryName }}
+                {{ subjectMapping(category.categoryName) }}
               </option>
             </select>
           </div>
@@ -63,7 +63,7 @@
               class="selectedTag common-pointer"
               @click="deleteTag(tag)"
             >
-              # {{ tag.categoryName }}
+              # {{ subjectMapping(tag.categoryName) }}
             </div>
           </div>
         </div>
@@ -94,6 +94,7 @@
 import { ref, computed } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { useCategoryStore } from '@/stores/category';
+import { subjectMapping } from '@/utils/subjectMapping';
 import axios from 'axios';
 
 const userStore = useUserStore();

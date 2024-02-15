@@ -378,6 +378,9 @@ $my-shadow:
             }
           }
         }
+        .mok-list-wrapper::-webkit-scrollbar {
+          display: none;
+        }
       }
     }
     .mok-content-right {

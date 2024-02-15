@@ -2,12 +2,14 @@ package com.ssafy.backend.alarm.model.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Builder
+@DynamicInsert
 public class Alarm {
 
     @Id

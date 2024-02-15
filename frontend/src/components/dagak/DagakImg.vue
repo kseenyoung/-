@@ -56,7 +56,7 @@ const numSlices = ref(props.gakLength);
 const pizzaSlices = computed(() => {
   const radius = 90;
   const cx = 100;
-  const cy = 120;
+  const cy = 100;
   return calculatePizzaSlices(numSlices.value, radius, cx, cy);
 });
 

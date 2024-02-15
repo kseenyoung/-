@@ -82,7 +82,7 @@ const questionList = ref([]);
 const answerList = ref([]);
 const searchText = ref('');
 const filteredQuestionList = ref([]);
-const itemsPerPage = ref(5);
+const itemsPerPage = ref(7);
 let currentPage = ref(1);
 
 onMounted(() => {
