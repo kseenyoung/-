@@ -14,7 +14,7 @@ public class BoardModifyRequestDTO {
 
     private String boardTitle;
     private String boardContent;
-    private int tagId;
+    private Integer tagId;
 
 
     public BoardModifyRequestDTO(){
@@ -22,11 +22,11 @@ public class BoardModifyRequestDTO {
     }
 
     @Builder
-    public BoardModifyRequestDTO(long boardId, String boardTitle, String boardContent, int tagId) {
+    public BoardModifyRequestDTO(long boardId, String boardTitle, String boardContent, String tagId) {
         this.boardId = boardId;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
-        this.tagId = tagId;
+        setTagId(tagId);
     }
 
     public void setBoardId(long boardId) {
@@ -41,7 +41,8 @@ public class BoardModifyRequestDTO {
         this.boardContent = boardContent;
     }
 
-    public void setTagId(int tagId) {
-        this.tagId = tagId;
+    public void setTagId(String tagId) {
+
+        this.tagId = Integer.parseInt(tagId);
     }
 }

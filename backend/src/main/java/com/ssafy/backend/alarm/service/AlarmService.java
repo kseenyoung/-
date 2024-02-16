@@ -18,7 +18,7 @@ public interface AlarmService {
 
     List<Alarm> getUncheckAlarmList(String userId);
 
-    void aVoidDuplicateAlaram(ReqestAlarmDTO reqestAlarmDto);
+    void aVoidDuplicateAlaram(ReqestAlarmDTO reqestAlarmDto,int checked);
 
     void deleteAlarm(ReqestAlarmDTO alarmDto);
 

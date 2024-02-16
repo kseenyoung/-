@@ -2,6 +2,7 @@ package com.ssafy.backend.room.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.backend.common.exception.BaseException;
+import com.ssafy.backend.common.utils.MappingUtils;
 import com.ssafy.backend.room.model.domain.Answer;
 import com.ssafy.backend.room.model.domain.Question;
 import com.ssafy.backend.room.model.domain.redis.AnswerRedis;
@@ -38,7 +39,7 @@ import static com.ssafy.backend.common.response.BaseResponseStatus.NOT_EXIST_SES
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
-
+    private MappingUtils mappingUtils = MappingUtils.getInstance();
     @Value("${openvidu.url}")
     private String OPENVIDU_URL;
 
@@ -85,7 +86,10 @@ public class RoomServiceImpl implements RoomService {
     public ConnectionVO enterRandomroom(EnterRoomDTO enterRoomDTO) throws Exception {
         String sessionName = enterRoomDTO.getSessionName();
         Session session;
-
+        String translate = mappingUtils.translate(sessionName);
+        if(translate != null){
+            sessionName = translate;
+        }
         // Redis 저장하기
         StudyRoomRedis studyRoomRedis = studyRoomRedisRepository.findByName(enterRoomDTO.getSessionName());
         if(studyRoomRedis == null){
@@ -107,14 +111,14 @@ public class RoomServiceImpl implements RoomService {
         session = openvidu.getActiveSession(sessionName);
 
         if(session == null){    // 방이 존재하지 않다면 생성하라
-            System.out.println("========================================");
-            System.out.println("존재하지 않는 방에 입장합니다: "+sessionName);
+//            System.out.println("========================================");
+//            System.out.println("존재하지 않는 방에 입장합니다: "+sessionName);
             HashMap<String,String> SessionPropertyJson = enterRoomDTO.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             openvidu.createSession(properties);
         } else{                 // 새로고침할떄 다른 세션에 있는 나의 연결을 삭제한다.
-            System.out.println("========================================");
-            System.out.println("존재하는 방에 입장합니다: "+sessionName);
+//            System.out.println("========================================");
+//            System.out.println("존재하는 방에 입장합니다: "+sessionName);
         }
 
         openvidu.fetch();
@@ -128,7 +132,7 @@ public class RoomServiceImpl implements RoomService {
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
         Connection connection = session.createConnection(properties);
         ConnectionVO connectionVO = new ConnectionVO(connection.getConnectionId(),sessionName,connection.getToken());
-        System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
+//        System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
         return connectionVO;
     }
 
@@ -136,7 +140,10 @@ public class RoomServiceImpl implements RoomService {
     public ConnectionVO changeSubject(EnterRoomDTO changeSubjectDTO) throws Exception {
         String sessionName = changeSubjectDTO.getSessionName();
         Session session;
-
+        String translate = mappingUtils.translate(sessionName);
+        if(translate != null){
+            sessionName = translate;
+        }
         sessionName = getRandomroom(sessionName);
         changeSubjectDTO.setSessionName(sessionName);
 
@@ -144,14 +151,14 @@ public class RoomServiceImpl implements RoomService {
         session = openvidu.getActiveSession(sessionName);
 
         if(session == null){    // 방이 존재하지 않다면 생성하라
-            System.out.println("========================================");
-            System.out.println("존재하지 않는 방에 입장합니다: "+sessionName);
+//            System.out.println("========================================");
+//            System.out.println("존재하지 않는 방에 입장합니다: "+sessionName);
             HashMap<String,String> SessionPropertyJson = changeSubjectDTO.toSessionPropertyJson();
             SessionProperties properties = SessionProperties.fromJson(SessionPropertyJson).build();
             openvidu.createSession(properties);
         } else{
-            System.out.println("========================================");
-            System.out.println("존재하는 방에 입장합니다: "+sessionName);
+//            System.out.println("========================================");
+//            System.out.println("존재하는 방에 입장합니다: "+sessionName);
         }
 
         openvidu.fetch();
@@ -160,7 +167,7 @@ public class RoomServiceImpl implements RoomService {
         ConnectionProperties properties = new ConnectionProperties.Builder().build();
         Connection connection = session.createConnection(properties);
         ConnectionVO connectionVO = new ConnectionVO(connection.getConnectionId(),sessionName,connection.getToken());
-        System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
+//        System.out.println("새로운 연결: "+connectionVO.getConnectionId() +" / " + connectionVO.getSession());
         return connectionVO;
     }
 
@@ -202,7 +209,7 @@ public class RoomServiceImpl implements RoomService {
         );
 
         Collections.sort(studyRoomVOList);
-        System.out.println("studyRoomVOList : "+studyRoomVOList);
+//        System.out.println("studyRoomVOList : "+studyRoomVOList);
 
         return studyRoomVOList;
     }
@@ -278,12 +285,12 @@ public class RoomServiceImpl implements RoomService {
 
         // Redis에 답변 저장
         AnswerRedis answerRedis = saveAnswer(answerDTO);
-        System.out.println("AnswerId: "+ answerRedis.getAnswerId());
+//        System.out.println("AnswerId: "+ answerRedis.getAnswerId());
         AnswerVO answerVO = new AnswerVO(answerRedis.getAnswerId(),answerDTO.getUserId(),answerDTO.getSession(),answerDTO.getData(),answerDTO.getQuestionId());
         ObjectMapper om = new ObjectMapper();
 
         // RDB에 질문 저장
-        System.out.println(answerDTO.getQuestionId());
+//        System.out.println(answerDTO.getQuestionId());
         QuestionRedis questionRedis = questionRedisRepository.findById(answerDTO.getQuestionId()).orElseThrow(() ->
             new BaseException(EMPTY_SIGN)
         );
@@ -367,15 +374,15 @@ public class RoomServiceImpl implements RoomService {
         String prevSession = enterRoomDTO.getPrevSession();
         String prevConnectionId = enterRoomDTO.getPrevConnectionId();
         for(Session s : activeSessions){ // 기존의 연결을 찾아서 삭제한다
-            System.out.println("기존 연결끊기를 시도합니다 ... ");
+//            System.out.println("기존 연결끊기를 시도합니다 ... ");
             if(s.getSessionId().equals(prevSession)){ // 세션을 찾았다면
-                System.out.println("기존 연결을 찾았습니다 ... ");
-                System.out.println("기존 연결 아이디 : "+prevConnectionId);
+//                System.out.println("기존 연결을 찾았습니다 ... ");
+//                System.out.println("기존 연결 아이디 : "+prevConnectionId);
                 try{
                     s.forceDisconnect(prevConnectionId);
-                    System.out.println("기존 연결을 성공적으로 끊었습니다.");
+//                    System.out.println("기존 연결을 성공적으로 끊었습니다.");
                 } catch (Exception e){
-                    System.out.println("이미 연결이 끊어져있습니다.");
+//                    System.out.println("이미 연결이 끊어져있습니다.");
                 }
             }
         }

@@ -34,23 +34,24 @@
           </div>
           <div class="form-group">
             <label for="mokkojiCategories">모꼬지 카테고리</label>
-            <input
+            <!-- <input
               type="text"
               class="form-control"
               v-model="categorySearch"
               placeholder="카테고리 검색"
-            />
+            /> -->
             <select
               class="form-select"
               v-model="selectedCategory"
               @change="addSelectedCategory"
             >
+              <option disabled value="" selected>- 카테고리 선택 -</option>
               <option
                 v-for="category in filteredCategoryList"
                 :key="category.categoryId"
                 :value="category.categoryId"
               >
-                {{ category.categoryName }}
+                {{ subjectMapping(category.categoryName) }}
               </option>
             </select>
           </div>
@@ -62,7 +63,7 @@
               class="selectedTag common-pointer"
               @click="deleteTag(tag)"
             >
-              # {{ tag.categoryName }}
+              # {{ subjectMapping(tag.categoryName) }}
             </div>
           </div>
         </div>
@@ -79,6 +80,7 @@
             class="btn common-btn"
             data-bs-dismiss="modal"
             @click="createMokkoji"
+            :disabled="mokkojiName == '' || mokkojiStatus == ''"
           >
             만들기
           </button>
@@ -90,9 +92,12 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useUserStore } from '@/stores/user';
 import { useCategoryStore } from '@/stores/category';
+import { subjectMapping } from '@/utils/subjectMapping';
 import axios from 'axios';
 
+const userStore = useUserStore();
 const categoryStore = useCategoryStore();
 const mokkojiName = ref('');
 const mokkojiStatus = ref('');
@@ -149,12 +154,14 @@ const createMokkoji = function () {
   axios
     .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body)
     .then((res) => {
-      if (res.data.code === 1102) {
-        alert(res.data.message);
+      if (res.data.code === 1000) {
+        alert('생성되었습니다.');
         //생성 후 모꼬지 목록 불러오기
         emit('updateList');
+        //유저 정보 업데이트
+        userStore.getLoginUserInfo();
       } else {
-        alert('포인트가 모자랍니다.');
+        alert(res.data.message);
       }
     });
 };
@@ -170,16 +177,6 @@ const clear = function () {
 </script>
 
 <style lang="scss" scoped>
-.common-btn {
-  background-color: $vt-c-text-light-1;
-  border: none;
-  color: white;
-
-  &:hover {
-    color: white;
-    background-color: $vt-c-text-light-2;
-  }
-}
 .form-group {
   margin-bottom: 20px;
 
@@ -190,7 +187,7 @@ const clear = function () {
 
   .selectedTag {
     display: inline-block;
-    background-color: aliceblue;
+    background-color: $color-light-6;
     border-radius: 10px;
     padding: 3px 10px;
     margin: 0px 3px;

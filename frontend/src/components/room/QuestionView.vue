@@ -1,7 +1,7 @@
 <template>
   <div v-for="(question, index) in questions" :key="index">
     <div class="questionbox">
-      <div class="questionlabel" @click="showAnswer(index)">
+      <div class="questionlabel element" @click="showAnswer(index)">
         <b>{{ question.data }}</b>
       </div>
       <div class="questiondetail">
@@ -41,13 +41,8 @@ const showAnswer = function (index) {
 </script>
 
 <style scoped>
-/* .questiontitle{
-    font-weight: 800;
-    text-align: left;
-    padding-left: 10px;
-    padding-right: 10px;
-} */
 .questionlabel {
+  word-wrap: break-word;
   position: relative;
   display: inline-block;
   padding: 10px;
@@ -55,6 +50,8 @@ const showAnswer = function (index) {
   border-radius: 20px;
   border: 2px dotted black; /* 점선 스타일 설정 */
   background-color: rgba(255, 255, 0, 0.8);
+  font-size: 12px;
+  font-family: 'Galmuri14';
 }
 
 .questiondetail {
@@ -65,12 +62,13 @@ const showAnswer = function (index) {
   font-size: 12px; /* 작은 글꼴 크기 적용 */
   width: 20px; /* 작은 너비 적용 */
   height: 10px; /* 작은 높이 적용 */
+  max-width: fit-content;
 }
 
 .questionbox {
   border-radius: 20px; /* 물풍선 형태를 만들기 위해 테두리의 반지름 설정 */
   border: none;
-  background-color: white;
+  background-color: rgb(188, 188, 188);
   margin-left: 5px; /* 간격 조정 */
   margin-right: 10px; /* 간격 조정 */
   margin-bottom: none;
@@ -84,5 +82,18 @@ const showAnswer = function (index) {
 
 .questionbox:focus {
   outline: none; /* 포커스 효과 제거 */
+}
+
+.div2 {
+  box-shadow:
+    -1px 0 0 0 black,
+    1px 0 0 0 black,
+    0 -1px 0 0 black,
+    0 1px 0 0 black;
+}
+
+.element {
+  word-wrap: break-word;
+  width: 200px;
 }
 </style>

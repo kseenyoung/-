@@ -20,6 +20,9 @@ public class KakaoOAuthServiceImpl implements OAuthService{
     @Value("${kakao.rest-api-key}")
     private String REST_API_KEY;
 
+    @Value("${kakao.redirect.url}")
+    private String redirectURL;
+
     public String getToken(String code){
         String access_Token="";
         String refresh_Token ="";
@@ -39,7 +42,8 @@ public class KakaoOAuthServiceImpl implements OAuthService{
             sb.append("grant_type=authorization_code");
             sb.append("&client_id="); // TODO REST_API_KEY 입력
             sb.append(REST_API_KEY);
-            sb.append("&redirect_uri=https://localhost:5173/kakaoLogin"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&redirect_uri="); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append(redirectURL);
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -65,7 +69,7 @@ public class KakaoOAuthServiceImpl implements OAuthService{
             br.close();
             bw.close();
         }catch (IOException e) {
-            e.printStackTrace();
+
         }
 
         return access_Token;
@@ -112,7 +116,7 @@ public class KakaoOAuthServiceImpl implements OAuthService{
             return email;
 
         } catch (IOException e) {
-            e.printStackTrace();
+
             return null;
         }
     }

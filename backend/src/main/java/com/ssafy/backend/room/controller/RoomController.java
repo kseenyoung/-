@@ -105,7 +105,6 @@ public class RoomController {
             case "askQuestion":
                 sessionName = (String) body.get("session");
                 String qustionData = (String) body.get("data");
-                userId = (String) body.get("userId");
                 QuestionDTO questionDto = new QuestionDTO(userId, sessionName, qustionData);
                 QuestionVO questionVO = roomService.askQuestion(questionDto);
 
@@ -114,7 +113,6 @@ public class RoomController {
                 sessionName = (String) body.get("session");
                 String answerData = (String) body.get("data");
                 questionId = (String) body.get("questionId");
-                userId = (String) body.get("userId");
 
                 AnswerDTO answerDTO = new AnswerDTO(userId,sessionName,answerData,questionId);
                 AnswerVO answerVO = roomService.answerQuestion(answerDTO);
@@ -136,11 +134,9 @@ public class RoomController {
                 UserQnAVO userQnAVO = roomService.getUserQnA(userId);
                 return new BaseResponse<>(userQnAVO);
             case "getSessionRanking":
-                System.out.println("call getSessionRanking");
                 List<StudyRoomVO> studyRoomVOList = roomService.getSessionRanking();
                 return new BaseResponse<>(studyRoomVOList);
             case "leaveSession":
-                System.out.println("세션을 나갑니다!");
                 if (session != null) {
                     connectionId = (String) session.getAttribute("connectionId");
                     studyRoom = (String) session.getAttribute("studyRoom");

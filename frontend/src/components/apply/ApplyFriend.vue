@@ -32,13 +32,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="friend in paginatedFriendList"
-            :key="friend.userId"
-            class="my-hover"
-          >
-            <!-- <td><img src="@/assets/img/${friend.userPicture}.png" /></td> -->
-            <td><img src="@/assets/img/기본프로필_갈색.jpg" /></td>
+          <tr v-for="friend in paginatedFriendList" :key="friend.userId" class="my-hover">
+            <td>
+              <img
+                class="profile"
+                v-if="friend.userPicture"
+                :src="`${friend.userPicture}`"
+              />
+              <img class="profile" v-else src="@/assets/img/default.jpg" />
+            </td>
             <td class="dropdown">
               <div
                 class="dropdown-toggle"
@@ -49,17 +51,19 @@
                 {{ friend.userNickname }}
               </div>
               <ul class="dropdown-menu">
-                <li>{{ friendDetailInfo.userNickname }}</li>
-                <li>모꼬지: {{ friendDetailInfo.mokkoijiName }}</li>
+                <!-- <li><b>{{ friendDetailInfo.userNickname }}</b></li> -->
+                <li>
+                  <b>"{{ friendDetailInfo.userStatusMessage }}"</b>
+                </li>
+                <li>* 모꼬지: {{ friendDetailInfo.mokkoijiName }}</li>
                 <li v-if="friendDetailInfo.userRank != null">
-                  랭크: {{ friendDetailInfo.userRank }} 위
+                  * 랭크: {{ friendDetailInfo.userRank }} 위
                 </li>
-                <li v-else>랭크: -</li>
+                <li v-else>* 랭크: -</li>
                 <li v-if="friendDetailInfo.userTotalStudyTime != null">
-                  공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
+                  * 공부시간: {{ friendDetailInfo.userTotalStudyTime }} 분
                 </li>
-                <li v-else>공부시간: -</li>
-                <li>"{{ friendDetailInfo.userStatusMessage }}"</li>
+                <li v-else>* 공부시간: -</li>
               </ul>
             </td>
             <td>
@@ -95,10 +99,7 @@
               {{ page }}
             </a>
           </li>
-          <li
-            class="page-item"
-            :class="{ disabled: currentPage === totalPages }"
-          >
+          <li class="page-item" :class="{ disabled: currentPage === totalPages }">
             <a class="page-link" @click="nextPage">
               <i class="bi bi-chevron-right"></i>
             </a>
@@ -110,14 +111,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import { useUserStore } from '@/stores/user';
-import axios from 'axios';
+import { ref, onMounted, computed, watch } from "vue";
+import { useUserStore } from "@/stores/user";
+import axios from "axios";
 
 const userStore = useUserStore();
 
 const friendList = ref([]);
-const searchText = ref('');
+const searchText = ref("");
 const itemsPerPage = ref(10);
 let currentPage = ref(1);
 
@@ -127,11 +128,11 @@ onMounted(() => {
 
 //닉네임 검색
 const searchFriend = function () {
-  if (searchText.value === '') {
+  if (searchText.value === "") {
     getFriendList();
   } else {
     const filteredFriends = friendList.value.filter((friend) =>
-      friend.userNickname.includes(searchText.value),
+      friend.userNickname.includes(searchText.value)
     );
     friendList.value = filteredFriends;
   }
@@ -139,14 +140,14 @@ const searchFriend = function () {
 
 // 검색어가 변경될 때 전체 목록으로 돌아가도록 수정
 watch(searchText, () => {
-  if (searchText.value === '') {
+  if (searchText.value === "") {
     getFriendList();
   }
 });
 
 //총 페이지 설정
 const totalPages = computed(() =>
-  Math.ceil(friendList.value.length / itemsPerPage.value),
+  Math.ceil(friendList.value.length / itemsPerPage.value)
 );
 
 //페이지별 목록
@@ -176,11 +177,10 @@ const nextPage = function () {
 //전체 유저 목록
 const getFriendList = function () {
   const body = {
-    sign: 'getAllUserList',
+    sign: "getAllUserList",
     userId: userStore.loginUserInfo.userId,
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => {
-    console.log(res.data);
     friendList.value = res.data.result;
   });
 };
@@ -189,13 +189,13 @@ const getFriendList = function () {
 const friendDetailInfo = ref({});
 const friendDetail = function (nickname) {
   const body = {
-    sign: 'getUserInformation',
+    sign: "getUserInformation",
     userNickname: nickname,
   };
   axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     })
     .then((res) => res.data)
@@ -204,7 +204,7 @@ const friendDetail = function (nickname) {
         //성공
         friendDetailInfo.value = json.result;
       } else {
-        alert('닉네임이 비어있습니다.');
+        alert("닉네임이 비어있습니다.");
       }
     });
 };
@@ -212,17 +212,17 @@ const friendDetail = function (nickname) {
 //친구 신청 보내기
 const requestFriend = function (userId) {
   const body = {
-    sign: 'requestFriend',
+    sign: "requestFriend",
     userId: userId,
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}friend`, body).then((res) => {
     if (res.data.code === 1000) {
       //성공
-      alert('친구 신청을 보냈습니다.');
+      alert("친구 신청을 보냈습니다.");
     } else if (res.data.code === 2200) {
-      alert('이미 친구 신청을 보낸 유저입니다.');
+      alert("이미 친구 신청을 보낸 유저입니다.");
     } else {
-      alert('실패했습니다.');
+      alert("실패했습니다.");
     }
   });
 };
@@ -237,5 +237,8 @@ const requestFriend = function (userId) {
   .my-btn {
     padding: 5px 15px;
   }
+}
+.dropdown-menu {
+  padding: 3px;
 }
 </style>

@@ -46,7 +46,6 @@ public class AlarmController {
                 String requestedUserId = body.get("requestedUserId");
 
                 ReqestAlarmDTO reqestAlarmDTO = new ReqestAlarmDTO(userId, requestedUserId, tagId);
-                log.info("requestAlarmDto : {}", reqestAlarmDTO);
 
                 alarmService.requestAlarm(reqestAlarmDTO);
 

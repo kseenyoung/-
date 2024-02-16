@@ -84,16 +84,16 @@ public class UserController {
 
     @Autowired
     SecurityMapper securityMapper;
+    @Autowired
+    UserRankService userRankService;
 
-    @Transactional(rollbackFor = Exception.class)
-    @PostMapping("test")
-    public void test(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
-        List<Integer> date = (List<Integer>) body.get("test");
-        System.out.println(date);
-        LocalDate today = LocalDate.of(date.get(0), date.get(1), date.get(2));
-        System.out.println(today);
-
-    }
+//    @Transactional(rollbackFor = Exception.class)
+//    @PostMapping("test")
+//    public void test(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
+//        List<Integer> date = (List<Integer>) body.get("test");
+//        LocalDate today = LocalDate.of(date.get(0), date.get(1), date.get(2));
+//
+//    }
 
     @PostMapping("")
     public BaseResponse<?> user(@RequestBody Map<String, Object> body, HttpServletRequest request) throws Exception {
@@ -146,7 +146,7 @@ public class UserController {
                                 user = new User(loginUserId);
                                 session = request.getSession();
                                 session.setAttribute("User", user);
-                                System.out.println("session : " + session);
+//                                System.out.println("session : " + session);
 
                                 if (session.getAttribute("kakaoEmail") != null) {
                                     // 세션에 kakaoEmail 이 있으면 연동함.
@@ -188,7 +188,7 @@ public class UserController {
 
 
                 case "logout":
-                    System.out.println("call logout");
+//                    System.out.println("call logout");
                     session = request.getSession(false);
                     user = (User)session.getAttribute("User");
                     userId = user.getUserId();
@@ -259,7 +259,7 @@ public class UserController {
                     session = request.getSession();
                     session.setAttribute("codeForAuth", codeForAuth);
 
-                    System.out.println(codeForAuth);
+//                    System.out.println(codeForAuth);
                     return new BaseResponse<>(SUCCESS);
 
                 /*
@@ -368,7 +368,7 @@ public class UserController {
                                 String codeForModify = userService.sendEmail(userEmailforModify);
 
                                 session.setAttribute("codeForModify", codeForModify);
-                                System.out.println(codeForModify);
+//                                System.out.println(codeForModify);
                                 return new BaseResponse<>(SUCCESS);
                             } else {  // 이메일을 다시 입력해주세요.
                                 throw new BaseException(NOT_MATCH_EMAIL);
@@ -507,20 +507,17 @@ public class UserController {
                         try {
                             ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
                         } catch (Exception e) {
-                            System.out.println("error: " + e);
+//                            System.out.println("error: " + e);
                         }
                     }
                     return new BaseResponse<>(SUCCESS);
                 case "logoutSignal":
                     // 로그인 성공시 친구들에게 시그널 전송
-                    log.info("logout 후 세션 끊어졌다고 알려주기");
                     session = request.getSession(false);
                     user = (User) session.getAttribute("User");
                     userId = user.getUserId();
                     friendList = friendService.listFriends(userId);
-                    log.info("logoutSignal test {}",body);
                     for (FriendVO friend : friendList) {
-                        System.out.println("friend: "+ friend);
                         OpenviduRequestDTO openviduRequestDto = new OpenviduRequestDTO(friend.getUserId(), "logout", userId);
                         URI uri = UriComponentsBuilder
                                 .fromUriString(OPENVIDU_URL)
@@ -542,7 +539,7 @@ public class UserController {
                         try {
                             ResponseEntity<Object> responseEntity = restTemplate.postForEntity(uri, requestEntity, Object.class);
                         } catch (Exception e) {
-                            System.out.println("error: " + e);
+//                            System.out.println("error: " + e);
                         }
                     }
                     return new BaseResponse<>(SUCCESS);
@@ -611,9 +608,11 @@ public class UserController {
         } else {
             boolean isNotBot = reCaptchaService.isVerified(recaptchaResponse);
             session.setAttribute("recaptcha", "ok");
-            System.out.println(isNotBot);
         }
-
+    }
+    @GetMapping("/rank10")
+    public BaseResponse<?> getUserRank(){
+        return new BaseResponse<>(userRankService.getUserRanks());
     }
 
 

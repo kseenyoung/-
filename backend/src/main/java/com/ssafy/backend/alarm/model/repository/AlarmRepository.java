@@ -17,4 +17,7 @@ public interface AlarmRepository extends JpaRepository<Alarm, Integer> {
     Optional<Alarm> findAlarmByUserIdAndRequestedUserIdAndTagId(String userId, String requestUserId, int tagId);
 
     Alarm findByUserIdAndRequestedUserIdAndTagIdAndIsChecked(String userId, String requestedUserId, Integer tagId, Integer isChecked);
+
+
+    Optional<Alarm> findOptionalAlarmByUserIdAndRequestedUserIdAndTagIdAndIsChecked(String userId, String requestedUserId, Integer tagId, Integer isChecked);
 }

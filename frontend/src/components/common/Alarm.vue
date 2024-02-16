@@ -36,7 +36,7 @@ const alarmStore = useAlarmStore();
   }
 
   .bg-danger {
-    background-color: tomato !important;
+    background-color: $color-light-5 !important;
   }
 }
 </style>

@@ -32,7 +32,7 @@ public class AlarmServiceImpl implements  AlarmService {
 
     @Override
     public Integer findAlarmId(String userId, String requestedUserId, int tagId) {
-        return alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(userId, requestedUserId, tagId).orElseThrow(
+        return alarmRepository.findOptionalAlarmByUserIdAndRequestedUserIdAndTagIdAndIsChecked(userId, requestedUserId, tagId,0).orElseThrow(
                 () -> {throw new BaseException(NOT_EXIST_ALARM_ID);}
         ).getAlarmId();
     }
@@ -60,7 +60,6 @@ public class AlarmServiceImpl implements  AlarmService {
         Alarm alarm = alarmRepository.findById(checkAlarmDto.getAlarmId()).orElseThrow(() -> new BaseException(NOT_EXIST_ALARM_ID));
         alarm.setIsChecked(1);
 
-//        log.info("Alarm id : {}", alarm.getAlarmId());
         alarmRepository.save(alarm);
 
     }
@@ -82,11 +81,11 @@ public class AlarmServiceImpl implements  AlarmService {
     }
 
     @Override
-    public void aVoidDuplicateAlaram(ReqestAlarmDTO reqestAlarmDto) {
-        alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(
+    public void aVoidDuplicateAlaram(ReqestAlarmDTO reqestAlarmDto,int checked) {
+        alarmRepository.findOptionalAlarmByUserIdAndRequestedUserIdAndTagIdAndIsChecked(
                 reqestAlarmDto.getUserId(),
                 reqestAlarmDto.getRequestedUserId(),
-                reqestAlarmDto.getTagId()).ifPresent(
+                reqestAlarmDto.getTagId(), checked).ifPresent(
                         e -> {
                             throw new BaseException(AVOID_DUPLICATE_ALARM);
                         });
@@ -94,11 +93,11 @@ public class AlarmServiceImpl implements  AlarmService {
 
     @Override
     public void deleteAlarm(ReqestAlarmDTO alarmDto) {
-        System.out.println(alarmDto);
-        Alarm alarm = alarmRepository.findAlarmByUserIdAndRequestedUserIdAndTagId(
+        Alarm alarm = alarmRepository.findOptionalAlarmByUserIdAndRequestedUserIdAndTagIdAndIsChecked(
                 alarmDto.getUserId(),
                 alarmDto.getRequestedUserId(),
-                alarmDto.getTagId()
+                alarmDto.getTagId(),
+                0
         ).orElseThrow(() -> new BaseException(ALREADY_DELETE_ALARM));
         alarmRepository.delete(alarm);
 

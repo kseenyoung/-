@@ -1,20 +1,23 @@
 <template>
   <div class="marketpage">
     <img src="@/assets/board.png" class="board" />
-    <div class="market-wrapper">
+    <div class="market-wrapper ms-5">
       <div v-if="userPoint != null">
         보유 포인트: {{ userPoint }}
         <img src="@/assets/img/item/coin.png" class="coin" />
       </div>
       <div v-else>보유 포인트: 로그인이 필요한 서비스입니다.</div>
       <div class="market-index">
-        <button @click="selectCategory(null)" class="btn common-btn my-bc-btn">
+        <button
+          @click="selectCategory(null)"
+          class="btn my-bc-btn common-btn-light"
+        >
           전체
         </button>
         <template v-for="(categoryItems, category) in products" :key="category">
           <button
             @click="selectCategory(category)"
-            class="btn common-btn my-bc-btn"
+            class="btn my-bc-btn common-btn-light"
           >
             {{ category }}
           </button>
@@ -50,7 +53,7 @@
                 <img src="@/assets/img/item/coin.png" class="coin" />
               </div>
               <button
-                class="market-items-detail-buy btn common-btn my-bc-btn"
+                class="market-items-detail-buy btn my-bc-btn common-btn-light"
                 @click="buyProduct(item.productId)"
               >
                 구매하기
@@ -67,13 +70,14 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-
+import { useUserStore } from '@/stores/user';
 const router = useRouter();
 
 const products = ref({});
 const totalPage = ref(1);
 const userPoint = ref(null);
 const selectedCategory = ref(null);
+const userStore = useUserStore();
 
 onMounted(() => {
   getProductList();
@@ -134,6 +138,7 @@ const getLoginUserPoint = async function () {
 
   axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body).then((res) => {
     userPoint.value = res.data.result.userPoint;
+    userStore.updatePoint(userPoint.value);
   });
 };
 
@@ -151,7 +156,7 @@ const filteredProducts = computed(() => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .marketpage {
   background-image: url('@/assets/background.gif');
   background-size: cover;
@@ -168,7 +173,7 @@ const filteredProducts = computed(() => {
 }
 .my-bc-btn {
   color: black;
-  background-color: #e9be00;
+  background-color: $color-light-3;
   margin: 0px 5px;
   border: none;
   transition: none;
@@ -177,7 +182,7 @@ const filteredProducts = computed(() => {
 .my-bc-btn:active {
   box-shadow: none;
   color: black;
-  background-color: #e9be00;
+  background-color: $color-light-3;
   box-shadow: 1px 1px 1px black;
 }
 .market-wrapper {
@@ -248,6 +253,9 @@ const filteredProducts = computed(() => {
         }
       }
     }
+  }
+  .market-content::-webkit-scrollbar {
+    display: none;
   }
 }
 </style>

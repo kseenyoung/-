@@ -17,6 +17,19 @@ export const useRankStore = defineStore('rankStore', () => {
       console.error(error);
     }
   };
+  const userRank = ref();
+  const getUserRank = async function() {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/user/rank10`);
 
-  return { mokkojiRank, getMokkojiRank };
+      if(response.data.code === 1000){
+        userRank.value = response.data.result;
+      }
+    }
+    catch(error){
+      console.error(error);
+    }
+  }
+
+  return { mokkojiRank, getMokkojiRank, userRank, getUserRank };
 });

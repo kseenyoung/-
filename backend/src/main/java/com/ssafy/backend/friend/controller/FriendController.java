@@ -67,11 +67,13 @@ public class FriendController {
 
                 // 이미 요청 승인을 눌렀는지 확인
 //                alarmService.aVoidDuplicateAlaram(new ReqestAlarmDTO(accessUserId2, userId, 5));
-                if(friendService.isFriend(new UserId(userId, requiringUserId)))
+                friendFacade.accessFriendAlarm(userId,requiringUserId);
+
+                if(friendService.isFriend(new UserId(userId, requiringUserId),1)){
                     throw new BaseException(ALREADY_EXIST_FRIEND);
+                }
 
                 friendFacade.accessFriend(userId, requiringUserId);
-
                 return new BaseResponse<>(SUCCESS);
 
             case "quitFriend":

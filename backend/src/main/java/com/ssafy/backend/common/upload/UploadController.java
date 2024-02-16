@@ -9,6 +9,7 @@ import com.ssafy.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,13 +32,14 @@ public class UploadController {
     private final S3Uploader s3Uploader;
     private final UserService userService;
     @PostMapping("/profile")
+    @Transactional
     public BaseResponse<?> uploadProfile(@RequestParam("file") MultipartFile file,
                                          HttpServletRequest request) throws IOException {
         HttpSession session = request.getSession(false);
         if(session == null) throw new BaseException(INVALID_AUTH_TOKEN);
         User user = (User) session.getAttribute("User");
         String userId = user.getUserId();
-        log.info("file Size : {}",file.getSize());
+//        log.info("file Size : {}",file.getSize());
         User existUser = userService.isExistUser(userId);
         String url = null;
         url = s3Uploader.uploadFile(file, userId);

@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductListVO getList(int page) throws BaseException {
         ArrayList<Sort.Order> sorts = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page, 10,Sort.by(sorts));
+        Pageable pageable = PageRequest.of(page, 30,Sort.by(sorts));
         Page<Product> products = productRepository.findAll(pageable);
 
         List<ProductDTO> productDTOList = new ArrayList<>();

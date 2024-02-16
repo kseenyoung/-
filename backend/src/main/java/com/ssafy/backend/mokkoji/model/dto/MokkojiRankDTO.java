@@ -11,11 +11,13 @@ public class MokkojiRankDTO {
 
     private String leaderId;
     private int rank;
+    private int totalMemoryTime;
     public MokkojiRankDTO(MokkojiRankings entity) {
         this.mokkojiId = entity.getMokkojiId();
         this.mokkojiName = entity.getMokkojiName();
         this.leaderId = entity.getLeaderId();
         this.rank = entity.getRank();
+        this.totalMemoryTime = entity.getTotalMemoryTime();
     }
 
     public void setMokkojiId(int mokkojiId) {
@@ -32,5 +34,9 @@ public class MokkojiRankDTO {
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+
+    public void setTotalMemoryTime(int totalMemoryTime) {
+        this.totalMemoryTime = totalMemoryTime;
     }
 }

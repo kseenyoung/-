@@ -6,7 +6,6 @@
     :viewBox="`0 0 200 200`"
     style="max-width: 100%; max-height: 100%"
   >
-    <!-- Circle for gakLength 1 -->
     <circle
       v-if="props.gakLength === 1"
       cx="100"
@@ -17,7 +16,6 @@
       stroke-width="2"
     />
 
-    <!-- Two equal halves for gakLength 2 -->
     <g v-else-if="props.gakLength === 2">
       <circle
         cx="100"
@@ -35,7 +33,6 @@
       />
     </g>
 
-    <!-- Dynamic Pizza Slices with Labels -->
     <g v-else v-for="(slice, index) in pizzaSlices" :key="index">
       <polygon
         :points="slice.points"
@@ -81,8 +78,6 @@ const colors = [
   'cornflowerblue',
 ];
 
-const shuffledColors = colors.slice().sort(() => Math.random() - 0.5);
-
 const calculatePizzaSlices = (slices, radius, cx, cy) => {
   const angleIncrement = (2 * Math.PI) / slices;
   const startAngle = -Math.PI / 2;
@@ -102,7 +97,6 @@ const calculatePizzaSlices = (slices, radius, cx, cy) => {
 
     const slicePoints = `${cx},${cy} ${x1},${y1} ${x2},${y2}`;
 
-    // Calculate label position
     const labelAngle = angle1 + angleIncrement / 2;
     const labelRadius = radius + labelOffset;
     const labelX = cx + labelRadius * Math.cos(labelAngle);
@@ -110,14 +104,11 @@ const calculatePizzaSlices = (slices, radius, cx, cy) => {
 
     slicePolygons.push({
       points: slicePoints,
-      label: `과목 ${i + 1}`,
       labelX,
       labelY,
       color: colors[i % colors.length],
-      // color: shuffledColors[i % shuffledColors.length], // Random color
     });
   }
-
   return slicePolygons;
 };
 </script>

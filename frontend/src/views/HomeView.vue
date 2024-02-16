@@ -12,63 +12,56 @@
           style="color: white;"
           v-if="userStore.loginUserInfo.userId == null"
           @click="navigateToLogin"
->
-          <div class="is-typed">
-            <h3 style="display:inline-block;"> 
-              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
-            </h3>
-        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
-        </div>
+        >
       </div>
-
-
-      <!-- <div
-        style="color: white;"
-        v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
-        @click="navigateToMyPageSchedule">
-
-        <div class="is-typed">
-          <h3 style="display:inline-block;"> </h3>
-          <p style="display: inline-block;" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
-        </div>
-
-        <div style="display: inline-block;">
-          <div class="pixel"><p>하이</p></div>
-        </div>
-      </div> -->
-
 
 
       <div
         style="color: white;"
-        v-else-if="userStore.loginUserInfo.userId != null && arr.length ===0"
+        v-if="userStore.loginUserInfo.userId != null && arr.length ===0"
         >
+        <div class="withFriend">
+        <div v-if="userStore.loginUserInfo.userId" style="flex: auto;"></div> <!-- 빈 요소, 가운데 정렬을 위해 -->
         <div class="is-typed" style="" @click="navigateToMyPageSchedule">
           <h3 style=""> </h3>
-          <p style="" class="font-weight-bold"><h3> 다각 만들러가기</h3></p>
+          <p style="" class="font-weight-bold"><h3 > 다각 만들러가기</h3></p>
         </div>
-        
-        <div class="friends">
-          <div class="bubble medium bottom" style="margin-left : 80%;">
-              친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
-              <br/>
+        <!-- <div class="is-typed" style="" @click="navigateToStudyRoom">
+          <h3 style=""> </h3>
+          <p style="" class="font-weight-bold"><h3 >자율공부하러가기</h3></p>
+        </div> -->
+        <div v-if="userStore.loginUserInfo.userId" class="friends">
+          <div class="bubble medium bottom" style="margin-left: 30%; width: auto;">
+          친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
+          <br/>
           </div>
-            <img  src="@/assets/friends.png" @click="showFriends" style="width : 13%; margin-left : 80%; margin-bottom : 10%"/>        
+          <img src="@/assets/friends.png" @click="showFriends" style="width: 40%; margin-left: 30%; margin-bottom: 10%"/>
         </div>
+    </div>
       </div>
-
-      
-        <div
-          style="color: white;"
+      <div
+          style="color: white; display: inline-block;"
           v-else
           @click="navigateToStudyRoom"
 >
+          <div class="withFriend">
+          <div v-if="userStore.loginUserInfo.userId" style="flex: auto;"></div> <!-- 빈 요소, 가운데 정렬을 위해 -->
+  
           <div class="is-typed">
-            <h3 style="display:inline-block;"> 
-              <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
-            </h3>
-        <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
-        </div>
+          <h3 style="display:inline-block"> 
+          <VueWriter :array="arr" style="display:inline-block;" :caret="underscore" />
+          </h3>
+            <p style="display: inline-block;" class="font-weight-bold"><h3> 공부하기</h3></p>
+          </div>
+  
+  <div v-if="userStore.loginUserInfo.userId" class="friends">
+    <div class="bubble medium bottom" style="margin-left: 30%; width: auto;">
+      친구 <b style="color: red;">{{ loginFriends.length }}</b> 명이 <br/> 로그인중이에요
+      <br/>
+    </div>
+    <img src="@/assets/friends.png" @click="showFriends" style="width: 40%; margin-left: 30%; margin-bottom: 10%"/>        
+  </div>
+</div>
       </div>
       </div>
       </div>
@@ -102,7 +95,8 @@ import { useUserStore } from '@/stores/user';
 import { useCategoryStore } from '@/stores/category';
 import { useAlarmStore } from '@/stores/alarm';
 import { useDagakStore } from '@/stores/dagak';
-import { useFriendStore } from '@/stores/friend'
+import { useFriendStore } from '@/stores/friend';
+import { subjectMapping } from '@/utils/subjectMapping';
 
 const arr = ref([
   " \"정보처리기사\"",
@@ -124,7 +118,7 @@ const loginFriends = computed(() => {
 });
 
 const showFriends = ()=>{
-  alert("친구들!");
+  // alert("친구들!");
   isFriendList.value = isFriendList.value == true?false:true;
 };
 
@@ -133,7 +127,6 @@ const navigateToMyPageSchedule= () =>{
 };
 
 const navigateToLogin = () => {
-  alert("로그인해주세요!");
   router.push('/login');
 };
 
@@ -150,7 +143,7 @@ const getGaks = async () =>{
   myGaks.value.forEach(gak =>{
     categories.value.forEach(category =>{
       if(gak.categoryId === category.categoryId){
-        arr.value.push(`\"${category.categoryName}\"`);
+        arr.value.push(`\"${subjectMapping(category.categoryName)}\"`);
         dagakStore.categoryNameToStudy.value = arr;
       }
     });
@@ -165,22 +158,38 @@ onMounted(async () => {
     await getGaks();
   }
 });
-watch(() => userStore.loginUserInfo.userId, (newUserId) => {
+watch(() => userStore.loginUserInfo.userId, async (newUserId) => {
   if (newUserId != null) {
-    getGaks();
+    alarmStore.getUnReadAlarmList();
+    await categoryStore.getCategoryList();
+    await dagakStore.getTodayDagak();
+    await getGaks();
   }
 });
 </script>
 
 <style lang="scss" scoped>
+
+.withFriend {
+  display: flex;
+  justify-content: space-between; /* 요소들을 좌우로 최대한 분산 배치합니다. */
+  align-items: center; /* 요소들을 세로 방향 가운데에 배치합니다. */
+}
 .is-typed {
   user-select: none;
-  
-  
+  flex: 1; /* is-typed 요소가 가변적인 공간을 차지하도록 설정합니다. */
+  text-align: center; /* 텍스트를 가운데 정렬합니다. */
+  margin-right: 10px; /* .friends와의 오른쪽 마진을 추가하여 간격을 조정합니다. */
 }
+.friends{
+  flex: 1;
+  text-align: right; /* 텍스트를 오른쪽 정렬합니다. */
+}
+
+
 .is-typed:hover {
   cursor: pointer;
-  color : black;
+  color : white;
 }
 .title {
   font-size: 15rem;

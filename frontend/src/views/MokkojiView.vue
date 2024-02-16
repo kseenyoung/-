@@ -19,11 +19,7 @@
           >
             모꼬지 탈퇴
           </button>
-          <button
-            v-if="leaderCheck"
-            class="btn common-btn"
-            @click="deleteMokkoji"
-          >
+          <button v-if="leaderCheck" class="btn common-btn" @click="deleteMokkoji">
             모꼬지 삭제
           </button>
         </div>
@@ -33,9 +29,12 @@
             <div v-for="item in user" :key="item.userId">
               <div class="mok-list-detail">
                 <img
-                  v-if="item.userPicture == '' || item.userPicture == null"
-                  src="@/assets/img/기본프로필_갈색.jpg"
+                  class="profile"
+                  v-if="item.userPicture"
+                  :src="`${item.userPicture}`"
                 />
+                <img class="profile" v-else src="@/assets/img/default.jpg" />
+
                 <div>
                   {{ item.userNickname
                   }}<i
@@ -44,10 +43,7 @@
                   ></i>
                 </div>
                 <button
-                  v-if="
-                    leaderCheck &&
-                    item.userId !== userStore.loginUserInfo.userId
-                  "
+                  v-if="leaderCheck && item.userId !== userStore.loginUserInfo.userId"
                   class="btn btn-sm btn-danger kickbtn"
                   @click="kickMember(item.userId)"
                 >
@@ -82,9 +78,7 @@
               <div class="mok-right-info-content-box-index">카테고리</div>
               <div class="mok-right-info-content-box-border">
                 <template v-for="item in categories" :key="item.categoryId">
-                  <div class="mok-right-info-content-cate">
-                    # {{ item.categoryName }}
-                  </div>
+                  <div class="mok-right-info-content-cate"># {{ item.categoryName }}</div>
                 </template>
               </div>
             </div>
@@ -95,19 +89,11 @@
           <div class="mok-right-info-content">
             <div>
               <label for="mokkojiName" class="form-label">모꼬지 이름</label>
-              <input
-                type="text"
-                v-model="editedMokkojiName"
-                class="form-control"
-              />
+              <input type="text" v-model="editedMokkojiName" class="form-control" />
             </div>
             <div>
               <label for="mokkojiStatus" class="form-label">모꼬지 소개</label>
-              <input
-                type="text"
-                v-model="editedMokkojiStatus"
-                class="form-control"
-              />
+              <input type="text" v-model="editedMokkojiStatus" class="form-control" />
             </div>
             <div>
               <label for="category" class="form-label">카테고리</label>
@@ -131,9 +117,7 @@
               </div>
             </div>
             <div>
-              <button class="btn common-btn" @click="updateMokkoji">
-                수정하기
-              </button>
+              <button class="btn common-btn" @click="updateMokkoji">수정하기</button>
             </div>
           </div>
         </div>
@@ -143,11 +127,11 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-import { useRoute, useRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
-import { useUserStore } from '@/stores/user';
-import { useCategoryStore } from '@/stores/category';
+import axios from "axios";
+import { useRoute, useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { useUserStore } from "@/stores/user";
+import { useCategoryStore } from "@/stores/category";
 
 const userStore = useUserStore();
 const categoryStore = useCategoryStore();
@@ -161,9 +145,9 @@ const leaderCheck = ref();
 const myMokkoji = ref();
 const userId = ref();
 
-const editedMokkojiName = ref('');
-const editedMokkojiStatus = ref('');
-const editedCategoryId = ref('');
+const editedMokkojiName = ref("");
+const editedMokkojiStatus = ref("");
+const editedCategoryId = ref("");
 
 onMounted(async () => {
   await getMokkojiDetail();
@@ -188,7 +172,7 @@ const getMokkojiDetail = async function () {
         myMokkoji.value = res.data.result.myMokkojiId;
         userId.value = res.data.result.userId;
       } else {
-        alert(res.data.message);
+        // alert(res.data.message);
       }
     });
 };
@@ -196,94 +180,88 @@ const getMokkojiDetail = async function () {
 //배열로 들어온 생성일 yyyy.mm.dd로 반환
 const formatDate = function (dateArray) {
   const year = dateArray[0];
-  const month = dateArray[1].toString().padStart(2, '0');
-  const day = dateArray[2].toString().padStart(2, '0');
+  const month = dateArray[1].toString().padStart(2, "0");
+  const day = dateArray[2].toString().padStart(2, "0");
   return `${year}.${month}.${day}`;
 };
 
 //모꼬지 가입 신청
 const requestMokkoji = function () {
   const body = {
-    sign: 'requestMokkoji',
+    sign: "requestMokkoji",
     mokkojiId: mokkoji.value.mokkojiId,
   };
-  axios
-    .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body)
-    .then((res) => {
-      if (res.data.code === 1000) {
-        //성공
-        alert('모꼬지 가입 신청을 보냈습니다.');
-      } else if (res.data.code === 2101) {
-        //이미 요청을 보낸 상태
-        alert(res.data.message);
-      } else {
-        alert('실패');
-      }
-    });
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body).then((res) => {
+    if (res.data.code === 1000) {
+      //성공
+      alert("모꼬지 가입 신청을 보냈습니다.");
+    } else if (res.data.code === 2101) {
+      //이미 요청을 보낸 상태
+      alert(res.data.message);
+    } else {
+      alert("실패");
+    }
+  });
 };
 
 //모꼬지 탈퇴
 const leaveMokkoji = function () {
   const body = {
-    sign: 'leaveMokkoji',
+    sign: "leaveMokkoji",
   };
-  axios
-    .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body)
-    .then((res) => {
-      if (res.data.code === 1000) {
-        //성공
-        alert('탈퇴되었습니다.');
-
-        //친구/모꼬지 신청 페이지로 이동
-        router.push({
-          name: 'apply',
-        });
-      } else {
-        alert('실패');
-      }
-    });
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body).then((res) => {
+    if (res.data.code === 1000) {
+      //성공
+      alert("탈퇴되었습니다.");
+      //유저 정보 업데이트
+      userStore.getLoginUserInfo();
+      //친구/모꼬지 신청 페이지로 이동
+      router.push({
+        name: "apply",
+      });
+    } else {
+      alert("실패");
+    }
+  });
 };
 
 //모꼬지 삭제
 const deleteMokkoji = function () {
   const body = {
-    sign: 'deleteMokkoji',
+    sign: "deleteMokkoji",
   };
-  axios
-    .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body)
-    .then((res) => {
-      if (res.data.code === 1000) {
-        //성공
-        alert('모꼬지가 삭제되었습니다.');
-
-        //친구/모꼬지 신청 페이지로 이동
-        router.push({
-          name: 'apply',
-        });
-      } else {
-        alert('실패');
-      }
-    });
+  axios.post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body).then((res) => {
+    if (res.data.code === 1000) {
+      //성공
+      alert("모꼬지가 삭제되었습니다.");
+      //유저 정보 업데이트
+      userStore.getLoginUserInfo();
+      //친구/모꼬지 신청 페이지로 이동
+      router.push({
+        name: "apply",
+      });
+    } else {
+      alert(res.data.message);
+    }
+  });
 };
 
 //모꼬지 강퇴
 const kickMember = function (memberId) {
-  if (window.confirm('정말 강퇴하시겠습니까?')) {
+  if (window.confirm("정말 강퇴하시겠습니까?")) {
     const body = {
-      sign: 'kickMember',
+      sign: "kickMember",
       member: memberId,
     };
-    axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body)
-      .then((res) => {
-        if (res.data.code === 1000) {
-          //성공
-          alert('강퇴되었습니다.');
-          getMokkojiDetail();
-        } else {
-          alert('실패');
-        }
-      });
+    axios.post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body).then((res) => {
+      if (res.data.code === 1000) {
+        //성공
+        alert("강퇴되었습니다.");
+        getMokkojiDetail();
+      } else {
+        alert("실패");
+      }
+    });
   }
 };
 
@@ -294,13 +272,11 @@ const updateMokkoji = function () {
 </script>
 
 <style lang="scss" scoped>
-$my-shadow:
-  rgba(0, 0, 0, 0.4) 0px 2px 4px,
-  rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
+$my-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px,
   rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 
 .mokkoji-view-wrapper {
-  background-image: url('@/assets/background.gif');
+  background-image: url("@/assets/background.gif");
   background-size: cover;
   min-height: 100vh;
   padding: 0px 300px;
@@ -320,18 +296,19 @@ $my-shadow:
   .mok-content-wrapper {
     flex-grow: 1;
     display: flex;
-    box-shadow: $my-shadow;
+    // box-shadow: $my-shadow;
     padding: 20px;
-    background-color: whitesmoke;
+    // background-color: whitesmoke;
+    background-color: $color-light-6;
     .mok-content-left {
       flex-basis: 40%;
       padding: 30px;
       > div {
-        background-color: cornsilk;
-        box-shadow: $my-shadow;
+        background-color: $color-light-2;
+        // box-shadow: $my-shadow;
       }
       .mok-subtitle {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 600;
         text-align: center;
         padding: 5px;
@@ -352,13 +329,13 @@ $my-shadow:
           overflow-y: scroll;
           min-height: 300px;
           max-height: 300px;
-          // background-color: antiquewhite;
           .mok-list-detail {
             display: flex;
             align-items: center;
             padding: 10px;
             img {
               width: 30px;
+              height: 30px;
               border-radius: 50%;
               margin-right: 10px;
               margin-left: 60px;
@@ -371,26 +348,27 @@ $my-shadow:
             }
           }
         }
+        .mok-list-wrapper::-webkit-scrollbar {
+          display: none;
+        }
       }
     }
     .mok-content-right {
       flex-grow: 1;
-      // border: 1px solid black;
       margin: 30px;
       .mok-right-info {
-        // border: 1px solid black;
         margin-bottom: 50px;
         border-bottom: 1px solid black;
         min-height: 300px;
-        box-shadow: $my-shadow;
+        // box-shadow: $my-shadow;
         background-color: white;
         .mok-right-info-subtitle {
-          background-color: lightblue;
+          background-color: $color-light-2;
           text-align: center;
-          font-size: 1.5rem;
+          font-size: 1.3rem;
           font-weight: 600;
           padding: 5px;
-          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+          // box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         }
         .mok-right-info-content {
           text-align: center;
@@ -402,8 +380,9 @@ $my-shadow:
             position: relative;
             z-index: 1;
             background-color: white;
-            font-weight: bold;
+            font-weight: bolder;
             padding: 0px 6px;
+            font-size: 1rem;
           }
           .mok-right-info-content-box-border {
             padding: 20px 10px;
@@ -414,15 +393,17 @@ $my-shadow:
           }
           .mok-right-info-content-name {
             font-size: 1.7rem;
-            font-weight: bold;
+            font-weight: bolder;
             margin-bottom: 15px;
           }
           .mok-right-info-content-cate {
             display: inline-block;
             padding: 3px 8px;
             margin: 7px 5px;
-            background-color: lightblue;
+            background-color: $color-dark-6;
+            color: white;
             border-radius: 5px;
+            font-size: 1rem;
           }
         }
       }
@@ -433,7 +414,7 @@ $my-shadow:
   display: inline-block;
   padding: 3px 8px;
   margin: 7px 5px;
-  background-color: lightblue;
+  background-color: $color-light-2;
   border-radius: 5px;
 }
 </style>

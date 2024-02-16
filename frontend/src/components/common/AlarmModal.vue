@@ -23,10 +23,7 @@
         </div>
 
         <div class="modal-body">
-          <div
-            v-if="alarmStore.alarmUnReadList.length === 0"
-            class="hasNoAlarm"
-          >
+          <div v-if="alarmStore.alarmUnReadList.length === 0" class="hasNoAlarm">
             읽지 않은 알림이 없습니다.
           </div>
           <div
@@ -45,11 +42,7 @@
                 <div>{{ alarm.createdDate }}</div>
               </div>
               <div class="alarm-content-body">
-                <div
-                  v-if="
-                    alarm.tagId === 2 || alarm.tagId === 4 || alarm.tagId === 5
-                  "
-                >
+                <div v-if="alarm.tagId === 2 || alarm.tagId === 4 || alarm.tagId === 5">
                   {{ alarm.requestedUserId }}님의
                   {{ getAlarmMessage(alarm.tagId) }}
                 </div>
@@ -76,11 +69,7 @@
               >
                 거절
               </button>
-              <button
-                v-else
-                class="btn common-btn"
-                @click="checkAlarm(alarm.alarmId)"
-              >
+              <button v-else class="btn common-btn" @click="checkAlarm(alarm.alarmId)">
                 <i class="bi bi-check2"></i>
               </button>
             </div>
@@ -92,39 +81,37 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { useAlarmStore } from '@/stores/alarm';
+import axios from "axios";
+import { useAlarmStore } from "@/stores/alarm";
 
 const alarmStore = useAlarmStore();
 
 //알림 확인
 const checkAlarm = async function (alarmId) {
   const body = {
-    sign: 'checkAlarm',
+    sign: "checkAlarm",
     alarmId: alarmId,
   };
 
   await axios.post(`${import.meta.env.VITE_API_BASE_URL}alarms`, body, {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
   alarmStore.getUnReadAlarmList();
 };
 
 const accessAlarm = async function (tagId, requestedUserId) {
-  console.log(requestedUserId);
   if (tagId === 2) {
     //모꼬지 승인 API
     const body = {
-      sign: 'accessMokkoji',
+      sign: "accessMokkoji",
       memberId: requestedUserId,
     };
     await axios
       .post(`${import.meta.env.VITE_API_BASE_URL}mokkoji`, body, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       })
       .then((res) => {
@@ -139,23 +126,23 @@ const accessAlarm = async function (tagId, requestedUserId) {
   } else if (tagId === 4) {
     //친구 승인 API
     const body = {
-      sign: 'accessFriend',
+      sign: "accessFriend",
       userId: requestedUserId,
     };
     await axios
       .post(`${import.meta.env.VITE_API_BASE_URL}friend`, body, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       })
       .then((res) => {
         if (res.data.code === 1000) {
           //성공
-          alert('친구가 되었습니다');
+          alert("친구가 되었습니다");
         }
       });
   } else {
-    alert(tagId + ': tagId가 잘못되었습니다.');
+    // alert(tagId + ': tagId가 잘못되었습니다.');
   }
   alarmStore.getUnReadAlarmList();
 };
@@ -163,37 +150,37 @@ const accessAlarm = async function (tagId, requestedUserId) {
 const getAlarmTag = (tagId) => {
   switch (tagId) {
     case 1:
-      return '게시글';
+      return "게시글";
     case 2:
-      return '모꼬지 신청';
+      return "모꼬지 신청";
     case 3:
-      return '모꼬지 승인';
+      return "모꼬지 승인";
     case 4:
-      return '친구 신청';
+      return "친구 신청";
     case 5:
-      return '친구 승인';
+      return "친구 승인";
     case 6:
-      return '답변';
+      return "답변";
     case 7:
-      return 'DM';
+      return "DM";
   }
 };
 const getAlarmMessage = (tagId) => {
   switch (tagId) {
     case 1:
-      return '게시글에 댓글이 달렸습니다';
+      return "게시글에 댓글이 달렸습니다";
     case 2:
-      return '모꼬지 신청';
+      return "모꼬지 신청";
     case 3:
-      return '모꼬지 신청이 승인되었습니다';
+      return "모꼬지 신청이 승인되었습니다";
     case 4:
-      return '친구 신청';
+      return "친구 신청";
     case 5:
-      return '친구 신청이 승인되었습니다';
+      return "친구 신청이 승인되었습니다";
     case 6:
-      return '질문에 답변이 달렸습니다';
+      return "질문에 답변이 달렸습니다";
     case 7:
-      return 'DM이 왔습니다';
+      return "DM이 왔습니다";
   }
 };
 </script>
@@ -207,7 +194,7 @@ const getAlarmMessage = (tagId) => {
   }
   > span {
     display: inline-block;
-    background-color: tomato;
+    background-color: $color-light-5;
     color: white;
     width: 30px;
     border-radius: 50%;
@@ -229,6 +216,12 @@ const getAlarmMessage = (tagId) => {
     display: flex;
     .alarm-check {
       flex-basis: 5%;
+      i {
+        color: $color-light-5;
+        position: relative;
+        top: -3px;
+        left: -3px;
+      }
     }
     .alarm-content {
       display: flex;
@@ -240,8 +233,8 @@ const getAlarmMessage = (tagId) => {
         align-items: center;
 
         div:nth-child(1) {
-          color: tomato;
-          font-weight: 500;
+          color: $color-light-5;
+          font-weight: 600;
           margin-right: 6px;
         }
         div:nth-child(2) {

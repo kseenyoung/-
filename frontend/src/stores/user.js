@@ -1,8 +1,8 @@
-import { ref, onMounted ,watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import { userCookiesStorage } from '@/utils/CookiesUtil';
+import { cookiesStorage, userCookiesStorage } from '@/utils/CookiesUtil';
 import { useAlarmStore } from '@/stores/alarm';
 import { useFriendStore } from '@/stores/friend';
 
@@ -17,12 +17,12 @@ export const useUserStore = defineStore(
     const isInSession = ref(false);
     const achievementRate = ref(0);
     const friendStore = useFriendStore();
-
+    const userStore = useUserStore();
     //로그인 세션 test
     const login = async function () {
-      await friendStore.getLoginFriends(); // 로그인했을때 로그인한 친구들 목록 확인하기
+      friendStore.getLoginFriends(); // 로그인했을때 로그인한 친구들 목록 확인하기
       await loginSession();
-      alert('방입장 성공');
+      // alert('방입장 성공');
     };
 
     const OVMy = ref(undefined);
@@ -47,7 +47,6 @@ export const useUserStore = defineStore(
           headers: { 'Content-Type': 'application/json' },
         },
       );
-      console.log(response.data.result);
       return response.data.result;
     };
     // 로그인 시그널 친구들한테 보내기
@@ -63,7 +62,6 @@ export const useUserStore = defineStore(
     };
     // 계정 방 생성
     const createMyRoom = async () => {
-      console.log('loginUser : ', loginUserInfo.value.userId);
       const response = await axios.post(
         APPLICATION_SERVER_URL + 'room',
         { sign: 'enterMyroom', userId: loginUserInfo.value.userId },
@@ -85,11 +83,6 @@ export const useUserStore = defineStore(
           loginSignal();
         })
         .catch((error) => {
-          console.log(
-            '다음 세션에 로그인하는데 오류가 발생했습니다!:',
-            error.code,
-            error.message,
-          );
         });
       // 시그널 처리 문
       mySession.value.on('streamCreated', ({ stream }) => {
@@ -98,7 +91,6 @@ export const useUserStore = defineStore(
 
       mySession.value.on('signal:login', async (stream) => {
         // 로그인 시그널 수신
-        console.log(stream.data, '님이 로그인했습니다.');
         friendStore.getLoginFriends(); // 친구가 로그인했다면 다시한번 레디스에서 읽어오기
         alert('친구가 로그인했어요!');
 
@@ -123,20 +115,20 @@ export const useUserStore = defineStore(
       mySession.value.on('signal:login-callBack', async (stream) => {
         console.log('[콜백] 친구 ', stream.data, '님이 로그인했습니다.');
         friendStore.getLoginFriends();
-        alert('콜백이 왔어요');
+        // alert('콜백이 왔어요');
       });
 
       mySession.value.on('signal:logout', async (stream) => {
         // 로그인 시그널 수신
         console.log(stream.data, '님이 로그아웃 했습니다.');
-        friendStore.getLoginFriends(); 
+        friendStore.getLoginFriends();
         alert('친구가 로그아웃했어요!');
       });
 
       mySession.value.on('exception', (exception) => {
         console.warn(exception);
       });
-      
+
       const alarmStore = useAlarmStore();
       mySession.value.on('signal:alarm', async (stream) => {
         console.log(stream.data, 'tete');
@@ -162,28 +154,41 @@ export const useUserStore = defineStore(
           console.log(res.data.result);
           loginUserInfo.value = res.data.result;
           loginUserInfo.value.sub = 'SQLD';
-          useUserStore.$patch({loginUserInfo : res.data.result});
+
+          userStore.$patch({ loginUserInfo: loginUserInfo.value });
         })
         .then(() => {
           login();
         });
     };
 
-    const deleteLoginUserInfo = async () => {
-      console.log("tete delete");
+    const deleteLoginUserInfo = () => {
       loginUserInfo.value = {};
-      userCookiesStorage.deleteItem('userStore');
-      console.log('mySession.value : ', mySession.value);
+      cookiesStorage.setItem('userStore', '');
+
       if (mySession.value) {
         mySession.value.disconnect();
         logoutSignal();
       }
+      location.reload();
     };
     onMounted(async () => {
-      if (data.loginUserInfo.userId) {
+      if (loginUserInfo.value.userId) {
         await login();
       }
     });
+    const updateProfile = (imgURL) => {
+      loginUserInfo.value.userPicture = imgURL;
+      let userStore = JSON.parse(userCookiesStorage.getItem('userStore'));
+      userStore.loginUserInfo = loginUserInfo.value;
+      userCookiesStorage.setItem('userStore', JSON.stringify(userStore));
+    };
+    const updatePoint = (point) => {
+      loginUserInfo.value.userPoint = point;
+      let userStore = JSON.parse(userCookiesStorage.getItem('userStore'));
+      userStore.loginUserInfo = loginUserInfo.value;
+      userCookiesStorage.setItem('userStore', JSON.stringify(userStore));
+    };
     return {
       APPLICATION_SERVER_URL,
       login,
@@ -201,6 +206,8 @@ export const useUserStore = defineStore(
       studyRoomSessionToken,
       isInSession,
       achievementRate,
+      updateProfile,
+      updatePoint,
     };
   },
 
@@ -210,5 +217,12 @@ export const useUserStore = defineStore(
     persist: {
       storage: userCookiesStorage,
     },
+    path: [
+      'loginUserInfo',
+      'mySessionToken',
+      'studyRoomSessionToken',
+      'achievementRate',
+      'isInSession',
+    ],
   },
 );

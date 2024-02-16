@@ -7,7 +7,7 @@ import router from './router';
 import axios from 'axios';
 import { useUserStore } from './stores/user';
 
-axios.defaults.baseURL = 'https://localhost:8080';
+axios.defaults.baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 axios.interceptors.response.use(
@@ -15,9 +15,10 @@ axios.interceptors.response.use(
     if (response.data.code === 2045 || response.data.code === 2042) {
       alert('로그인이 필요합니다.');
       const userStore = useUserStore();
-      userStore.deleteLoginUserInfo();
-
       router.push('/login'); // '/login'은 로그인 페이지의 경로입니다.
+      if(userStore.loginUserInfo.userId){
+        userStore.deleteLoginUserInfo();
+      }
       return;
     }
     return response;

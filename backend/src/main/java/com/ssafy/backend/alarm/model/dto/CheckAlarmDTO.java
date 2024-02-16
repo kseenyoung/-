@@ -35,7 +35,6 @@ public class CheckAlarmDTO {
         try{
             this.alarmId = Integer.parseInt(alarmId);
         } catch (RuntimeException e){
-            e.printStackTrace();
             throw new BaseException(NOT_EXIST_ALARM_ID);
         }
     }

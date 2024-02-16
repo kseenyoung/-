@@ -31,14 +31,14 @@
               @input="onInputGakName"
             />
             <label for="dagakCategory" class="form-label">카테고리</label>
-            <input
+            <!-- <input
               type="text"
               id="dagakCategory"
               class="form-control"
               v-model="categorySearch"
               placeholder="카테고리 검색"
               style="margin-bottom: 5px"
-            />
+            /> -->
             <div class="input-group mb-3">
               <select class="form-select" v-model="gakCategory">
                 <option disabled value="" selected>- 카테고리 선택 -</option>
@@ -47,7 +47,7 @@
                   :key="category.categoryId"
                   :value="category.categoryId"
                 >
-                  {{ category.categoryName }}
+                  {{ subjectMapping(category.categoryName) }}
                 </option>
               </select>
               <input
@@ -81,10 +81,10 @@
               @click="deleteGak"
             >
               <div>{{ index + 1 }}.</div>
-              <div>{{ getCategoryName(gak.category) }}</div>
+              <div>{{ subjectMapping(getCategoryName(gak.category)) }}</div>
               <div>{{ gak.runningTime }}분</div>
               <div>
-                <i class="bi bi-trash common-pointer" @click="deleteGak"></i>
+                <i class="bi bi-trash common-pointer"></i>
               </div>
             </div>
             <div class="modal-body-result-totalTime">총 {{ totalTime }}분</div>
@@ -96,7 +96,7 @@
           </button>
           <button class="btn common-btn" @click="clear">지우기</button>
           <button
-            class="btn btn-primary"
+            class="btn common-btn-light"
             data-bs-dismiss="modal"
             @click="addDagak"
             :disabled="gaks.length == 0 || dagakName == ''"
@@ -113,6 +113,7 @@
 import { ref, computed } from 'vue';
 import { useCategoryStore } from '@/stores/category';
 import axios from 'axios';
+import { subjectMapping } from '@/utils/subjectMapping';
 
 const categoryStore = useCategoryStore();
 const emit = defineEmits(['updateDagakList']);
@@ -184,7 +185,7 @@ const addDagak = function () {
     dagakName: dagakName.value,
     gaks: gaks.value.map(({ category, runningTime }) => ({
       category: String(category),
-      runningTime: String(runningTime),
+      runningTime: String(runningTime * 60),
     })),
   };
   axios.post(`${import.meta.env.VITE_API_BASE_URL}dagak`, body).then((res) => {
@@ -232,7 +233,7 @@ const clear = function () {
     }
     .modal-body-result-detail {
       border-radius: 6px;
-      background-color: aliceblue;
+      background-color: $color-light-3;
       padding: 5px 15px;
       box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
       margin: 10px 0px;

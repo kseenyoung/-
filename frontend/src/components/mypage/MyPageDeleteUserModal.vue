@@ -32,11 +32,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             취소
           </button>
           <button
@@ -54,42 +50,46 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import axios from 'axios';
-import { useRouter } from 'vue-router';
+import { ref } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user";
 const router = useRouter();
 
-const password = ref('');
+const userStore = useUserStore();
+const password = ref("");
 
 //회원탈퇴 axios
 const deleteUser = function () {
   const body = {
-    sign: 'deleteUser',
+    sign: "deleteUser",
     userPassword: password.value,
   };
   axios
     .post(`${import.meta.env.VITE_API_BASE_URL}user`, body, {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     })
     .then((res) => res.data)
     .then((json) => {
-      if (json.code == 2042) {
-        //로그인 이슈
-        alert(json.message);
-      } else if (json.code == 2041) {
-        //탈퇴 실패
-        alert(json.message);
-      } else if (json.code == 1007) {
+      if (json.code == 1000) {
         //탈퇴 성공
+        alert("탈퇴되었습니다.");
+        userStore.deleteLoginUserInfo();
+        const body = {
+          sign: "logout",
+        };
+        axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body);
+      } else {
+        //실패
         alert(json.message);
-        router.push({
-          name: 'home',
-        });
       }
-      password.value = '';
+      password.value = "";
     });
+  router.push({
+    name: "home",
+  });
 };
 </script>
 

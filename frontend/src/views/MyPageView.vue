@@ -55,13 +55,13 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
   top: -4px;
   left: 40%;
   padding: 5px 20px;
-  background-color: tomato;
+  background-color: $color-light-6;
   transition: none;
 }
 .router-link-exact-active {
   // transform: scale(2, 0.5);
   // font-size: 1.4rem;
-  background-color: gold !important;
+  background-color: $color-light-3 !important;
   box-shadow: 4px 0px 3px #2b2b2b;
 }
 
@@ -70,7 +70,7 @@ import MyPageProfile from '@/components/mypage/MyPageProfile.vue';
 }
 .mypage-wrapper-content {
   border-radius: 5px;
-  background-color: #f1f7fb;
+  background-color: $color-dark-2;
   min-height: 686px;
   padding: 0px 50px;
   // box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;

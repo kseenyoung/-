@@ -27,16 +27,24 @@
           v-if="userStore.loginUserInfo.userId"
           id="dropdownProfileButton"
         >
-          <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
+          <img
+            class="profile"
+            v-if="userStore.loginUserInfo.userPicture"
+            :src="`${userStore.loginUserInfo.userPicture}`"
+          />
+          <img class="profile" v-else src="@/assets/img/default.jpg" />
         </div>
         <ul class="dropdown-menu" aria-labelledby="dropdownProfileButton">
           <li>
             <div class="d-flex profile-info">
-              <div>
-                <img class="profile" src="@/assets/img/기본프로필_갈색.jpg" />
+              <div v-if="userStore.loginUserInfo.userPicture">
+                <img class="profile" :src="userStore.loginUserInfo.userPicture" />
+              </div>
+              <div v-else>
+                <img class="profile" src="@/assets/img/default.jpg" />
               </div>
               <div>
-                <div>{{ userStore.loginUserInfo.userId }}</div>
+                <div>{{ userStore.loginUserInfo.userNickname }}</div>
                 <div>{{ userStore.loginUserInfo.userEmail }}</div>
               </div>
             </div>
@@ -47,12 +55,15 @@
             </RouterLink>
           </li>
           <li>
-            <!-- 모꼬지가 있을때는 길드페이지로, 없으면 친구/모꼬지 신청 페이지로 이동 -->
+            <!-- 모꼬지가 있을때는 모꼬지 페이지로, 없으면 친구/모꼬지 신청 페이지로 이동 -->
             <RouterLink
               :to="`/mokkoji/${userStore.loginUserInfo.mokkojiId}`"
               class="dropdown-item"
-              v-show="userStore.loginUserInfo.mokkojiId != null"
+              v-if="userStore.loginUserInfo.mokkojiId != null"
             >
+              <span class="underline">내 모꼬지</span>
+            </RouterLink>
+            <RouterLink v-else to="/apply" class="dropdown-item">
               <span class="underline">모꼬지</span>
             </RouterLink>
           </li>
@@ -69,52 +80,56 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import axios from 'axios';
-import Alarm from './Alarm.vue';
-import AlarmModal from './AlarmModal.vue';
-import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user';
-import { useAlarmStore } from '@/stores/alarm';
-import { cookiesStorage } from '@/utils/CookiesUtil';
-const userStore = useUserStore();
-const alarmStore = useAlarmStore();
-const router = useRouter();
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import axios from 'axios'
+import Alarm from './Alarm.vue'
+import AlarmModal from './AlarmModal.vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { useAlarmStore } from '@/stores/alarm'
+import { cookiesStorage } from '@/utils/CookiesUtil'
+
+const userStore = useUserStore()
+const alarmStore = useAlarmStore()
+const router = useRouter()
+const profileImage = ref('')
+const useImage = (url) => {
+  return new URL(`${url}`, import.meta.url).href
+}
 
 //로그아웃
 const logout = async function () {
-  await userStore.deleteLoginUserInfo();
+  userStore.deleteLoginUserInfo()
   const body = {
-    sign: 'logout',
-  };
-  await axios
-    .post(`${import.meta.env.VITE_API_BASE_URL}user`, body)
-    .then((res) => res.data);
+    sign: 'logout'
+  }
+  const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}user`, body)
   //성공 시 홈으로
   router.push({
-    name: 'login',
-  });
-};
+    name: 'login'
+  })
+}
 
 // 헤더 스크롤
-const headerHidden = ref(false);
-let lastScrollTop = 0;
+const headerHidden = ref(false)
+let lastScrollTop = 0
 
 const handleScroll = () => {
-  const scrollTop = window.scrollY || document.documentElement.scrollTop;
-  headerHidden.value = scrollTop > lastScrollTop && scrollTop > 70;
-  lastScrollTop = scrollTop;
-};
+  const scrollTop = window.scrollY || document.documentElement.scrollTop
+  headerHidden.value = scrollTop > lastScrollTop && scrollTop > 70
+  lastScrollTop = scrollTop
+}
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('scroll', handleScroll)
   if (userStore.loginUserInfo.userId != null) {
-    alarmStore.getUnReadAlarmList();
+    alarmStore.getUnReadAlarmList()
+    profileImage.value = userStore.loginUserInfo.userPicture
   }
-});
+})
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', handleScroll);
-});
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -145,17 +160,17 @@ nav {
 
 nav a.router-link-exact-active {
   // color: var(--color-text);
-  color: #ff6347;
+  color: $color-light-5;
 }
 nav a.router-link-exact-active > .underline {
-  color: #ff6347;
+  color: $color-light-5;
   transition: 0.8s;
   padding-bottom: 10px;
-  background: linear-gradient(to top, #ff6347 8%, transparent 8%);
+  background: linear-gradient(to top, $color-light-5 8%, transparent 8%);
 }
 nav a span:hover {
   transition: 0.4s;
-  color: tomato;
+  color: $color-light-5;
 }
 
 nav a.router-link-exact-active:hover {
@@ -168,11 +183,12 @@ nav a {
 }
 
 nav a:hover {
-  color: tomato !important;
+  color: $color-light-5 !important;
 }
 
 .profile {
-  width: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50px;
 }
 

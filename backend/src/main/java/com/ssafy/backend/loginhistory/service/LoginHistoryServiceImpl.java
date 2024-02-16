@@ -24,7 +24,6 @@ public class LoginHistoryServiceImpl implements LoginHistoryService{
      */
     public int failLogin(String userId, String userIp){
         LoginHistoryVO loginHistoryVO = loginHistoryMapper.getLoginHistory(userIp, userId);
-        System.out.println(loginHistoryVO);
         int remainTime = 0;
         if (loginHistoryVO == null){
             /*

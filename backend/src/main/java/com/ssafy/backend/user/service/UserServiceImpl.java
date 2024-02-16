@@ -130,7 +130,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User canAddMokkoji(String userId, int point) {
         User user = isExistUser(userId);
-        log.info("모꼬지가 있는지 확인합니다. mokkojiId : {}",user.getMokkojiId());
         // 이미 존재하는 길드, 포인트 부족
         if(user.getMokkojiId() != null ) throw new BaseException(OOPS);
         user.usePoint(point);
@@ -203,6 +202,7 @@ public class UserServiceImpl implements UserService {
         userInformationVO.setUserNickname(user.getUserNickname());
         userInformationVO.setUserPicture(user.getUserPicture());
         userInformationVO.setUserStatusMessage(user.getUserStatusMessage());
+        userInformationVO.setUserTotalStudyTime(user.getUserTotalStudyTime());
         if (user.getMokkojiId()!=null){  // 모꼬지가 있는 회원일 때
             userInformationVO.setMokkoijiName(user.getMokkojiId().getMokkojiName());
         }
