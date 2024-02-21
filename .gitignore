@@ -727,3 +727,7 @@ frontend/localhost-key.pem
 frontend/localhost.pem
 frontend/localhost+3-key.pem
 frontend/localhost+3.pem
+
+/frontend/.vscode/
+/backend/src/main/resources/dagak.cert
+/backend/src/main/resources/keystore.p12
